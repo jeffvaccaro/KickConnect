@@ -8,9 +8,13 @@ This application will have the support the features:
  - member app (iphone/android)
 
 Technologies explored:
- - Python
- - NodeJS/Express
  - React (Vite)
+ - Python
+ - NodeJS/Express 
  - AWS Lambda
  - AWS RDS instance
  - AWS EKS
+
+Technologies used:
+ - React (Vite)
+ - NodeJS/Express 
