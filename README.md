@@ -9,12 +9,17 @@ This application will have the support the features:
 
 Technologies explored:
  - React (Vite)
+ - JWT 
  - Python
  - NodeJS/Express 
  - AWS Lambda
  - AWS RDS instance
  - AWS EKS
+ - AWS APIGateway
 
 Technologies used:
  - React (Vite)
  - NodeJS/Express 
+
+Progress:
+ - Rought Authentication w/JWT
