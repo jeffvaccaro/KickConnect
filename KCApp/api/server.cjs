@@ -2,7 +2,12 @@ const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
 const mysql = require('mysql');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const bodyParser = require('body-parser');
+
 const swaggerSetup = require('./swagger.cjs');
+const authRouter = require('./auth.cjs');
 
 const cors = require('cors');
 
@@ -14,8 +19,9 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // Enable CORS for all origins
 app.use(cors());
+app.use(bodyParser.json());
 swaggerSetup(app);
-
+app.use('/auth', authRouter);
 
 
 var connection = mysql.createPool({
