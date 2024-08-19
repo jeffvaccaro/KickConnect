@@ -22,4 +22,4 @@ Technologies used:
  - NodeJS/Express 
 
 Progress:
- - Rought Authentication w/JWT
+ - Rough Authentication w/JWT
