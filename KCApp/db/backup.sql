@@ -1,6 +1,8 @@
+-- EXAMPLE mysqldump -u root -p Admin > c:\KCAppDB.sql
+
 -- MySQL dump 10.13  Distrib 8.0.39, for Win64 (x86_64)
 --
--- Host: localhost    Database: admin
+-- Host: localhost    Database: Admin
 -- ------------------------------------------------------
 -- Server version	8.0.39
 
@@ -32,8 +34,10 @@ CREATE TABLE `account` (
   `accountCity` varchar(250) NOT NULL,
   `accountState` varchar(2) NOT NULL,
   `accountZip` varchar(10) NOT NULL,
-  `createdOn` varchar(45) NOT NULL DEFAULT 'CURRENT_TIMESTAMP',
-  `updatedOn` varchar(45) DEFAULT NULL,
+  `createdOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` varchar(250) NOT NULL,
+  `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedBy` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`accountId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -86,10 +90,12 @@ CREATE TABLE `user` (
   `email` varchar(250) NOT NULL,
   `phone` varchar(10) NOT NULL,
   `phone2` varchar(10) DEFAULT NULL,
-  `roleId` int NOT NULL,
-  `password_hash` varchar(45) DEFAULT NULL,
+  `roleId` int NOT NULL DEFAULT '4',
+  `password` varchar(100) DEFAULT NULL,
   `createdOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedOn` datetime DEFAULT NULL,
+  `createdBy` varchar(250) NOT NULL,
+  `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedBy` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`userId`),
   KEY `accountFK_idx` (`accountId`),
   KEY `roleFK_idx` (`roleId`),
@@ -116,4 +122,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-19 20:07:37
+-- Dump completed on 2024-08-20 14:04:40
