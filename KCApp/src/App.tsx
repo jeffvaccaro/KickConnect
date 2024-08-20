@@ -15,15 +15,15 @@ function App() {
   const [count, setCount] = useState(0);
   const apiUrl = import.meta.env.VITE_API_URL;
   
-  useEffect(() => {
-    axios.get(`${apiUrl}/api`)
-      .then(response => {
-        setMessage(response.data.message);
-      })
-      .catch(error => {
-        console.error('There was an error fetching the data!', error);
-      });
-  }, [apiUrl]);
+  // useEffect(() => {
+  //   axios.get(`${apiUrl}/api`)
+  //     .then(response => {
+  //       setMessage(response.data.message);
+  //     })
+  //     .catch(error => {
+  //       console.error('There was an error fetching the data!', error);
+  //     });
+  // }, [apiUrl]);
 
   return (
     // <>
