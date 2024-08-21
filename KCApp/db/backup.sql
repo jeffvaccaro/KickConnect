@@ -39,7 +39,7 @@ CREATE TABLE `account` (
   `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedBy` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`accountId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,96 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
+INSERT INTO `account` VALUES (1,'a5c4044e-5f2f-11ef-8104-c87f545b41fc','Admin','5555555555','admin@admin.com','street address','city name','XX','99999','2024-08-20 14:06:12','API Account Register','2024-08-20 14:06:12',NULL);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `class`
+--
+
+DROP TABLE IF EXISTS `class`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `class` (
+  `classId` int NOT NULL AUTO_INCREMENT,
+  `className` varchar(250) NOT NULL,
+  `classDescription` varchar(500) NOT NULL,
+  PRIMARY KEY (`classId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `class`
+--
+
+LOCK TABLES `class` WRITE;
+/*!40000 ALTER TABLE `class` DISABLE KEYS */;
+/*!40000 ALTER TABLE `class` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `location`
+--
+
+DROP TABLE IF EXISTS `location`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `location` (
+  `locationId` int NOT NULL AUTO_INCREMENT,
+  `accountId` int NOT NULL,
+  `locationName` varchar(250) NOT NULL,
+  `locationAddress` varchar(250) NOT NULL,
+  `locationCity` varchar(250) NOT NULL,
+  `locationState` varchar(2) NOT NULL,
+  `locationZip` varchar(10) NOT NULL,
+  `locationPhone` varchar(10) NOT NULL,
+  `locationEmail` varchar(250) NOT NULL,
+  `createdOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` varchar(250) NOT NULL,
+  `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedBy` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`locationId`),
+  KEY `accountFK_idx` (`accountId`),
+  KEY `locationAcctFK_idx` (`accountId`),
+  CONSTRAINT `locationAcctFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `location`
+--
+
+LOCK TABLES `location` WRITE;
+/*!40000 ALTER TABLE `location` DISABLE KEYS */;
+/*!40000 ALTER TABLE `location` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `profile`
+--
+
+DROP TABLE IF EXISTS `profile`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `profile` (
+  `profileId` int NOT NULL AUTO_INCREMENT,
+  `userId` int NOT NULL,
+  `description` varchar(500) DEFAULT NULL,
+  `skills` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`profileId`),
+  KEY `userFK_idx` (`userId`),
+  CONSTRAINT `userFK` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `profile`
+--
+
+LOCK TABLES `profile` WRITE;
+/*!40000 ALTER TABLE `profile` DISABLE KEYS */;
+/*!40000 ALTER TABLE `profile` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -77,6 +166,43 @@ INSERT INTO `role` VALUES (1,'Owner','Owner of ALL LOCATIONS'),(2,'SuperAdmin','
 UNLOCK TABLES;
 
 --
+-- Table structure for table `schedule`
+--
+
+DROP TABLE IF EXISTS `schedule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `schedule` (
+  `scheduleId` int NOT NULL AUTO_INCREMENT,
+  `accountId` int NOT NULL,
+  `profileId` int NOT NULL,
+  `locationId` int NOT NULL,
+  `classId` int NOT NULL,
+  `day` int DEFAULT NULL,
+  `startTime` time DEFAULT NULL,
+  `endTime` time DEFAULT NULL,
+  PRIMARY KEY (`scheduleId`),
+  KEY `scheduleAcctFK_idx` (`accountId`),
+  KEY `scheduleProfileFK_idx` (`profileId`),
+  KEY `scheduleLocationFK_idx` (`locationId`),
+  KEY `scheduleClassFK_idx` (`classId`),
+  CONSTRAINT `scheduleAcctFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`),
+  CONSTRAINT `scheduleClassFK` FOREIGN KEY (`classId`) REFERENCES `class` (`classId`),
+  CONSTRAINT `scheduleLocationFK` FOREIGN KEY (`locationId`) REFERENCES `location` (`locationId`),
+  CONSTRAINT `scheduleProfileFK` FOREIGN KEY (`profileId`) REFERENCES `profile` (`profileId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `schedule`
+--
+
+LOCK TABLES `schedule` WRITE;
+/*!40000 ALTER TABLE `schedule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `schedule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -101,7 +227,7 @@ CREATE TABLE `user` (
   KEY `roleFK_idx` (`roleId`),
   CONSTRAINT `accountFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`),
   CONSTRAINT `roleFK` FOREIGN KEY (`roleId`) REFERENCES `role` (`roleId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,6 +236,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,1,'Admin','admin@admin.com','5555555555',NULL,4,'$2a$10$oKfED6Pma1qAz.hJj8Isa.J57JMF0udQjIfkmBZVzCnOqQNkszfGq','2024-08-20 14:06:12','API User Insert','2024-08-20 14:06:12',NULL),(2,1,'USER1','user1@user1.com','5555555555','',2,'$2a$10$e9e9ZUiwKA/mSBWkwrm1HePRh/u5fVcxlOQVqzgfaugobavi8BO5.','2024-08-20 14:51:44','API User Insert','2024-08-20 14:51:44',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -122,4 +249,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-20 14:04:40
+-- Dump completed on 2024-08-21 16:10:05
