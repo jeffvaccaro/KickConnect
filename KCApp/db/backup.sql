@@ -1,5 +1,4 @@
 -- EXAMPLE mysqldump -u root -p Admin > c:\KCAppDB.sql
-
 -- MySQL dump 10.13  Distrib 8.0.39, for Win64 (x86_64)
 --
 -- Host: localhost    Database: Admin
@@ -218,9 +217,10 @@ CREATE TABLE `user` (
   `phone2` varchar(10) DEFAULT NULL,
   `roleId` int NOT NULL DEFAULT '4',
   `password` varchar(100) DEFAULT NULL,
+  `isActive` int NOT NULL DEFAULT '0',
   `createdOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdBy` varchar(250) NOT NULL,
-  `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updatedBy` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`userId`),
   KEY `accountFK_idx` (`accountId`),
@@ -236,7 +236,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'Admin','admin@admin.com','5555555555',NULL,4,'$2a$10$oKfED6Pma1qAz.hJj8Isa.J57JMF0udQjIfkmBZVzCnOqQNkszfGq','2024-08-20 14:06:12','API User Insert','2024-08-20 14:06:12',NULL),(2,1,'USER1','user1@user1.com','5555555555','',2,'$2a$10$e9e9ZUiwKA/mSBWkwrm1HePRh/u5fVcxlOQVqzgfaugobavi8BO5.','2024-08-20 14:51:44','API User Insert','2024-08-20 14:51:44',NULL);
+INSERT INTO `user` VALUES (1,1,'Admin','admin@admin.com','5555555555',NULL,4,'$2a$10$oKfED6Pma1qAz.hJj8Isa.J57JMF0udQjIfkmBZVzCnOqQNkszfGq',0,'2024-08-20 14:06:12','API User Insert','2024-08-20 14:06:12',NULL),(2,1,'USER1c','user1c@user1.com','5555555555','',1,'$2a$10$.H3ilQsMS6gbaLFHO2zUy.PKGWcCpoSa82bBnKaR8QPlYkf.BCWzu',-1,'2024-08-20 14:51:44','API User Update','2024-08-24 17:59:07','API User Delete');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -249,4 +249,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-21 16:10:05
+-- Dump completed on 2024-08-24 17:59:57
