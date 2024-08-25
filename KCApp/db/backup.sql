@@ -150,8 +150,9 @@ CREATE TABLE `role` (
   `roleId` int NOT NULL AUTO_INCREMENT,
   `roleName` varchar(50) NOT NULL,
   `roleDescription` varchar(250) NOT NULL,
+  `roleOrderId` int DEFAULT NULL,
   PRIMARY KEY (`roleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,7 +161,7 @@ CREATE TABLE `role` (
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
-INSERT INTO `role` VALUES (1,'Owner','Owner of ALL LOCATIONS'),(2,'SuperAdmin','Admin of multiple locations'),(3,'LocalAdmin','Admin of 1 location'),(4,'Staff','Staff User');
+INSERT INTO `role` VALUES (1,'Owner','Owner of ALL LOCATIONS',1),(2,'SuperAdmin','Admin of multiple locations',2),(3,'LocalAdmin','Admin of 1 location',3),(4,'Staff','Staff User',4),(5,'instructor','teaches classes',5),(6,'Program Administrator','Create class programs',6);
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -227,7 +228,7 @@ CREATE TABLE `user` (
   KEY `roleFK_idx` (`roleId`),
   CONSTRAINT `accountFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`),
   CONSTRAINT `roleFK` FOREIGN KEY (`roleId`) REFERENCES `role` (`roleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -236,7 +237,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'Admin','admin@admin.com','5555555555',NULL,4,'$2a$10$oKfED6Pma1qAz.hJj8Isa.J57JMF0udQjIfkmBZVzCnOqQNkszfGq',0,'2024-08-20 14:06:12','API User Insert','2024-08-20 14:06:12',NULL),(2,1,'USER1c','user1c@user1.com','5555555555','',1,'$2a$10$.H3ilQsMS6gbaLFHO2zUy.PKGWcCpoSa82bBnKaR8QPlYkf.BCWzu',-1,'2024-08-20 14:51:44','API User Update','2024-08-24 17:59:07','API User Delete');
+INSERT INTO `user` VALUES (1,1,'Admin','admin@admin.com','5555555555',NULL,4,'$2a$10$oKfED6Pma1qAz.hJj8Isa.J57JMF0udQjIfkmBZVzCnOqQNkszfGq',0,'2024-08-20 14:06:12','API User Insert','2024-08-20 14:06:12',NULL),(2,1,'USER1c','user1c@user1.com','5555555555','',1,'$2a$10$.H3ilQsMS6gbaLFHO2zUy.PKGWcCpoSa82bBnKaR8QPlYkf.BCWzu',-1,'2024-08-20 14:51:44','API User Update','2024-08-24 17:59:07','API User Delete'),(3,1,'USER2','user2@user2.com','5555555555','',4,'$2a$10$uuCf6hUwFZKZD0WPV33NWeJuYy6Ld/m2dD8psBE4cNwAn6u5Z3m4y',0,'2024-08-24 18:12:32','API User Insert','2024-08-24 18:12:32',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -249,4 +250,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-24 17:59:57
+-- Dump completed on 2024-08-24 21:53:57
