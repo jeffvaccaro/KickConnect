@@ -2,36 +2,37 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
-const mysql = require('mysql');
+const mysql = require('mysql2/promise');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const authenticateToken = require('./middleware/authenticateToken.cjs');
-
 
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-var connection = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT
-});
+var pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
+  });
 
-connection.on('connection', (connection) => {
-  console.log('Database connection established');
-});
-
-connection.on('error', (err) => {
-  console.error('Database connection error:', err);
-});
+// Handling connection establishment
+pool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Database connection error:', err);
+      return;
+    }
+    console.log('Database connection established');
+    connection.release(); // Release the connection back to the pool
+  });
 
 /**
  * @swagger
- * /auth/add-account:
+ * /account/add-account:
  *   post:
+ *     tags:
+ *       - Account
  *     summary: Register Account
  *     requestBody:
  *       required: true
@@ -61,7 +62,7 @@ connection.on('error', (err) => {
  *               accountZip:
  *                 type: string
  *                 description: Account Holder's Zip Code
-  *               password:
+ *               password:
  *                 type: string
  *                 description: Account Holder's initial password
  *     responses:
@@ -70,108 +71,45 @@ connection.on('error', (err) => {
  *     servers:
  *       - url: http://localhost:3000
  */
-router.post('/add-account', authenticateToken, async (req, res) => {
+
+router.post('/add-account', async (req, res) => {
   const { accountName, accountPhone, accountEmail, accountAddress, accountCity, accountState, accountZip, name, email, phone, phone2, password, roleId } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
+    const connection = await pool.getConnection();
 
-    connection.getConnection((err, connection) => {
-      if (err) {
-        console.error('Error getting connection from pool:', err);
-        res.status(500).send('Error getting connection from pool');
-        return;
-      }
+    try {
+      await connection.beginTransaction();
 
-      // Start a transaction
-      connection.beginTransaction(err => {
-        if (err) {
-          console.error('Error starting transaction:', err);
-          connection.release();
-          res.status(500).send('Error starting transaction');
-          return;
-        }
+      // Insert into account table
+      const [accountResult] = await connection.query(
+        'INSERT INTO admin.account (accountCode, accountName, accountPhone, accountEmail, accountAddress, accountCity, accountState, accountZip, CreatedBy) VALUES (UUID(),?,?,?,?,?,?,?,"API Account Register")',
+        [accountName, accountPhone, accountEmail, accountAddress, accountCity, accountState, accountZip]
+      );
 
-        // Insert into account table
-        connection.query('INSERT INTO admin.account (accountCode, accountName, accountPhone, accountEmail, accountAddress, accountCity, accountState, accountZip, CreatedBy) VALUES (UUID(),?,?,?,?,?,?,?,"API Account Register")', [accountName, accountPhone, accountEmail, accountAddress, accountCity, accountState, accountZip], (err, accountResult) => {
-          if (err) {
-            console.error('Error inserting into account:', err);
-            return connection.rollback(() => {
-              connection.release();
-              res.status(500).send('Error inserting into account');
-            });
-          }
+      // Get the inserted account ID
+      const accountId = accountResult.insertId;
 
-          // Get the inserted account ID
-          const accountId = accountResult.insertId;
+      // Insert into user table using the account ID
+      await connection.query(
+        'INSERT INTO admin.user (accountId, name, email, phone, phone2, password, roleId, createdBy) VALUES (?, ?, ?, ?, ?, ?, 1, "API Register Insert of OWNER")',
+        [accountId, accountName, accountEmail, accountPhone, phone2, hashedPassword]
+      );
 
-          // Insert into user table using the account ID
-          connection.query('INSERT INTO admin.user (accountId, name, email, phone, phone2, password, roleId, createdBy) VALUES (?, ?, ?, ?, ?, ?, 1, "API Register Insert of OWNER")', [accountId, accountName, accountEmail, accountPhone, phone2, hashedPassword], (err, userResult) => {
-            if (err) {
-              console.error('Error inserting into user:', err);
-              return connection.rollback(() => {
-                connection.release();
-                res.status(500).send('Error inserting into user');
-              });
-            }
-
-            // Commit the transaction
-            connection.commit(err => {
-              if (err) {
-                console.error('Error committing transaction:', err);
-                return connection.rollback(() => {
-                  connection.release();
-                  res.status(500).send('Error committing transaction');
-                });
-              }
-
-              connection.release();
-              res.status(201).send('Account and user created successfully');
-            });
-          });
-        });
-      });
-    });
+      // Commit the transaction
+      await connection.commit();
+      res.status(201).send('Account and user created successfully');
+    } catch (err) {
+      await connection.rollback();
+      console.error('Transaction error:', err);
+      res.status(500).send('Error processing request');
+    } finally {
+      connection.release();
+    }
   } catch (error) {
-    console.error('Error hashing password:', error);
+    console.error('Error hashing password or connecting to database:', error);
     res.status(500).send('Error processing request');
   }
 });
-
-/**
- * @swagger
- * /auth/get-accounts:
- *   get:
- *     summary: Gets ALL Accounts
- *     responses:
- *       200:
- *         description: Accounts SUCCESSFULLY returned!
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *     servers:
- *       - url: http://localhost:3000
- */
-
-router.get('/get-accounts', authenticateToken, (req, res) => {
-  connection.query('SELECT * FROM account', (err, results) => {
-    if (err) {
-      console.error('Error executing query:', err);
-      res.status(500).send('Error executing query');
-      return;
-    }
-    res.json(results);
-  });
-});
-
-
-
-
-// Protected route example
-// router.get('/me', verifyToken, (req, res) => {
-//   res.status(200).send({ message: `Hello ${req.userId}` });
-// });
 
 module.exports = router;

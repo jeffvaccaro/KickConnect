@@ -24,6 +24,12 @@ const swaggerOptions = {
                 name: 'Login',
             },
             {
+                name: 'Account',
+            },
+            {
+                name: 'Location',
+            },            
+            {
                 name: 'User',
             },
             {
@@ -50,7 +56,7 @@ const swaggerOptions = {
             }
         }
     },
-    apis: ['./server.cjs','./auth.cjs','./login.cjs','./user.cjs','./account.cjs','./role.cjs'] // Path to your API routes
+    apis: ['./*.cjs'],
 };
 
 

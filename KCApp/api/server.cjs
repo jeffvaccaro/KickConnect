@@ -7,6 +7,7 @@ const swaggerSetup = require('./swagger.cjs');
 const authRouter = require('./account.cjs');
 const userRouter = require('./user.cjs');
 const loginRouter = require('./login.cjs');
+const locationRouter = require('./location.cjs');
 const roleRouter = require('./role.cjs');
 
 const cors = require('cors');
@@ -24,6 +25,7 @@ swaggerSetup(app);
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/login', loginRouter);
+app.use('/location', locationRouter);
 app.use('/role', roleRouter);
 
 app.get('/current-datetime', (req, res) => {
