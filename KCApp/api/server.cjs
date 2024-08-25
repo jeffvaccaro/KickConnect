@@ -1,13 +1,13 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
-const mysql = require('mysql');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 
 const swaggerSetup = require('./swagger.cjs');
-const authRouter = require('./auth.cjs');
+const authRouter = require('./account.cjs');
+const userRouter = require('./user.cjs');
+const loginRouter = require('./login.cjs');
+const roleRouter = require('./role.cjs');
 
 const cors = require('cors');
 
@@ -22,43 +22,14 @@ app.use(cors());
 app.use(bodyParser.json());
 swaggerSetup(app);
 app.use('/auth', authRouter);
+app.use('/user', userRouter);
+app.use('/login', loginRouter);
+app.use('/role', roleRouter);
 
-
-// var connection = mysql.createPool({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-//   port: process.env.DB_PORT
-// })
-
-// connection.getConnection((err, connection) => {
-//     if (err) {
-//         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-//             console.error('Database connection was closed.')
-//         }
-//         if (err.code === 'ER_CON_COUNT_ERROR') {
-//             console.error('Database has too many connections.')
-//         }
-//         if (err.code === 'ECONNREFUSED') {
-//             console.error('Database connection was refused.')
-//         }
-//     }
-//     if (connection) connection.release()
-//     return
-// })
-
-
-// app.get('/api', (req, res) => {
-//   connection.query('SELECT * FROM admin.location', (err, results) => {
-//     if (err) {
-//       console.error('Error executing query:', err);
-//       res.status(500).send('Error executing query');
-//       return;
-//     }
-//     res.json(results);
-//   });
-// });
+app.get('/current-datetime', (req, res) => {
+  const currentDateTime = new Date();
+  res.send(`Current Date and Time: ${currentDateTime}`);
+});
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

@@ -39,7 +39,7 @@ const swaggerOptions = {
             }
         }
     },
-    apis: ['./server.cjs','./auth.cjs'] // Path to your API routes
+    apis: ['./server.cjs','./auth.cjs','./login.cjs','./user.cjs','./account.cjs','/role.cjs'] // Path to your API routes
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
