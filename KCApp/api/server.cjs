@@ -9,6 +9,7 @@ const userRouter = require('./user.cjs');
 const loginRouter = require('./login.cjs');
 const locationRouter = require('./location.cjs');
 const roleRouter = require('./role.cjs');
+const classRouter = require('./class.cjs');
 
 const cors = require('cors');
 
@@ -27,6 +28,7 @@ app.use('/user', userRouter);
 app.use('/login', loginRouter);
 app.use('/location', locationRouter);
 app.use('/role', roleRouter);
+app.use('/class', classRouter);
 
 app.get('/current-datetime', (req, res) => {
   const currentDateTime = new Date();

@@ -58,7 +58,7 @@ pool.getConnection((err, connection) => {
  *       500:
  *         description: Some server error
  */
-router.post('/add-location', async (req, res) => {
+router.post('/add-location', authenticateToken, async (req, res) => {
     let { accountId, locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail } = req.body;
     // Trim whitespace from each string
     locationName = locationName.trim();
@@ -260,7 +260,6 @@ router.put('/update-location/:id', async (req, res) => {
  *       500:
  *         description: Error deactivating location
  */
-
 router.put('/deactivate-location/:id', authenticateToken, async (req, res) => {
     const { id } = req.params; // Use req.params to get the path parameter
 
@@ -269,10 +268,7 @@ router.put('/deactivate-location/:id', authenticateToken, async (req, res) => {
             SET isActive = -1, updatedBy = "API Location Delete", updatedOn = CURRENT_TIMESTAMP
             WHERE locationId = ?;`;
 
-        const connection = await pool.getConnection();
-        const [locationResult] = await connection.query(locationQuery, [id]);
-
-        connection.release();
+        const [locationResult] = await pool.query(locationQuery, [id]);
 
         if (locationResult.affectedRows === 0) {
             return res.status(404).send('Location not found');
@@ -331,8 +327,8 @@ router.put('/deactivate-location/:id', authenticateToken, async (req, res) => {
 /**
  * @swagger
  * tags:
- *   name: Locations
- *   description: The locations managing API
+ *   name: Location
+ *   description: Location API
  */
 
 module.exports = router;

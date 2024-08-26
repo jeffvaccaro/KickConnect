@@ -34,7 +34,10 @@ const swaggerOptions = {
             },
             {
                 name: 'Role',
-            }            
+            },
+            {
+                name: 'Class',
+            }                       
         ],
         components: {
             schemas: {
