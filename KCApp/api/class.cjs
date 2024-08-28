@@ -54,10 +54,10 @@ pool.getConnection((err, connection) => {
  */
 router.post('/add-class', authenticateToken, async (req, res) => {
     try {
-    const { className, classDescription } = req.body;
+    const { accountId, className, classDescription } = req.body;
     const [result] = await pool.query(
-        'INSERT INTO Class (className, classDescription, createdBy) VALUES (?, ?, ?)', 
-        [className, classDescription, 'API Class Insert']
+        'INSERT INTO Class (accountId, className, classDescription, createdBy) VALUES (?, ?, ?, ?)', 
+        [accountId, className, classDescription, 'API Class Insert']
     );
       res.status(201).json({ classId: result.insertId  });
     } catch (error) {
@@ -246,6 +246,9 @@ router.get('/get-all', authenticateToken, async (req, res) => {
  *         - className
  *         - classDescription
  *       properties:
+ *         accountId:
+ *           type: integer
+ *           description: "ID of the account"
  *         classId:
  *           type: integer
  *           description: The auto-generated id of the class
@@ -256,6 +259,7 @@ router.get('/get-all', authenticateToken, async (req, res) => {
  *           type: string
  *           description: The description of the class
  *       example:
+ *         accountId: 1
  *         classId: 1
  *         className: Yoga
  *         classDescription: A relaxing yoga class

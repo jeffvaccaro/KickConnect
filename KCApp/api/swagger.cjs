@@ -1,8 +1,9 @@
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
+
 const swaggerOptions = {
-    swaggerDefinition: {
+    definition: {
         openapi: '3.0.0',
         info: {
             title: 'KickConnectAPI',
@@ -38,26 +39,7 @@ const swaggerOptions = {
             {
                 name: 'Class',
             }                       
-        ],
-        components: {
-            schemas: {
-                Location: {
-                    type: 'object',
-                    properties: {
-                        id: {
-                            type: 'integer',
-                            description: 'The location ID',
-                            example: 1
-                        },
-                        name: {
-                            type: 'string',
-                            description: 'The location name',
-                            example: 'Denver'
-                        }
-                    }
-                }
-            }
-        }
+        ]
     },
     apis: ['./*.cjs'],
 };
@@ -67,4 +49,9 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 module.exports = (app) => {
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+    app.get('/json-docs/openapi.json', (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(swaggerDocs);
+        console.log("json output");
+    });
 };

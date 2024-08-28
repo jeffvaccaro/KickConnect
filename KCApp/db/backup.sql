@@ -38,7 +38,7 @@ CREATE TABLE `account` (
   `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedBy` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`accountId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +47,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES (1,'a5c4044e-5f2f-11ef-8104-c87f545b41fc','Admin','5555555555','admin@admin.com','street address','city name','XX','99999','2024-08-20 14:06:12','API Account Register','2024-08-20 14:06:12',NULL);
+INSERT INTO `account` VALUES (1,'a5c4044e-5f2f-11ef-8104-c87f545b41fc','Admin','5555555555','admin@admin.com','street address','city name','XX','99999','2024-08-20 14:06:12','API Account Register','2024-08-20 14:06:12',NULL),(2,'938c61ca-6312-11ef-8104-c87f545b41fc','Bus1','7205555555','bus1@bus1.com','street address','city name','XX','99999','2024-08-25 12:48:10','API Account Register','2024-08-25 12:48:10',NULL),(3,'37720e71-6315-11ef-8104-c87f545b41fc','Bus2','5555555555','bus2@xyz.com','street address','city name','XX','99999','2024-08-25 13:07:04','API Account Register','2024-08-25 13:07:04',NULL);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,10 +60,18 @@ DROP TABLE IF EXISTS `class`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `class` (
   `classId` int NOT NULL AUTO_INCREMENT,
+  `accountId` int NOT NULL,
   `className` varchar(250) NOT NULL,
   `classDescription` varchar(500) NOT NULL,
-  PRIMARY KEY (`classId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `isActive` int NOT NULL DEFAULT '0',
+  `createdOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `createdBy` varchar(250) NOT NULL,
+  `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updatedBy` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`classId`),
+  KEY `classAcctFK_idx` (`accountId`),
+  CONSTRAINT `classAcctFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,6 +80,7 @@ CREATE TABLE `class` (
 
 LOCK TABLES `class` WRITE;
 /*!40000 ALTER TABLE `class` DISABLE KEYS */;
+INSERT INTO `class` VALUES (1,1,'Get-Fit-Done','Fitness Class',-1,'2024-08-25 18:15:49','API Class Insert','2024-08-25 18:41:03','API Class Delete'),(2,1,'Krav Maga Beginner','Beginner Krav Maga class',0,'2024-08-25 18:30:39','API Class Insert','2024-08-25 18:30:39',NULL),(3,1,'Yoga','A relaxing yoga class',0,'2024-08-25 18:41:25','API Class Insert','2024-08-25 18:41:25',NULL),(4,1,'Krav Maga Advanced','Yellow Belts are higher',0,'2024-08-27 18:18:36','API Class Insert','2024-08-27 18:18:36',NULL);
 /*!40000 ALTER TABLE `class` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -92,6 +101,7 @@ CREATE TABLE `location` (
   `locationZip` varchar(10) NOT NULL,
   `locationPhone` varchar(10) NOT NULL,
   `locationEmail` varchar(250) NOT NULL,
+  `isActive` int NOT NULL DEFAULT '0',
   `createdOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdBy` varchar(250) NOT NULL,
   `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -100,7 +110,7 @@ CREATE TABLE `location` (
   KEY `accountFK_idx` (`accountId`),
   KEY `locationAcctFK_idx` (`accountId`),
   CONSTRAINT `locationAcctFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,6 +119,7 @@ CREATE TABLE `location` (
 
 LOCK TABLES `location` WRITE;
 /*!40000 ALTER TABLE `location` DISABLE KEYS */;
+INSERT INTO `location` VALUES (1,1,'Lakewood Studio','1050 S Wadsworth Blvd','Lakewood','CO','80226','3039841957','lakewood@lakewood.com',0,'2024-08-25 16:18:26','API Location Insert','2024-08-25 16:27:55','API Location Update'),(2,1,'Denver Studio','5200 Broadway','Denver','CO','80216','3032925728','denver@denver.com',-1,'2024-08-25 16:20:42','API Location Insert','2024-08-25 16:42:43','API Location Delete');
 /*!40000 ALTER TABLE `location` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -124,6 +135,7 @@ CREATE TABLE `profile` (
   `userId` int NOT NULL,
   `description` varchar(500) DEFAULT NULL,
   `skills` varchar(250) DEFAULT NULL,
+  `url` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`profileId`),
   KEY `userFK_idx` (`userId`),
   CONSTRAINT `userFK` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
@@ -228,7 +240,7 @@ CREATE TABLE `user` (
   KEY `roleFK_idx` (`roleId`),
   CONSTRAINT `accountFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`),
   CONSTRAINT `roleFK` FOREIGN KEY (`roleId`) REFERENCES `role` (`roleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,7 +249,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'Admin','admin@admin.com','5555555555',NULL,4,'$2a$10$oKfED6Pma1qAz.hJj8Isa.J57JMF0udQjIfkmBZVzCnOqQNkszfGq',0,'2024-08-20 14:06:12','API User Insert','2024-08-20 14:06:12',NULL),(2,1,'USER1c','user1c@user1.com','5555555555','',1,'$2a$10$.H3ilQsMS6gbaLFHO2zUy.PKGWcCpoSa82bBnKaR8QPlYkf.BCWzu',-1,'2024-08-20 14:51:44','API User Update','2024-08-24 17:59:07','API User Delete'),(3,1,'USER2','user2@user2.com','5555555555','',4,'$2a$10$uuCf6hUwFZKZD0WPV33NWeJuYy6Ld/m2dD8psBE4cNwAn6u5Z3m4y',0,'2024-08-24 18:12:32','API User Insert','2024-08-24 18:12:32',NULL);
+INSERT INTO `user` VALUES (1,1,'Admin','admin@admin.com','5555555555',NULL,4,'$2a$10$oKfED6Pma1qAz.hJj8Isa.J57JMF0udQjIfkmBZVzCnOqQNkszfGq',0,'2024-08-20 14:06:12','API User Insert','2024-08-20 14:06:12',NULL),(2,1,'USER1c','user1c@user1.com','5555555555','',1,'$2a$10$.H3ilQsMS6gbaLFHO2zUy.PKGWcCpoSa82bBnKaR8QPlYkf.BCWzu',-1,'2024-08-20 14:51:44','API User Update','2024-08-24 17:59:07','API User Delete'),(3,1,'USER2','user2@user2.com','5555555555','',4,'$2a$10$uuCf6hUwFZKZD0WPV33NWeJuYy6Ld/m2dD8psBE4cNwAn6u5Z3m4y',0,'2024-08-24 18:12:32','API User Insert','2024-08-24 18:12:32',NULL),(4,2,'Bus1','bus1@bus1.com','7205555555',NULL,1,'$2a$10$DaMNXKbBSeO63aGAfeTmX.FliUPFCoKzNhR6JRRo4Nn7a4fp6pbnm',0,'2024-08-25 12:48:10','API Register Insert of OWNER','2024-08-25 12:48:10',NULL),(5,3,'Bus2','bus2@xyz.com','5555555555',NULL,1,'$2a$10$IJaXjd/h1kuxadli6zaAnewnWhR2Y.UlaAIHEGUVJtnF4dOxx6AvW',0,'2024-08-25 13:07:04','API Register Insert of OWNER','2024-08-25 13:07:04',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -250,4 +262,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-24 21:53:57
+-- Dump completed on 2024-08-27 18:35:40
