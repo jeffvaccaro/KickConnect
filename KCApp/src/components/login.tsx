@@ -1,17 +1,17 @@
 // Login.js
-import React, { useState } from 'react';
-import authService from '../service/authService';
+import { useState } from 'react';
+import authService from '../service/loginService';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await authService.login(username, password);
+      await authService.login(email, password);
       // Redirect to a protected route
       navigate('/dashboard');
     } catch (error) {
@@ -21,7 +21,7 @@ const Login = () => {
 
   return (
     <form onSubmit={handleLogin}>
-      <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
+      <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email" />
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
       <button type="submit">Login</button>
     </form>

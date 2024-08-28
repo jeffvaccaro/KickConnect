@@ -1,11 +1,10 @@
 // Dashboard.js
-import React from 'react';
 import { Navigate  } from 'react-router-dom';
-import authService from '../service/authService';
+import authService from '../service/loginService';
 
 const Dashboard = () => {
 
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
   const isAuthenticated = !!localStorage.getItem('user');
   //return isAuthenticated ? <Component {...rest} /> : <Navigate to="/login" />;
 
@@ -17,8 +16,9 @@ const Dashboard = () => {
   return (
     isAuthenticated ? (
     <div>
-      <h1>Welcome, {user ? user.id : 'User'}!</h1>
+      <h1>Welcome, {user.name ? user.name : 'User'}!</h1>
       <p>You are now logged in as an Authenticated USER!</p>
+      <p>Your AccountCode is {user.accountcode}</p>
       <button onClick={handleLogout}>Logout</button>
     </div>
     ) : (

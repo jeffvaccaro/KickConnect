@@ -115,6 +115,9 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
  *       summary: Gets ALL Users
  *       security:
  *         - bearerAuth: []
+ *       parameters:
+ *         - in: query
+ *           name: accountCode
  *       responses:
  *         200:
  *           description: Accounts SUCCESSFULLY returned!
@@ -128,10 +131,20 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
 
 router.get('/get-users', authenticateToken, async (req, res) => {
   try {
+      let { accountCode } = req.query;
       const connection = await pool.getConnection();
-      const [results] = await connection.query('SELECT * FROM user');
 
-      res.json(results);
+      // Query the account table to get the accountId by accountCode
+      const [accountResults] = await connection.query('SELECT accountId FROM account WHERE accountCode = ?', [accountCode]);
+      if (accountResults.length === 0) {
+          return res.status(404).send('Account not found');
+      }
+      const accountId = accountResults[0].accountId;
+
+      // Query the user table using the retrieved accountId
+      const [userResults] = await connection.query('SELECT * FROM user WHERE accountId = ?', [accountId]);
+
+      res.json(userResults);
       connection.release();
   } catch (err) {
       console.error('Error executing query:', err);

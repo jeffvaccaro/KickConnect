@@ -57,6 +57,8 @@ pool.getConnection((err, connection) => {
  *             schema:
  *               type: object
  *               properties:
+ *                 name:
+ *                   type: string
  *                 auth:
  *                   type: boolean
  *                 token:
@@ -69,15 +71,20 @@ router.post('/user-login', async (req, res) => {
 
     try {
         const connection = await pool.getConnection();
-        const [results] = await connection.query('SELECT * FROM user WHERE email = ?', [email]);
+        const [results] = await connection.query(`
+            SELECT user.*, account.accountcode 
+            FROM user 
+            INNER JOIN account ON user.accountId = account.accountId 
+            WHERE user.email = ?
+        `, [email]);
 
         if (results.length > 0) {
             const user = results[0];
             const match = await bcrypt.compare(password, user.password);
 
             if (match) {
-                const token = jwt.sign({ id: user.username }, process.env.JWT_SECRET, { expiresIn: '2h' });
-                res.status(200).send({ auth: true, token });
+                const token = jwt.sign({ id: user.name }, process.env.JWT_SECRET, { expiresIn: '2h' });
+                res.status(200).send({ name: user.name, auth: true, token, accountcode: user.accountcode });
             } else {
                 res.status(401).send('Invalid credentials');
             }
