@@ -2,6 +2,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
+const upload = require('./upload.cjs');
 const mysql = require('mysql2/promise');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
@@ -142,15 +143,102 @@ router.get('/get-users', authenticateToken, async (req, res) => {
       const accountId = accountResults[0].accountId;
 
       // Query the user table using the retrieved accountId
-      const [userResults] = await connection.query('SELECT * FROM user WHERE accountId = ?', [accountId]);
+      const [userResults] = await connection.query('SELECT user.*, role.roleName FROM user JOIN role ON user.roleId = role.roleId WHERE user.accountId = ?', [accountId]);
 
-      res.json(userResults);
+      res.json(userResults.length ? userResults : []); // Ensure an array is returned
       connection.release();
   } catch (err) {
       console.error('Error executing query:', err);
       res.status(500).send('Error executing query');
   }
 });
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * paths:
+ *   /user/get-user-by-id:
+ *     get:
+ *       tags:
+ *         - User
+ *       summary: Get user details by user ID
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - in: query
+ *           name: userId
+ *           schema:
+ *             type: integer
+ *           required: true
+ *           description: The ID of the user to retrieve
+ *       responses:
+ *         200:
+ *           description: User details retrieved successfully
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: integer
+ *                       description: The user's ID
+ *                     accountId:
+ *                       type: integer
+ *                       description: The account ID associated with the user
+ *                     name:
+ *                       type: string
+ *                       description: The user's name
+ *                     email:
+ *                       type: string
+ *                       description: The user's email
+ *                     phone:
+ *                       type: string
+ *                       description: The user's primary phone
+ *                     phone2:
+ *                       type: string
+ *                       description: The user's secondary phone
+ *                     password:
+ *                       type: string
+ *                       description: The user's hashed password
+ *                     roleId:
+ *                       type: integer
+ *                       description: The user's role ID
+ *                     photoURL:
+ *                       type: string
+ *                       description: The URL of the user's photo
+ *                     createdBy:
+ *                       type: string
+ *                       description: The creator of the user record
+ *                     roleName:
+ *                       type: string
+ *                       description: The name of the user's role
+ *         500:
+ *           description: Error executing query
+ *       servers:
+ *         - url: http://localhost:3000/
+ */
+
+router.get('/get-user-by-id', authenticateToken, async (req, res) => {
+    try {
+        const { userId } = req.query;
+        const connection = await pool.getConnection();
+        // Query the user table using the retrieved accountId
+        const [userResults] = await connection.query('SELECT user.* FROM user WHERE user.userId = ?', [userId]);
+  
+        res.json(userResults.length ? userResults : []); // Ensure an array is returned
+        connection.release();
+    } catch (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send('Error executing query');
+    }
+  });
 
 
 /**
@@ -241,7 +329,7 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
  *       requestBody:
  *         required: true
  *         content:
- *           application/json:
+ *           multipart/form-data:
  *             schema:
  *               type: object
  *               properties:
@@ -266,51 +354,56 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
  *                 roleId:
  *                   type: integer
  *                   description: Default to RoleId 4
+ *                 photo:
+ *                   type: string
+ *                   format: binary
+ *                   description: The user's photo
  *       responses:
  *         200:
  *           description: User registered
  *         404:
  *           description: Account not found
  *         500:
- *           description: Error executing query
+ *           description: Error during user registration
  *       servers:
  *         - url: http://localhost:3000/
  */
 
-router.post('/add-user', authenticateToken, async (req, res) => {
-  const { accountcode, name, email, phone, phone2, password, roleId } = req.body;
-
-  try {
+router.post('/add-user', authenticateToken, upload.single('photo'), async (req, res) => {
+    const { accountcode, name, email, phone, phone2, password, roleId } = req.body;
+  
+    try {
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
-
+  
       // Query to get the accountId from the accountcode
       const accountQuery = 'SELECT accountId FROM account WHERE accountcode = ?';
       const connection = await pool.getConnection();
       const [accountResults] = await connection.query(accountQuery, [accountcode]);
-
+  
       if (accountResults.length === 0) {
-          connection.release();
-          return res.status(404).send('Account not found');
+        connection.release();
+        return res.status(404).send('Account not found');
       }
-
+  
       const accountId = accountResults[0].accountId;
-
+      const photoURL = req.file ? `/uploads/${req.file.filename}` : null;
+  
       // Insert the new user with the retrieved accountId
       const userQuery = `
-          INSERT INTO user (accountId, name, email, phone, phone2, password, roleId, createdBy) 
-          VALUES (?, ?, ?, ?, ?, ?, ?, "API User Insert")
+        INSERT INTO user (accountId, name, email, phone, phone2, password, photoURL, roleId, createdBy) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, "API User Insert")
       `;
-      await connection.query(userQuery, [accountId, name, email, phone, phone2, hashedPassword, roleId]);
-
+      await connection.query(userQuery, [accountId, name, email, phone, phone2, hashedPassword, photoURL, roleId]);
+  
       connection.release();
       res.send('User registered');
-  } catch (error) {
+    } catch (error) {
       console.error('Error during user registration:', error);
       res.status(500).send('Error during user registration');
-  }
-});
-
+    }
+  });
+  
   
 /**
  * @swagger
@@ -473,7 +566,7 @@ router.put('/deactivate-user', authenticateToken, async (req, res) => {
           SET isActive = -1, updatedBy = "API User Delete"
           WHERE userId = ?;`;
 
-      console.log(userQuery);
+      // console.log(userQuery);
       const connection = await pool.getConnection();
       const [userResult] = await connection.query(userQuery, [userId]);
 

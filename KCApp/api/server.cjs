@@ -29,6 +29,7 @@ app.use('/login', loginRouter);
 app.use('/location', locationRouter);
 app.use('/role', roleRouter);
 app.use('/class', classRouter);
+app.use('/uploads', express.static('uploads'));
 
 app.get('/current-datetime', (req, res) => {
   const currentDateTime = new Date();

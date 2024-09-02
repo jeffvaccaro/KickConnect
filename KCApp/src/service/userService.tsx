@@ -21,15 +21,13 @@ const addUser = (accountcode: string, name: string,  email: string, phone: strin
 };
 
 const getUsers = () => {
-    console.log("getUsers has been called!");
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const token = user.token;
-    const accountCode = user.accountcode;
-  
+    const accessToken = sessionStorage.getItem('jwt_access_token');
+    const accountCode = sessionStorage.getItem('account_code');
+
     return axios.get(`${apiUrl}get-users`, {
       params: { accountCode }, // Include accountCode as a query parameter
       headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${accessToken}`
       }
     })
     .then(response => {
@@ -41,9 +39,31 @@ const getUsers = () => {
       throw error;
     });
   };
-  
+
+const getUserById = (userId : number) => {
+
+    const accessToken = sessionStorage.getItem('jwt_access_token');
+    // const accountCode = sessionStorage.getItem('account_code');
+
+    return axios.get(`${apiUrl}get-user-by-id`, {
+      params: { userId }, // Include accountCode as a query parameter
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    })
+    .then(response => {
+      // console.log(response.data);
+      return response.data;
+    })
+    .catch(error => {
+      console.error('Error fetching user:', error);
+      throw error;
+    });
+  };
+
 
 export default {
   addUser,
-  getUsers
+  getUsers,
+  getUserById
 };

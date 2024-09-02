@@ -29,11 +29,19 @@ pool.getConnection((err, connection) => {
 
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  * /account/add-account:
  *   post:
  *     tags:
  *       - Account
  *     summary: Register Account
+  *     security:
+ *      - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
