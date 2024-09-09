@@ -4,11 +4,11 @@ const apiUrl = import.meta.env.VITE_API_URL +'/user/';
 
 const addUser = (accountcode: string, name: string,  email: string, phone: string, phone2: string, password: string) => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const token = user.token;
+  const accessToken = sessionStorage.getItem('jwt_access_token');
 
     return axios.post(apiUrl + 'add-user', { accountcode, name, email, phone, phone2, password, roleId: 4  }, {
     headers: {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${accessToken}`
     }
     })
     .then(response => {
@@ -61,9 +61,29 @@ const getUserById = (userId : number) => {
     });
   };
 
+  //update-user
+  const updateUser = (userData: FormData) => {
+    console.log('userData:', userData);
+    const accessToken = sessionStorage.getItem('jwt_access_token');
+  
+    return axios.put(`${apiUrl}update-user?userId=${userData.get('userId')}`, userData, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    }).then(response => {
+      if (response.data.token) {
+        console.log(response.data);
+        localStorage.setItem('user', JSON.stringify(response.data));
+      }
+      return response.data;
+    });
+  };
+  
 
 export default {
   addUser,
   getUsers,
-  getUserById
+  getUserById,
+  updateUser
 };

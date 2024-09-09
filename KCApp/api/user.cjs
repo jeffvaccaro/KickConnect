@@ -448,12 +448,15 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
  *                 phone2:
  *                   type: string
  *                   description: The user's secondary phone
- *                 password:
- *                   type: string
- *                   description: The user's password
+ *                 isActive:
+ *                   type: boolean
+ *                   description: The user's active status
+ *                 isPasswordReset:
+ *                   type: boolean
+ *                   description: Whether the user's password needs to be reset
  *                 roleId:
  *                   type: integer
- *                   description: Default to RoleId 4
+ *                   description: The user's role ID
  *       responses:
  *         200:
  *           description: User successfully updated
@@ -475,35 +478,51 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
  *         - url: http://localhost:3000
  */
 
-router.put('/update-user', authenticateToken, async (req, res) => {
+router.put('/update-user', authenticateToken, upload.single('photo'), async (req, res) => {
   const { userId } = req.query;
-  const { name, email, phone, phone2, password, roleId } = req.body;
+  const { name, email, phone, phone2, isActive, isPasswordReset, roleId, photoURL } = req.body;
+  const connection = await pool.getConnection();
 
-  if (!password) {
-      return res.status(400).send('Password is required');
+  console.log('File received:', req.file); 
+  if (!roleId) {
+    return res.status(400).send('roleId is required');
   }
 
   try {
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(password, 10);
-      console.log(hashedPassword);
+    // Extract the file from the photoURL object
+    let finalPhotoURL = null;
+    if (req.file) {
+      finalPhotoURL = `/uploads/${req.file.filename}`;
+    } else if (photoURL && photoURL.file) {
+      finalPhotoURL = `/uploads/${photoURL.file.name}`;
+    } else {
+      const [existingUser] = await connection.query('SELECT photoURL FROM user WHERE userId = ?', [userId]);
+      finalPhotoURL = existingUser[0].photoURL;
+    }
 
-      // Update user with userId
-      const userQuery = `UPDATE user 
-          SET name = ?, email = ?, phone = ?, phone2 = ?, password = ?, roleId = ?, updatedBy = "API User Update"
-          WHERE userId = ?;`;
+    // Update user with userId
+    const userQuery = `UPDATE user 
+        SET name = ?, email = ?, phone = ?, phone2 = ?, isActive = ?, isPasswordReset = ?, photoURL = ?, roleId = ?, updatedBy = "API User Update"
+        WHERE userId = ?;`;
 
-      const connection = await pool.getConnection();
-      const [userResult] = await connection.query(userQuery, [name, email, phone, phone2, hashedPassword, roleId, userId]);
+    const [userResult] = await connection.query(userQuery, [name, email, phone, phone2, isActive, isPasswordReset, finalPhotoURL, roleId, userId]);
 
-      console.log('Query executed successfully:', userResult);
-      connection.release();
-      res.send('User updated');
+    console.log('Query executed successfully:', userResult);
+    connection.release();
+    res.send('User updated');
   } catch (error) {
-      console.error('Error updating user:', error);
-      res.status(500).send('Error updating user');
+    console.error('Error updating user:', error);
+    if (connection) connection.release(); // Ensure connection is released on error
+    res.status(500).send('Error updating user');
   }
 });
+
+
+
+
+
+
+
 
     
 /**

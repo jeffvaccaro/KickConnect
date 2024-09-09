@@ -45,6 +45,12 @@ export function RHFSelect({
           error={!!error}
           helperText={error ? error?.message : helperText}
           {...other}
+          onChange={(event) => {
+            field.onChange(event);
+            if (other.onChange) {
+              other.onChange(event);
+            }
+          }}
         >
           {options.map((option) => (
             <MenuItem key={option.value} value={option.value}>
