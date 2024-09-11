@@ -8,7 +8,7 @@ This application will have the support the features:
  - member app (iphone/android)
 
 Technologies explored:
- - React (Vite)
+ - Angular
  - JWT 
  - Python
  - NodeJS/Express 
@@ -18,7 +18,7 @@ Technologies explored:
  - AWS APIGateway
 
 Technologies used:
- - React (Vite)
+ - Angular
  - NodeJS/Express 
 
 Progress:
