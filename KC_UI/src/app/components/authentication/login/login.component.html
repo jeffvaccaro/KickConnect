@@ -15,7 +15,7 @@
                     </div>
                     <p>Don’t have an account? <a routerLink="/authentication/register" class="main-color fw-medium">Register now!</a></p>
                 </div>
-                <form>
+                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                     <div class="login-with-socials d-md-flex align-items-center justify-content-space-between">
                         <button mat-flat-button class="gray fw-semibold d-block me-5"><img src="img/icon/google.png" alt="google"> Login with Google</button>
                         <button mat-flat-button class="kickConnect fw-semibold d-block ms-5"><img src="img/icon/facebook.png" alt="facebook"> Login with Facebook</button>
@@ -27,16 +27,22 @@
                         <div class="kickConnect-form-group without-icon">
                             <label class="d-block mb-12 fw-semibold gray-color">Email Address <span>*</span></label>
                             <mat-form-field appearance="fill">
-                                <mat-label>Enter email address</mat-label>
-                                <input matInput>
+                                <mat-label for="email">Enter email address</mat-label>
+                                <input matInput id="email" formControlName="email" type="email">
+                                <div *ngIf="loginForm.get('email').invalid && loginForm.get('email').touched">
+                                    <!-- Display email validation errors here -->
+                                </div>
                             </mat-form-field>
                         </div>
                         <div class="kickConnect-form-group without-icon">
                             <label class="d-block mb-12 fw-semibold gray-color">Password <span>*</span></label>
                             <mat-form-field appearance="fill">
                                 <mat-label>Enter your password</mat-label>
-                                <input matInput [type]="hide ? 'password' : 'text'">
-                                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                                <input matInput id="password" formControlName="password" [type]="hide ? 'password' : 'text'">
+                                <div *ngIf="loginForm.get('password').invalid && loginForm.get('password').touched">
+                                    <!-- Display password validation errors here -->
+                                </div>                                
+                                <button type="submit" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide" [disabled]="loginForm.invalid">
                                     <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                                 </button>
                             </mat-form-field>
