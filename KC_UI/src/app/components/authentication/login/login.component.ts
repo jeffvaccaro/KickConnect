@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,12 +9,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { LoginService } from '../../../services/loginService';
+import { AuthService } from '../../../services/authService';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-login',
     standalone: true,
     imports: [
+        CommonModule,
         RouterLink, 
         MatButtonModule, 
         MatFormFieldModule, 
@@ -24,7 +28,6 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
     ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
-    // providers: [LoginService]
 })
 export class LoginComponent {
     loginForm: FormGroup;
@@ -35,7 +38,7 @@ export class LoginComponent {
 
     constructor(
         public themeService: CustomizerSettingsService,
-        private fb: FormBuilder, private loginService: LoginService) {
+        private fb: FormBuilder, private loginService: LoginService, private authService: AuthService,  private router: Router) {
           this.loginForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required]
@@ -64,7 +67,11 @@ export class LoginComponent {
         this.loginService.login(email, password).subscribe(
           response => {
             console.log('Login successful', response);
-            // Handle successful login here (e.g., navigate to another page)
+            this.authService.setToken(response.token);
+            // localStorage.setItem('token', response.token);
+            
+            // Navigate to the root path
+            this.router.navigate(['']);
           },
           error => {
             console.error('Login failed', error);
@@ -73,4 +80,5 @@ export class LoginComponent {
         );
       }
     }
+    
   }

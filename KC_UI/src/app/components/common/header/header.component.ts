@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ToggleService } from './toggle.service';
 import { NgClass, DatePipe } from '@angular/common';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
@@ -6,15 +6,16 @@ import { RouterLink } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { UserComponent } from './customComponents/user/user.component';
 
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [RouterLink, NgClass, MatMenuModule, MatIconModule, MatButtonModule, DatePipe],
+    imports: [RouterLink, NgClass, MatMenuModule, MatIconModule, MatButtonModule, DatePipe, UserComponent],
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
 
     isToggled = false;
     
@@ -26,6 +27,11 @@ export class HeaderComponent {
             this.isToggled = isToggled;
         });
         this.currentDate = new Date();
+    }
+
+    ngOnInit() {
+        // Add any initialization logic here
+        console.log('HeaderComponent initialized');
     }
 
     currentDate: Date;

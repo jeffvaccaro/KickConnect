@@ -143,6 +143,8 @@ import { TooltipComponent } from './components/ui-kit/tooltip/tooltip.component'
 import { TreeComponent } from './components/ui-kit/tree/tree.component';
 import { TypographyComponent } from './components/ui-kit/typography/typography.component';
 import { VideosComponent } from './components/ui-kit/videos/videos.component';
+import { AuthService } from './services/authService';
+import { AuthGuard } from './guards/AuthGard';
 
 export const routes: Routes = [
     {path: '', component: EcommerceComponent},

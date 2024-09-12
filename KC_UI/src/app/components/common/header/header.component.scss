@@ -303,6 +303,7 @@
                 }
                 .profile-btn {
                     span {
+                        border: 1px solid red;
                         color: var(--whiteColor);
                     }
                     &::before {
