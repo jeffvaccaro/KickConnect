@@ -8,8 +8,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
+import { default as jwtDecode } from 'jwt-decode';
 import { LoginService } from '../../../services/loginService';
 import { AuthService } from '../../../services/authService';
+import { UserService } from '../../../services/user.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -38,7 +40,11 @@ export class LoginComponent {
 
     constructor(
         public themeService: CustomizerSettingsService,
-        private fb: FormBuilder, private loginService: LoginService, private authService: AuthService,  private router: Router) {
+        private fb: FormBuilder, 
+        private loginService: LoginService, 
+        private authService: AuthService,  
+        private userService: UserService,
+        private router: Router) {
           this.loginForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required]
@@ -64,21 +70,38 @@ export class LoginComponent {
     onSubmit() {
       if (this.loginForm.valid) {
         const { email, password } = this.loginForm.value;
-        this.loginService.login(email, password).subscribe(
-          response => {
-            console.log('Login successful', response);
-            this.authService.setToken(response.token);
-            // localStorage.setItem('token', response.token);
+        this.loginService.login(email, password).subscribe({
+          next: response => {
+            console.log('login', response);
+
+            const token = response.token;
+            const decodedToken: any = this.decodeToken(token);
+
+            const expiration = decodedToken.exp * 1000; // Convert to milliseconds
+            this.authService.setToken(token, new Date(expiration).toISOString());
+            this.userService.setAccountCode(response.accountCode);
+            this.userService.setUserName(response.name);
+            this.userService.setRoleName(response.role);
+            // console.log('login', response);
             
             // Navigate to the root path
             this.router.navigate(['']);
           },
-          error => {
+          error: error => {
             console.error('Login failed', error);
             // Handle login error here (e.g., show error message)
           }
-        );
+        });
       }
     }
     
+    private decodeToken(token: string): any {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+    
+      return JSON.parse(jsonPayload);
+    }
   }

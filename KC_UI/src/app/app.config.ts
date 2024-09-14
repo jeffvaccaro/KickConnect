@@ -6,14 +6,14 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './interceptor/AuthInterceptor';
 import { AuthService } from './services/authService';
-import { AuthGuard } from './guards/AuthGard';
+import { AuthGuard } from './guards/AuthGuard';
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideZoneChangeDetection({ eventCoalescing: true }), 
         provideRouter(routes), 
-        importProvidersFrom(AuthService),
-        importProvidersFrom(AuthGuard),
+        AuthService,
+        AuthGuard,        
         provideClientHydration(), 
         provideAnimationsAsync(), 
         importProvidersFrom(HttpClientModule),

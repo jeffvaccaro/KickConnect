@@ -18,8 +18,9 @@ export class AuthService {
     return false;
   }
 
-  setToken(token: string): void {
+  setToken(token: string, expiration: string): void {
     localStorage.setItem(this.tokenKey, token);
+    localStorage.setItem(this.tokenExpirationKey, expiration);
   }
 
   getToken(): string | null {
@@ -32,5 +33,6 @@ export class AuthService {
 
   removeToken(): void {
     localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.tokenExpirationKey);
   }
 }

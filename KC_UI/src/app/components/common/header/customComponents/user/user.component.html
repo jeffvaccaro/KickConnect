@@ -1,11 +1,16 @@
             <!-- USER INFO -->
             <li>
                 <button mat-icon-button [matMenuTriggerFor]="profileMenu" class="profile-btn main-color border-none bg-transparent position-relative">
-                    <img src="img/admin.jpg" class="rounded-circle" alt="admin">
-                    Admin
-                    <span class="fw-semibold">Adison Jack</span>
+                    <!-- user.component.html -->
+                    <div class="user-info">
+                        <div class="user-initial">{{ userInitial }}</div>
+                        <div class="role-container">
+                            <div class="role-name">{{ roleName }}</div>
+                            <div class="user-name">{{ userName }}</div>
+                        </div>
+                    </div>
                 </button>
-                <mat-menu class="profile-menu-dropdown" #profileMenu="matMenu" xPosition="before">
+                <mat-menu class="profile-menu-dropdown" #profileMenu="matMenu" xPosition="before" style="top:-10px;">
                     <ul class="m-0">
                         <li>
                             <a routerLink="/profile">

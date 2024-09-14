@@ -322,6 +322,7 @@ button {
 .profile-menu-dropdown {
     &.mat-mdc-menu-panel {
         &.mat-mdc-menu-panel {
+            top: -10px;
             width: 150px;
             min-width: unset;
             max-width: unset;

@@ -63,6 +63,8 @@ pool.getConnection((err, connection) => {
  *                   type: boolean
  *                 token:
  *                   type: string
+ *                 role:
+ *                   type: string
  *       401:
  *         description: Invalid credentials
  */
@@ -72,9 +74,10 @@ router.post('/user-login', async (req, res) => {
     try {
         const connection = await pool.getConnection();
         const [results] = await connection.query(`
-            SELECT user.name, user.password, account.accountCode 
+            SELECT user.name, user.password, account.accountCode, role.roleName 
             FROM user 
-            INNER JOIN account ON user.accountId = account.accountId 
+            INNER JOIN account ON user.accountId = account.accountId
+            INNER JOIN role on user.roleId = role.roleId
             WHERE user.email = ?
         `, [email]);
 
@@ -84,7 +87,7 @@ router.post('/user-login', async (req, res) => {
 
             if (match) {
                 const token = jwt.sign({ id: user.name }, process.env.JWT_SECRET, { expiresIn: '2h' });
-                res.status(200).send({ name: user.name, auth: true, token, accountCode: user.accountCode });
+                res.status(200).send({ name: user.name, auth: true, token, accountCode: user.accountCode, role: user.roleName });
             } else {
                 res.status(401).send('Invalid credentials');
             }
