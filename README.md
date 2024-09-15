@@ -27,9 +27,9 @@ Progress:
 
 
 
-
 Features to Add:
 
+Spark Membership's Included Features:
 Powerful CRM
 Point Of Sale System
 Online Trial Registration
