@@ -147,10 +147,17 @@ import { VideosComponent } from './components/ui-kit/videos/videos.component';
 import { AuthService } from './services/authService';
 import { AuthGuard } from './guards/AuthGuard';
 import { OwnerComponent } from './components/dashboard/owner/owner/owner.component';
+import { LocationListComponent } from './components/custom/locations/location-list/location-list.component';
+import { AddNewLocationComponent } from './components/custom/locations/add-new-location/add-new-location.component';
+import { EditLocationComponent } from './components/custom/locations/edit-location/edit-location.component';
 
 export const routes: Routes = [
     // {path: '', component: EcommerceComponent},
     {path: '', component: OwnerComponent},
+    {path: 'app-location-list', component: LocationListComponent },
+    {path: 'app-add-new-location', component: AddNewLocationComponent },
+    {path: 'app-edit-location/:locationId', component: EditLocationComponent },
+
     {path: 'analytics', component: AnalyticsComponent},
     {path: 'project-management', component: ProjectManagementComponent},
     {path: 'lms-courses', component: LmsCoursesComponent},

@@ -40,25 +40,12 @@ export class AppComponent implements OnInit {
         });
     }
     ngOnInit(): void {
-        console.log('AppComponent: ngOnInit called');
         if (this.authService.isAuthenticated()) {
-            console.log('AppComponent: User is authenticated');
+            //console.log('AppComponent: User is authenticated');
             this.router.navigate(['/']);
         }else{
-            console.log('AppComponent: User is not authenticated');
+            //console.log('AppComponent: User is not authenticated');
             this.router.navigate(['/authentication']);
         }
     }
-
-    // ngOnInit() {
-    //     console.log('AppComponent: ngOnInit called');
-    //     if (this.authService.isAuthenticated()) {
-    //       console.log('AppComponent: User is authenticated');
-    //       this.router.navigate(['/']);
-    //     } else {
-    //       console.log('AppComponent: User is not authenticated');
-    //       this.router.navigate(['/sign-in']);
-    //     }
-    //   }
-
 }

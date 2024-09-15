@@ -72,7 +72,7 @@ export class LoginComponent {
         const { email, password } = this.loginForm.value;
         this.loginService.login(email, password).subscribe({
           next: response => {
-            console.log('login', response);
+            //console.log('login', response);
 
             const token = response.token;
             const decodedToken: any = this.decodeToken(token);
@@ -80,6 +80,7 @@ export class LoginComponent {
             const expiration = decodedToken.exp * 1000; // Convert to milliseconds
             this.authService.setToken(token, new Date(expiration).toISOString());
             this.userService.setAccountCode(response.accountCode);
+            this.userService.setAccountId(response.accountId);
             this.userService.setUserName(response.name);
             this.userService.setRoleName(response.role);
             // console.log('login', response);

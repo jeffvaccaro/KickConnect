@@ -10,15 +10,18 @@ export class UserService {
   private apiUrl = 'http://localhost:3000/user/get-user-by-id';
   
   private accountCodeSubject = new BehaviorSubject<string>('');
+  private accountIdSubject = new BehaviorSubject<string>('');
   private userNameSubject = new BehaviorSubject<string>('');
   private roleNameSubject = new BehaviorSubject<string>('');
 
   constructor(private http: HttpClient) {
     const storedAccountCode = localStorage.getItem('accountCode') || '';
+    const storedAccountId = localStorage.getItem('accountId') || '';
     const storedUserName = localStorage.getItem('userName') || '';
     const storedRoleName = localStorage.getItem('role') || '';
 
     this.accountCodeSubject = new BehaviorSubject<string>(storedAccountCode);
+    this.accountIdSubject = new BehaviorSubject<string>(storedAccountId);
     this.userNameSubject = new BehaviorSubject<string>(storedUserName);
     this.roleNameSubject = new BehaviorSubject<string>(storedRoleName);
   }
@@ -41,6 +44,16 @@ export class UserService {
 
   getAccountCode() {
     return this.accountCodeSubject.asObservable();
+  }
+
+  setAccountId(accountIdValue: string): void {
+    console.log('Setting accountIdValue:', accountIdValue);
+    localStorage.setItem('accountId', accountIdValue);
+    this.accountIdSubject.next(accountIdValue);
+  }
+
+  getAccountId() {
+    return this.accountIdSubject.asObservable();
   }
 
   setRoleName(roleNameValue: string): void {

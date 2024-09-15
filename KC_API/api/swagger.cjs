@@ -1,7 +1,6 @@
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
-
 const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
@@ -38,12 +37,35 @@ const swaggerOptions = {
             },
             {
                 name: 'Class',
-            }                       
-        ]
+            },
+            {
+                name: 'Common',
+            }
+        ],
+        components: {
+            schemas: {
+                Common: {
+                    type: 'object',
+                    properties: {
+                        city: {
+                            type: 'string',
+                            example: 'Denver'
+                        },
+                        state: {
+                            type: 'string',
+                            example: 'Colorado'
+                        },
+                        zip: {
+                            type: 'string',
+                            example: '80219'
+                        }
+                    }
+                }
+            }
+        }
     },
     apis: ['./*.cjs'],
 };
-
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 

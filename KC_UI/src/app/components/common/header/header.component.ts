@@ -31,7 +31,7 @@ export class HeaderComponent implements OnInit {
 
     ngOnInit() {
         // Add any initialization logic here
-        console.log('HeaderComponent initialized');
+        //console.log('HeaderComponent initialized');
     }
 
     currentDate: Date;

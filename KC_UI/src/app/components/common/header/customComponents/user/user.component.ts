@@ -12,6 +12,7 @@ import { UserService } from '../../../../../services/user.service';
 })
 export class UserComponent implements OnInit {
   accountCode: string;
+  accountId: string;
   userName: string;
   userInitial: string;
   roleName: string;
@@ -21,20 +22,22 @@ export class UserComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService.getAccountCode().subscribe(accountCode => {
-      console.log('Received accountCode:', accountCode);
       this.accountCode = accountCode;
       this.cdr.detectChanges();
     });
 
+    this.userService.getAccountId().subscribe(accountId => {
+      this.accountId = accountId;
+      this.cdr.detectChanges();
+    });
+
     this.userService.getUserName().subscribe(userName => {
-      console.log('Received userName:', userName);
       this.userName = userName;
       this.userInitial = userName.charAt(0);
       this.cdr.detectChanges();
     });
 
     this.userService.getRoleName().subscribe(roleName => {
-      console.log('Received role:', roleName);
       this.roleName = roleName;
       this.cdr.detectChanges();
     });

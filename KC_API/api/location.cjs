@@ -59,6 +59,7 @@ pool.getConnection((err, connection) => {
  *         description: Some server error
  */
 router.post('/add-location', authenticateToken, async (req, res) => {
+  
     let { accountId, locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail } = req.body;
     // Trim whitespace from each string
     locationName = locationName.trim();
@@ -202,9 +203,10 @@ router.get('/get-locations-by-id/:id', async (req, res) => {
  *       500:
  *         description: Some error happened
  */
-router.put('/update-location/:id', async (req, res) => {
-  const { id } = req.params;
-  const { locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail } = req.body;
+router.put('/update-location/:locationId', async (req, res) => {
+  // console.log('update-location', req.body);
+  const { locationId } = req.params;
+  let { locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail } = req.body;
 
       // Trim whitespace from each string
       locationName = locationName.trim();
@@ -218,17 +220,19 @@ router.put('/update-location/:id', async (req, res) => {
   try {
     const [result] = await pool.query(
         "UPDATE location SET locationName = ?, locationAddress = ?, locationCity = ?, locationState = ?, locationZip = ?, locationPhone = ?, locationEmail = ?, updatedBy = 'API Location Update', updatedOn = CURRENT_TIMESTAMP WHERE locationId = ?",
-        [locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail, id]
+        [locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail, locationId]
     );    
 
+    // console.log('Query result:', result);
+
     if (result.affectedRows > 0) {
-      res.status(200).send('Location updated successfully');
+      res.status(200).json({message: 'Location updated successfully'});
     } else {
-      res.status(404).send('Location not found');
+      res.status(404).json({message:'Location not found'});
     }
   } catch (error) {
     console.error('Error updating location:', error);
-    res.status(500).send('Error updating location');
+    res.status(500).json({ message: 'Error updating location' });
   }
 });
 

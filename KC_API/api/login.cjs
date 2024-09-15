@@ -74,7 +74,7 @@ router.post('/user-login', async (req, res) => {
     try {
         const connection = await pool.getConnection();
         const [results] = await connection.query(`
-            SELECT user.name, user.password, account.accountCode, role.roleName 
+            SELECT user.name, user.password, account.accountCode, account.accountId, role.roleName
             FROM user 
             INNER JOIN account ON user.accountId = account.accountId
             INNER JOIN role on user.roleId = role.roleId
@@ -87,7 +87,7 @@ router.post('/user-login', async (req, res) => {
 
             if (match) {
                 const token = jwt.sign({ id: user.name }, process.env.JWT_SECRET, { expiresIn: '2h' });
-                res.status(200).send({ name: user.name, auth: true, token, accountCode: user.accountCode, role: user.roleName });
+                res.status(200).send({ name: user.name, auth: true, token, accountCode: user.accountCode, accountId: user.accountId, role: user.roleName });
             } else {
                 res.status(401).send('Invalid credentials');
             }

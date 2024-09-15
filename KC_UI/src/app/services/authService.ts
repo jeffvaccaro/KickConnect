@@ -9,7 +9,6 @@ export class AuthService {
   private tokenExpirationKey = 'tokenExpiration';
 
   isAuthenticated(): boolean {
-    console.log('isAuthenticated');
     const token = this.getToken();
     const expiration = this.getTokenExpiration();
     if (token && expiration) {
