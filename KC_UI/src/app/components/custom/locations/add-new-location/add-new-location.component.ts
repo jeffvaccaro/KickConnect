@@ -118,5 +118,7 @@ export class AddNewLocationComponent implements OnInit {
       }
     );
   }
-  
+  cancel(event: Event): void {
+    this.router.navigate(['/app-location-list']); // Navigate to location-list 
+  }
 }

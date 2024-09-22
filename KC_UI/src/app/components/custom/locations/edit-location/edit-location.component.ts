@@ -44,8 +44,12 @@ export class EditLocationComponent implements OnInit {
       addressControl: [''],
       cityControl: [''],
       stateControl: [''],
-      zipControl: ['']
+      zipControl: [''],
+      isActiveControl: [true]
     });
+
+    this.form.get('cityControl')!.disable();
+    this.form.get('stateControl')!.disable();
   }
 
   loadLocationData(locationId: number): void {
@@ -58,7 +62,8 @@ export class EditLocationComponent implements OnInit {
           addressControl: response.locationAddress,
           cityControl: response.locationCity,
           stateControl: response.locationState,
-          zipControl: response.locationZip
+          zipControl: response.locationZip,
+          isActiveControl:response.isActive === 0
         });
       },
       error: error => {
@@ -70,7 +75,7 @@ export class EditLocationComponent implements OnInit {
   
   onSubmit(event: Event): void {
     event.preventDefault(); // Prevent the default form submission
-    console.warn('location info', this.form.value); // Log the form values
+    //console.log('location form info', this.form.value); // Log the form values
   
     const accountId = localStorage.getItem('accountId'); // Retrieve accountId from local storage
     let locationData = {
@@ -81,15 +86,16 @@ export class EditLocationComponent implements OnInit {
       locationState: this.form.value.stateControl,
       locationZip: this.form.value.zipControl,
       locationPhone: this.form.value.phoneControl,
-      locationEmail: this.form.value.emailControl
+      locationEmail: this.form.value.emailControl,
+      isActive: this.form.value.isActiveControl ? 0 : 1
     };
   
-    console.log('locationData:', locationData); // Log the data being sent to the server
+    //console.log('locationData:', locationData); // Log the data being sent to the server
   
     // Call the updateLocation method and pass the form values along with accountId
     this.locationService.updateLocation(this.locationId, locationData).subscribe(
       response => {
-        console.log('Location updated successfully:', response);
+        //console.log('Location updated successfully:', response);
         this.router.navigate(['/app-location-list']); // Navigate to location-list 
       },
       error => {
@@ -111,12 +117,16 @@ export class EditLocationComponent implements OnInit {
             cityControl: response.city,
             stateControl: response.state_code
           });
-          console.log('City/State Info:', response);
+          // console.log('City/State Info:', response);
         },
         error: error => {
           console.error('Error fetching City/State Info:', error);
         }
       });
     }
+  }
+
+  cancel(event: Event): void {
+    this.router.navigate(['/app-location-list']); // Navigate to location-list 
   }
 }

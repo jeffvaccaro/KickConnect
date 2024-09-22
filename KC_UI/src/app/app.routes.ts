@@ -150,6 +150,10 @@ import { OwnerComponent } from './components/dashboard/owner/owner/owner.compone
 import { LocationListComponent } from './components/custom/locations/location-list/location-list.component';
 import { AddNewLocationComponent } from './components/custom/locations/add-new-location/add-new-location.component';
 import { EditLocationComponent } from './components/custom/locations/edit-location/edit-location.component';
+import { UserListComponent } from './components/custom/user/user-list/user-list.component';
+import { AddNewUserComponent } from './components/custom/user/add-new-user/add-new-user.component';
+import { EditUserComponent } from './components/custom/user/edit-user/edit-user.component';
+
 
 export const routes: Routes = [
     // {path: '', component: EcommerceComponent},
@@ -157,6 +161,10 @@ export const routes: Routes = [
     {path: 'app-location-list', component: LocationListComponent },
     {path: 'app-add-new-location', component: AddNewLocationComponent },
     {path: 'app-edit-location/:locationId', component: EditLocationComponent },
+
+    {path: 'app-user-list', component: UserListComponent },
+    {path: 'app-add-new-user', component: AddNewUserComponent },
+    {path: 'app-edit-user/:userId', component: EditUserComponent },
 
     {path: 'analytics', component: AnalyticsComponent},
     {path: 'project-management', component: ProjectManagementComponent},

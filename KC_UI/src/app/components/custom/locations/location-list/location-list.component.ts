@@ -6,14 +6,15 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { Router, RouterLink } from '@angular/router';
+import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { LocationService } from '../../../../services/location.service';
 
 @Component({
   selector: 'app-location-list',
   standalone: true,
-  imports: [RouterLink, MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, NgIf],
+  imports: [RouterLink, MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule,MatTabsModule, NgIf],
   templateUrl: './location-list.component.html',
   styleUrl: './location-list.component.scss'
 })
@@ -24,19 +25,14 @@ export class LocationListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private locationService: LocationService, private router: Router) {}
+  constructor(private locationService: LocationService, private router: Router, private route: ActivatedRoute,) {}
 
   ngOnInit(): void {
-    this.locationService.getLocations().subscribe({
-      next: response => {
-        this.locationArr = response;
-        this.dataSource.data = this.locationArr; // Update the dataSource here
-      },
-      error: error => {
-        console.error('Error fetching locations:', error);
-        // Handle login error here (e.g., show error message)
-      }
+    let status: string = '';
+    this.route.queryParams.subscribe(params => {
+      status = params['status'];
     });
+    this.getLocations('Active');
   }
 
   ngAfterViewInit() {
@@ -46,11 +42,46 @@ export class LocationListComponent implements OnInit, AfterViewInit {
   active = true;
   inactive = true;
 
+  getLocations(status: string): void {
+    this.locationService.getLocations(status).subscribe({
+      next: response => {
+        this.locationArr = response;
+        this.dataSource.data = this.locationArr; // Update the dataSource here
+      },
+      error: error => {
+        console.error('Error fetching locations:', error);
+        // Handle error here (e.g., show error message)
+      }
+    });
+  }
+
+  onTabChange(event: MatTabChangeEvent): void {
+    let status: string;
+    switch (event.index) {
+      case 0:
+        status = 'Active';
+        break;
+      case 1:
+        status = 'InActive';
+        break;
+      case 2:
+        status = 'All';
+        break;
+      default:
+        status = 'Active';
+    }
+    this.getLocations(status);
+  }
+
   btnAddNewClick() {
     this.router.navigate(['/app-add-new-location']);
   }
 
   editLocation(locationId: number){
     this.router.navigate(['/app-edit-location', locationId]);
+  }
+  filterLocations(){
+    //this.router.navigate(['/app-location-list'], { queryParams: { status: 'InActive' } });
+
   }
 }

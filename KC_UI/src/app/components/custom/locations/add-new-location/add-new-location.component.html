@@ -87,7 +87,8 @@
             </div>
           </div>
         </div>
-        <button mat-flat-button type="submit" [disabled]="form.invalid" class="kickConnect fw-semibold">Add Location</button>
+        <button mat-flat-button type="submit" [disabled]="form.invalid" class="kickConnect fw-semibold">Add Location</button> &nbsp;
+        <button mat-flat-button (click)="cancel($event)" class="kickConnect fw-semibold" color="warn">Cancel</button>
       </form>
     </mat-card-content>
   </mat-card>

@@ -72,10 +72,19 @@ pool.getConnection((err, connection) => {
  *                     email:
  *                       type: string
  *                       description: The user's email
+ *         500:
+ *           description: Error executing query
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     description: Error message
  *       servers:
  *         - url: http://localhost:3000
  */
-
 router.get('/get-users-by-account-code', authenticateToken, async (req, res) => {
   const accountCode = req.query.accountcode; // Get the account code from the query parameters
 
@@ -95,7 +104,7 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
       connection.release();
   } catch (err) {
       console.error('Error executing query:', err);
-      res.status(500).send('Error executing query');
+      res.status(500).json({error:'Error executing query'});
   }
 });
 
@@ -119,6 +128,10 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
  *       parameters:
  *         - in: query
  *           name: accountCode
+ *           schema:
+ *             type: string
+ *           required: false
+ *           description: The account code to filter users by
  *       responses:
  *         200:
  *           description: Accounts SUCCESSFULLY returned!
@@ -126,10 +139,44 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
  *             application/json:
  *               schema:
  *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       description: The user ID
+ *                     name:
+ *                       type: string
+ *                       description: The user's name
+ *                     email:
+ *                       type: string
+ *                       description: The user's email
+ *                     roleName:
+ *                       type: string
+ *                       description: The user's role name
+ *         404:
+ *           description: Account not found
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     description: Error message
+ *         500:
+ *           description: Error executing query
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     description: Error message
  *       servers:
  *         - url: http://localhost:3000
  */
-
 router.get('/get-users', authenticateToken, async (req, res) => {
   try {
       let { accountCode } = req.query;
@@ -149,7 +196,7 @@ router.get('/get-users', authenticateToken, async (req, res) => {
       connection.release();
   } catch (err) {
       console.error('Error executing query:', err);
-      res.status(500).send('Error executing query');
+      res.status(500).json({error:'Error executing query'});
   }
 });
 
@@ -182,63 +229,79 @@ router.get('/get-users', authenticateToken, async (req, res) => {
  *           content:
  *             application/json:
  *               schema:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     userId:
- *                       type: integer
- *                       description: The user's ID
- *                     accountId:
- *                       type: integer
- *                       description: The account ID associated with the user
- *                     name:
- *                       type: string
- *                       description: The user's name
- *                     email:
- *                       type: string
- *                       description: The user's email
- *                     phone:
- *                       type: string
- *                       description: The user's primary phone
- *                     phone2:
- *                       type: string
- *                       description: The user's secondary phone
- *                     password:
- *                       type: string
- *                       description: The user's hashed password
- *                     roleId:
- *                       type: integer
- *                       description: The user's role ID
- *                     photoURL:
- *                       type: string
- *                       description: The URL of the user's photo
- *                     createdBy:
- *                       type: string
- *                       description: The creator of the user record
- *                     roleName:
- *                       type: string
- *                       description: The name of the user's role
+ *                 type: object
+ *                 properties:
+ *                   userId:
+ *                     type: integer
+ *                     description: The user's ID
+ *                   accountId:
+ *                     type: integer
+ *                     description: The account ID associated with the user
+ *                   name:
+ *                     type: string
+ *                     description: The user's name
+ *                   email:
+ *                     type: string
+ *                     description: The user's email
+ *                   phone:
+ *                     type: string
+ *                     description: The user's primary phone
+ *                   phone2:
+ *                     type: string
+ *                     description: The user's secondary phone
+ *                   password:
+ *                     type: string
+ *                     description: The user's hashed password
+ *                   roleId:
+ *                     type: integer
+ *                     description: The user's role ID
+ *                   photoURL:
+ *                     type: string
+ *                     description: The URL of the user's photo
+ *                   createdBy:
+ *                     type: string
+ *                     description: The creator of the user record
+ *                   roleName:
+ *                     type: string
+ *                     description: The name of the user's role
+ *         404:
+ *           description: User not found
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     description: Error message
  *         500:
  *           description: Error executing query
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     description: Error message
  *       servers:
  *         - url: http://localhost:3000/
  */
-
 router.get('/get-user-by-id', authenticateToken, async (req, res) => {
-    try {
-        const { userId } = req.query;
-        const connection = await pool.getConnection();
-        // Query the user table using the retrieved accountId
-        const [userResults] = await connection.query('SELECT user.* FROM user WHERE user.userId = ?', [userId]);
-  
-        res.json(userResults.length ? userResults : []); // Ensure an array is returned
-        connection.release();
-    } catch (err) {
-        console.error('Error executing query:', err);
-        res.status(500).send('Error executing query');
-    }
-  });
+  try {
+    const { userId } = req.query;
+    const connection = await pool.getConnection();
+    // Query the user table using the retrieved accountId
+    const [userResults] = await connection.query('SELECT user.* FROM user WHERE user.userId = ?', [userId]);
+    
+    res.json(userResults[0] || {}); // Return the first record or an empty object if no record is found
+    connection.release();
+  } catch (err) {
+    console.error('Error executing query:', err);
+    res.status(500).json({error:'Error executing query'});
+  }
+});
+
 
 
 /**
@@ -283,29 +346,50 @@ router.get('/get-user-by-id', authenticateToken, async (req, res) => {
  *                     email:
  *                       type: string
  *                       description: The user's email
+ *                     roleName:
+ *                       type: string
+ *                       description: The user's role name
+ *         500:
+ *           description: Error executing query
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     description: Error message
  *       servers:
  *         - url: http://localhost:3000
  */
 
 router.get('/get-filtered-users', authenticateToken, async (req, res) => {
-  let { isActive } = req.query;
-  
-  // Convert isActive to -1 if it's false, and to 0 if it's true
-  if (isActive === 'false') {
-      isActive = -1;
-  } else if (isActive === 'true') {
+  let { accountId, status } = req.query;
+  console.log(req.query);
+
+  let isActive;
+  if (status === 'InActive') {
       isActive = 0;
+  } else if (status === 'Active') {
+      isActive = 1;
   }
 
   try {
       const connection = await pool.getConnection();
-      const [results] = await connection.query('SELECT * FROM user WHERE isActive = ?', [isActive]);
+      const query = 'SELECT user.*, role.roleName FROM user JOIN role ON user.roleId = role.roleId WHERE user.accountId = ? AND isActive = ?';
+      const formattedQuery = mysql.format(query, [accountId, isActive]);
+      
+      // console.log('Executing query:', formattedQuery);
+
+      const [results] = await connection.query(formattedQuery);
+      // console.log('Query executed successfully:', results);
 
       res.json(results);
       connection.release();
+
   } catch (err) {
       console.error('Error executing query:', err);
-      res.status(500).send('Error executing query');
+      res.status(500).json({error:'Error executing query'});
   }
 });
 
@@ -363,47 +447,81 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
  *           description: User registered
  *         404:
  *           description: Account not found
+ *         409:
+ *           description: Duplicate user found
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     description: Error message
  *         500:
  *           description: Error during user registration
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     description: Error message
  *       servers:
  *         - url: http://localhost:3000/
  */
-
 router.post('/add-user', authenticateToken, upload.single('photo'), async (req, res) => {
-    const { accountcode, name, email, phone, phone2, password, roleId } = req.body;
-  
-    try {
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(password, 10);
-  
-      // Query to get the accountId from the accountcode
-      const accountQuery = 'SELECT accountId FROM account WHERE accountcode = ?';
-      const connection = await pool.getConnection();
-      const [accountResults] = await connection.query(accountQuery, [accountcode]);
-  
-      if (accountResults.length === 0) {
-        connection.release();
-        return res.status(404).send('Account not found');
-      }
-  
-      const accountId = accountResults[0].accountId;
-      const photoURL = req.file ? `/uploads/${req.file.filename}` : null;
-  
-      // Insert the new user with the retrieved accountId
-      const userQuery = `
-        INSERT INTO user (accountId, name, email, phone, phone2, password, photoURL, roleId, createdBy) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, "API User Insert")
-      `;
-      await connection.query(userQuery, [accountId, name, email, phone, phone2, hashedPassword, photoURL, roleId]);
-  
+  const { accountcode, name, email, phone, phone2, address, city, state, zip, password: originalPassword, roleId } = req.body;
+  // console.log(req.body);
+  try {
+
+    // Use a new variable for the password
+    let password = originalPassword || accountcode; // Set default password to accountcode if not provided
+    // console.log('password:', password); // Log the password
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Query to get the accountId from the accountcode
+    const accountQuery = 'SELECT accountId FROM admin.account WHERE accountcode = ?';
+    const connection = await pool.getConnection();
+    const [accountResults] = await connection.query(accountQuery, [accountcode]);
+
+    // console.log('accountQuery', accountQuery);
+    if (accountResults.length === 0) {
       connection.release();
-      res.send('User registered');
-    } catch (error) {
-      console.error('Error during user registration:', error);
-      res.status(500).send('Error during user registration');
+      return res.status(404).json({error:'Account not found'});
     }
-  });
-  
+
+    const accountId = accountResults[0].accountId;
+    const photoURL = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // Check for duplicate user
+    const duplicateQuery = `
+      SELECT * FROM user 
+      WHERE name = ? AND email = ? AND phone = ? AND address = ? AND city = ? AND state = ? AND zip = ?
+    `;
+    const [duplicateResults] = await connection.query(duplicateQuery, [name, email, phone, address, city, state, zip]);
+
+    if (duplicateResults.length > 0) {
+      connection.release();
+      return res.status(409).json({error:'Duplicate user found'});
+    }
+
+    // Insert the new user with the retrieved accountId
+    const userQuery = `
+      INSERT INTO user (accountId, name, email, phone, phone2, address, city, state, zip, password, photoURL, roleId, createdBy) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "API User Insert")
+    `;
+    await connection.query(userQuery, [accountId, name, email, phone, phone2, address, city, state, zip, hashedPassword, photoURL, roleId]);
+
+    connection.release();
+    res.json({ message: 'User registered'});
+  } catch (error) {
+    //console.error('Error during user registration:', error);
+    res.status(500).json( { error: 'Error during user registration' });
+   
+  }
+});
   
 /**
  * @swagger
@@ -451,7 +569,7 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
  *                 isActive:
  *                   type: boolean
  *                   description: The user's active status
- *                 isPasswordReset:
+ *                 resetPassword:
  *                   type: boolean
  *                   description: Whether the user's password needs to be reset
  *                 roleId:
@@ -465,64 +583,75 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
  *               schema:
  *                 type: object
  *                 properties:
- *                   id:
- *                     type: integer
- *                     description: The user ID
- *                   name:
+ *                   message:
  *                     type: string
- *                     description: The user's name
- *                   email:
+ *                     description: Success message
+ *         400:
+ *           description: roleId is required
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   error:
  *                     type: string
- *                     description: The user's email
+ *                     description: Error message
+ *         500:
+ *           description: Error updating user
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   error:
+ *                     type: string
+ *                     description: Error message
  *       servers:
  *         - url: http://localhost:3000
  */
+router.put('/update-user/:userId', authenticateToken, upload.single('photo'), async (req, res) => {
+  const { userId } = req.params; // Use req.params instead of req.query
+  const { name, email, phone, phone2, address, city, state, zip, isActive, resetPassword, roleId, photoURL } = req.body;
+  let connection;
 
-router.put('/update-user', authenticateToken, upload.single('photo'), async (req, res) => {
-  const { userId } = req.query;
-  const { name, email, phone, phone2, isActive, isPasswordReset, roleId, photoURL } = req.body;
-  const connection = await pool.getConnection();
-
-  console.log('File received:', req.file); 
+  // console.log('req.body', req.body); 
   if (!roleId) {
-    return res.status(400).send('roleId is required');
+    return res.status(400).json({ error: 'roleId is required' }); // Send a JSON error response
   }
 
   try {
+    connection = await pool.getConnection();
+
     // Extract the file from the photoURL object
-    let finalPhotoURL = null;
-    if (req.file) {
-      finalPhotoURL = `/uploads/${req.file.filename}`;
-    } else if (photoURL && photoURL.file) {
-      finalPhotoURL = `/uploads/${photoURL.file.name}`;
-    } else {
-      const [existingUser] = await connection.query('SELECT photoURL FROM user WHERE userId = ?', [userId]);
-      finalPhotoURL = existingUser[0].photoURL;
-    }
+    // let finalPhotoURL = null;
+    // if (req.file) {
+    //   finalPhotoURL = `/uploads/${req.file.filename}`;
+    // } else if (photoURL && photoURL.file) {
+    //   finalPhotoURL = `/uploads/${photoURL.file.name}`;
+    // } else {
+    //   const [existingUser] = await connection.query('SELECT photoURL FROM user WHERE userId = ?', [userId]);
+    //   finalPhotoURL = existingUser[0].photoURL;
+    // }
 
     // Update user with userId
     const userQuery = `UPDATE user 
-        SET name = ?, email = ?, phone = ?, phone2 = ?, isActive = ?, isPasswordReset = ?, photoURL = ?, roleId = ?, updatedBy = "API User Update"
+        SET name = ?, email = ?, phone = ?, phone2 = ?, 
+        address = ?, city = ?, state = ?, zip = ?,
+        isActive = ?, resetPassword = ?, photoURL = ?, 
+        roleId = ?, updatedBy = "API User Update"
         WHERE userId = ?;`;
 
-    const [userResult] = await connection.query(userQuery, [name, email, phone, phone2, isActive, isPasswordReset, finalPhotoURL, roleId, userId]);
+    const [userResult] = await connection.query(userQuery, [name, email, phone, phone2, address, city, state, zip, isActive, resetPassword, photoURL, roleId, userId]);
 
-    console.log('Query executed successfully:', userResult);
-    connection.release();
-    res.send('User updated');
+    //console.log('Query executed successfully:', userResult);
+    res.json({ message: 'User updated successfully' });
   } catch (error) {
-    console.error('Error updating user:', error);
-    if (connection) connection.release(); // Ensure connection is released on error
-    res.status(500).send('Error updating user');
+    //console.error('Error updating user:', error); // Log the error details
+    res.status(500).json({ error: 'Error updating user' }); // Send a JSON error response
+  } finally {
+    if (connection) connection.release(); // Ensure connection is released in both success and error cases
   }
 });
-
-
-
-
-
-
-
 
     
 /**
@@ -563,19 +692,22 @@ router.put('/update-user', authenticateToken, upload.single('photo'), async (req
  *               schema:
  *                 type: object
  *                 properties:
- *                   id:
- *                     type: integer
- *                     description: The user ID
- *                   name:
+ *                   message:
  *                     type: string
- *                     description: The user's name
- *                   email:
+ *                     description: Success message
+ *         500:
+ *           description: Error deactivating user
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   error:
  *                     type: string
- *                     description: The user's email
+ *                     description: Error message
  *       servers:
  *         - url: http://localhost:3000
  */
-
 router.put('/deactivate-user', authenticateToken, async (req, res) => {
   const { userId } = req.query;
 
@@ -589,12 +721,12 @@ router.put('/deactivate-user', authenticateToken, async (req, res) => {
       const connection = await pool.getConnection();
       const [userResult] = await connection.query(userQuery, [userId]);
 
-      console.log('Query executed successfully:', userResult);
+      //console.log('Query executed successfully:', userResult);
       connection.release();
-      res.send('User deactivated');
+      res.json({ message: 'User deactivated' });
   } catch (error) {
-      console.error('Error deactivating user:', error);
-      res.status(500).send('Error deactivating user');
+      //console.error('Error deactivating user:', error);
+      res.status(500).json({ error: 'Error deactivating user' }); // Send a JSON error response
   }
 });
 

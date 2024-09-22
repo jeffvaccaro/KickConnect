@@ -55,8 +55,26 @@ pool.getConnection((err, connection) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Location'
+ *       400:
+ *         description: Missing required fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  *       500:
  *         description: Some server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
 router.post('/add-location', authenticateToken, async (req, res) => {
   
@@ -92,23 +110,121 @@ router.post('/add-location', authenticateToken, async (req, res) => {
  *       bearerFormat: JWT
  * /location/get-locations:
  *  get:
- *     summary: Returns the list of all the locations
+ *     summary: Returns the list of ALL the locations
  *     security:
  *      - bearerAuth: []
  *     tags: [Location]
  *     responses:
  *       200:
- *         description: The list of the locations
+ *         description: The list of ALL the locations
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Location'
+ *       500:
+ *         description: Error fetching locations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
 router.get('/get-locations', authenticateToken, async (req, res) => {
   try {
     const [results] = await pool.query('SELECT * FROM location');
+    res.status(200).json(results);
+  } catch (error) {
+    console.error('Error fetching locations:', error);
+    res.status(500).send('Error fetching locations');
+  }
+});
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * /location/get-active-locations:
+ *  get:
+ *     summary: Returns the list of ACTIVE locations
+ *     security:
+ *      - bearerAuth: []
+ *     tags: [Location]
+ *     responses:
+ *       200:
+ *         description: The list of ACTIVE locations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Location'
+ *       500:
+ *         description: Error fetching locations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ */
+router.get('/get-active-locations', authenticateToken, async (req, res) => {
+  try {
+    const [results] = await pool.query('SELECT * FROM location WHERE isActive = TRUE');
+    res.status(200).json(results);
+  } catch (error) {
+    console.error('Error fetching locations:', error);
+    res.status(500).send('Error fetching locations');
+  }
+});
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * /location/get-inactive-locations:
+ *  get:
+ *     summary: Returns the list of INACTIVE locations
+ *     security:
+ *      - bearerAuth: []
+ *     tags: [Location]
+ *     responses:
+ *       200:
+ *         description: The list of INACTIVE locations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Location'
+ *       500:
+ *         description: Error fetching locations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ */
+router.get('/get-inactive-locations', authenticateToken, async (req, res) => {
+  try {
+    const [results] = await pool.query('SELECT * FROM location WHERE isActive = FALSE');
     res.status(200).json(results);
   } catch (error) {
     console.error('Error fetching locations:', error);
@@ -147,8 +263,17 @@ router.get('/get-locations', authenticateToken, async (req, res) => {
  *               $ref: '#/components/schemas/Location'
  *       404:
  *         description: The location was not found
+ *       500:
+ *         description: Error fetching location
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
-
 router.get('/get-locations-by-id/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -156,11 +281,11 @@ router.get('/get-locations-by-id/:id', async (req, res) => {
     if (results.length > 0) {
       res.status(200).json(results[0]);
     } else {
-      res.status(404).send('Location not found');
+      res.status(404).json({error:'Location not found'});
     }
   } catch (error) {
-    console.error('Error fetching location:', error);
-    res.status(500).send('Error fetching location');
+    //console.error('Error fetching location:', error);
+    res.status(500).json({error:'Error fetching location'});
   }
 });
 
@@ -202,11 +327,19 @@ router.get('/get-locations-by-id/:id', async (req, res) => {
  *         description: The location was not found
  *       500:
  *         description: Some error happened
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
 router.put('/update-location/:locationId', async (req, res) => {
   // console.log('update-location', req.body);
   const { locationId } = req.params;
-  let { locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail } = req.body;
+  let { locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail, isActive } = req.body;
 
       // Trim whitespace from each string
       locationName = locationName.trim();
@@ -216,14 +349,14 @@ router.put('/update-location/:locationId', async (req, res) => {
       locationZip = locationZip.trim();
       locationPhone = locationPhone.trim();
       locationEmail = locationEmail.trim();
-
+      isActive = isActive;
   try {
     const [result] = await pool.query(
-        "UPDATE location SET locationName = ?, locationAddress = ?, locationCity = ?, locationState = ?, locationZip = ?, locationPhone = ?, locationEmail = ?, updatedBy = 'API Location Update', updatedOn = CURRENT_TIMESTAMP WHERE locationId = ?",
-        [locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail, locationId]
+        "UPDATE location SET locationName = ?, locationAddress = ?, locationCity = ?, locationState = ?, locationZip = ?, locationPhone = ?, locationEmail = ?, isActive = ?, updatedBy = 'API Location Update', updatedOn = CURRENT_TIMESTAMP WHERE locationId = ?",
+        [locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail, isActive ,locationId]
     );    
 
-    // console.log('Query result:', result);
+   // console.log('Query result:', result);
 
     if (result.affectedRows > 0) {
       res.status(200).json({message: 'Location updated successfully'});
@@ -261,8 +394,26 @@ router.put('/update-location/:locationId', async (req, res) => {
  *     responses:
  *       200:
  *         description: Location deactivated successfully
+ *       404:
+ *         description: Location not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  *       500:
  *         description: Error deactivating location
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
 router.put('/deactivate-location/:id', authenticateToken, async (req, res) => {
     const { id } = req.params; // Use req.params to get the path parameter
@@ -275,13 +426,13 @@ router.put('/deactivate-location/:id', authenticateToken, async (req, res) => {
         const [locationResult] = await pool.query(locationQuery, [id]);
 
         if (locationResult.affectedRows === 0) {
-            return res.status(404).send('Location not found');
+            return res.status(404).json({error:'Location not found'});
         }
 
-        res.send('Location deactivated');
+        res.json({message:'Location deactivated'});
     } catch (error) {
-        console.error('Error deactivating location:', error);
-        res.status(500).send('Error deactivating location');
+        // console.error('Error deactivating location:', error);
+        res.status(500).json({error:'Error deactivating location'});
     }
 });
 
@@ -301,6 +452,7 @@ router.put('/deactivate-location/:id', authenticateToken, async (req, res) => {
  *         - locationZip
  *         - locationPhone
  *         - locationEmail
+ *         - isActive
  *       properties:
  *         accountId:
  *           type: integer
@@ -326,7 +478,11 @@ router.put('/deactivate-location/:id', authenticateToken, async (req, res) => {
  *         locationEmail:
  *           type: string
  *           description: The email of the location
+ *         isActive:
+ *           type: integer
+ *           description: Indicates if the location is active
  */
+
 
 /**
  * @swagger

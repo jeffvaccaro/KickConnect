@@ -10,13 +10,25 @@ export class LocationService {
 
   constructor(private http: HttpClient)  { }
 
-  getLocations(): Observable<any> {
-    const url = `${this.apiUrl}/get-locations`;
+  getLocations(status:string): Observable<any> {
+    let url = `${this.apiUrl}`;
+    switch (status) {
+      case 'Active':
+        url = `${this.apiUrl}/get-active-locations`;
+        break;
+      case 'InActive':
+        url = `${this.apiUrl}/get-inactive-locations`;
+        break;
+      default:
+        url = `${this.apiUrl}/get-locations`;
+        break;
+    } 
+    
     return this.http.get<any>(url);
   }
 
   getLocationsById(locationId: number): Observable<any> {
-    const url = `${this.apiUrl}/get-locations-by-id/${locationId}`;;
+    const url = `${this.apiUrl}/get-locations-by-id/${locationId}`;
     return this.http.get<any>(url);
   }
 

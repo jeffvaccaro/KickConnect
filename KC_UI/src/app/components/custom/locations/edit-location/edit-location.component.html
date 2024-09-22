@@ -73,7 +73,7 @@
               <label class="d-block mb-12 fw-semibold gray-color">State</label>
               <mat-form-field appearance="fill">
                 <mat-label>Enter state</mat-label>
-                <input matInput formControlName="stateControl">
+                <input matInput formControlName="stateControl" >
               </mat-form-field>
             </div>
           </div>
@@ -86,10 +86,13 @@
               </mat-form-field>
             </div>
           </div>
+          <div class="kickConnect-form-group mb-12">
+            <mat-checkbox formControlName="isActiveControl">Remove Location</mat-checkbox>
+          </div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-4">
             <button mat-flat-button type="submit" [disabled]="form.invalid" class="kickConnect fw-semibold">Update Location</button> &nbsp;
-            <button mat-flat-button  class="kickConnect fw-semibold" color="warn">Cancel</button>
+            <button mat-flat-button (click)="cancel($event)" class="kickConnect fw-semibold" color="warn">Cancel</button>
         </div>
       </form>
     </mat-card-content>

@@ -2,10 +2,10 @@
 This application will have the support the features:
  - multiple gym locations
  - individule gym schedules
- - admin portal
- - public portal
- - membership check-ins
- - member app (iphone/android)
+ - Admin Portal
+ - Public Portal
+ - Membership check-ins
+ - Member app (iphone/android)
 
 Technologies explored:
  - Angular
@@ -21,9 +21,18 @@ Technologies used:
  - Angular
  - NodeJS/Express 
 
-Progress:
- - Rough Authentication w/JWT
-
+ToDo:
+ - ~~API Documentation (SWAGGER)~~
+ - ~~Authentication w/JWT~~
+ - ~~Locations (Add/Update/Delete/Display/Filters)~~
+ - Users (Add/Update/Delete/Display/Filters)
+    - Add Image Upload feature
+ - Roles (Add/Update/Delete/Display)
+ - Schedules (Add/Update/Delete/Display)
+ - Create different Dashboards for different user types
+ - Events
+ - Surveys
+ - When migration to AWS - look at SNS for messaging
 
 
 
