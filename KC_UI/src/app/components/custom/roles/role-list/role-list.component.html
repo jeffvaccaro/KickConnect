@@ -1,53 +1,33 @@
 <mat-card class="mb-25 kickConnect-card">
-    <h5 class="mb-0">Locations</h5><br/>
     <mat-card-header>
-        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" animationDuration="0ms"  (selectedTabChange)="onTabChange($event)">
-            <mat-tab label="Active"></mat-tab>
-            <mat-tab label="InActive"></mat-tab>
-            <mat-tab label="All"></mat-tab>
-        </mat-tab-group>        
+        <h5 class="mb-0">Roles</h5>
         <button mat-flat-button color="primary" (click)="btnAddNewClick()"><i class="ri-add-large-line"></i> Add</button>
     </mat-card-header>
 
     <mat-card-content>
         <div class="teamMembersListTable kickConnect-mat-table mat-elevation-z8">
             <table mat-table [dataSource]="dataSource">
-                <!-- displayedColumns: string[] = ['Name','Address','City','State','Zip','Email', 'Phone']; -->
-                <ng-container matColumnDef="Name">
+
+                <ng-container matColumnDef="roleName">
                     <th mat-header-cell *matHeaderCellDef class="text-start">Name</th>
                     <td mat-cell *matCellDef="let element" class="text-start">
-                        {{element.locationName}}
+                        <a href="mailto:{{element.email}}">{{element.roleName}}</a>
                     </td>
-
-
                 </ng-container>
 
-                <!-- Address Column -->
-                <ng-container matColumnDef="Address">
-                    <th mat-header-cell *matHeaderCellDef>Address</th>
-                    <td mat-cell *matCellDef="let element">{{element.locationAddress}}</td>
-                </ng-container>                
+                <ng-container matColumnDef="roleDescription">
+                    <th mat-header-cell *matHeaderCellDef>Description</th>
+                    <td mat-cell *matCellDef="let element">{{element.roleDescription}}</td>
+                </ng-container>
                 
-                <!-- Phone Column -->
-                <ng-container matColumnDef="Phone">
-                    <th mat-header-cell *matHeaderCellDef>Phone</th>
-                    <td mat-cell *matCellDef="let element">{{element.locationPhone}}</td>
-                </ng-container>
-
-                <!-- Email Column -->
-                <ng-container matColumnDef="Email">
-                    <th mat-header-cell *matHeaderCellDef>Email</th>
-                    <td mat-cell *matCellDef="let element"><a href="mailto:{{element.locationEmail}}">{{element.locationEmail}}</a></td>
-                </ng-container>
-
-                <ng-container matColumnDef="Action">
+                <ng-container matColumnDef="action">
                     <th mat-header-cell *matHeaderCellDef>Action</th>
                     <td mat-cell *matCellDef="let element">
                         <button type="button" mat-button class="position-relative dot-btn p-0 bg-transparent border-none ri-more-fill" [matMenuTriggerFor]="actionMenu">
                             <i class="{{element.action}}"></i>
                         </button>
                         <mat-menu #actionMenu="matMenu" class="dotMenu two monthMenu" xPosition="before">
-                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="editLocation(element.locationId)">
+                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="editRole(element.roleId)">
                                 <i class="ri-edit-line"></i> Edit
                             </button>
                         </mat-menu>

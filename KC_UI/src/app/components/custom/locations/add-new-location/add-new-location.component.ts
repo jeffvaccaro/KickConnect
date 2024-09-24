@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LocationService } from '../../../../services/location.service';
 import { LocationListComponent } from '../location-list/location-list.component';
+import { SnackbarService } from '../../../../services/snackbar.service';
 
 @Component({
   selector: 'app-add-new-location',

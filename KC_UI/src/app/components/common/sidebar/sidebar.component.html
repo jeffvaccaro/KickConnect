@@ -26,7 +26,6 @@
                             <mat-panel-title>
                                 <i class="flaticon-menu-1"></i>
                                 <span class="title">Dashboard</span>
-                                <span class="badge">7</span>
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <ul class="sidebar-sub-menu">
@@ -37,15 +36,15 @@
                             </li>
                             <li class="sidemenu-item">
                                 <a routerLink="/analytics" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
-                                    Analytics
+                                    Admin
                                 </a>
                             </li>
                             <li class="sidemenu-item">
                                 <a routerLink="/project-management" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
-                                    Project Management
+                                    Staff
                                 </a>
                             </li>
-                            <li class="sidemenu-item">
+                            <!-- <li class="sidemenu-item">
                                 <a routerLink="/lms-courses" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
                                     LMS Courses
                                 </a>
@@ -64,12 +63,42 @@
                                 <a routerLink="/saas-app" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
                                     SaaS App <span class="badge">New</span>
                                 </a>
-                            </li>
+                            </li> -->
                         </ul>
                     </mat-expansion-panel>
-                    <span class="sub-title gray-color">APPS</span>
+                    <span class="sub-title gray-color">Support</span>
                     <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = true">
                         <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <i class="flaticon-layer"></i>
+                                <span class="title">Admin</span>
+                                <span class="badge four">4</span>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>  
+                        <ul class="sidebar-sub-menu">
+                            <li class="sidemenu-item">
+                                <a routerLink="/app-location-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Users
+                                </a>
+                            </li>
+                            <li class="sidemenu-item">
+                                <a routerLink="/app-user-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Locations
+                                </a>                                
+                            </li>
+                            <li class="sidemenu-item">
+                                <a routerLink="/app-role-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Roles
+                                </a>    
+                            </li>
+                            <li class="sidemenu-item">
+                                <a routerLink="/app-class-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Classes
+                                </a>                                    
+                            </li>
+                        </ul>                                              
+
+                        <!-- <mat-expansion-panel-header>
                             <mat-panel-title>
                                 <i class="flaticon-layer"></i>
                                 <span class="title">File Manager</span>
@@ -117,9 +146,9 @@
                                     Recent Files
                                 </a>
                             </li>
-                        </ul>
+                        </ul> -->
                     </mat-expansion-panel>
-                    <a routerLink="/to-do-list" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                    <!-- <a routerLink="/to-do-list" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                         <i class="flaticon-to-do-list"></i>
                         <span class="title">To Do List</span>
                     </a>
@@ -905,7 +934,7 @@
                                 </li>
                             </ul>
                         </mat-accordion>
-                    </mat-expansion-panel>
+                    </mat-expansion-panel> -->
                     <a routerLink="/authentication/logout" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                         <i class="flaticon-tools"></i>
                         <span class="title">Logout</span>

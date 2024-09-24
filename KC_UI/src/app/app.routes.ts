@@ -153,7 +153,9 @@ import { EditLocationComponent } from './components/custom/locations/edit-locati
 import { UserListComponent } from './components/custom/user/user-list/user-list.component';
 import { AddNewUserComponent } from './components/custom/user/add-new-user/add-new-user.component';
 import { EditUserComponent } from './components/custom/user/edit-user/edit-user.component';
-
+import { RoleListComponent } from './components/custom/roles/role-list/role-list.component';
+import { AddNewRoleComponent } from './components/custom/roles/add-new-role/add-new-role.component';
+import { EditRoleComponent } from './components/custom/roles/edit-role/edit-role.component';
 
 export const routes: Routes = [
     // {path: '', component: EcommerceComponent},
@@ -165,6 +167,10 @@ export const routes: Routes = [
     {path: 'app-user-list', component: UserListComponent },
     {path: 'app-add-new-user', component: AddNewUserComponent },
     {path: 'app-edit-user/:userId', component: EditUserComponent },
+
+    {path: 'app-role-list', component: RoleListComponent },
+    {path: 'app-add-new-role', component: AddNewRoleComponent },
+    {path: 'app-edit-role/:roleId', component: EditRoleComponent },
 
     {path: 'analytics', component: AnalyticsComponent},
     {path: 'project-management', component: ProjectManagementComponent},

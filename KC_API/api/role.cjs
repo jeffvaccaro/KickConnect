@@ -64,10 +64,72 @@ router.get('/get-roles', authenticateToken, async (req, res) => {
         connection.release();
         res.json(results);
       } catch (err) {
-        console.error('Error executing query:', err);
-        res.status(500).send('Error executing query');
+        // console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Error executing query' }); // Send a JSON error response
       }
   });
+  
+  /**
+ * @swagger
+ * /get-role-by-id:
+ *   get:
+ *     summary: Retrieve a role by ID
+ *     description: This endpoint retrieves a role from the database based on the provided roleId.
+ *     tags:
+ *       - Role
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: roleId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the role to retrieve
+ *     responses:
+ *       '200':
+ *         description: A role object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 roleId:
+ *                   type: integer
+ *                   description: The role ID
+ *                   example: 1
+ *                 roleName:
+ *                   type: string
+ *                   description: The name of the role
+ *                   example: Admin
+ *                 roleOrderId:
+ *                   type: integer
+ *                   description: The order ID of the role
+ *                   example: 1
+ *       '500':
+ *         description: Error executing query
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Error executing query
+ */
+router.get('/get-role-by-id', authenticateToken, async (req, res) => {
+  try {
+    const { roleId } = req.query;
+    const connection = await pool.getConnection();
+    const [roleResults] = await connection.query('SELECT * FROM role WHERE roleId = ?', [roleId]);
+    
+    res.json(roleResults[0] || {}); // Return the first record or an empty object if no record is found
+    connection.release();
+  } catch (err) {
+    console.error('Error executing query:', err);
+    res.status(500).json({ error: 'Error executing query' });
+  }
+});
 
 /**
  * @swagger
@@ -119,16 +181,17 @@ router.post('/add-role', authenticateToken, async (req, res) => {
         `;
   
         const [roleResults] = await connection.query(roleInsertQuery, [roleName, roleDescription]);
-        res.send('Role Added!');
+        res.status(200).json({message: 'Role Added Sucessfully'});
+        
       } catch (err) {
-        console.error('Error executing role query:', err);
-        res.status(500).send('Error executing role query');
+        // console.error('Error executing role query:', err);
+        res.status(500).json({ message: 'Error executing role query'});
       } finally {
         connection.release(); // Ensure the connection is released back to the pool
       }
     } catch (error) {
-      console.error('Error getting connection from pool:', error);
-      res.status(500).send('Error adding Role');
+      // console.error('Error getting connection from pool:', error);
+      res.status(500).json({ error: 'Error adding Role' }); // Send a JSON error response
     }
   });
   
@@ -205,17 +268,17 @@ router.put('/update-role', authenticateToken, async (req, res) => {
         `;
   
         const [userResult] = await connection.query(roleUpdateQuery, [roleName, roleDescription, roleId]);
-        console.log('Query executed successfully:', userResult);
-        res.send('Role updated');
+        // console.log('Query executed successfully:', userResult);
+        res.status(200).json({message: 'Role updated successfully'});
       } catch (err) {
-        console.error('Error executing role query:', err);
-        res.status(500).send('Error executing role query');
+        // console.error('Error executing role query:', err);
+        res.status(500).json({ error: 'rror executing role query' }); // Send a JSON error response
       } finally {
         connection.release(); // Ensure the connection is released back to the pool
       }
     } catch (error) {
-      console.error('Error getting connection from pool:', error);
-      res.status(500).send('Error updating Role');
+      // console.error('Error getting connection from pool:', error);
+      res.status(500).json({ error: 'Error updating Role' }); // Send a JSON error response
     }
   });
   
@@ -287,14 +350,14 @@ router.put('/update-role-order', async (req, res) => {
 
         if (currentRoleOrderId < roleOrderId) {
             // Increment roleOrderId values that need to be shifted down
-            console.log(`Incrementing roleOrderId values >= ${currentRoleOrderId} and < ${roleOrderId}`);
+            // console.log(`Incrementing roleOrderId values >= ${currentRoleOrderId} and < ${roleOrderId}`);
             await connection.query(
                 'UPDATE role SET roleOrderId = roleOrderId - 1 WHERE roleOrderId > ? AND roleOrderId <= ?',
                 [currentRoleOrderId, roleOrderId]
             );
         } else if (currentRoleOrderId > roleOrderId) {
             // Decrement roleOrderId values that need to be shifted up
-            console.log(`Decrementing roleOrderId values > ${roleOrderId} and <= ${currentRoleOrderId}`);
+            // console.log(`Decrementing roleOrderId values > ${roleOrderId} and <= ${currentRoleOrderId}`);
             await connection.query(
                 'UPDATE role SET roleOrderId = roleOrderId + 1 WHERE roleOrderId >= ? AND roleOrderId < ?',
                 [roleOrderId, currentRoleOrderId]
@@ -302,7 +365,7 @@ router.put('/update-role-order', async (req, res) => {
         }
 
         // Update the specific roleOrderId for the given roleId
-        console.log(`Updating roleOrderId to ${roleOrderId} for roleId ${roleId}`);
+        // console.log(`Updating roleOrderId to ${roleOrderId} for roleId ${roleId}`);
         await connection.query(
             'UPDATE role SET roleOrderId = ? WHERE roleId = ?',
             [roleOrderId, roleId]
@@ -311,16 +374,16 @@ router.put('/update-role-order', async (req, res) => {
         await connection.commit();
         connection.release();
 
-        res.status(200).send('Role order updated successfully');
+        res.status(200).json({message: 'Role ORDER updated successfully'});
     } catch (error) {
-        console.log('Error:', error);
+        //console.log('Error:', error);
         if (connection) {
-            console.log('RollingBack:', error);
+            res.status(500).json({error: error});
             await connection.rollback();
             connection.release();
         }
-        console.error('Error updating role order:', error);
-        res.status(500).send('Error updating role order');
+        //console.error('Error updating role order:', error);
+        res.status(500).json({error: 'Error updating Role ORDER'});
     }
 });
 
