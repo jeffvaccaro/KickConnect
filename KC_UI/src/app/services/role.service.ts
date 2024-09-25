@@ -15,7 +15,7 @@ export class RoleService {
   }
 
   getRolesById(roleId: number): Observable<any> {
-    console.log('roleId param?', roleId);
+    // console.log('roleId param?', roleId);
     let url = `${this.apiUrl}/get-role-by-id`;
     
     const params = new HttpParams().set('roleId', roleId.toString());
