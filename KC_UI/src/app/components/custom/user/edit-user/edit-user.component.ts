@@ -66,7 +66,7 @@ export class EditUserComponent implements OnInit {
   loadUserData(userId: number): void {
     this.userService.getUser(userId).subscribe({
       next: userResponse => {
-        console.log('user', userResponse);
+        // console.log('user', userResponse);
         this.form.patchValue({
           nameControl: userResponse.name,
           emailControl: userResponse.email,
@@ -131,7 +131,7 @@ export class EditUserComponent implements OnInit {
         this.router.navigate(['/']); // Navigate to location-list 
       },
       error => {
-        console.error('Error updating user:', error.error);
+        console.error('Error updating user:', error.message);
       }
     );
   }

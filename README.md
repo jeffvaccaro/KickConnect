@@ -25,11 +25,14 @@ ToDo:
  - ~~API Documentation (SWAGGER)~~
  - ~~Authentication w/JWT~~
  - ~~Locations (Add/Update/Delete/Display/Filters)~~
- - Users (Add/Update/Delete/Display/Filters)
+ - ~~Users (Add/Update/Delete/Display/Filters)~~
     - Add Image Upload feature
- - Roles (Add/Update/Delete/Display)
- - Schedules (Add/Update/Delete/Display)
+ - ~~Roles (Add/Update/Delete/Display)~~
+ - ~~Classes (Add/Update/Delete/Display)~~
  - Create different Dashboards for different user types
+ -  ~~- Owner~~
+ -  - Admin
+ -  - Staff
  - Events
  - Surveys
  - When migration to AWS - look at SNS for messaging

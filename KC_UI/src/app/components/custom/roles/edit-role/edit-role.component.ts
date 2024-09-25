@@ -55,7 +55,7 @@ export class EditRoleComponent implements OnInit {
         });
       },
       error: error => {
-        this.snackBarService.openSnackBar('Error fetching Role data:' + error.error, '',  []);
+        this.snackBarService.openSnackBar('Error fetching Role data:' + error.message, '',  []);
       }
     });
   }
@@ -80,7 +80,7 @@ export class EditRoleComponent implements OnInit {
         // console.log('Navigation triggered'); // Log navigation trigger
       },
       error: error => {
-        this.snackBarService.openSnackBar('Error fetching Role:' + error.error, '',  []);
+        this.snackBarService.openSnackBar('Error fetching Role:' + error.message, '',  []);
       }
     });
   }

@@ -41,7 +41,7 @@ export class RoleListComponent implements OnInit, AfterViewInit {
         // console.log(this.roleArr);
       },
       error: error => {
-        this.snackBarService.openSnackBar('Error fetching Roles:' + error.error, '',  []);
+        this.snackBarService.openSnackBar('Error fetching Roles:' + error.message, '',  []);
       }
     });    
   }

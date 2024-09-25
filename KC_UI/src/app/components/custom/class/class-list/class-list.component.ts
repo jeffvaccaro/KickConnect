@@ -10,32 +10,30 @@ import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserService } from '../../../../services/user.service';
+import { ClassService } from '../../../../services/class.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 
 @Component({
-  selector: 'app-user-list',
+  selector: 'app-class-list',
   standalone: true,
   imports: [RouterLink, MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule,MatTabsModule, NgIf],
-  templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.scss'
+  templateUrl: './class-list.component.html',
+  styleUrl: './class-list.component.scss'
 })
-export class UserListComponent implements OnInit, AfterViewInit {
-  private userArr: any[] = [];
+export class ClassListComponent implements OnInit, AfterViewInit {
+  private classArr: any[] = [];
   accountCode: string;
   accountId: number;
-  displayedColumns: string[] = ['name','roleName','phone','action'];
-  dataSource = new MatTableDataSource(this.userArr);
+  displayedColumns: string[] = ['Name', 'Description','Action'];
+  dataSource = new MatTableDataSource(this.classArr);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private userService: UserService, private snackBarService: SnackbarService, private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
+  constructor(private classService: ClassService, private userService: UserService, private router: Router,
+              private route: ActivatedRoute, private cdr: ChangeDetectorRef, 
+              private snackbarService: SnackbarService) {}
 
   ngOnInit(): void {
-    let status: string = '';
-    this.route.queryParams.subscribe(params => {
-      status = params['status'];
-    });
-  
     this.userService.getAccountCode().subscribe(accountCode => {
       this.accountCode = accountCode;
       this.cdr.detectChanges();
@@ -45,8 +43,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
       this.accountId = Number(accountId);
       this.cdr.detectChanges;
     })
-
-    this.getUsers(this.accountCode);
+    this.getClassList(this.accountId);
   }
 
   ngAfterViewInit() {
@@ -56,32 +53,14 @@ export class UserListComponent implements OnInit, AfterViewInit {
   active = true;
   inactive = true;
 
-  getUsers(accountCode: string): void {
-    // console.log('AccountCode:',accountCode);
-    this.userService.getAllUsers(accountCode).subscribe({
+  getClassList(accountId: number, status = 'Active'): void {
+    this.classService.getClasses(accountId).subscribe({
       next: response => {
-        this.userArr = response;
-        this.dataSource.data = this.userArr; // Update the dataSource here
-        console.log(this.userArr);
+        this.classArr = response;
+        this.dataSource.data = status === 'All' ? this.classArr : this.classArr.filter(item => item.isActive === (status === 'Active' ? 1 : 0));
       },
       error: error => {
-        console.error('Error fetching users:', error);
-        // Handle error here (e.g., show error message)
-      }
-    });
-  }
-
-  getUsersByStatus(accountId: number, status: string): void {
-    console.log('accountId:',accountId);
-    console.log('status:',status);
-    this.userService.getUsersByStatus(accountId, status).subscribe({
-      next: response => {
-        this.userArr = response;
-        this.dataSource.data = this.userArr;
-        console.log(this.userArr);
-      },
-      error: error => {
-        this.snackBarService.openSnackBar('Error fetching User:' + error.message, '',  []);
+        this.snackbarService.openSnackBar('Error fetching Class data!','',[]);
       }
     });
   }
@@ -95,25 +74,39 @@ export class UserListComponent implements OnInit, AfterViewInit {
       case 1:
         status = 'InActive';
         break;
+      case 2:
+        status = 'All';
+        break;
       default:
         status = 'Active';
     }
-    this.getUsersByStatus(this.accountId,status);
+    this.getClassList(this.accountId, status);
   }
 
   btnAddNewClick() {
-    this.router.navigate(['/app-add-new-user']);
+    this.router.navigate(['/app-add-new-location']);
   }
 
-  editUser(userId: number){
-    this.router.navigate(['/app-edit-user', userId]);
+  editClass(classId: number){
+    this.router.navigate(['/app-edit-class', classId]);
   }
+
+  deleteClass(classId: number){
+    this.classService.deactivateClass(this.accountId,classId).subscribe({
+      next: response => {
+        this.getClassList(this.accountId);
+      },
+      error: error => {
+        this.snackbarService.openSnackBar('Error Deleting the Class!','',[]);
+      }
+    });
+
+
+    
+  }
+
   filterLocations(){
-    this.router.navigate(['/app-user-list'], { queryParams: { status: 'InActive' } });
+    //this.router.navigate(['/app-location-list'], { queryParams: { status: 'InActive' } });
 
   }
 }
-
-
-
-

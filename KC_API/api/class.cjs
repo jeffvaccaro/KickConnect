@@ -52,7 +52,7 @@ pool.getConnection((err, connection) => {
  *       500:
  *         description: Some server error
  */
-router.post('/add-class', authenticateToken, async (req, res) => {
+router.post('/add-class/', authenticateToken, async (req, res) => {
     try {
     const { accountId, className, classDescription } = req.body;
     const [result] = await pool.query(
@@ -61,14 +61,14 @@ router.post('/add-class', authenticateToken, async (req, res) => {
     );
       res.status(201).json({ classId: result.insertId  });
     } catch (error) {
-        console.error('Error creating the Class:', error);
-        res.status(500).send('Error creating the Class');
+        //console.error('Error creating the Class:', error);
+        res.status(500).json({error:'Error creating the Class' + error.message});
     }
   });
   
 /**
  * @swagger
- * /class/get-all:
+ * /class/get-class-list:
  *   get:
  *     summary: Returns the list of all the classes
  *     tags: [Class]
@@ -84,13 +84,14 @@ router.post('/add-class', authenticateToken, async (req, res) => {
  *               items:
  *                 $ref: '#/components/schemas/Class'
  */
-router.get('/get-all', authenticateToken, async (req, res) => {
+router.get('/get-class-list/:accountId', authenticateToken, async (req, res) => {
     try {
-      const [results] = await pool.query('SELECT * FROM Class');
+      const { accountId} = req.params;
+      const [results] = await pool.query('SELECT * FROM Class WHERE accountId = ?', [accountId]);
       res.status(200).json(results);
     } catch (error) {
       console.error('Error fetching Classes:', error);
-      res.status(500).send('Error fetching Classes');
+      res.status(500).json({ errror: 'Error fetching Classes' + error.message});
     }
   }); 
 
@@ -121,21 +122,20 @@ router.get('/get-all', authenticateToken, async (req, res) => {
  *       500:
  *         description: Some server error
  */
-  router.get('/get-class/:id', authenticateToken, async (req, res) => {
-    const { id } = req.params;
+  router.get('/get-class-by-id/:accountId/:classId', authenticateToken, async (req, res) => {
+    const { accountId, classId } = req.params;
     try {
-      const [results] = await pool.query('SELECT * FROM Class WHERE classId = ?', [id]);
+      const [results] = await pool.query('SELECT * FROM Class WHERE accountId = ? AND classId = ?', [accountId, classId]);
       if (results.length === 0) {
         return res.status(404).json({ message: 'Class not found' });
       }
       res.status(200).json(results[0]);
     } catch (error) {
-      console.error('Error fetching Class:', error);
-      res.status(500).send('Error fetching Class');
+      // console.error('Error fetching Class:', error);
+      res.status(500).json({ error: 'Error fetching Class: ' + error.message });
     }
   });
-  
-  
+ 
   /**
  * @swagger
  * /class/update-class/{id}:
@@ -169,21 +169,21 @@ router.get('/get-all', authenticateToken, async (req, res) => {
  *       500:
  *         description: Some server error
  */
-  router.put('/update-class/:id', authenticateToken, async (req, res) => {
-    const { id } = req.params;
-    const { className, classDescription } = req.body;
+  router.put('/update-class/:classId', authenticateToken, async (req, res) => {
+    const { classId } = req.params;
+    const { className, classDescription, isActive } = req.body;
     try {
       const [results] = await pool.query(
-        "UPDATE Class SET className = ?, classDescription = ?, updatedBy = 'API Location Update', updatedOn = CURRENT_TIMESTAMP WHERE classId = ?",
-        [className, classDescription, id]
+        "UPDATE Class SET className = ?, classDescription = ?, isActive = ?, updatedBy = 'API Location Update', updatedOn = CURRENT_TIMESTAMP WHERE classId = ?",
+        [className, classDescription, isActive, classId]
       );
       if (results.affectedRows === 0) {
         return res.status(404).json({ message: 'Class not found' });
       }
-      res.status(200).json({ id, className, classDescription });
+      res.status(200).json({ classId, className, classDescription });
     } catch (error) {
       console.error('Error updating Class:', error);
-      res.status(500).send('Error updating Class');
+      res.status(500).json({error:'Error updating Class' + error.message});
     }
   });
   
@@ -211,26 +211,25 @@ router.get('/get-all', authenticateToken, async (req, res) => {
  *       500:
  *         description: Some server error
  */
- router.delete('/deactivate-class/:id', authenticateToken, async (req, res) => {
-    const { id } = req.params;
+ router.delete('/deactivate-class/:accountId/:classId', authenticateToken, async (req, res) => {
+    const { accountId, classId } = req.params;
   
     try {
       const classQuery = `
         UPDATE Class 
-        SET isActive = -1, updatedBy = "API Class Delete", updatedOn = CURRENT_TIMESTAMP
-        WHERE classId = ?;
+        SET isActive = false, updatedBy = "API Class Delete", updatedOn = CURRENT_TIMESTAMP
+        WHERE accountId = ? AND classId = ?;
       `;
   
-      const [classResult] = await pool.query(classQuery, [id]);
+      const [classResult] = await pool.query(classQuery, [accountId, classId]);
   
       if (classResult.affectedRows === 0) {
-        return res.status(404).send('Class not found');
-      }
-  
-      res.send('Class deactivated');
+        return res.status(404).json({message:'Class not found'});
+      }  
+      res.status(204).json({message: 'Class deactivated'});
     } catch (error) {
-      console.error('Error deactivating Class:', error);
-      res.status(500).send('Error deactivating Class');
+      //console.error('Error deactivating Class:', error);
+      res.status(500).json({error: 'Error deactivating Class' + error.message});
     }
   });
   

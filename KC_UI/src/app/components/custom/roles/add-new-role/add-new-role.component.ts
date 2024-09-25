@@ -63,7 +63,7 @@ export class AddNewRoleComponent implements OnInit {
         this.router.navigate(['/app-role-list']); // Navigate to location-list 
       },
       error => {
-        this.snackBarService.openSnackBar('Error adding location:' + error.error, '',  []);
+        this.snackBarService.openSnackBar('Error adding location:' + error.message, '',  []);
       }
     );
   }

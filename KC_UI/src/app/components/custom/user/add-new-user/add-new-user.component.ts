@@ -104,8 +104,8 @@ export class AddNewUserComponent {
         this.router.navigate(['/']); // Navigate to location-list 
       },
       error => {
-        this.openSnackBar('Error Adding User:' + error.error, '',  []);
-        console.error('Error Adding user:', error.error);
+        this.openSnackBar('Error Adding User:' + error.message, '',  []);
+        console.error('Error Adding user:', error.message);
 
       }
     );

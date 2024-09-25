@@ -12,13 +12,19 @@ import { RoleListComponent } from '../../../custom/roles/role-list/role-list.com
 import { AddNewRoleComponent } from '../../../custom/roles/add-new-role/add-new-role.component';
 import { EditRoleComponent } from '../../../custom/roles/edit-role/edit-role.component';
 
+import { ClassListComponent } from '../../../custom/class/class-list/class-list.component';
+import { AddNewClassComponent } from '../../../custom/class/add-new-class/add-new-class.component';
+import { EditClassComponent } from '../../../custom/class/edit-class/edit-class.component';
+
+
 @Component({
   selector: 'app-owner',
   standalone: true,
   imports: [
     LocationListComponent,AddNewLocationComponent, EditLocationComponent, 
     UserListComponent, AddNewUserComponent, EditUserComponent,
-    RoleListComponent, AddNewRoleComponent, EditRoleComponent
+    RoleListComponent, AddNewRoleComponent, EditRoleComponent,
+    ClassListComponent, AddNewClassComponent, EditClassComponent
   ],
   templateUrl: './owner.component.html',
   styleUrl: './owner.component.scss'
