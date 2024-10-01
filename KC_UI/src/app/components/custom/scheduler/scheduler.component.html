@@ -1,0 +1,24 @@
+<div class="breadcrumb-card mb-25 d-md-flex align-items-center justify-content-space-between">
+    <h5 class="mb-0">Calendar</h5>
+    <ol class="breadcrumb mb-0 ps-0">
+        <li class="breadcrumb-item">
+            <a routerLink="/">
+                <i class="ri-home-8-line"></i>
+                Dashboard
+            </a>
+        </li>
+        <li class="breadcrumb-item fw-semibold">Calendar</li>
+    </ol>
+</div>
+<mat-card class="mb-25 kickConnect-card">
+    <mat-card-header>
+        <button mat-flat-button class="default-btn kickConnect" (click)="openAddEventDialog('300ms', '100ms')">
+            <i class="ri-add-fill"></i> Add Event
+        </button>
+    </mat-card-header>
+    <mat-card-content>
+        <daypilot-calendar [config]="configCalendar" [events]="events" #calendar style="width: 100%; height: 600px;"></daypilot-calendar>
+    </mat-card-content>
+</mat-card>
+
+

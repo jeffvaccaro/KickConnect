@@ -159,6 +159,8 @@ import { EditRoleComponent } from './components/custom/roles/edit-role/edit-role
 import { ClassListComponent } from './components/custom/class/class-list/class-list.component';
 import { AddNewClassComponent } from './components/custom/class/add-new-class/add-new-class.component';
 import { EditClassComponent } from './components/custom/class/edit-class/edit-class.component';
+import { SchedulerComponent } from './components/custom/scheduler/scheduler.component';
+import { AddEditDialogComponent } from './components/custom/scheduler/add-edit-dialog/add-edit-dialog.component';
 
 export const routes: Routes = [
     // {path: '', component: EcommerceComponent},
@@ -178,6 +180,9 @@ export const routes: Routes = [
     {path: 'app-class-list', component: ClassListComponent},
     {path: 'app-add-new-class', component: AddNewClassComponent},
     {path: 'app-edit-class/:classId', component: EditClassComponent },
+
+    {path: 'app-scheduler', component: SchedulerComponent},
+    {path: 'app-add-edit-dialog', component: AddEditDialogComponent},
 
     {path: 'analytics', component: AnalyticsComponent},
     {path: 'project-management', component: ProjectManagementComponent},

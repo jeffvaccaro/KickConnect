@@ -24,6 +24,7 @@
     "@angular/platform-server": "^18.0.0",
     "@angular/router": "^18.0.0",
     "@angular/ssr": "^18.0.7",
+    "@daypilot/daypilot-lite-angular": "^3.26.0",
     "@fullcalendar/angular": "^6.1.14",
     "@fullcalendar/core": "^6.1.14",
     "@fullcalendar/daygrid": "^6.1.14",

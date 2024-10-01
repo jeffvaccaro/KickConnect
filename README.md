@@ -1,21 +1,21 @@
 # KickConnect 8/17/2024
 This application will have the support the features:
- - multiple gym locations
- - individule gym schedules
+ - multiple locations
+ - individule schedules per location or apply to all locations
  - Admin Portal
+   -  Individual Dashboards by Role
  - Public Portal
- - Membership check-ins
- - Member app (iphone/android)
+   - Membership check-ins
+- Member app (iphone/android)
 
 Technologies explored:
  - Angular
  - JWT 
- - Python
  - NodeJS/Express 
  - AWS Lambda
  - AWS RDS instance
- - AWS EKS
  - AWS APIGateway
+ - S3
 
 Technologies used:
  - Angular
@@ -41,10 +41,7 @@ ToDo:
 
 Features to Add:
 
-Spark Membership's Included Features:
-Powerful CRM
-Point Of Sale System
-Online Trial Registration
+
 Attendance Tracking
 Real-time Dashboard inc. Business Metrics
 First Appointment Scheduler

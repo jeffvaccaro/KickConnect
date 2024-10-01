@@ -16,6 +16,8 @@ import { ClassListComponent } from '../../../custom/class/class-list/class-list.
 import { AddNewClassComponent } from '../../../custom/class/add-new-class/add-new-class.component';
 import { EditClassComponent } from '../../../custom/class/edit-class/edit-class.component';
 
+import { SchedulerComponent } from '../../../custom/scheduler/scheduler.component';
+
 
 @Component({
   selector: 'app-owner',
@@ -24,7 +26,7 @@ import { EditClassComponent } from '../../../custom/class/edit-class/edit-class.
     LocationListComponent,AddNewLocationComponent, EditLocationComponent, 
     UserListComponent, AddNewUserComponent, EditUserComponent,
     RoleListComponent, AddNewRoleComponent, EditRoleComponent,
-    ClassListComponent, AddNewClassComponent, EditClassComponent
+    ClassListComponent, AddNewClassComponent, EditClassComponent, SchedulerComponent
   ],
   templateUrl: './owner.component.html',
   styleUrl: './owner.component.scss'

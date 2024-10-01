@@ -1,0 +1,49 @@
+<div class="create-dialog-box">
+    <div class="title d-flex align-items-center justify-content-space-between">
+      <h4 class="mb-0">Add New Event</h4>
+      <button class="close-btn bg-transparent p-0 border-none" (click)="close()"><i class="flaticon-close"></i></button>
+    </div>
+    <form [formGroup]="eventForm" (ngSubmit)="save()">
+      <div class="row">
+        <div class="col-lg-12 col-md-12">
+          <div class="form-group">
+            <label class="d-block fw-semibold">Event Name</label>
+            <input type="text" class="input-control" placeholder="Event Name *" formControlName="eventName" required>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12">
+          <div class="form-group">
+            <label class="d-block fw-semibold">Date</label>
+            <input type="date" class="input-control" formControlName="selectedDate" required>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12">
+          <div class="form-group">
+            <label class="d-block fw-semibold">Time</label>
+            <input type="time" class="input-control" formControlName="selectedTime" required>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12">
+          <div class="form-group">
+            <label class="d-block fw-semibold">Duration</label>
+            <select class="input-control" formControlName="duration" required>
+              <option value="15">15 minutes</option>
+              <option value="30">30 minutes</option>
+              <option value="45">45 minutes</option>
+              <option value="60">1 hour</option>
+              <option value="90">1.5 hours</option>
+              <option value="120">2 hours</option>
+              <option value="240">4 hours</option>
+              <option value="480">8 hours</option>
+              <option value="allDay">All Day</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="text-end">
+        <button type="button" class="gray" (click)="close()"><i class="ri-close-fill"></i> Cancel</button>
+        <button type="submit"><i class="ri-add-fill"></i> Save</button>
+      </div>
+    </form>
+  </div>
+  
