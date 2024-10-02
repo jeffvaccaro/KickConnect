@@ -84,7 +84,7 @@ export class ClassListComponent implements OnInit, AfterViewInit {
   }
 
   btnAddNewClick() {
-    this.router.navigate(['/app-add-new-location']);
+    this.router.navigate(['/app-add-new-class']);
   }
 
   editClass(classId: number){

@@ -5248,4 +5248,8 @@ quill-editor {
         }
 
     }
+    .timepicker-overlay {
+        z-index: 1050 !important; 
+    }
+    
 }

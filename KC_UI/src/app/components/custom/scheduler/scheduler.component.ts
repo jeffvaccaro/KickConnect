@@ -38,7 +38,40 @@ export class SchedulerComponent implements AfterViewInit {
     },
     onEventClick: (args) => {
       this.openAddEventDialog('300ms', '100ms', args.e.data);
+    },
+    onEventMoved: (args) => {
+      const updatedEvent = args.e.data;
+      console.log('Updated Event:', updatedEvent);
+
+      const eventIndex = this.events.findIndex(event => event.id === updatedEvent.id);
+
+      // Update the event data in the events array
+      if (eventIndex !== -1) {
+        this.events[eventIndex] = updatedEvent;
+        // args.e.data = updatedEvent;
+      }
+    },
+    onEventResized: (args) => {
+      const updatedEvent = args.e.data;
+      console.log('Updated Event:', updatedEvent);
+      const newStart = args.newStart;
+      const newEnd = args.newEnd;
+
+      console.log(newStart,newEnd);
+      
+
+      const eventIndex = this.events.findIndex(event => event.id === updatedEvent.id);
+
+      // Update the event data in the events array
+      if (eventIndex !== -1) {
+        updatedEvent.duration = (newEnd.getTime() - newStart.getTime()) / (60 * 1000); // Calculate duration in minutes
+        this.events[eventIndex] = updatedEvent;
+        // args.e.data = updatedEvent;
+      }
+      console.log('Event resized:', updatedEvent);
     }
+
+    
   };
   
 
@@ -92,21 +125,32 @@ export class SchedulerComponent implements AfterViewInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log('Event Data:', result);
-        const startDateTime = new Date(`${result.selectedDate}T${result.selectedTime}`);
-        const localOffset = startDateTime.getTimezoneOffset() * 60000; // Offset in milliseconds
-        const localStartDateTime = new Date(startDateTime.getTime() - localOffset);
+    
+        // Parse the selected date
+        const selectedDate = new Date(result.selectedDate);
+    
+        // Parse the selected time
+        const [time, modifier] = result.selectedTime.split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
+    
+        if (modifier === 'PM' && hours !== 12) {
+          hours += 12;
+        } else if (modifier === 'AM' && hours === 12) {
+          hours = 0;
+        }
+    
+        // Combine date and time
+        selectedDate.setHours(hours, minutes);
+    
+        const localOffset = selectedDate.getTimezoneOffset() * 60000; // Offset in milliseconds
+        const localStartDateTime = new Date(selectedDate.getTime() - localOffset);
         const startDate = new DayPilot.Date(localStartDateTime);
         let endDate;
-  
-        if (result.duration === 'allDay') {
-          endDate = new DayPilot.Date(new Date(localStartDateTime.getTime() + 24 * 60 * 60 * 1000)); // All day event
-        } else {
-          endDate = new DayPilot.Date(new Date(localStartDateTime.getTime() + result.duration * 60 * 1000)); // Use provided duration
-        }
-  
+        endDate = new DayPilot.Date(new Date(localStartDateTime.getTime() + result.duration * 60 * 1000)); // Use provided duration
+
         console.log('Start Date:', startDate);
         console.log('End Date:', endDate);
-  
+    
         if (event) {
           // Edit existing event
           event.start = startDate;
@@ -125,6 +169,7 @@ export class SchedulerComponent implements AfterViewInit {
         this.calendar.control.update();
       }
     });
+    
   }
   
   

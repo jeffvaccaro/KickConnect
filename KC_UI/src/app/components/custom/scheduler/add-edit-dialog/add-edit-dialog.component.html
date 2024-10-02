@@ -11,33 +11,48 @@
             <input type="text" class="input-control" placeholder="Event Name *" formControlName="eventName" required>
           </div>
         </div>
-        <div class="col-lg-12 col-md-12">
-          <div class="form-group">
-            <label class="d-block fw-semibold">Date</label>
-            <input type="date" class="input-control" formControlName="selectedDate" required>
+        <div class="col-lg-4 col-md-4">
+          <div class="kickConnect-form-group">
+            <mat-form-field appearance="fill" class="date-input">
+              <mat-label>Date</mat-label>
+              <input matInput [matDatepicker]="dtPicker" formControlName="selectedDate" (focus)="dtPicker.open()">
+              <mat-datepicker-toggle matIconSuffix [for]="dtPicker"></mat-datepicker-toggle>
+              <mat-datepicker #dtPicker></mat-datepicker>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-12 col-md-12">
-          <div class="form-group">
-            <label class="d-block fw-semibold">Time</label>
-            <input type="time" class="input-control" formControlName="selectedTime" required>
+        
+        <div class="col-lg-4 col-md-4">
+          <div class="kickConnect-form-group">
+            <mat-form-field appearance="fill">
+              <mat-label>Time</mat-label>
+              <input matInput placeholder="Time" [ngxTimepicker]="timePicker" formControlName="selectedTime">
+              <ngx-material-timepicker #timePicker></ngx-material-timepicker>
+              <i class="ri-time-line"></i>
+            </mat-form-field>
           </div>
         </div>
-        <div class="col-lg-12 col-md-12">
-          <div class="form-group">
-            <label class="d-block fw-semibold">Duration</label>
-            <select class="input-control" formControlName="duration" required>
-              <option value="15">15 minutes</option>
-              <option value="30">30 minutes</option>
-              <option value="45">45 minutes</option>
-              <option value="60">1 hour</option>
-              <option value="90">1.5 hours</option>
-              <option value="120">2 hours</option>
-              <option value="240">4 hours</option>
-              <option value="480">8 hours</option>
-              <option value="allDay">All Day</option>
-            </select>
+        
+        <div class="col-lg-4 col-md-4">
+          <div class="kickConnect-form-group">
+            <mat-form-field appearance="fill">
+              <i class="ri-hourglass-2-fill"></i>
+              <mat-label>Duration</mat-label>
+              <mat-select formControlName="duration">
+                <mat-option [value]="15">15 minutes</mat-option>
+                <mat-option [value]="30">30 minutes</mat-option>
+                <mat-option [value]="45">45 minutes</mat-option>
+                <mat-option [value]="60">1 hour</mat-option>
+                <mat-option [value]="90">1.5 hours</mat-option>
+                <mat-option [value]="120">2 hours</mat-option>
+                <mat-option [value]="180">3 hours</mat-option>
+                <mat-option [value]="240">4 hours</mat-option>
+                <mat-option [value]="360">6 hours</mat-option>
+                <mat-option [value]="480">8 hours</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
+          
         </div>
       </div>
       <div class="text-end">
