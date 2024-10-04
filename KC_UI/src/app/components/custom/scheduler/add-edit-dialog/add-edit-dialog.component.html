@@ -5,12 +5,37 @@
     </div>
     <form [formGroup]="eventForm" (ngSubmit)="save()">
       <div class="row">
+
+
         <div class="col-lg-12 col-md-12">
-          <div class="form-group">
-            <label class="d-block fw-semibold">Event Name</label>
-            <input type="text" class="input-control" placeholder="Event Name *" formControlName="eventName" required>
+          <div class="kickConnect-form-group">
+            <mat-form-field appearance="fill">
+              <i class="ri-bookmark-2-line"></i>
+              <mat-label>Existing Class</mat-label>
+              <mat-select formControlName="existingClass" (selectionChange)="enableDisable($event)">
+                <mat-option *ngFor="let classItem of classes" [value]="classItem.classId">
+                  {{ classItem.className }}
+                </mat-option>
+                <mat-option value="newEventClass">Add New Event/Class</mat-option>
+              </mat-select>              
+            </mat-form-field>
           </div>
         </div>
+        <div class="col-lg-12 col-md-12" *ngIf="isNewEventClass">
+          <div class="form-group">
+            <input type="text" class="input-control" placeholder="New Class/Event Name *" formControlName="eventName" required>
+          </div>
+        </div>
+
+        <div class="col-lg-12 col-md-12" >
+          <div class="kickConnect-form-group custom-style">
+              <mat-form-field appearance="fill">
+                  <mat-label>Class/Event Description</mat-label>
+                  <textarea matInput rows="6" formControlName="eventDescription"></textarea>
+              </mat-form-field>
+          </div>
+      </div>
+
         <div class="col-lg-4 col-md-4">
           <div class="kickConnect-form-group">
             <mat-form-field appearance="fill" class="date-input">
@@ -39,20 +64,17 @@
               <i class="ri-hourglass-2-fill"></i>
               <mat-label>Duration</mat-label>
               <mat-select formControlName="duration">
-                <mat-option [value]="15">15 minutes</mat-option>
-                <mat-option [value]="30">30 minutes</mat-option>
-                <mat-option [value]="45">45 minutes</mat-option>
-                <mat-option [value]="60">1 hour</mat-option>
-                <mat-option [value]="90">1.5 hours</mat-option>
-                <mat-option [value]="120">2 hours</mat-option>
-                <mat-option [value]="180">3 hours</mat-option>
-                <mat-option [value]="240">4 hours</mat-option>
-                <mat-option [value]="360">6 hours</mat-option>
-                <mat-option [value]="480">8 hours</mat-option>
-              </mat-select>
+                <mat-option *ngFor="let duration of durations" [value]="duration.durationValue">
+                  {{ duration.durationText }}
+                </mat-option>
+              </mat-select>              
             </mat-form-field>
           </div>
-          
+        </div>
+        <div class="col-lg-12 col-md-12">
+          <div class="kickConnect-form-group mb-12">
+            <mat-checkbox formControlName="isRepeat">Class/Event Repeats?</mat-checkbox>
+          </div>
         </div>
       </div>
       <div class="text-end">

@@ -32,6 +32,11 @@ export class ClassService {
     return this.http.get<any>(url);
   }
 
+  getActiveClasses(accountId: number): Observable<any> {
+    const url = `${this.apiUrl}/get-active-class-list/${accountId}`;
+    return this.http.get<any>(url);
+  }
+
   getClassById(accountId: number, classId: number): Observable<any> {
     const url = `${this.apiUrl}/get-class-by-id/${accountId}/${classId}`;
     return this.http.get<any>(url);

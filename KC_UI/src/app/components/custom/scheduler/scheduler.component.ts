@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { DataService } from '../../../services/data.service';
 import { AddEditDialogComponent } from './add-edit-dialog/add-edit-dialog.component';
+import { customDayPilotEventData } from '../../../interfaces/customDayPilotEventData';
 
 @Component({
   selector: 'app-scheduler',
@@ -17,7 +18,8 @@ import { AddEditDialogComponent } from './add-edit-dialog/add-edit-dialog.compon
 })
 export class SchedulerComponent implements AfterViewInit {
   @ViewChild('calendar') calendar!: DayPilotCalendarComponent;
-  events: DayPilot.EventData[] = [];
+  //customDPEvents: DayPilot.EventData[] = [];
+  customDPEvents: customDayPilotEventData[] = [];
 
   // Define the configCalendar property here
   configCalendar: DayPilot.CalendarConfig = {
@@ -37,38 +39,52 @@ export class SchedulerComponent implements AfterViewInit {
       }));
     },
     onEventClick: (args) => {
-      this.openAddEventDialog('300ms', '100ms', args.e.data);
+      // console.log('args.e.data:', args.e.data);
+      const updatedEvent = args.e.data;
+      const eventIndex = this.customDPEvents.findIndex(event => event.id === updatedEvent.id);
+      this.customDPEvents[eventIndex] = updatedEvent;
+
+      // console.log('customDPEvents:', this.customDPEvents);
+      const eventData = {
+        ...args.e.data,
+        existingClassId: args.e.data.existingClassId || 'defaultId',
+        existingClassName: args.e.data.existingClassName || 'defaultName',
+        eventDescription: args.e.data.eventDescription || '',
+        eventName: args.e.data.text || '',
+        selectedDate: args.e.data.start.toString('yyyy-MM-dd'),
+        selectedTime: args.e.data.start.toString('HH:mm'),
+        duration: (args.e.data.end.getTime() - args.e.data.start.getTime()) / (60 * 1000),
+        isRepeat: args.e.data.isRepeat || false,
+        isActive: args.e.data.isActive || false
+      };
+    
+      // console.log('onEventClick', eventData);  // Log to verify data
+      this.openAddEventDialog('300ms', '100ms', eventData);
     },
+    
     onEventMoved: (args) => {
       const updatedEvent = args.e.data;
-      console.log('Updated Event:', updatedEvent);
-
-      const eventIndex = this.events.findIndex(event => event.id === updatedEvent.id);
+      const eventIndex = this.customDPEvents.findIndex(event => event.id === updatedEvent.id);
 
       // Update the event data in the events array
       if (eventIndex !== -1) {
-        this.events[eventIndex] = updatedEvent;
+        this.customDPEvents[eventIndex] = updatedEvent;
         // args.e.data = updatedEvent;
       }
     },
     onEventResized: (args) => {
       const updatedEvent = args.e.data;
-      console.log('Updated Event:', updatedEvent);
       const newStart = args.newStart;
       const newEnd = args.newEnd;
 
-      console.log(newStart,newEnd);
-      
-
-      const eventIndex = this.events.findIndex(event => event.id === updatedEvent.id);
+      const eventIndex = this.customDPEvents.findIndex(event => event.id === updatedEvent.id);
 
       // Update the event data in the events array
       if (eventIndex !== -1) {
         updatedEvent.duration = (newEnd.getTime() - newStart.getTime()) / (60 * 1000); // Calculate duration in minutes
-        this.events[eventIndex] = updatedEvent;
-        // args.e.data = updatedEvent;
+        this.customDPEvents[eventIndex] = updatedEvent;
       }
-      console.log('Event resized:', updatedEvent);
+      // console.log('Event resized:', updatedEvent);
     }
 
     
@@ -78,7 +94,7 @@ export class SchedulerComponent implements AfterViewInit {
   constructor(public dialog: MatDialog, private ds: DataService) {}
 
   ngAfterViewInit(): void {
-    console.log('Calendar initialized:', this.calendar);
+    // console.log('Calendar initialized:', this.calendar);
     this.checkAndLoadEvents();
   }
 
@@ -97,84 +113,99 @@ export class SchedulerComponent implements AfterViewInit {
 
 
   loadEvents(): void {
-    const from = this.calendar.control.visibleStart();
-    const to = this.calendar.control.visibleEnd();
-
-    // Example subscription
-    this.events = this.ds.getEvents2(from, to);
-    console.log('events:', this.events);
-    this.calendar.control.update();
-
-
-    console.log('Calendar Updated:', this.calendar);
+    // const from = this.calendar.control.visibleStart();
+    // const to = this.calendar.control.visibleEnd();
+  
+    // this.customDPEvents = this.ds.getEvents2(from, to).map(event => ({
+    //   ...event,
+    //   existingClassId: event.existingClassId || 'defaultId', // Ensure default value
+    //   existingClassName: event.existingClassName || 'defaultName'
+    // }));
+    // console.log('events:', this.customDPEvents);
+    // this.calendar.control.update();
   }
+  
 
   openAddEventDialog(enterAnimationDuration: string, exitAnimationDuration: string, event?: any): void {
+    // console.log('Before dialog:', event);
     const dialogRef = this.dialog.open(AddEditDialogComponent, {
       width: '600px',
       enterAnimationDuration,
       exitAnimationDuration,
       data: event ? {
-        eventName: event.text,
-        selectedDate: event.start.toString('yyyy-MM-dd'),
-        selectedTime: event.start.toString('HH:mm'),
-        duration: (event.end.getTime() - event.start.getTime()) / (60 * 1000) // Calculate duration in minutes
+        eventName: event.text || '',
+        selectedDate: event.start.toString('yyyy-MM-dd') || '',
+        selectedTime: event.start.toString('HH:mm') || '',
+        duration: (event.end.getTime() - event.start.getTime()) / (60 * 1000) || 60,
+        existingClassId: event.existingClassId || '',
+        existingClassName: event.existingClassName || '',
+        existingClassDescription: event.existingClassDescription || '',
+        isRepeat: event.isRepeat || false,
+        isActive: event.isActive || false
       } : {}
     });
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Event Data:', result);
-    
-        // Parse the selected date
         const selectedDate = new Date(result.selectedDate);
-    
-        // Parse the selected time
         const [time, modifier] = result.selectedTime.split(' ');
         let [hours, minutes] = time.split(':').map(Number);
-    
+  
         if (modifier === 'PM' && hours !== 12) {
           hours += 12;
         } else if (modifier === 'AM' && hours === 12) {
           hours = 0;
         }
-    
-        // Combine date and time
+  
         selectedDate.setHours(hours, minutes);
-    
-        const localOffset = selectedDate.getTimezoneOffset() * 60000; // Offset in milliseconds
+  
+        const localOffset = selectedDate.getTimezoneOffset() * 60000;
         const localStartDateTime = new Date(selectedDate.getTime() - localOffset);
         const startDate = new DayPilot.Date(localStartDateTime);
-        let endDate;
-        endDate = new DayPilot.Date(new Date(localStartDateTime.getTime() + result.duration * 60 * 1000)); // Use provided duration
-
-        console.log('Start Date:', startDate);
-        console.log('End Date:', endDate);
-    
+        const endDate = new DayPilot.Date(new Date(localStartDateTime.getTime() + result.duration * 60 * 1000));
+  
+        
         if (event) {
-          // Edit existing event
-          event.start = startDate;
-          event.end = endDate;
-          event.text = result.eventName;
+          // existing event update
+          const updatedEvent = event;
+          const eventIndex = this.customDPEvents.findIndex(event => event.id === updatedEvent.id);
+
+          // Update the event data in the events array
+          if (eventIndex !== -1) {
+            let eDataItem: customDayPilotEventData = {
+              id: DayPilot.guid(),
+              start: startDate,
+              end: endDate,
+              text: result.eventName === "" ? result.existingClassName : result.eventName,
+              existingClassId: result.existingClass !== undefined ? Number(result.existingClass) : 0,
+              existingClassName: result.existingClassName || '',
+              existingClassDescription: result.eventDescription || '',
+              isRepeat: result.isRepeat
+            };            
+            this.customDPEvents[eventIndex] = eDataItem;
+          }
         } else {
-          // Add new event
-          this.events.push({
+          // new event
+          let eDataItem: customDayPilotEventData = {
             id: DayPilot.guid(),
             start: startDate,
             end: endDate,
-            text: result.eventName,
-            resource: "R1"
-          });
+            text: result.eventName === "" ? result.existingClassName : result.eventName,
+            existingClassId: result.existingClass !== undefined ? Number(result.existingClass) : 0,
+            existingClassName: result.existingClassName || '',
+            existingClassDescription: result.eventDescription || '',
+            isRepeat: result.isRepeat
+          };
+        
+          this.customDPEvents.push(eDataItem);
+          // console.log('New Event:', eDataItem);
         }
+        
         this.calendar.control.update();
       }
     });
-    
   }
   
-  
-  
- 
 }
 
 

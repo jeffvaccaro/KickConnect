@@ -11,6 +11,7 @@ const locationRouter = require('./location.cjs');
 const roleRouter = require('./role.cjs');
 const classRouter = require('./class.cjs');
 const zipcodeRouter = require('./zipcode.cjs');
+const scheduleRouter = require ('./schedule.cjs');
 
 const cors = require('cors');
 
@@ -32,6 +33,7 @@ app.use('/role', roleRouter);
 app.use('/class', classRouter);
 app.use('/uploads', express.static('uploads'));
 app.use('/common', zipcodeRouter);
+app.use('/schedule', scheduleRouter);
 
 app.get('/current-datetime', (req, res) => {
   const currentDateTime = new Date();

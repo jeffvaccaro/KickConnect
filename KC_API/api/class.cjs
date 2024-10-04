@@ -93,6 +93,35 @@ router.get('/get-class-list/:accountId', authenticateToken, async (req, res) => 
       console.error('Error fetching Classes:', error);
       res.status(500).json({ errror: 'Error fetching Classes' + error.message});
     }
+  });
+
+/**
+ * @swagger
+ * /class/get-active-class-list:
+ *   get:
+ *     summary: Returns the list of all ACTIVE classes by accountId
+ *     tags: [Class]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: The list of the active classes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Class'
+ */
+  router.get('/get-active-class-list/:accountId', authenticateToken, async (req, res) => {
+    try {
+      const { accountId} = req.params;
+      const [results] = await pool.query('SELECT  classId, className, classDescription, isActive FROM Class WHERE accountId = ? AND isActive = true', [accountId]);
+      res.status(200).json(results);
+    } catch (error) {
+      console.error('Error fetching Classes:', error);
+      res.status(500).json({ errror: 'Error fetching Classes' + error.message});
+    }
   }); 
 
   /**

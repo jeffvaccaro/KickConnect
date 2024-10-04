@@ -5251,5 +5251,9 @@ quill-editor {
     .timepicker-overlay {
         z-index: 1050 !important; 
     }
+    .disabled {
+        pointer-events: none;
+        opacity: 0.5; /* Optional: makes the div look 'disabled' */
+    }
     
 }

@@ -35,7 +35,7 @@ export class UserService {
   }
 
   setAccountCode(accountCodeValue: string): void {
-    console.log('Setting accountCode:', accountCodeValue);
+    // console.log('Setting accountCode:', accountCodeValue);
     localStorage.setItem('accountCode', accountCodeValue);
     this.accountCodeSubject.next(accountCodeValue);
   }
@@ -45,7 +45,7 @@ export class UserService {
   }
 
   setAccountId(accountIdValue: string): void {
-    console.log('Setting accountIdValue:', accountIdValue);
+    // console.log('Setting accountIdValue:', accountIdValue);
     localStorage.setItem('accountId', accountIdValue);
     this.accountIdSubject.next(accountIdValue);
   }
