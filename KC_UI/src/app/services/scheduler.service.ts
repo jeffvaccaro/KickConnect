@@ -16,6 +16,13 @@ export class SchedulerService {
     let url = `${this.apiUrl}/get-durations`;
     return this.http.get<Duration[]>(url);
   }
+
+  
+  addSchedule(eventData: any): Observable<any> {
+    console.log(eventData);
+    const url = `${this.apiUrl}/add-schedule`;
+    return this.http.post<any>(url, eventData);
+  }
   // getLocations(status:string): Observable<any> {
   //   let url = `${this.apiUrl}`;
   //   switch (status) {
@@ -38,10 +45,6 @@ export class SchedulerService {
   //   return this.http.get<any>(url);
   // }
 
-  // addLocation(locationData: any): Observable<any> {
-  //   const url = `${this.apiUrl}/add-location`;
-  //   return this.http.post<any>(url, locationData);
-  // }
   
   // updateLocation(locationId: number, locationData: any) {
   //   return this.http.put(`${this.apiUrl}/update-location/${locationId}`, locationData);

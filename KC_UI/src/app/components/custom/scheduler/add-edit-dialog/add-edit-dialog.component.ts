@@ -50,7 +50,7 @@ export class AddEditDialogComponent implements OnInit {
   durations: Duration[] = [];
   classes: Classes[] = [];
   accountId: number;
-  isNewEventClass: boolean = false;
+  isNewEventClass: boolean = true;
   
   constructor(
     private fb: FormBuilder,
@@ -77,7 +77,7 @@ export class AddEditDialogComponent implements OnInit {
   
 
      this.eventForm = this.fb.group({
-      existingClass: [this.data?.existingClassId || 'newEventClass'],
+      existingClassValue: [this.data?.existingClassValue || 'newEventClass'],
       existingClassName: [this.data?.existingClassName || ''],
       eventName: [this.data?.eventName || ''],
       eventDescription: [this.data?.existingClassDescription || ''],
@@ -86,7 +86,7 @@ export class AddEditDialogComponent implements OnInit {
       duration: [Number(this.data?.duration) || 60],
       isRepeat: [this.data?.isRepeat || false]
     });
-    // console.log('event form duration:', this.eventForm.controls['duration'].value);
+    // console.log('event form:', this.eventForm);
   
     this.eventForm.get('selectedDate')?.setValue(localSelectedDate);
     this.eventForm.get('selectedTime')?.setValue(this.data?.selectedTime || defaultTime);
@@ -135,6 +135,7 @@ export class AddEditDialogComponent implements OnInit {
       this.isNewEventClass = false;
       this.eventForm.get('existingClassName')?.setValue(this.classes[selectedValue]?.className);
       this.eventForm.get('eventDescription')?.setValue(this.classes[selectedValue]?.classDescription);
+      this.eventForm.get('eventName')?.setValue('');
     }else{
       this.isNewEventClass = true;
       this.eventForm.get('eventDescription')?.setValue('');

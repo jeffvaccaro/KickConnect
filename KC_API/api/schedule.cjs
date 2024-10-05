@@ -66,17 +66,18 @@ pool.getConnection((err, connection) => {
     }
   });   
 
-  // router.post('/add-schedule/', authenticateToken, async (req, res) => {
-  //   try {
-  //   const { accountId, className, classDescription, isActive } = req.body;
-  //   const [result] = await pool.query(
-  //       'INSERT INTO schedule (accountId, classId, locationId, profileId, day, startTime, endTime, isRepeat, isActive, createdBy, createdOn) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
-  //       [accountI, classId, locationId, profileId, day, startTime, endTime, isRepeat, isActive, createdBy, createdOn]
-  //       );
-  //     res.status(201).json({ scheduleId: result.insertId  });
-  //   } catch (error) {
-  //       res.status(500).json({error:'Error creating the Schedule' + error.message});
-  //   }
-  // });  
+  router.post('/add-schedule/', authenticateToken, async (req, res) => {
+    try {
+      console.log('api', req.body);
+    // const { accountId, className, classDescription, isActive } = req.body;
+    // const [result] = await pool.query(
+    //     'INSERT INTO schedule (accountId, classId, locationId, profileId, day, startTime, endTime, isRepeat, isActive, createdBy, createdOn) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
+    //     [accountI, classId, locationId, profileId, day, startTime, endTime, isRepeat, isActive, createdBy, createdOn]
+    //     );
+    //   res.status(201).json({ scheduleId: result.insertId  });
+    } catch (error) {
+         res.status(500).json({error:'Error creating the Schedule' + error.message});
+    }
+  });  
 
   module.exports = router; 

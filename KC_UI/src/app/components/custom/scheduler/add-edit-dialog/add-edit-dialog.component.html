@@ -12,7 +12,7 @@
             <mat-form-field appearance="fill">
               <i class="ri-bookmark-2-line"></i>
               <mat-label>Existing Class</mat-label>
-              <mat-select formControlName="existingClass" (selectionChange)="enableDisable($event)">
+              <mat-select formControlName="existingClassValue" (selectionChange)="enableDisable($event)">
                 <mat-option *ngFor="let classItem of classes" [value]="classItem.classId">
                   {{ classItem.className }}
                 </mat-option>
