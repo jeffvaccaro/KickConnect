@@ -9,6 +9,7 @@ yarn-error.log*
 node_modules
 .pnp
 .pnp.js
+public
 
 # testing
 coverage
@@ -29,6 +30,7 @@ build
 .eslintcache
 .unimportedrc.json
 tsconfig.tsbuildinfo
+*.zip
 
 # environment variables
 .env

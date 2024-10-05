@@ -11,15 +11,14 @@ const locationRouter = require('./location.cjs');
 const roleRouter = require('./role.cjs');
 const classRouter = require('./class.cjs');
 const zipcodeRouter = require('./zipcode.cjs');
-const scheduleRouter = require ('./schedule.cjs');
-
+const scheduleRouter = require('./schedule.cjs');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
-
 const env = process.env.NODE_ENV || 'development';
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(__dirname, `../.env.${env}`) });
+
+const port = process.env.PORT || 3000;
 
 // Enable CORS for all origins
 app.use(cors());
