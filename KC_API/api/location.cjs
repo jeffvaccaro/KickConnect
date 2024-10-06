@@ -5,28 +5,11 @@ const path = require('path');
 const mysql = require('mysql2/promise');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const { connectToDatabase } = require('./db');
 const authenticateToken = require('./middleware/authenticateToken.cjs');
 
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
-var pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
-  });
-
-// Handling connection establishment
-pool.getConnection((err, connection) => {
-    if (err) {
-      console.error('Database connection error:', err);
-      return;
-    }
-    console.log('Database connection established');
-    connection.release(); // Release the connection back to the pool
-  });
 
 /**
  * @swagger
@@ -77,7 +60,7 @@ pool.getConnection((err, connection) => {
  *                   description: Error message
  */
 router.post('/add-location', authenticateToken, async (req, res) => {
-  
+    
     let { accountId, locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail } = req.body;
     // Trim whitespace from each string
     locationName = locationName.trim();
@@ -87,9 +70,10 @@ router.post('/add-location', authenticateToken, async (req, res) => {
     locationZip = locationZip.trim();
     locationPhone = locationPhone.trim();
     locationEmail = locationEmail.trim();
-
+    let connection;
     try {
-      const [result] = await pool.query(
+      const connection = await connectToDatabase();
+      const [result] = await connection.query(
         'INSERT INTO location (accountId, locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, "API Location Insert")',
         [accountId, locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail]
       );
@@ -97,6 +81,12 @@ router.post('/add-location', authenticateToken, async (req, res) => {
     } catch (error) {
       console.error('Error creating location:', error);
       res.status(500).send('Error creating location');
+    }finally{
+      if (connection) {
+        connection.release();
+      } else {
+        console.error('add-location: Connection not established.');
+      };
     }
   });
 
@@ -135,12 +125,20 @@ router.post('/add-location', authenticateToken, async (req, res) => {
  *                   description: Error message
  */
 router.get('/get-locations', authenticateToken, async (req, res) => {
+  let connection;
   try {
-    const [results] = await pool.query('SELECT * FROM location');
+    const connection = await connectToDatabase();
+    const [results] = await connection.query('SELECT * FROM location');
     res.status(200).json(results);
   } catch (error) {
     console.error('Error fetching locations:', error);
     res.status(500).send('Error fetching locations');
+  }finally{
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('get-locations: Connection not established.');
+    };
   }
 });
 
@@ -179,12 +177,21 @@ router.get('/get-locations', authenticateToken, async (req, res) => {
  *                   description: Error message
  */
 router.get('/get-active-locations', authenticateToken, async (req, res) => {
+  let connection;
   try {
-    const [results] = await pool.query('SELECT * FROM location WHERE isActive = TRUE');
+    const connection = await connectToDatabase();
+    const [results] = await connection.query('SELECT * FROM location WHERE isActive = TRUE');
     res.status(200).json(results);
+    
   } catch (error) {
     console.error('Error fetching locations:', error);
     res.status(500).send('Error fetching locations');
+  }finally{
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('get-active-locations: Connection not established.');
+    };
   }
 });
 
@@ -223,12 +230,20 @@ router.get('/get-active-locations', authenticateToken, async (req, res) => {
  *                   description: Error message
  */
 router.get('/get-inactive-locations', authenticateToken, async (req, res) => {
+  let connection;
   try {
-    const [results] = await pool.query('SELECT * FROM location WHERE isActive = FALSE');
+    const connection = await connectToDatabase();
+    const [results] = await connection.query('SELECT * FROM location WHERE isActive = FALSE');
     res.status(200).json(results);
   } catch (error) {
     console.error('Error fetching locations:', error);
     res.status(500).send('Error fetching locations');
+  }finally{
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('get-inactive-locations: Connection not established.');
+    };
   }
 });
 
@@ -276,8 +291,10 @@ router.get('/get-inactive-locations', authenticateToken, async (req, res) => {
  */
 router.get('/get-locations-by-id/:id', async (req, res) => {
   const { id } = req.params;
+  let connection;
   try {
-    const [results] = await pool.query('SELECT * FROM location WHERE locationId = ?', [id]);
+    const connection = await connectToDatabase();
+    const [results] = await connection.query('SELECT * FROM location WHERE locationId = ?', [id]);
     if (results.length > 0) {
       res.status(200).json(results[0]);
     } else {
@@ -286,6 +303,12 @@ router.get('/get-locations-by-id/:id', async (req, res) => {
   } catch (error) {
     //console.error('Error fetching location:', error);
     res.status(500).json({error:'Error fetching location'});
+  }finally{
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('get-locations-by-id/:id: Connection not established.');
+    };
   }
 });
 
@@ -337,10 +360,10 @@ router.get('/get-locations-by-id/:id', async (req, res) => {
  *                   description: Error message
  */
 router.put('/update-location/:locationId', async (req, res) => {
-  // console.log('update-location', req.body);
+  
   const { locationId } = req.params;
   let { locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail, isActive } = req.body;
-
+  let connection;
       // Trim whitespace from each string
       locationName = locationName.trim();
       locationAddress = locationAddress.trim();
@@ -350,8 +373,10 @@ router.put('/update-location/:locationId', async (req, res) => {
       locationPhone = locationPhone.trim();
       locationEmail = locationEmail.trim();
       isActive = isActive;
+  
   try {
-    const [result] = await pool.query(
+    const connection = await connectToDatabase();
+    const [result] = await connection.query(
         "UPDATE location SET locationName = ?, locationAddress = ?, locationCity = ?, locationState = ?, locationZip = ?, locationPhone = ?, locationEmail = ?, isActive = ?, updatedBy = 'API Location Update', updatedOn = CURRENT_TIMESTAMP WHERE locationId = ?",
         [locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail, isActive ,locationId]
     );    
@@ -366,6 +391,12 @@ router.put('/update-location/:locationId', async (req, res) => {
   } catch (error) {
     console.error('Error updating location:', error);
     res.status(500).json({ message: 'Error updating location' });
+  } finally {
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('update-location/:locationId: Connection not established.');
+    };
   }
 });
 
@@ -417,22 +448,28 @@ router.put('/update-location/:locationId', async (req, res) => {
  */
 router.put('/deactivate-location/:id', authenticateToken, async (req, res) => {
     const { id } = req.params; // Use req.params to get the path parameter
-
+    let connection;
     try {
-        const locationQuery = `UPDATE location 
+      const connection = await connectToDatabase();
+      const locationQuery = `UPDATE location 
             SET isActive = -1, updatedBy = "API Location Delete", updatedOn = CURRENT_TIMESTAMP
             WHERE locationId = ?;`;
 
-        const [locationResult] = await pool.query(locationQuery, [id]);
+      const [locationResult] = await connection.query(locationQuery, [id]);
+      if (locationResult.affectedRows === 0) {
+          return res.status(404).json({error:'Location not found'});
+      }
 
-        if (locationResult.affectedRows === 0) {
-            return res.status(404).json({error:'Location not found'});
-        }
-
-        res.json({message:'Location deactivated'});
+      res.json({message:'Location deactivated'});
     } catch (error) {
         // console.error('Error deactivating location:', error);
-        res.status(500).json({error:'Error deactivating location'});
+      res.status(500).json({error:'Error deactivating location'});
+    }finally{
+      if (connection) {
+        connection.release();
+      } else {
+        console.error('deactivate-location/:id: Connection not established.');
+      };
     }
 });
 

@@ -6,28 +6,11 @@ const mysql = require('mysql2/promise');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { connectToDatabase } = require('./db');
 const authenticateToken = require('./middleware/authenticateToken.cjs');
 
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
-var pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
-  });
-
-// Handling connection establishment
-pool.getConnection((err, connection) => {
-    if (err) {
-      console.error('Database connection error:', err);
-      return;
-    }
-    console.log('Database connection established');
-    connection.release(); // Release the connection back to the pool
-  });
 
 /**
  * @swagger
@@ -70,9 +53,9 @@ pool.getConnection((err, connection) => {
  */
 router.post('/user-login', async (req, res) => {
     const { email, password } = req.body;
-
+    let connection;
     try {
-        const connection = await pool.getConnection();
+        const connection = await connectToDatabase();
         const [results] = await connection.query(`
             SELECT user.name, user.password, account.accountCode, account.accountId, role.roleName
             FROM user 
@@ -94,11 +77,15 @@ router.post('/user-login', async (req, res) => {
         } else {
             res.status(401).send('User not found');
         }
-
-        connection.release();
     } catch (error) {
         console.error('Error during user login:', error);
         res.status(500).send('Error during user login');
+    }finally{
+        if (connection) {
+        connection.release();
+        } else {
+        console.error('user-login: Connection not established.');
+        };
     }
 });
 

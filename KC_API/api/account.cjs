@@ -5,27 +5,9 @@ const path = require('path');
 const mysql = require('mysql2/promise');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-
+const { connectToDatabase } = require('./db');
 const env = process.env.NODE_ENV || 'development';
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
-var pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
-  });
-
-// Handling connection establishment
-pool.getConnection((err, connection) => {
-    if (err) {
-      console.error('Database connection error:', err);
-      return;
-    }
-    console.log('Database connection established');
-    connection.release(); // Release the connection back to the pool
-  });
+dotenv.config({ path: path.resolve(__dirname, `../.env.${env}`) });
 
 /**
  * @swagger
@@ -82,9 +64,10 @@ pool.getConnection((err, connection) => {
 
 router.post('/add-account', async (req, res) => {
   const { accountName, accountPhone, accountEmail, accountAddress, accountCity, accountState, accountZip, name, email, phone, phone2, password, roleId } = req.body;
+  let connection;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const connection = await pool.getConnection();
+    const connection = await connectToDatabase();
 
     try {
       await connection.beginTransaction();
@@ -111,12 +94,16 @@ router.post('/add-account', async (req, res) => {
       await connection.rollback();
       console.error('Transaction error:', err);
       res.status(500).send('Error processing request');
-    } finally {
-      connection.release();
     }
   } catch (error) {
     console.error('Error hashing password or connecting to database:', error);
     res.status(500).send('Error processing request');
+  } finally {
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('add-account: Connection not established.');
+    };
   }
 });
 

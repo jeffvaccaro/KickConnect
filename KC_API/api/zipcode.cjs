@@ -7,28 +7,11 @@ const mysql = require('mysql2/promise');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { connectToDatabase } = require('./db');
 const authenticateToken = require('./middleware/authenticateToken.cjs');
 
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
-var pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT
-});
-
-// Handling connection establishment
-pool.getConnection()
-  .then(connection => {
-    console.log('Database connection established');
-    connection.release(); // Release the connection back to the pool
-  })
-  .catch(err => {
-    console.error('Database connection error:', err);
-  });
 
 /**
  * @swagger
@@ -59,8 +42,10 @@ pool.getConnection()
  */
 router.get('/get-address-info-by-zip/:zip', authenticateToken, async (req, res) => {
   const { zip } = req.params;
+  let connection;
   try {
-    const [results] = await pool.query('SELECT * FROM common.cities_extended WHERE zip = ? LIMIT 1', [zip]);
+    const connection = await connectToDatabase();
+    const [results] = await connection.query('SELECT * FROM common.cities_extended WHERE zip = ? LIMIT 1', [zip]);
     if (results.length === 0) {
       return res.status(404).json({ message: 'City/State Info not found' });
     }
@@ -68,6 +53,12 @@ router.get('/get-address-info-by-zip/:zip', authenticateToken, async (req, res) 
   } catch (error) {
     console.error('Error fetching City/State Info:', error);
     res.status(500).send('Error fetching City/State Info');
+  }finally{
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('get-address-info-by-zip/:zip: Connection not established.');
+    };
   }
 });
 

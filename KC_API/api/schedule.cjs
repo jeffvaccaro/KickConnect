@@ -6,28 +6,11 @@ const path = require('path');
 const mysql = require('mysql2/promise');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const { connectToDatabase } = require('./db');
 const authenticateToken = require('./middleware/authenticateToken.cjs');
 
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
-var pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
-  });
-
-  // Handling connection establishment
-pool.getConnection((err, connection) => {
-    if (err) {
-      console.error('Database connection error:', err);
-      return;
-    }
-    console.log('Database connection established');
-    connection.release(); // Release the connection back to the pool
-  });
 
   /**
  * @swagger
@@ -57,17 +40,27 @@ pool.getConnection((err, connection) => {
  *         description: Error fetching Duration Info
  */
   router.get('/get-durations', authenticateToken, async (req, res) => {
+    let connection;
     try {
-      const [results] = await pool.query('SELECT durationValue, durationText FROM common.duration');
+      const connection = await connectToDatabase();
+      const [results] = await connection.query('SELECT durationValue, durationText FROM common.duration');
       res.status(200).json(results);
     } catch (error) {
       console.error('Error fetching Duration Values:', error);
       res.status(500).json({ errror: 'Error fetching Duration Values' + error.message});
+    }finally{
+      if (connection) {
+        connection.release();
+      } else {
+        console.error('get-durations: Connection not established.');
+      };
     }
   });   
 
   router.post('/add-schedule/', authenticateToken, async (req, res) => {
+    let connection;
     try {
+      const connection = await connectToDatabase();
       console.log('api', req.body);
     // const { accountId, className, classDescription, isActive } = req.body;
     // const [result] = await pool.query(
@@ -77,6 +70,12 @@ pool.getConnection((err, connection) => {
     //   res.status(201).json({ scheduleId: result.insertId  });
     } catch (error) {
          res.status(500).json({error:'Error creating the Schedule' + error.message});
+    }finally{
+      if (connection) {
+        connection.release();
+      } else {
+        console.error('add-schedule: Connection not established.');
+      };
     }
   });  
 

@@ -7,28 +7,11 @@ const mysql = require('mysql2/promise');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { connectToDatabase } = require('./db');
 const authenticateToken = require('./middleware/authenticateToken.cjs');
 
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
-var pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT
-});
-
-// Handling connection establishment
-pool.getConnection((err, connection) => {
-    if (err) {
-      console.error('Database connection error:', err);
-      return;
-    }
-    console.log('Database connection established');
-    connection.release(); // Release the connection back to the pool
-  });
 
 /**
  * @swagger
@@ -58,14 +41,21 @@ pool.getConnection((err, connection) => {
  */
 
 router.get('/get-roles', authenticateToken, async (req, res) => {
+  let connection;
     try {
-        const connection = await pool.getConnection();
+        const connection = await connectToDatabase();
         const [results] = await connection.query('SELECT * FROM role ORDER BY roleOrderId ASC');
-        connection.release();
+        
         res.json(results);
       } catch (err) {
         // console.error('Error executing query:', err);
         res.status(500).json({ error: 'Error executing query' }); // Send a JSON error response
+      }finally{
+        if (connection) {
+  connection.release();
+} else {
+  console.error('get-roles: Connection not established.');
+};
       }
   });
   
@@ -118,16 +108,22 @@ router.get('/get-roles', authenticateToken, async (req, res) => {
  *                   example: Error executing query
  */
 router.get('/get-role-by-id', authenticateToken, async (req, res) => {
+  let connection;
   try {
     const { roleId } = req.query;
-    const connection = await pool.getConnection();
+    const connection = await connectToDatabase();
     const [roleResults] = await connection.query('SELECT * FROM role WHERE roleId = ?', [roleId]);
     
     res.json(roleResults[0] || {}); // Return the first record or an empty object if no record is found
-    connection.release();
   } catch (err) {
     console.error('Error executing query:', err);
     res.status(500).json({ error: 'Error executing query' });
+  }finally{
+    if (connection) {
+  connection.release();
+} else {
+  console.error('get-role-by-id: Connection not established.');
+};
   }
 });
 
@@ -170,9 +166,10 @@ router.get('/get-role-by-id', authenticateToken, async (req, res) => {
  */
 router.post('/add-role', authenticateToken, async (req, res) => {
     const { roleName, roleDescription } = req.body;
+    let connection;
   
     try {
-      const connection = await pool.getConnection();
+      const connection = await connectToDatabase();
       try {
         const roleInsertQuery = `
           INSERT INTO admin.role (roleName, roleDescription, roleOrderId)
@@ -186,12 +183,16 @@ router.post('/add-role', authenticateToken, async (req, res) => {
       } catch (err) {
         // console.error('Error executing role query:', err);
         res.status(500).json({ message: 'Error executing role query'});
-      } finally {
-        connection.release(); // Ensure the connection is released back to the pool
       }
     } catch (error) {
       // console.error('Error getting connection from pool:', error);
       res.status(500).json({ error: 'Error adding Role' }); // Send a JSON error response
+    } finally {
+      if (connection) {
+  connection.release();
+} else {
+  console.error('add-role: Connection not established.');
+};
     }
   });
   
@@ -256,9 +257,10 @@ router.post('/add-role', authenticateToken, async (req, res) => {
 router.put('/update-role', authenticateToken, async (req, res) => {
     const { roleId } = req.query;
     const { roleName, roleDescription } = req.body;
+    let connection;
   
     try {
-      const connection = await pool.getConnection();
+      const connection = await connectToDatabase();
       try {
         // Update role with roleId
         const roleUpdateQuery = `
@@ -273,12 +275,16 @@ router.put('/update-role', authenticateToken, async (req, res) => {
       } catch (err) {
         // console.error('Error executing role query:', err);
         res.status(500).json({ error: 'rror executing role query' }); // Send a JSON error response
-      } finally {
-        connection.release(); // Ensure the connection is released back to the pool
       }
     } catch (error) {
       // console.error('Error getting connection from pool:', error);
       res.status(500).json({ error: 'Error updating Role' }); // Send a JSON error response
+    } finally {
+      if (connection) {
+  connection.release();
+} else {
+  console.error('add-role: Connection not established.');
+}; // Ensure the connection is released back to the pool
     }
   });
   
@@ -333,9 +339,10 @@ router.put('/update-role', authenticateToken, async (req, res) => {
 router.put('/update-role-order', async (req, res) => {
     const { roleId } = req.query;
     const { roleOrderId } = req.body;
+    let connection;
 
     try {
-        const connection = await pool.getConnection();
+        const connection = await connectToDatabase();
         await connection.query('SET SQL_SAFE_UPDATES = 0;'); // Disable safe update mode
 
         await connection.beginTransaction();
@@ -372,18 +379,22 @@ router.put('/update-role-order', async (req, res) => {
         );
 
         await connection.commit();
-        connection.release();
-
         res.status(200).json({message: 'Role ORDER updated successfully'});
     } catch (error) {
         //console.log('Error:', error);
         if (connection) {
             res.status(500).json({error: error});
             await connection.rollback();
-            connection.release();
+     
         }
         //console.error('Error updating role order:', error);
         res.status(500).json({error: 'Error updating Role ORDER'});
+    }finally{
+      if (connection) {
+  connection.release();
+} else {
+  console.error('update-role-order: Connection not established.');
+};
     }
 });
 

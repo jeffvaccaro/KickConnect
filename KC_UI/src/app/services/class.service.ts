@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -6,26 +7,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ClassService {
-  private apiUrl = 'http://localhost:3000/class';
+  private apiUrl = environment.apiUrl + '/class'; 
 
   constructor(private http: HttpClient)  { }
-
-  // getLocations(status:string): Observable<any> {
-  //   let url = `${this.apiUrl}`;
-  //   switch (status) {
-  //     case 'Active':
-  //       url = `${this.apiUrl}/get-active-locations`;
-  //       break;
-  //     case 'InActive':
-  //       url = `${this.apiUrl}/get-inactive-locations`;
-  //       break;
-  //     default:
-  //       url = `${this.apiUrl}/get-locations`;
-  //       break;
-  //   } 
-    
-  //   return this.http.get<any>(url);
-  // }
 
   getClasses(accountId: number): Observable<any> {
     const url = `${this.apiUrl}/get-class-list/${accountId}`;

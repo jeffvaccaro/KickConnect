@@ -7,28 +7,12 @@ const mysql = require('mysql2/promise');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { connectToDatabase } = require('./db');
 const authenticateToken = require('./middleware/authenticateToken.cjs');
 
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-var pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT
-});
-
-// Handling connection establishment
-pool.getConnection((err, connection) => {
-  if (err) {
-    console.error('Database connection error:', err);
-    return;
-  }
-  console.log('Database connection established');
-  connection.release(); // Release the connection back to the pool
-});
 
 /**
  * @swagger
@@ -87,24 +71,25 @@ pool.getConnection((err, connection) => {
  */
 router.get('/get-users-by-account-code', authenticateToken, async (req, res) => {
   const accountCode = req.query.accountcode; // Get the account code from the query parameters
-
-  // Use a parameterized query to prevent SQL injection
-  const query = `
+  let connection;
+  try {
+      const connection = await connectToDatabase();
+      const query = `
       SELECT user.* 
       FROM account 
       INNER JOIN user ON account.accountId = user.accountId
-      WHERE account.accountcode = ?
-  `;
-
-  try {
-      const connection = await pool.getConnection();
+      WHERE account.accountcode = ?`;
       const [results] = await connection.query(query, [accountCode]);
-
       res.json(results);
-      connection.release();
   } catch (err) {
       console.error('Error executing query:', err);
       res.status(500).json({error:'Error executing query'});
+  }finally{
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('get-users-by-account-code: Connection not established.');
+    };
   }
 });
 
@@ -178,9 +163,10 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
  *         - url: http://localhost:3000
  */
 router.get('/get-users', authenticateToken, async (req, res) => {
+  let connection;
   try {
       let { accountCode } = req.query;
-      const connection = await pool.getConnection();
+      const connection = await connectToDatabase();
 
       // Query the account table to get the accountId by accountCode
       const [accountResults] = await connection.query('SELECT accountId FROM account WHERE accountCode = ?', [accountCode]);
@@ -193,10 +179,15 @@ router.get('/get-users', authenticateToken, async (req, res) => {
       const [userResults] = await connection.query('SELECT user.*, role.roleName FROM user JOIN role ON user.roleId = role.roleId WHERE user.accountId = ?', [accountId]);
 
       res.json(userResults.length ? userResults : []); // Ensure an array is returned
-      connection.release();
   } catch (err) {
       console.error('Error executing query:', err);
       res.status(500).json({error:'Error executing query'});
+  }finally{
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('get-users: Connection not established.');
+    };
   }
 });
 
@@ -288,17 +279,23 @@ router.get('/get-users', authenticateToken, async (req, res) => {
  *         - url: http://localhost:3000/
  */
 router.get('/get-user-by-id', authenticateToken, async (req, res) => {
+  let connection;
   try {
     const { userId } = req.query;
-    const connection = await pool.getConnection();
+    const connection = await connectToDatabase();
     // Query the user table using the retrieved accountId
     const [userResults] = await connection.query('SELECT user.* FROM user WHERE user.userId = ?', [userId]);
     
     res.json(userResults[0] || {}); // Return the first record or an empty object if no record is found
-    connection.release();
   } catch (err) {
     console.error('Error executing query:', err);
     res.status(500).json({error:'Error executing query'});
+  }finally{
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('get-user-by-id: Connection not established.');
+    };
   }
 });
 
@@ -365,31 +362,32 @@ router.get('/get-user-by-id', authenticateToken, async (req, res) => {
 
 router.get('/get-filtered-users', authenticateToken, async (req, res) => {
   let { accountId, status } = req.query;
-  console.log(req.query);
-
   let isActive;
+
   if (status === 'InActive') {
       isActive = 0;
   } else if (status === 'Active') {
       isActive = 1;
   }
 
+  let connection;
   try {
-      const connection = await pool.getConnection();
-      const query = 'SELECT user.*, role.roleName FROM user JOIN role ON user.roleId = role.roleId WHERE user.accountId = ? AND isActive = ?';
-      const formattedQuery = mysql.format(query, [accountId, isActive]);
-      
-      // console.log('Executing query:', formattedQuery);
+    const connection = await connectToDatabase();
+    const query = 'SELECT user.*, role.roleName FROM user JOIN role ON user.roleId = role.roleId WHERE user.accountId = ? AND isActive = ?';
+    const formattedQuery = mysql.format(query, [accountId, isActive]);
 
-      const [results] = await connection.query(formattedQuery);
-      // console.log('Query executed successfully:', results);
+    const [results] = await connection.query(formattedQuery);
 
-      res.json(results);
-      connection.release();
-
+    res.json(results);
   } catch (err) {
       console.error('Error executing query:', err);
       res.status(500).json({error:'Error executing query'});
+  }finally{
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('get-filtered-users: Connection not established.');
+    };
   }
 });
 
@@ -472,23 +470,17 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
  */
 router.post('/add-user', authenticateToken, upload.single('photo'), async (req, res) => {
   const { accountcode, name, email, phone, phone2, address, city, state, zip, password: originalPassword, roleId } = req.body;
-  // console.log(req.body);
+  let connection;
   try {
-
-    // Use a new variable for the password
+    const connection = await connectToDatabase();
+   
     let password = originalPassword || accountcode; // Set default password to accountcode if not provided
-    // console.log('password:', password); // Log the password
-
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Query to get the accountId from the accountcode
     const accountQuery = 'SELECT accountId FROM admin.account WHERE accountcode = ?';
-    const connection = await pool.getConnection();
     const [accountResults] = await connection.query(accountQuery, [accountcode]);
 
-    // console.log('accountQuery', accountQuery);
     if (accountResults.length === 0) {
-      connection.release();
       return res.status(404).json({error:'Account not found'});
     }
 
@@ -503,7 +495,11 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
     const [duplicateResults] = await connection.query(duplicateQuery, [name, email, phone, address, city, state, zip]);
 
     if (duplicateResults.length > 0) {
-      connection.release();
+      if (connection) {
+        connection.release();
+      } else {
+        console.error('add-user: Connection not established.');
+      };
       return res.status(409).json({error:'Duplicate user found'});
     }
 
@@ -513,13 +509,16 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "API User Insert")
     `;
     await connection.query(userQuery, [accountId, name, email, phone, phone2, address, city, state, zip, hashedPassword, photoURL, roleId]);
-
-    connection.release();
     res.json({ message: 'User registered'});
   } catch (error) {
     //console.error('Error during user registration:', error);
     res.status(500).json( { error: 'Error during user registration' });
-   
+  }finally{
+    if (connection) {
+  connection.release();
+} else {
+  console.error('add-user: Connection not established.');
+};
   }
 });
   
@@ -612,15 +611,13 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
 router.put('/update-user/:userId', authenticateToken, upload.single('photo'), async (req, res) => {
   const { userId } = req.params; // Use req.params instead of req.query
   const { name, email, phone, phone2, address, city, state, zip, isActive, resetPassword, roleId, photoURL } = req.body;
-  let connection;
 
-  // console.log('req.body', req.body); 
   if (!roleId) {
     return res.status(400).json({ error: 'roleId is required' }); // Send a JSON error response
   }
-
+  let connection;
   try {
-    connection = await pool.getConnection();
+    const connection = await connectToDatabase();
 
     // Extract the file from the photoURL object
     // let finalPhotoURL = null;
@@ -649,7 +646,11 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
     //console.error('Error updating user:', error); // Log the error details
     res.status(500).json({ error: 'Error updating user' }); // Send a JSON error response
   } finally {
-    if (connection) connection.release(); // Ensure connection is released in both success and error cases
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('update-user/:userId: Connection not established.');
+    }; 
   }
 });
 
@@ -710,26 +711,25 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
  */
 router.put('/deactivate-user', authenticateToken, async (req, res) => {
   const { userId } = req.query;
-
+  let connection;
   try {
-      // Update user with userId
-      const userQuery = `UPDATE user 
-          SET isActive = -1, updatedBy = "API User Delete"
-          WHERE userId = ?;`;
+    const connection = await connectToDatabase();
+    const userQuery = `UPDATE user 
+        SET isActive = -1, updatedBy = "API User Delete"
+        WHERE userId = ?;`;
 
       // console.log(userQuery);
-      const connection = await pool.getConnection();
-      const [userResult] = await connection.query(userQuery, [userId]);
-
-      //console.log('Query executed successfully:', userResult);
-      connection.release();
-      res.json({ message: 'User deactivated' });
+    const [userResult] = await connection.query(userQuery, [userId]);
+    res.json({ message: 'User deactivated' });
   } catch (error) {
-      //console.error('Error deactivating user:', error);
       res.status(500).json({ error: 'Error deactivating user' }); // Send a JSON error response
+  } finally {
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('deactivate-user: Connection not established.');
+    };
   }
 });
-
-
-  
+ 
   module.exports = router;
