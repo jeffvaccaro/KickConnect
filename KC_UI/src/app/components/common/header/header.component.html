@@ -16,11 +16,11 @@
                 <span class="middle-bar"></span>
                 <span class="bottom-bar"></span>
             </div>
-            <button mat-icon-button [matMenuTriggerFor]="appsMenu" class="menu-btn rounded-circle p-0 border-none position-relative">
+            <!-- <button mat-icon-button [matMenuTriggerFor]="appsMenu" class="menu-btn rounded-circle p-0 border-none position-relative">
                 <i class="flaticon-menu-1"></i>
-            </button>
-            <mat-menu class="menu-dropdown" #appsMenu="matMenu" xPosition="after">
-                <div class="menu-header d-flex align-items-center justify-content-space-between">
+            </button> -->
+            <!-- <mat-menu class="menu-dropdown" #appsMenu="matMenu" xPosition="after"> -->
+                <!-- <div class="menu-header d-flex align-items-center justify-content-space-between">
                     <h5 class="m-0">Web Apps</h5>
                     <button type="button" class="bg-transparent p-0 border-none">Edit</button>
                 </div>
@@ -63,15 +63,15 @@
                 </div>
                 <div class="menu-footer">
                     <a routerLink="/" class="fw-medium position-relative">View All <i class="flaticon-chevron"></i></a>
-                </div>
-            </mat-menu>
+                </div> -->
+            <!-- </mat-menu> -->
             <form class="search-box position-relative">
                 <input type="text" class="input-search d-block" placeholder="Search here..">
                 <button type="submit"><i class="ri-search-line"></i></button>
             </form>
         </div>
         <ul class="header-right-side d-flex align-items-center mt-0 mb-0">
-            <li>
+            <!-- <li>
                 <button mat-icon-button [matMenuTriggerFor]="languageMenu" class="btn p-0 border-none rounded-circle position-relative">
                     <img src="img/flag/usa.png" alt="usa">
                 </button>
@@ -97,8 +97,8 @@
                         </li>
                     </ul>
                 </mat-menu>
-            </li>
-            <li>
+            </li> -->
+            <!-- <li>
                 <button mat-icon-button [matMenuTriggerFor]="emailMenu" class="btn p-0 border-none rounded-circle position-relative">
                     <i class="flaticon-envelope"></i>
                 </button>
@@ -157,8 +157,8 @@
                         <a routerLink="/email" class="fw-medium position-relative">View All <i class="flaticon-chevron"></i></a>
                     </div>
                 </mat-menu>
-            </li>
-            <li>
+            </li> -->
+            <!-- <li>
                 <button mat-icon-button [matMenuTriggerFor]="notificationMenu" class="btn p-0 border-none rounded-circle position-relative notification-btn">
                     <i class="flaticon-bell-2"></i>
                 </button>
@@ -206,7 +206,7 @@
                         <a routerLink="/notifications" class="fw-medium position-relative">View All <i class="flaticon-chevron"></i></a>
                     </div>
                 </mat-menu>
-            </li>
+            </li> -->
             <li class="d-none d-lg-block">
                 <div class="date-btn main-color fw-semibold position-relative">
                     <i class="flaticon-calendar"></i> {{ currentDate | date: 'dd MMMM yyyy' }}

@@ -2,10 +2,13 @@
 :root {
     --fontFamily: 'Open Sans', sans-serif;
     --headingFontFamily: 'Raleway', sans-serif;
-    --heraBlueColor: #757fef;
-    --aareRiverColor: #00b69b;
-    --blackColor: #260944;
-    --paragraphColor: #5b5b98;
+
+    --heraBlueColor: #000000;
+    --aareRiverColor: #FFD700;
+
+
+    --blackColor: #000000;
+    --paragraphColor: #000000;
     --whiteColor: #ffffff;
     --fontSize: 15px;
     --transition: .5s;
@@ -5255,5 +5258,7 @@ quill-editor {
         pointer-events: none;
         opacity: 0.5; /* Optional: makes the div look 'disabled' */
     }
-    
+    .button-color-black {
+        color:#000;
+    }
 }

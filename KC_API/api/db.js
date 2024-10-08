@@ -72,6 +72,14 @@ const mysql = require('mysql2/promise');
 
 const connectToDatabase = async () => {
   try {
+
+    // console.log('Connecting to database with the following details:');
+    // console.log('Host:', process.env.DB_HOST);
+    // console.log('User:', process.env.DB_USER);
+    // console.log('Password:', process.env.DB_PASSWORD);
+    // console.log('Database:', process.env.DB_NAME);
+    // console.log('Port:', process.env.DB_PORT);
+
     console.log('Connecting to database...');
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,

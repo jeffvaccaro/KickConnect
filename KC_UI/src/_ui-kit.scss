@@ -190,7 +190,7 @@ html {
         height: 100% !important;
     }
     &.mat-primary {
-        --mdc-text-button-label-text-color: #005cbb;
+        --mdc-text-button-label-text-color: #000;
     }
 }
 .mat-mdc-outlined-button {
@@ -217,7 +217,7 @@ html {
     }
     &.mat-primary {
         --mdc-protected-button-label-text-color: var(--whiteColor);
-        --mdc-protected-button-container-color: #005cbb;
+        --mdc-protected-button-container-color: #000;
     }
     &.mat-accent {
         --mdc-protected-button-label-text-color: var(--whiteColor);
@@ -240,6 +240,11 @@ html {
             --mdc-filled-button-container-color: #EDEFF5;
             --mdc-filled-button-label-text-color: var(--blackColor);
         }
+    }&.black {
+        &.mat-unthemed {
+            --mdc-filled-button-container-color: #000000;
+            --mdc-filled-button-label-text-color: var(--whiteColor);
+        }
     }
 }
 .mat-mdc-icon-button {
@@ -247,7 +252,7 @@ html {
         --mdc-icon-button-icon-color: var(--heraBlueColor);
     }
     &.mat-primary {
-        --mat-icon-color: #005cbb;
+        --mat-icon-color: #000;
     }
     &.mat-accent {
         --mat-icon-color: #343dff;
@@ -284,8 +289,8 @@ html {
 .mdc-fab {
     &.mat-primary {
         --mat-icon-color: var(--whiteColor);
-        --mdc-fab-container-color: #005cbb;
-        --mdc-fab-small-container-color: #005cbb;
+        --mdc-fab-container-color: #000;
+        --mdc-fab-small-container-color: #000;
     }
     &.mat-accent {
         --mat-icon-color: var(--whiteColor);
@@ -1793,7 +1798,7 @@ blockquote {
             --mdc-text-button-label-text-color: var(--whiteColor);
         }
         &.mat-primary {
-            --mdc-outlined-button-label-text-color: #005cbb;
+            --mdc-outlined-button-label-text-color: #000;
         }
     }
     .mat-mdc-outlined-button {
@@ -1860,6 +1865,12 @@ blockquote {
                 --mdc-filled-button-label-text-color: var(--whiteColor);
             }
         }
+        &.black {
+            &.mat-unthemed {
+                --mdc-filled-button-container-color: #000;
+                --mdc-filled-button-label-text-color: var(--whiteColor);
+            }
+        }        
         &[disabled][disabled] {
             --mdc-filled-button-disabled-container-color: rgba(255, 255, 255, 0.12);
             --mdc-filled-button-disabled-label-text-color: rgba(255, 255, 255, 0.38);

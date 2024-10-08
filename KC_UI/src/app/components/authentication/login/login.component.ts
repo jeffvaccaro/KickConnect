@@ -8,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-import { default as jwtDecode } from 'jwt-decode';
 import { LoginService } from '../../../services/loginService';
 import { AuthService } from '../../../services/authService';
 import { UserService } from '../../../services/user.service';
@@ -46,8 +45,8 @@ export class LoginComponent {
         private userService: UserService,
         private router: Router) {
           this.loginForm = this.fb.group({
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', Validators.required]
+            email: ['admin@admin.com', [Validators.required, Validators.email]],
+            password: ['admin12345', Validators.required]
           });
         }
 
