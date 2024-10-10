@@ -41,7 +41,7 @@ router.post('/add-class/', authenticateToken, async (req, res) => {
     const connection = await connectToDatabase();
     const { accountId, className, classDescription, isActive } = req.body;
     const [result] = await connection.query(
-      'INSERT INTO Class (accountId, className, classDescription, isActive, createdBy) VALUES (?, ?, ?, ?, ?)', 
+      'INSERT INTO class (accountId, className, classDescription, isActive, createdBy) VALUES (?, ?, ?, ?, ?)', 
       [accountId, className, classDescription, isActive, 'API Class Insert']
     );
     res.status(201).json({ classId: result.insertId });
@@ -79,7 +79,7 @@ router.get('/get-class-list/:accountId', authenticateToken, async (req, res) => 
   try {
     const connection = await connectToDatabase();
     const { accountId } = req.params;
-    const [results] = await connection.query('SELECT * FROM Class WHERE accountId = ?', [accountId]);
+    const [results] = await connection.query('SELECT * FROM class WHERE accountId = ?', [accountId]);
     res.status(200).json(results);
   } catch (error) {
     console.error('Error fetching Classes:', error);
@@ -116,7 +116,7 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
   try {
     const connection = await connectToDatabase();
     const { accountId } = req.params;
-    const [results] = await connection.query('SELECT classId, className, classDescription, isActive FROM Class WHERE accountId = ? AND isActive = true', [accountId]);
+    const [results] = await connection.query('SELECT classId, className, classDescription, isActive FROM class WHERE accountId = ? AND isActive = true', [accountId]);
     res.status(200).json(results);
   } catch (error) {
     console.error('Error fetching Classes:', error);
@@ -162,7 +162,7 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
     let connection;
     try {
       const connection = await connectToDatabase();
-      const [results] = await connection.query('SELECT * FROM Class WHERE accountId = ? AND classId = ?', [accountId, classId]);
+      const [results] = await connection.query('SELECT * FROM class WHERE accountId = ? AND classId = ?', [accountId, classId]);
       if (results.length === 0) {
         return res.status(404).json({ message: 'Class not found' });
       }
@@ -219,7 +219,7 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
     try {
       const connection = await connectToDatabase();
       const [results] = await connection.query(
-        "UPDATE Class SET className = ?, classDescription = ?, isActive = ?, updatedBy = 'API Location Update', updatedOn = CURRENT_TIMESTAMP WHERE classId = ?",
+        "UPDATE class SET className = ?, classDescription = ?, isActive = ?, updatedBy = 'API Location Update', updatedOn = CURRENT_TIMESTAMP WHERE classId = ?",
         [className, classDescription, isActive, classId]
       );
       if (results.affectedRows === 0) {
@@ -269,7 +269,7 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
     try {
       const connection = await connectToDatabase();
       const classQuery = `
-        UPDATE Class 
+        UPDATE class 
         SET isActive = false, updatedBy = "API Class Delete", updatedOn = CURRENT_TIMESTAMP
         WHERE accountId = ? AND classId = ?;
       `;
