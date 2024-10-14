@@ -39,7 +39,9 @@ router.post('/add-class/', authenticateToken, async (req, res) => {
   let connection;
   try {
     
-    const connection = await connectToDatabase();
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+    connection = await Promise.race([connectToDatabase(), timeout]);
+
     const { accountId, className, classDescription, isActive } = req.body;
     const [result] = await connection.query(
       'INSERT INTO class (accountId, className, classDescription, isActive, createdBy) VALUES (?, ?, ?, ?, ?)', 
@@ -53,7 +55,7 @@ router.post('/add-class/', authenticateToken, async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      //console.warn('add-class: Connection not established.');
+      console.warn('add-class: Connection not established.');
     };
   }
 });
@@ -79,7 +81,9 @@ router.post('/add-class/', authenticateToken, async (req, res) => {
 router.get('/get-class-list/:accountId', authenticateToken, async (req, res) => {
   let connection;
   try {
-    const connection = await connectToDatabase();
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+    connection = await Promise.race([connectToDatabase(), timeout]);
+
     const { accountId } = req.params;
     const [results] = await connection.query('SELECT * FROM class WHERE accountId = ?', [accountId]);
     res.status(200).json(results);
@@ -116,7 +120,10 @@ router.get('/get-class-list/:accountId', authenticateToken, async (req, res) => 
 router.get('/get-active-class-list/:accountId', authenticateToken, async (req, res) => {
   let connection;
   try {
-    const connection = await connectToDatabase();
+
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+    connection = await Promise.race([connectToDatabase(), timeout]);
+
     const { accountId } = req.params;
     const [results] = await connection.query('SELECT classId, className, classDescription, isActive FROM class WHERE accountId = ? AND isActive = true', [accountId]);
     res.status(200).json(results);
@@ -163,7 +170,9 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
     const { accountId, classId } = req.params;
     let connection;
     try {
-      const connection = await connectToDatabase();
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+      connection = await Promise.race([connectToDatabase(), timeout]);
+
       const [results] = await connection.query('SELECT * FROM class WHERE accountId = ? AND classId = ?', [accountId, classId]);
       if (results.length === 0) {
         return res.status(404).json({ message: 'Class not found' });
@@ -219,26 +228,28 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
     const { className, classDescription, isActive } = req.body;
     let connection;
     try {
-      const connection = await connectToDatabase();
-      const [results] = await connection.query(
-        "UPDATE class SET className = ?, classDescription = ?, isActive = ?, updatedBy = 'API Location Update', updatedOn = CURRENT_TIMESTAMP WHERE classId = ?",
-        [className, classDescription, isActive, classId]
-      );
-      if (results.affectedRows === 0) {
-        return res.status(404).json({ message: 'Class not found' });
-      }
-      res.status(200).json({ classId, className, classDescription });
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+        connection = await Promise.race([connectToDatabase(), timeout]);
+
+        const [results] = await connection.query(
+          "UPDATE class SET className = ?, classDescription = ?, isActive = ?, updatedBy = 'API Location Update', updatedOn = CURRENT_TIMESTAMP WHERE classId = ?",
+          [className, classDescription, isActive, classId]
+        );
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ message: 'Class not found' });
+        }
+        res.status(200).json({ classId, className, classDescription });
       
-    } catch (error) {
-      console.error('Error updating Class:', error);
-      res.status(500).json({error:'Error updating Class' + error.message});
-    }finally{
-      if (connection) {
-        connection.release();
-      } else {
-        console.error('update-class/:classId: Connection not established.');
-      };
-    }
+        } catch (error) {
+          console.error('Error updating Class:', error);
+          res.status(500).json({error:'Error updating Class' + error.message});
+        }finally{
+          if (connection) {
+            connection.release();
+          } else {
+            console.warn('update-class/:classId: Connection not established.');
+          };
+        }
   });
   
  
@@ -269,29 +280,31 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
     const { accountId, classId } = req.params;
     let connection;
     try {
-      const connection = await connectToDatabase();
-      const classQuery = `
-        UPDATE class 
-        SET isActive = false, updatedBy = "API Class Delete", updatedOn = CURRENT_TIMESTAMP
-        WHERE accountId = ? AND classId = ?;
-      `;
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+        connection = await Promise.race([connectToDatabase(), timeout]);
+
+        const classQuery = `
+          UPDATE class 
+          SET isActive = false, updatedBy = "API Class Delete", updatedOn = CURRENT_TIMESTAMP
+          WHERE accountId = ? AND classId = ?;
+        `;
   
-      const [classResult] = await connection.query(classQuery, [accountId, classId]);
+        const [classResult] = await connection.query(classQuery, [accountId, classId]);
   
-      if (classResult.affectedRows === 0) {
-        return res.status(404).json({message:'Class not found'});
-      }  
-      res.status(204).json({message: 'Class deactivated'});
-    } catch (error) {
-      //console.error('Error deactivating Class:', error);
-      res.status(500).json({error: 'Error deactivating Class' + error.message});
-    }finally{
-      if (connection) {
-        connection.release();
-      } else {
-        //console.warn('deactivate-class/:accountId/:classId: Connection not established.');
-      };
-    }
+          if (classResult.affectedRows === 0) {
+            return res.status(404).json({message:'Class not found'});
+          }  
+          res.status(204).json({message: 'Class deactivated'});
+        } catch (error) {
+          //console.error('Error deactivating Class:', error);
+          res.status(500).json({error: 'Error deactivating Class' + error.message});
+        }finally{
+          if (connection) {
+            connection.release();
+          } else {
+            //console.warn('deactivate-class/:accountId/:classId: Connection not established.');
+          };
+        }
   });
   
 

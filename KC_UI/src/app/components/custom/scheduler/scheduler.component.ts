@@ -32,25 +32,18 @@ export class SchedulerComponent implements AfterViewInit {
   // Define the configCalendar property here
   configCalendar: DayPilot.CalendarConfig = {
     viewType: 'Week',
-    onTimeRangeSelected: async (args) => {
-      const modal = await DayPilot.Modal.prompt('Create a new event:', 'Event 1');
-      const dp = args.control;
-      dp.clearSelection();
-      if (!modal.result) {
-        return;
-      }
-      dp.events.add(new DayPilot.Event({
-        start: args.start,
-        end: args.end,
-        id: DayPilot.guid(),
-        text: modal.result
-      }));
+    onTimeRangeSelected: args => {
+      // Override default behavior by not calling any default function
+      // Do nothing here to prevent the default add event dialog
     },
     onEventClick: (args) => {
-      // console.log('args.e.data:', args.e.data);
+      console.log('args.e.data:', args.e.data);
+      console.log('customDPEvents', this.customDPEvents);
       const updatedEvent = args.e.data;
       const eventIndex = this.customDPEvents.findIndex(event => event.id === updatedEvent.id);
-      this.customDPEvents[eventIndex] = updatedEvent;
+      console.log('eventIndex', eventIndex);
+      console.log('updatedEvent', updatedEvent);
+      //this.customDPEvents[eventIndex] = updatedEvent;
 
       const eventData = {
         ...args.e.data,
@@ -68,7 +61,7 @@ export class SchedulerComponent implements AfterViewInit {
       };
     
       // console.log('onEventClick', eventData);  // Log to verify data
-      this.openAddEventDialog('300ms', '100ms', eventData);
+      this.openAddEventDialog('300ms', '100ms', false, eventData);
     },
     
     onEventMoved: (args) => {
@@ -79,6 +72,7 @@ export class SchedulerComponent implements AfterViewInit {
       updatedEvent.duration = (args.newEnd.getTime() - args.newStart.getTime()) / (60 * 1000); // Calculate duration in minutes
       this.eventDataManager.updateEvent(updatedEvent);
     }
+    
   };
   
   constructor(public dialog: MatDialog, private ds: DataService, private schedulerService: SchedulerService, private classService: ClassService) {
@@ -98,10 +92,7 @@ export class SchedulerComponent implements AfterViewInit {
       this.loadEvents();
     }
   }
-
-  // Example subscription
-
-
+  
   loadEvents(): void {
     this.schedulerService.getSchedules(1).subscribe((data: ISchedule[]) => {
       this.scheduleList = data;
@@ -158,8 +149,8 @@ export class SchedulerComponent implements AfterViewInit {
   
   
 
-  openAddEventDialog(enterAnimationDuration: string, exitAnimationDuration: string, event?: any): void {
-    const eventDataManager = createEventDataManager(); // Initialize the closure
+  openAddEventDialog(enterAnimationDuration: string, exitAnimationDuration: string, isNew: boolean, event?: any): void {
+    const eventDataManager = createEventDataManager();
     const dialogRef = this.dialog.open(AddEditDialogComponent, {
       width: '600px',
       enterAnimationDuration,
@@ -176,7 +167,8 @@ export class SchedulerComponent implements AfterViewInit {
         isRepeat: event.isRepeat || false,
         isActive: event.isActive || false,
         accountId: event.accountId,
-        locationValues: event.locationId
+        locationValues: event.locationId,
+        isNew: isNew
       } : {}
     });
       
@@ -239,8 +231,8 @@ export class SchedulerComponent implements AfterViewInit {
             });
           }
         }
-        this.calendar.control.update();
       }
+      this.calendar.control.update();
     });
     
   }

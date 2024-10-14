@@ -50,6 +50,7 @@ export class AddEditDialogComponent implements OnInit {
   locations: ILocations[] = [];
   accountId: number;
   isNewEventClass: boolean = true;
+  isNew: string;
 
   constructor(
     private fb: FormBuilder,
@@ -115,7 +116,7 @@ export class AddEditDialogComponent implements OnInit {
     this.classService.getActiveClasses(this.accountId).subscribe({
       next: response => {
         this.classes = response;
-        console.log('classes', this.classes);
+        // console.log('classes', this.classes);
       },
       error: error => {
         this.snackBarService.openSnackBar('Error Fetching Class data:' + error.message, '', []);
@@ -130,6 +131,12 @@ export class AddEditDialogComponent implements OnInit {
         this.snackBarService.openSnackBar('Error Fetching Location data:' + error.message, '', []);
       }
     });
+
+    if(this.data?.isNew === undefined){
+      this.isNew = "Add New";
+    }else{
+      this.isNew = "Update";
+    }
   }
 
   close() {

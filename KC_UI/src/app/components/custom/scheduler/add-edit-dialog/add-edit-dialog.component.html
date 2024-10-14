@@ -1,6 +1,6 @@
 <div class="create-dialog-box">
     <div class="title d-flex align-items-center justify-content-space-between">
-      <h4 class="mb-0">Add New Event</h4>
+      <h4 class="mb-0">{{isNew}} Event</h4>
       <button class="close-btn bg-transparent p-0 border-none" (click)="close()"><i class="flaticon-close"></i></button>
     </div>
     <form [formGroup]="eventForm" (ngSubmit)="save()">

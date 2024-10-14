@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
-import { concat, Observable, throwError } from 'rxjs';
-import { catchError, delay, retryWhen, take, throwIfEmpty } from 'rxjs/operators';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, retry, delay, take, concat, map } from 'rxjs/operators';
 import { ModalService } from '../services/modal.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -19,11 +19,10 @@ export class AuthInterceptor implements HttpInterceptor {
     const cloned = token ? req.clone({ headers: req.headers.set('Authorization', `Bearer ${token}`) }) : req;
 
     return next.handle(cloned).pipe(
-      retryWhen(errors => errors.pipe(
-        delay(1000), // Initial delay
-        take(3), // Retry 3 times
-        throwIfEmpty(() => throwError(new Error('Failed after 3 retries'))) // Throw error after retries
-      )),
+      retry({
+        delay: (retryCount) => of(retryCount).pipe(delay(retryCount * 1000)), // Incremental delay
+        count: 3 // Retry 3 times
+      }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           this.snackBar.open('Session expired. Please log in again.', 'OK', { duration: 3000 });
