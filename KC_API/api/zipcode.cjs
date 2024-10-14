@@ -57,7 +57,7 @@ router.get('/get-address-info-by-zip/:zip', authenticateToken, async (req, res) 
     if (connection) {
       connection.release();
     } else {
-      console.error('get-address-info-by-zip/:zip: Connection not established.');
+      //console.warn('get-address-info-by-zip/:zip: Connection not established.');
     };
   }
 });

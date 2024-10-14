@@ -47,7 +47,7 @@ export class AddNewRoleComponent implements OnInit {
 
   onSubmit(event: Event): void {
     event.preventDefault(); // Prevent the default form submission
-    // console.warn('Role Info', this.form.value); // Log the form values
+    // //console.warn('Role Info', this.form.value); // Log the form values
   
     const roleData = {
       roleName: this.form.value.name,

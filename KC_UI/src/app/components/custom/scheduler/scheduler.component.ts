@@ -7,8 +7,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { DataService } from '../../../services/data.service';
 import { AddEditDialogComponent } from './add-edit-dialog/add-edit-dialog.component';
-import { customDayPilotEventData } from '../../../interfaces/customDayPilotEventData';
+import { ICustomDayPilotEventData } from '../../../interfaces/customDayPilotEventData';
+import { ClassService } from '../../../services/class.service';
 import { SchedulerService } from '../../../services/scheduler.service';
+import { IClass } from '../../../interfaces/classes';
+import { ISchedule } from '../../../interfaces/schedule';
 
 @Component({
   selector: 'app-scheduler',
@@ -20,10 +23,10 @@ import { SchedulerService } from '../../../services/scheduler.service';
 export class SchedulerComponent implements AfterViewInit {
   @ViewChild('calendar') calendar!: DayPilotCalendarComponent;
   private eventDataManager = createEventData(); 
-
-
-  //customDPEvents: DayPilot.EventData[] = [];
-  customDPEvents: customDayPilotEventData[] = [];
+  
+  class : IClass;
+  scheduleList : ISchedule[] = [];
+  customDPEvents: ICustomDayPilotEventData[] = [];
 
 
   // Define the configCalendar property here
@@ -60,7 +63,8 @@ export class SchedulerComponent implements AfterViewInit {
         selectedTime: args.e.data.start.toString('HH:mm'),
         duration: (args.e.data.end.getTime() - args.e.data.start.getTime()) / (60 * 1000),
         isRepeat: args.e.data.isRepeat || false,
-        isActive: args.e.data.isActive || false
+        isActive: args.e.data.isActive || false,
+        locationValues: args.e.data.locationId || -99
       };
     
       // console.log('onEventClick', eventData);  // Log to verify data
@@ -77,7 +81,9 @@ export class SchedulerComponent implements AfterViewInit {
     }
   };
   
-  constructor(public dialog: MatDialog, private ds: DataService, private schedulerService: SchedulerService) {}
+  constructor(public dialog: MatDialog, private ds: DataService, private schedulerService: SchedulerService, private classService: ClassService) {
+    
+  }
 
   ngAfterViewInit(): void {
     this.checkAndLoadEvents();
@@ -97,18 +103,61 @@ export class SchedulerComponent implements AfterViewInit {
 
 
   loadEvents(): void {
-    // const from = this.calendar.control.visibleStart();
-    // const to = this.calendar.control.visibleEnd();
+    this.schedulerService.getSchedules(1).subscribe((data: ISchedule[]) => {
+      this.scheduleList = data;
   
-    // this.customDPEvents = this.ds.getEvents2(from, to).map(event => ({
-    //   ...event,
-    //   existingClassId: event.existingClassId || 'defaultId', // Ensure default value
-    //   existingClassName: event.existingClassName || 'defaultName'
-    // }));
-    // console.log('events:', this.customDPEvents);
-    // this.calendar.control.update();
+      const currentDate = new Date(); // Get the current date
+      const startOfWeek = currentDate.getDate() - currentDate.getDay(); // Get the start of the current week (Sunday)
+      
+      this.customDPEvents = this.scheduleList.map(schedule => {
+        const eventDate = new Date(currentDate); 
+        eventDate.setDate(startOfWeek + schedule.day); // Calculate the exact date based on dayNumber
+        
+        const formattedDate = this.formatDate(eventDate.toISOString()); // Format the calculated date
+        
+        return {
+          id: schedule.classId,
+          text: schedule.className,
+          start: `${formattedDate}T${this.formatTime(schedule.startTime)}`,
+          end: `${formattedDate}T${this.formatTime(schedule.endTime)}`,
+          resource: schedule.classId, // Adjust based on your calendar resource settings
+          existingClassId: schedule.classId,
+          existingClassName: schedule.className,
+          existingClassValue: String(schedule.classId), // Convert to string
+          existingClassDescription: schedule.classDescription,
+          isRepeat: schedule.isRepeat,
+          isActive: schedule.isActive
+        };
+      });
+  
+      this.calendar.control.update(); // Ensure the calendar updates
+    });
   }
   
+  formatDate(date: string): string {
+    const formattedDate = new Date(date);
+    const year = formattedDate.getFullYear();
+    const month = String(formattedDate.getMonth() + 1).padStart(2, '0');
+    const day = String(formattedDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  
+  formatTime(time: string): string {
+    const [hoursMinutes, modifier] = time.split(' ');
+    let [hours, minutes] = hoursMinutes.split(':').map(Number);
+  
+    if (modifier === 'PM' && hours < 12) {
+      hours += 12;
+    }
+    if (modifier === 'AM' && hours === 12) {
+      hours = 0;
+    }
+  
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`; // Correct time format
+  }
+  
+  
+
   openAddEventDialog(enterAnimationDuration: string, exitAnimationDuration: string, event?: any): void {
     const eventDataManager = createEventDataManager(); // Initialize the closure
     const dialogRef = this.dialog.open(AddEditDialogComponent, {
@@ -125,30 +174,32 @@ export class SchedulerComponent implements AfterViewInit {
         existingClassValue: event.existingClassValue,
         existingClassDescription: event.existingClassDescription || '',
         isRepeat: event.isRepeat || false,
-        isActive: event.isActive || false
+        isActive: event.isActive || false,
+        accountId: event.accountId,
+        locationValues: event.locationId
       } : {}
     });
-  
+      
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const selectedDate = new Date(result.selectedDate);
         const [time, modifier] = result.selectedTime.split(' ');
         let [hours, minutes] = time.split(':').map(Number);
-  
+    
         if (modifier === 'PM' && hours !== 12) {
           hours += 12;
         } else if (modifier === 'AM' && hours === 12) {
           hours = 0;
         }
-  
+    
         selectedDate.setHours(hours, minutes);
         const localOffset = selectedDate.getTimezoneOffset() * 60000;
         const localStartDateTime = new Date(selectedDate.getTime() - localOffset);
         const startDate = new DayPilot.Date(localStartDateTime);
         const endDate = new DayPilot.Date(new Date(localStartDateTime.getTime() + result.duration * 60 * 1000));
-  
-        let eDataItem;
-  
+    
+        let eDataItem: ICustomDayPilotEventData;
+    
         if (event) {
           const eventIndex = this.customDPEvents.findIndex(evt => evt.id === event.id);
           if (eventIndex !== -1) {
@@ -158,35 +209,51 @@ export class SchedulerComponent implements AfterViewInit {
         } else {
           eDataItem = eventDataManager.createEvent(result, startDate, endDate);
           this.customDPEvents.push(eDataItem);
-        }
-  
-        console.log('calling service', eDataItem);
-  
-        this.schedulerService.addSchedule(eDataItem).subscribe({
-          next: response => {
-            console.log('Schedule added:', response);
-          },
-          error: error => {
-            console.error('Error adding schedule:', error);
+   
+          if (eDataItem.existingClassValue === "newEventClass") {
+            console.log("newEventClass");
+
+            this.class = {
+              classId: 0,
+              className: result.eventName,
+              classDescription : result.eventDescription,
+              isActive : true,
+              createdBy : '',
+              accountId : result.accountId
+            };
+
+            this.classService.addClass(this.class).subscribe({
+              next: (response) => {
+                console.log('Class added successfully:', response);
+                this.schedulerService.addScheduleEvent({ result }).subscribe({
+                  next: () => console.log('Schedule event added successfully'),
+                  error: (error) => console.error('Error occurred while adding schedule event:', error)
+                });
+              },
+              error: (error) => console.error('Error occurred while adding class:', error)
+            });
+          } else {
+            this.schedulerService.addScheduleEvent({ result }).subscribe({
+              next: () => console.log('Schedule event added successfully'),
+              error: (error) => console.error('Error occurred while adding schedule event:', error)
+            });
           }
-        });
-  
+        }
         this.calendar.control.update();
       }
     });
+    
   }
-  
-  
 }
 
 function createEventData() {
-  let customDPEvents: customDayPilotEventData[] = [];
+  let customDPEvents: ICustomDayPilotEventData[] = [];
 
   return {
-    addEvent(event: customDayPilotEventData) {
+    addEvent(event: ICustomDayPilotEventData) {
       customDPEvents.push(event);
     },
-    updateEvent(updatedEvent: customDayPilotEventData) {
+    updateEvent(updatedEvent: ICustomDayPilotEventData) {
       const eventIndex = customDPEvents.findIndex(event => event.id === updatedEvent.id);
       if (eventIndex !== -1) {
         customDPEvents[eventIndex] = updatedEvent;
@@ -200,7 +267,7 @@ function createEventData() {
 
 function createEventDataManager() {
   return {
-    createEvent(result: any, startDate: DayPilot.Date, endDate: DayPilot.Date): customDayPilotEventData {
+    createEvent(result: any, startDate: DayPilot.Date, endDate: DayPilot.Date): ICustomDayPilotEventData {
       return {
         id: DayPilot.guid(),
         start: startDate,
@@ -210,10 +277,11 @@ function createEventDataManager() {
         existingClassName: result.existingClassName || '',
         existingClassValue: result.existingClassValue,
         existingClassDescription: result.existingClassDescription || '',
-        isRepeat: result.isRepeat
+        isRepeat: result.isRepeat,
+        isActive: true
       };
     },
-    updateEvent(existingEvent: customDayPilotEventData, result: any, startDate: DayPilot.Date, endDate: DayPilot.Date): customDayPilotEventData {
+    updateEvent(existingEvent: ICustomDayPilotEventData, result: any, startDate: DayPilot.Date, endDate: DayPilot.Date): ICustomDayPilotEventData {
       return {
         ...existingEvent,
         start: startDate,

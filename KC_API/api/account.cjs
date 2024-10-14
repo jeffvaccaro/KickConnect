@@ -102,7 +102,7 @@ router.post('/add-account', async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      console.error('add-account: Connection not established.');
+      //console.warn('add-account: Connection not established.');
     };
   }
 });

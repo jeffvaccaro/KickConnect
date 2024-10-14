@@ -1,4 +1,3 @@
-
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -13,15 +12,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule, NativeDateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS, DateAdapter } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-
 import { UserService } from '../../../../services/user.service';
 import { ClassService } from '../../../../services/class.service';
+import { LocationService } from '../../../../services/location.service';
 import { SchedulerService } from '../../../../services/scheduler.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
-
-import { Duration } from '../../../../interfaces/duration';
-import { Classes } from '../../../../interfaces/classes';
-
+import { IDuration } from '../../../../interfaces/duration';
+import { IClass } from '../../../../interfaces/classes';
+import { ILocations } from '../../../../interfaces/locations';
 
 @Component({
   selector: 'app-add-edit-dialog',
@@ -47,15 +45,17 @@ import { Classes } from '../../../../interfaces/classes';
 })
 export class AddEditDialogComponent implements OnInit {
   eventForm: FormGroup;
-  durations: Duration[] = [];
-  classes: Classes[] = [];
+  durations: IDuration[] = [];
+  classes: IClass[] = [];
+  locations: ILocations[] = [];
   accountId: number;
   isNewEventClass: boolean = true;
-  
+
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
     private classService: ClassService,
+    private locationService: LocationService,
     private schedulerService: SchedulerService,
     private snackBarService: SnackbarService,
     private router: Router,
@@ -74,9 +74,9 @@ export class AddEditDialogComponent implements OnInit {
     const selectedDateString = this.data?.selectedDate || today.toISOString().split('T')[0];
     const [year, month, day] = selectedDateString.split('-').map(Number);
     const localSelectedDate = new Date(year, month - 1, day);
+    const dayNumber = localSelectedDate.getDay(); // Calculate initial day number
   
-
-     this.eventForm = this.fb.group({
+    this.eventForm = this.fb.group({
       existingClassValue: [this.data?.existingClassValue || 'newEventClass'],
       existingClassName: [this.data?.existingClassName || ''],
       eventName: [this.data?.eventName || ''],
@@ -84,59 +84,74 @@ export class AddEditDialogComponent implements OnInit {
       selectedDate: [localSelectedDate],
       selectedTime: [this.data?.selectedTime || defaultTime],
       duration: [Number(this.data?.duration) || 60],
-      isRepeat: [this.data?.isRepeat || false]
+      locationValues: [this.data?.locationValues !== undefined ? Number(this.data.locationValues) :Number(-99)],
+      isRepeat: [this.data?.isRepeat || false],
+      accountId: [this.data?.accountId || 0],
+      dayNumber: [dayNumber],
+      isActive: [true]
     });
-    // console.log('event form:', this.eventForm);
   
-    this.eventForm.get('selectedDate')?.setValue(localSelectedDate);
-    this.eventForm.get('selectedTime')?.setValue(this.data?.selectedTime || defaultTime);
-    this.eventForm.get('duration')?.setValue(Number(this.data?.duration) || 60);
-    this.cdr.detectChanges(); // Trigger change detection
-
-    // console.log('event form duration after initialization:', this.eventForm.controls['duration'].value);
-
+    // Watch for changes in selectedDate and update dayNumber accordingly
+    this.eventForm.get('selectedDate')?.valueChanges.subscribe(selectedDate => {
+      const dayNumber = new Date(selectedDate).getDay();
+      this.eventForm.patchValue({ dayNumber });
+    });
+  
     this.userService.getAccountId().subscribe(accountId => {
       this.accountId = Number(accountId);
+      this.eventForm.get('accountId')?.setValue(Number(this.accountId));
       this.cdr.detectChanges();
     });
-
+  
     this.schedulerService.getDurations().subscribe({
       next: response => {
-        this.durations = response
+        this.durations = response;
       },
       error: error => {
-        this.snackBarService.openSnackBar('Error Fetching Duration data:' + error.message, '',  []);
+        this.snackBarService.openSnackBar('Error Fetching Duration data:' + error.message, '', []);
       }
     });
-
+  
     this.classService.getActiveClasses(this.accountId).subscribe({
       next: response => {
-        this.classes = response
+        this.classes = response;
+        console.log('classes', this.classes);
       },
       error: error => {
-        this.snackBarService.openSnackBar('Error Fetching Duration data:' + error.message, '',  []);
+        this.snackBarService.openSnackBar('Error Fetching Class data:' + error.message, '', []);
+      }
+    });
+  
+    this.locationService.getLocations('active').subscribe({
+      next: response => {
+        this.locations = response;
+      },
+      error: error => {
+        this.snackBarService.openSnackBar('Error Fetching Location data:' + error.message, '', []);
       }
     });
   }
-  
 
   close() {
     this.dialogRef.close();
   }
 
   save() {
-    // console.log('eventForm.value', this.eventForm.value);
     this.dialogRef.close(this.eventForm.value); // Pass the form data back to the main component
   }
 
-  enableDisable(event: any){
-    let selectedValue = event.value;
-    if(typeof selectedValue === 'number'){
+  enableDisable(event: any) {
+    const eventId = event.value;
+    const selectedIndex = this.classes.findIndex(event => event.classId === eventId); // Get the index directly
+
+    if (selectedIndex !== -1) {
+
       this.isNewEventClass = false;
-      this.eventForm.get('existingClassName')?.setValue(this.classes[selectedValue]?.className);
-      this.eventForm.get('eventDescription')?.setValue(this.classes[selectedValue]?.classDescription);
+      const selectedClass = this.classes[selectedIndex];
+      this.eventForm.get('existingClassName')?.setValue(selectedClass.className);
+      this.eventForm.get('eventDescription')?.setValue(selectedClass.classDescription);
       this.eventForm.get('eventName')?.setValue('');
-    }else{
+    } else {
       this.isNewEventClass = true;
       this.eventForm.get('eventDescription')?.setValue('');
     }

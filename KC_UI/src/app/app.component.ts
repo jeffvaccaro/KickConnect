@@ -10,42 +10,46 @@ import { CustomizerSettingsComponent } from './components/customizer-settings/cu
 import { AuthService } from './services/authService';
 
 @Component({
-    selector: 'app-root',
-    standalone: true,
-    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, CustomizerSettingsComponent],
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.scss'
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, CustomizerSettingsComponent],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  title = 'kickConnect';
+  isToggled = false;
 
-    title = 'kickConnect - Angular 18 Material Design Admin Dashboard Template';
+  constructor(
+    public router: Router,
+    private toggleService: ToggleService,
+    private viewportScroller: ViewportScroller,
+    public themeService: CustomizerSettingsService,
+    private authService: AuthService
+  ) {
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd) {
+        localStorage.setItem('lastModule', event.urlAfterRedirects);
+        // Scroll to the top after each navigation end
+        this.viewportScroller.scrollToPosition([0, 0]);
+      }
+    });
 
-    isToggled = false;
+    this.toggleService.isToggled$.subscribe(isToggled => {
+      this.isToggled = isToggled;
+    });
+  }
 
-    constructor(
-        public router: Router,
-        private toggleService: ToggleService,
-        private viewportScroller: ViewportScroller,
-        public themeService: CustomizerSettingsService,
-        private authService: AuthService
-    ) {
-        this.router.events.subscribe((event: Event) => {
-            if (event instanceof NavigationEnd) {
-                // Scroll to the top after each navigation end
-                this.viewportScroller.scrollToPosition([0, 0]);
-            }
-        });
-        this.toggleService.isToggled$.subscribe(isToggled => {
-            this.isToggled = isToggled;
-        });
+  ngOnInit(): void {
+    if (this.authService.isAuthenticated()) {
+      const lastModule = localStorage.getItem('lastModule');
+      if (lastModule) {
+        this.router.navigateByUrl(lastModule);
+      } else {
+        this.router.navigate(['/']); // Default route if no last module
+      }
+    } else {
+      this.router.navigate(['/authentication']);
     }
-    ngOnInit(): void {
-        if (this.authService.isAuthenticated()) {
-            //console.log('AppComponent: User is authenticated');
-            this.router.navigate(['/']);
-        }else{
-            //console.log('AppComponent: User is not authenticated');
-            this.router.navigate(['/authentication']);
-        }
-    }
+  }
 }

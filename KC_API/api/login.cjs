@@ -84,7 +84,7 @@ router.post('/user-login', async (req, res) => {
         if (connection) {
         connection.release();
         } else {
-        console.error('user-login: Connection not established.');
+        //console.warn('user-login: Connection not established.');
         };
     }
 });

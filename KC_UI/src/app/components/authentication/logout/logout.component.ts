@@ -1,31 +1,35 @@
 import { Component } from '@angular/core';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router'; // Add Router to the imports
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-    selector: 'app-logout',
-    standalone: true,
-    imports: [RouterLink, MatButtonModule],
-    templateUrl: './logout.component.html',
-    styleUrls: ['./logout.component.scss']
+  selector: 'app-logout',
+  standalone: true,
+  imports: [RouterLink, MatButtonModule],
+  templateUrl: './logout.component.html',
+  styleUrls: ['./logout.component.scss']
 })
 export class LogoutComponent {
+  constructor(
+    public themeService: CustomizerSettingsService,
+    private router: Router
+  ) {}
 
-    constructor(
-        public themeService: CustomizerSettingsService
-    ) {}
+  toggleTheme() {
+    this.themeService.toggleTheme();
+  }
 
-    toggleTheme() {
-        this.themeService.toggleTheme();
-    }
+  toggleCardBorderTheme() {
+    this.themeService.toggleCardBorderTheme();
+  }
 
-    toggleCardBorderTheme() {
-        this.themeService.toggleCardBorderTheme();
-    }
+  toggleCardBorderRadiusTheme() {
+    this.themeService.toggleCardBorderRadiusTheme();
+  }
 
-    toggleCardBorderRadiusTheme() {
-        this.themeService.toggleCardBorderRadiusTheme();
-    }
-
+  logout() {
+    localStorage.removeItem('lastModule'); // Clear the last module from localStorage
+    this.router.navigate(['/authentication']); // Redirect to login page
+  }
 }

@@ -36,6 +36,7 @@ const corsOptions = {
   }
 };
 
+
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 swaggerSetup(app);

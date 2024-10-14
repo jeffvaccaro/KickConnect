@@ -1,16 +1,30 @@
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+const path = require('path');
+
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 function authenticateToken(req, res, next) {
-  const token = req.header('Authorization')?.split(' ')[1];
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
-  // console.log('Token:', token); // Add this line for logging
+  // console.log('Auth Header:', authHeader);
+  // console.log('Token:', token);
 
-  if (token == null) return res.sendStatus(401); // If no token, return Unauthorized
+  if (!authHeader) {
+    console.error('No Auth Header found');
+    return res.status(401).json({ error: 'No authentication header found' });
+  }
 
-  jwt.verify(token,  process.env.JWT_SECRET, (err, user) => {
+  if (!token) {
+    console.error('No Token found');
+    return res.status(401).json({ error: 'No token found' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      console.error('Token verification failed:', err); // Add this line for logging
-      return res.sendStatus(403); // If token is invalid, return Forbidden
+      console.error('Token verification failed:', err.message);
+      return res.status(403).json({ error: 'Token verification failed' });
     }
     req.user = user;
     next();

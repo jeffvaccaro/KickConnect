@@ -5261,4 +5261,32 @@ quill-editor {
     .button-color-black {
         color:#000;
     }
+
+    .create-dialog-box .kickConnect-form-group .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+        padding-left: 40px; /* Adjust this value to ensure proper alignment */
+    }
+
+    .date-input {
+    position: relative;
+    }
+      
+    .datepicker-icon {
+        position: absolute;
+        right: 10px; /* Adjust based on your layout */
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        z-index: 1;
+    }
+      
+    .date-input .mat-form-field-infix {
+        padding-right: 40px; /* Ensure enough space for the icon */
+    }
+      
+      
+      
+      
+      
+      
+      
 }

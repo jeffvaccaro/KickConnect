@@ -1,4 +1,4 @@
-export interface Duration {
+export interface IDuration {
     durationValue: number;
     durationText: string;
 }

@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ClassObj } from '../objects/class/class-obj';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClassService {
   private apiUrl = environment.apiUrl + '/class'; 
-
   constructor(private http: HttpClient)  { }
 
   getClasses(accountId: number): Observable<any> {
@@ -28,6 +28,7 @@ export class ClassService {
 
   addClass(classData: any): Observable<any> {
     const url = `${this.apiUrl}/add-class`;
+    console.log('addClass', classData);
     return this.http.post<any>(url, classData);
   }
   

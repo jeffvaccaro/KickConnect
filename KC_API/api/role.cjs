@@ -54,7 +54,7 @@ router.get('/get-roles', authenticateToken, async (req, res) => {
         if (connection) {
   connection.release();
 } else {
-  console.error('get-roles: Connection not established.');
+  //console.warn('get-roles: Connection not established.');
 };
       }
   });
@@ -122,7 +122,7 @@ router.get('/get-role-by-id', authenticateToken, async (req, res) => {
     if (connection) {
   connection.release();
 } else {
-  console.error('get-role-by-id: Connection not established.');
+  //console.warn('get-role-by-id: Connection not established.');
 };
   }
 });
@@ -191,7 +191,7 @@ router.post('/add-role', authenticateToken, async (req, res) => {
       if (connection) {
   connection.release();
 } else {
-  console.error('add-role: Connection not established.');
+  //console.warn('add-role: Connection not established.');
 };
     }
   });
@@ -393,7 +393,7 @@ router.put('/update-role-order', async (req, res) => {
       if (connection) {
   connection.release();
 } else {
-  console.error('update-role-order: Connection not established.');
+  //console.warn('update-role-order: Connection not established.');
 };
     }
 });

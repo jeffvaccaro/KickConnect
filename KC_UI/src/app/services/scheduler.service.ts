@@ -1,9 +1,10 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Duration } from '../interfaces/duration';
+import { catchError, Observable, of } from 'rxjs';
+import { IDuration } from '../interfaces/duration';
 import { environment } from '../../environments/environment';
+import { ISchedule } from '../interfaces/schedule';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,39 +15,28 @@ export class SchedulerService {
 
   getDurations(): Observable<any> {
     let url = `${this.apiUrl}/get-durations`;
-    return this.http.get<Duration[]>(url);
+    return this.http.get<IDuration[]>(url);
   }
 
-  
-  addSchedule(eventData: any): Observable<any> {
-    console.log(eventData);
+  addScheduleEvent(eventData: any): Observable<any> {
     const url = `${this.apiUrl}/add-schedule`;
-    return this.http.post<any>(url, eventData);
+    console.log('Making HTTP POST request to:', url);
+
+    return this.http.post<any>(url, eventData).pipe(
+      catchError(error => {
+        console.error('Error occurred in HTTP call:', error);
+        return of(null);
+      })
+    );
   }
-  // getLocations(status:string): Observable<any> {
-  //   let url = `${this.apiUrl}`;
-  //   switch (status) {
-  //     case 'Active':
-  //       url = `${this.apiUrl}/get-active-locations`;
-  //       break;
-  //     case 'InActive':
-  //       url = `${this.apiUrl}/get-inactive-locations`;
-  //       break;
-  //     default:
-  //       url = `${this.apiUrl}/get-locations`;
-  //       break;
-  //   } 
-    
-  //   return this.http.get<any>(url);
-  // }
 
-  // getLocationsById(locationId: number): Observable<any> {
-  //   const url = `${this.apiUrl}/get-locations-by-id/${locationId}`;
-  //   return this.http.get<any>(url);
-  // }
-
-  
-  // updateLocation(locationId: number, locationData: any) {
-  //   return this.http.put(`${this.apiUrl}/update-location/${locationId}`, locationData);
-  // }
+  getSchedules(locationId: number): Observable<any> {
+    const url = `${this.apiUrl}/get-schedule-by-location/${locationId}`
+    return this.http.get<ISchedule>(url).pipe(
+      catchError(error => {
+        console.error('Error occurred in HTTP call:', error);
+        return of(null);
+      })
+    );
+  }
 }

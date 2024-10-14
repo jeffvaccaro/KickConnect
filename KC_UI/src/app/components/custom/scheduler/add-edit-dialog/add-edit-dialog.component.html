@@ -4,9 +4,8 @@
       <button class="close-btn bg-transparent p-0 border-none" (click)="close()"><i class="flaticon-close"></i></button>
     </div>
     <form [formGroup]="eventForm" (ngSubmit)="save()">
+      <input type="hidden" formControlName="accountId">
       <div class="row">
-
-
         <div class="col-lg-12 col-md-12">
           <div class="kickConnect-form-group">
             <mat-form-field appearance="fill">
@@ -21,12 +20,15 @@
             </mat-form-field>
           </div>
         </div>
+      </div>
+      <div class="row">
         <div class="col-lg-12 col-md-12" *ngIf="isNewEventClass">
           <div class="form-group">
             <input type="text" class="input-control" placeholder="New Class/Event Name *" formControlName="eventName" required>
           </div>
         </div>
-
+      </div>
+      <div class="row">
         <div class="col-lg-12 col-md-12" >
           <div class="kickConnect-form-group custom-style">
               <mat-form-field appearance="fill">
@@ -34,49 +36,74 @@
                   <textarea matInput rows="6" formControlName="eventDescription"></textarea>
               </mat-form-field>
           </div>
+        </div>
       </div>
 
-        <div class="col-lg-4 col-md-4">
-          <div class="kickConnect-form-group">
-            <mat-form-field appearance="fill" class="date-input">
-              <mat-label>Date</mat-label>
-              <input matInput [matDatepicker]="dtPicker" formControlName="selectedDate" (focus)="dtPicker.open()">
-              <mat-datepicker-toggle matIconSuffix [for]="dtPicker"></mat-datepicker-toggle>
-              <mat-datepicker #dtPicker></mat-datepicker>
-            </mat-form-field>
-          </div>
-        </div>
-        
-        <div class="col-lg-4 col-md-4">
+      <div class="row">
+        <div class="col-lg-12 col-md-12">
           <div class="kickConnect-form-group">
             <mat-form-field appearance="fill">
-              <mat-label>Time</mat-label>
-              <input matInput placeholder="Time" [ngxTimepicker]="timePicker" formControlName="selectedTime">
-              <ngx-material-timepicker #timePicker></ngx-material-timepicker>
-              <i class="ri-time-line"></i>
-            </mat-form-field>
-          </div>
-        </div>
-        
-        <div class="col-lg-4 col-md-4">
-          <div class="kickConnect-form-group">
-            <mat-form-field appearance="fill">
-              <i class="ri-hourglass-2-fill"></i>
-              <mat-label>Duration</mat-label>
-              <mat-select formControlName="duration">
-                <mat-option *ngFor="let duration of durations" [value]="duration.durationValue">
-                  {{ duration.durationText }}
+              <i class="ri-bookmark-2-line"></i>
+              <mat-label>Apply to Location(s)</mat-label>
+              <mat-select formControlName="locationValues">
+                <mat-option *ngFor="let locationItem of locations" [value]="locationItem.locationId">
+                  {{ locationItem.locationName }}
                 </mat-option>
-              </mat-select>              
+                <mat-option [value]="-99">Apply this schedule to ALL locations</mat-option>
+              </mat-select>
             </mat-form-field>
           </div>
         </div>
+      </div>
+      
+      
+
+        <div class="create-dialog-box">
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="kickConnect-form-group">
+                <mat-form-field appearance="fill" class="date-input">
+                  <mat-label>Date</mat-label>
+                  <input matInput [matDatepicker]="dtPicker" formControlName="selectedDate" (focus)="dtPicker.open()">
+                  <i class="ri-calendar-schedule-line" (click)="dtPicker.open()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+                  <mat-datepicker #dtPicker></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+          
+          <div class="col-lg-4 col-md-4">
+            <div class="kickConnect-form-group">
+              <mat-form-field appearance="fill">
+                <mat-label>Time</mat-label>
+                <input matInput placeholder="Time" [ngxTimepicker]="timePicker" formControlName="selectedTime">
+                <ngx-material-timepicker #timePicker></ngx-material-timepicker>
+                <i class="ri-time-line"></i>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="kickConnect-form-group">
+              <mat-form-field appearance="fill">
+                <i class="ri-hourglass-2-fill"></i>
+                <mat-label>Duration</mat-label>
+                <mat-select formControlName="duration">
+                  <mat-option *ngFor="let duration of durations" [value]="duration.durationValue">
+                    {{ duration.durationText }}
+                  </mat-option>
+                </mat-select>              
+              </mat-form-field>
+            </div>
+          </div>
+          </div>
+        </div>
+
         <div class="col-lg-12 col-md-12">
           <div class="kickConnect-form-group mb-12">
             <mat-checkbox formControlName="isRepeat">Class/Event Repeats?</mat-checkbox>
           </div>
         </div>
-      </div>
+     
       <div class="text-end">
         <button type="button" class="gray" (click)="close()"><i class="ri-close-fill"></i> Cancel</button>
         <button type="submit"><i class="ri-add-fill"></i> Save</button>

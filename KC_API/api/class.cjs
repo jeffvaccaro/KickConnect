@@ -38,12 +38,14 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 router.post('/add-class/', authenticateToken, async (req, res) => {
   let connection;
   try {
+    
     const connection = await connectToDatabase();
     const { accountId, className, classDescription, isActive } = req.body;
     const [result] = await connection.query(
       'INSERT INTO class (accountId, className, classDescription, isActive, createdBy) VALUES (?, ?, ?, ?, ?)', 
       [accountId, className, classDescription, isActive, 'API Class Insert']
     );
+    
     res.status(201).json({ classId: result.insertId });
   } catch (error) {
     res.status(500).json({ error: 'Error creating the Class: ' + error.message });
@@ -51,7 +53,7 @@ router.post('/add-class/', authenticateToken, async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      console.error('add-class: Connection not established.');
+      //console.warn('add-class: Connection not established.');
     };
   }
 });
@@ -88,7 +90,7 @@ router.get('/get-class-list/:accountId', authenticateToken, async (req, res) => 
     if (connection) {
       connection.release();
     } else {
-      console.error('get-class-list/:accountId: Connection not established.');
+      //console.warn('get-class-list/:accountId: Connection not established.');
     };
   }
 }); 
@@ -125,7 +127,7 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
     if (connection) {
       connection.release();
     } else {
-      console.error('get-active-class-list/:accountId: Connection not established.');
+      //console.warn('get-active-class-list/:accountId: Connection not established.');
     };
   }
 });
@@ -174,7 +176,7 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
       if (connection) {
       connection.release();
     } else {
-      console.error('get-class-by-id/:accountId/:classId: Connection not established.');
+      //console.warn('get-class-by-id/:accountId/:classId: Connection not established.');
     };
     }
   });
@@ -287,7 +289,7 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
       if (connection) {
         connection.release();
       } else {
-        console.error('deactivate-class/:accountId/:classId: Connection not established.');
+        //console.warn('deactivate-class/:accountId/:classId: Connection not established.');
       };
     }
   });

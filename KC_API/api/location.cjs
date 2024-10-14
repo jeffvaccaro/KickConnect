@@ -85,7 +85,7 @@ router.post('/add-location', authenticateToken, async (req, res) => {
       if (connection) {
         connection.release();
       } else {
-        console.error('add-location: Connection not established.');
+        //console.warn('add-location: Connection not established.');
       };
     }
   });
@@ -137,7 +137,25 @@ router.get('/get-locations', authenticateToken, async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      console.error('get-locations: Connection not established.');
+      //console.warn('get-locations: Connection not established.');
+    };
+  }
+});
+
+router.get('/get-locations-by-acct-id/:acctId', authenticateToken, async (req, res) => {
+  let connection;
+  try {
+    const connection = await connectToDatabase();
+    const [results] = await connection.query('SELECT * FROM location WHERE accountId = ?', [acctId]);
+    res.status(200).json(results);
+  } catch (error) {
+    console.error('Error fetching locations:', error);
+    res.status(500).send('Error fetching locations');
+  }finally{
+    if (connection) {
+      connection.release();
+    } else {
+      //console.warn('get-locations: Connection not established.');
     };
   }
 });
@@ -190,7 +208,7 @@ router.get('/get-active-locations', authenticateToken, async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      console.error('get-active-locations: Connection not established.');
+      //console.warn('get-active-locations: Connection not established.');
     };
   }
 });
@@ -242,7 +260,7 @@ router.get('/get-inactive-locations', authenticateToken, async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      console.error('get-inactive-locations: Connection not established.');
+      //console.warn('get-inactive-locations: Connection not established.');
     };
   }
 });
@@ -307,7 +325,7 @@ router.get('/get-locations-by-id/:id', async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      console.error('get-locations-by-id/:id: Connection not established.');
+      //console.warn('get-locations-by-id/:id: Connection not established.');
     };
   }
 });
@@ -395,7 +413,7 @@ router.put('/update-location/:locationId', async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      console.error('update-location/:locationId: Connection not established.');
+      //console.warn('update-location/:locationId: Connection not established.');
     };
   }
 });
@@ -468,7 +486,7 @@ router.put('/deactivate-location/:id', authenticateToken, async (req, res) => {
       if (connection) {
         connection.release();
       } else {
-        console.error('deactivate-location/:id: Connection not established.');
+        //console.warn('deactivate-location/:id: Connection not established.');
       };
     }
 });

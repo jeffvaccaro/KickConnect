@@ -88,7 +88,7 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
     if (connection) {
       connection.release();
     } else {
-      console.error('get-users-by-account-code: Connection not established.');
+      //console.warn('get-users-by-account-code: Connection not established.');
     };
   }
 });
@@ -186,7 +186,7 @@ router.get('/get-users', authenticateToken, async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      console.error('get-users: Connection not established.');
+      //console.warn('get-users: Connection not established.');
     };
   }
 });
@@ -294,7 +294,7 @@ router.get('/get-user-by-id', authenticateToken, async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      console.error('get-user-by-id: Connection not established.');
+      //console.warn('get-user-by-id: Connection not established.');
     };
   }
 });
@@ -386,7 +386,7 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      console.error('get-filtered-users: Connection not established.');
+      //console.warn('get-filtered-users: Connection not established.');
     };
   }
 });
@@ -498,7 +498,7 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
       if (connection) {
         connection.release();
       } else {
-        console.error('add-user: Connection not established.');
+        //console.warn('add-user: Connection not established.');
       };
       return res.status(409).json({error:'Duplicate user found'});
     }
@@ -517,7 +517,7 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
     if (connection) {
   connection.release();
 } else {
-  console.error('add-user: Connection not established.');
+  //console.warn('add-user: Connection not established.');
 };
   }
 });
@@ -649,7 +649,7 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
     if (connection) {
       connection.release();
     } else {
-      console.error('update-user/:userId: Connection not established.');
+      //console.warn('update-user/:userId: Connection not established.');
     }; 
   }
 });
@@ -727,7 +727,7 @@ router.put('/deactivate-user', authenticateToken, async (req, res) => {
     if (connection) {
       connection.release();
     } else {
-      console.error('deactivate-user: Connection not established.');
+      //console.warn('deactivate-user: Connection not established.');
     };
   }
 });

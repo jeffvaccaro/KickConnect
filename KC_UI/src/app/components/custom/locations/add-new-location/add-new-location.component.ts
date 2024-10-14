@@ -92,7 +92,7 @@ export class AddNewLocationComponent implements OnInit {
 
   onSubmit(event: Event): void {
     event.preventDefault(); // Prevent the default form submission
-    console.warn('location info', this.form.value); // Log the form values
+    //console.warn('location info', this.form.value); // Log the form values
   
     const accountId = localStorage.getItem('accountId'); // Retrieve accountId from local storage
     const locationData = {
