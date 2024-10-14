@@ -8,5 +8,7 @@ export interface ISchedule {
     startTime: string,
     endTime: string,
     isRepeat: boolean,
-    isActive: boolean
+    isActive: boolean,
+    locationId: number,
+    accountId: number
 }

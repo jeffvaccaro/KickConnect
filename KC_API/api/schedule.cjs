@@ -146,7 +146,9 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
               s.endTime, 
               s.selectedDate, 
               s.isRepeat, 
-              s.isActive 
+              s.isActive,
+              s.locationId,
+              s.accountId
             FROM 
               admin.schedule s 
             INNER JOIN 
@@ -172,7 +174,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
           if (connection) {
             connection.release();
           } else {
-            console.warn('get-durations: Connection not established.');
+            console.warn('get-schedule-by-location: Connection not established.');
           };
         }
   });  

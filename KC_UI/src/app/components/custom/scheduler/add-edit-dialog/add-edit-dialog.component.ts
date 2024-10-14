@@ -76,22 +76,37 @@ export class AddEditDialogComponent implements OnInit {
     const [year, month, day] = selectedDateString.split('-').map(Number);
     const localSelectedDate = new Date(year, month - 1, day);
     const dayNumber = localSelectedDate.getDay(); // Calculate initial day number
+
+    console.log('data', this.data);
+
+    // Ensure data exists before accessing properties
+    const existingClassValue = this.data?.existingClassValue || 'newEventClass';
+    const existingClassName = this.data?.existingClassName || '';
+    const eventName = this.data?.eventName || '';
+    const eventDescription = this.data?.existingClassDescription || '';
+    const selectedTime = this.data?.selectedTime || defaultTime;
+    const duration = Number(this.data?.duration) || 60;
+    const locationValues = this.data?.locationValues !== undefined ? Number(this.data.locationValues) : -99;
+    const isRepeat = this.data?.isRepeat || false;
+    const accountId = this.data?.accountId || 0;
   
     this.eventForm = this.fb.group({
-      existingClassValue: [this.data?.existingClassValue || 'newEventClass'],
-      existingClassName: [this.data?.existingClassName || ''],
-      eventName: [this.data?.eventName || ''],
-      eventDescription: [this.data?.existingClassDescription || ''],
+      existingClassValue: [existingClassValue],
+      existingClassName: [existingClassName],
+      eventName: [eventName],
+      eventDescription: [eventDescription],
       selectedDate: [localSelectedDate],
-      selectedTime: [this.data?.selectedTime || defaultTime],
-      duration: [Number(this.data?.duration) || 60],
-      locationValues: [this.data?.locationValues !== undefined ? Number(this.data.locationValues) :Number(-99)],
-      isRepeat: [this.data?.isRepeat || false],
-      accountId: [this.data?.accountId || 0],
+      selectedTime: [selectedTime],
+      duration: [duration],
+      locationValues: [locationValues],
+      isRepeat: [isRepeat],
+      accountId: [accountId],
       dayNumber: [dayNumber],
       isActive: [true]
-    });
-  
+    });  
+
+    console.log('Form initialized:', this.eventForm.value);
+
     // Watch for changes in selectedDate and update dayNumber accordingly
     this.eventForm.get('selectedDate')?.valueChanges.subscribe(selectedDate => {
       const dayNumber = new Date(selectedDate).getDay();
@@ -137,6 +152,8 @@ export class AddEditDialogComponent implements OnInit {
     }else{
       this.isNew = "Update";
     }
+
+    
   }
 
   close() {

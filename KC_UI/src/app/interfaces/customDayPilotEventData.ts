@@ -9,4 +9,5 @@ export interface ICustomDayPilotEventData extends DayPilot.EventData {
     scheduleId?: number;
     accountId?: number;
     isActive: boolean;
+    locationValues: number;
 }

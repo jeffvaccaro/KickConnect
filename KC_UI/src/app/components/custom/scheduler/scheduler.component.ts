@@ -37,16 +37,19 @@ export class SchedulerComponent implements AfterViewInit {
       // Do nothing here to prevent the default add event dialog
     },
     onEventClick: (args) => {
-      console.log('args.e.data:', args.e.data);
-      console.log('customDPEvents', this.customDPEvents);
+      // console.log('args.e.data:', args.e.data);
+      // console.log('customDPEvents', this.customDPEvents);
+      
       const updatedEvent = args.e.data;
       const eventIndex = this.customDPEvents.findIndex(event => event.id === updatedEvent.id);
-      console.log('eventIndex', eventIndex);
-      console.log('updatedEvent', updatedEvent);
+      
+      // console.log('eventIndex', eventIndex);
+      // console.log('updatedEvent', updatedEvent);
       //this.customDPEvents[eventIndex] = updatedEvent;
 
       const eventData = {
         ...args.e.data,
+        accountId: args.e.data.accountId,
         existingClassId: args.e.data.existingClassId || 'defaultId',
         existingClassValue: args.e.data.existingClassValue,
         existingClassName: args.e.data.existingClassName || 'defaultName',
@@ -57,7 +60,7 @@ export class SchedulerComponent implements AfterViewInit {
         duration: (args.e.data.end.getTime() - args.e.data.start.getTime()) / (60 * 1000),
         isRepeat: args.e.data.isRepeat || false,
         isActive: args.e.data.isActive || false,
-        locationValues: args.e.data.locationId || -99
+        locationValues: args.e.data.locationValues !== undefined ? args.e.data.locationValues : -99 
       };
     
       // console.log('onEventClick', eventData);  // Log to verify data
@@ -96,6 +99,7 @@ export class SchedulerComponent implements AfterViewInit {
   loadEvents(): void {
     this.schedulerService.getSchedules(1).subscribe((data: ISchedule[]) => {
       this.scheduleList = data;
+      // console.log('scheduleList', this.scheduleList);
   
       const currentDate = new Date(); // Get the current date
       const startOfWeek = currentDate.getDate() - currentDate.getDay(); // Get the start of the current week (Sunday)
@@ -103,7 +107,6 @@ export class SchedulerComponent implements AfterViewInit {
       this.customDPEvents = this.scheduleList.map(schedule => {
         const eventDate = new Date(currentDate); 
         eventDate.setDate(startOfWeek + schedule.day); // Calculate the exact date based on dayNumber
-        
         const formattedDate = this.formatDate(eventDate.toISOString()); // Format the calculated date
         
         return {
@@ -117,7 +120,9 @@ export class SchedulerComponent implements AfterViewInit {
           existingClassValue: String(schedule.classId), // Convert to string
           existingClassDescription: schedule.classDescription,
           isRepeat: schedule.isRepeat,
-          isActive: schedule.isActive
+          isActive: schedule.isActive,
+          locationValues: schedule.locationId,
+          accountId: schedule.accountId
         };
       });
   
@@ -150,6 +155,7 @@ export class SchedulerComponent implements AfterViewInit {
   
 
   openAddEventDialog(enterAnimationDuration: string, exitAnimationDuration: string, isNew: boolean, event?: any): void {
+
     const eventDataManager = createEventDataManager();
     const dialogRef = this.dialog.open(AddEditDialogComponent, {
       width: '600px',
@@ -167,7 +173,7 @@ export class SchedulerComponent implements AfterViewInit {
         isRepeat: event.isRepeat || false,
         isActive: event.isActive || false,
         accountId: event.accountId,
-        locationValues: event.locationId,
+        locationValues: event.locationValues,
         isNew: isNew
       } : {}
     });
@@ -270,7 +276,8 @@ function createEventDataManager() {
         existingClassValue: result.existingClassValue,
         existingClassDescription: result.existingClassDescription || '',
         isRepeat: result.isRepeat,
-        isActive: true
+        isActive: true,
+        locationValues: result.locationValues
       };
     },
     updateEvent(existingEvent: ICustomDayPilotEventData, result: any, startDate: DayPilot.Date, endDate: DayPilot.Date): ICustomDayPilotEventData {
