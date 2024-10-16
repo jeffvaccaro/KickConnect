@@ -5251,6 +5251,10 @@ quill-editor {
         }
 
     }
+
+
+    /* Styling for the add-edit-dialog.component */
+    
     .timepicker-overlay {
         z-index: 1050 !important; 
     }
@@ -5283,10 +5287,40 @@ quill-editor {
         padding-right: 40px; /* Ensure enough space for the icon */
     }
       
+    input.ng-touched.ng-invalid,
+    textarea.ng-touched.ng-invalid,
+    select.ng-touched.ng-invalid,
+    mat-select.ng-touched.ng-invalid .mat-select-value,
+    .mat-input-element.ng-touched.ng-invalid {
+      border-color: red !important;
+    }
+    
+    .mat-form-field.ng-touched.ng-invalid .mat-form-field-underline {
+      background-color: red !important;
+    }
+
+    .error-message {
+        color: red !important;
+        font-size: 0.875em; /* slightly smaller text */
+    }  
       
+    /* styling for the $ sign in the add-edit-dialog.component */
+    .input-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
       
+      .input-group-text {
+        position: absolute;
+        left: 10px;
+        font-size: 1rem;
+      }
       
-      
+      .input-control {
+        padding-left: 25px; /* adjust this value to make room for the $ */
+      }
+            
       
       
 }

@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -20,6 +20,10 @@ import { SnackbarService } from '../../../../services/snackbar.service';
 import { IDuration } from '../../../../interfaces/duration';
 import { IClass } from '../../../../interfaces/classes';
 import { ILocations } from '../../../../interfaces/locations';
+import { IReservationCount } from '../../../../interfaces/reservation-count';
+import { catchError, forkJoin, of } from 'rxjs';
+import { isReactive } from '@angular/core/primitives/signals';
+import { CustomFormValidationService } from '../../../../services/custom-form-validation.service';
 
 @Component({
   selector: 'app-add-edit-dialog',
@@ -46,11 +50,14 @@ import { ILocations } from '../../../../interfaces/locations';
 export class AddEditDialogComponent implements OnInit {
   eventForm: FormGroup;
   durations: IDuration[] = [];
+  reservationCounts: IReservationCount[] = [];
   classes: IClass[] = [];
   locations: ILocations[] = [];
   accountId: number;
   isNewEventClass: boolean = true;
   isNew: string;
+  setReservation: boolean = false;
+  setCostToAttend: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -62,7 +69,8 @@ export class AddEditDialogComponent implements OnInit {
     private router: Router,
     public dialogRef: MatDialogRef<AddEditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private customFormValidationService: CustomFormValidationService
   ) {}
 
   ngOnInit(): void {
@@ -87,27 +95,37 @@ export class AddEditDialogComponent implements OnInit {
     const selectedTime = this.data?.selectedTime || defaultTime;
     const duration = Number(this.data?.duration) || 60;
     const locationValues = this.data?.locationValues !== undefined ? Number(this.data.locationValues) : -99;
-    const isRepeat = this.data?.isRepeat || false;
     const accountId = this.data?.accountId || 0;
+    const isRepeat = this.data?.isRepeat || false;
+    const isReservation = this.data?.isReservation || false;
+    const isCostToAttend = this.data?.isCostToAttend || false;
+    const reservationCount = this.data?.reservationCount || 1;
+    const costToAttend = this.data?.costToAttend || '';
+
   
     this.eventForm = this.fb.group({
       existingClassValue: [existingClassValue],
       existingClassName: [existingClassName],
-      eventName: [eventName],
-      eventDescription: [eventDescription],
+      eventName: [eventName, []],
+      eventDescription: [eventDescription, []],
       selectedDate: [localSelectedDate],
       selectedTime: [selectedTime],
       duration: [duration],
       locationValues: [locationValues],
-      isRepeat: [isRepeat],
       accountId: [accountId],
       dayNumber: [dayNumber],
-      isActive: [true]
-    });  
+      isRepeat: [isRepeat],
+      isActive: [true],
+      isReservation: [isReservation],
+      isCostToAttend: [isCostToAttend],
+      reservationCount: [reservationCount, []],
+      costToAttend: [costToAttend, []]
+    });
+  
+    // Setup custom validators
+    this.customFormValidationService.setupConditionalValidators(this.eventForm);
+    // console.log('Form initialized:', this.eventForm.value);
 
-    console.log('Form initialized:', this.eventForm.value);
-
-    // Watch for changes in selectedDate and update dayNumber accordingly
     this.eventForm.get('selectedDate')?.valueChanges.subscribe(selectedDate => {
       const dayNumber = new Date(selectedDate).getDay();
       this.eventForm.patchValue({ dayNumber });
@@ -119,31 +137,40 @@ export class AddEditDialogComponent implements OnInit {
       this.cdr.detectChanges();
     });
   
-    this.schedulerService.getDurations().subscribe({
+    forkJoin({
+      durations: this.schedulerService.getDurations().pipe(
+        catchError(error => {
+          this.snackBarService.openSnackBar('Error Fetching Duration data:' + error.message, '', []);
+          return of(null); // Provide a fallback value if necessary
+        })
+      ),
+      reservationCounts: this.schedulerService.getReservationCount().pipe(
+        catchError(error => {
+          this.snackBarService.openSnackBar('Error Fetching ReservationCount data:' + error.message, '', []);
+          return of(null);
+        })
+      ),
+      activeClasses: this.classService.getActiveClasses(this.accountId).pipe(
+        catchError(error => {
+          this.snackBarService.openSnackBar('Error Fetching Class data:' + error.message, '', []);
+          return of(null);
+        })
+      ),
+      locations: this.locationService.getLocations('active').pipe(
+        catchError(error => {
+          this.snackBarService.openSnackBar('Error Fetching Location data:' + error.message, '', []);
+          return of(null);
+        })
+      )
+    }).subscribe({
       next: response => {
-        this.durations = response;
+        this.durations = response.durations;
+        this.reservationCounts = response.reservationCounts;
+        this.classes = response.activeClasses;
+        this.locations = response.locations;
       },
       error: error => {
-        this.snackBarService.openSnackBar('Error Fetching Duration data:' + error.message, '', []);
-      }
-    });
-  
-    this.classService.getActiveClasses(this.accountId).subscribe({
-      next: response => {
-        this.classes = response;
-        // console.log('classes', this.classes);
-      },
-      error: error => {
-        this.snackBarService.openSnackBar('Error Fetching Class data:' + error.message, '', []);
-      }
-    });
-  
-    this.locationService.getLocations('active').subscribe({
-      next: response => {
-        this.locations = response;
-      },
-      error: error => {
-        this.snackBarService.openSnackBar('Error Fetching Location data:' + error.message, '', []);
+        this.snackBarService.openSnackBar('General Error Fetching data:' + error.message, '', []);
       }
     });
 
@@ -152,8 +179,7 @@ export class AddEditDialogComponent implements OnInit {
     }else{
       this.isNew = "Update";
     }
-
-    
+   
   }
 
   close() {
@@ -161,15 +187,35 @@ export class AddEditDialogComponent implements OnInit {
   }
 
   save() {
-    this.dialogRef.close(this.eventForm.value); // Pass the form data back to the main component
+    if (this.eventForm.valid) {
+      this.dialogRef.close(this.eventForm.value);
+    } else {
+      this.eventForm.markAllAsTouched();
+  
+      const invalidFields = [];
+      const controls = this.eventForm.controls;
+      for (const name in controls) {
+        if (controls[name].invalid) {
+          invalidFields.push(name);
+        }
+      }
+  
+      // Force validation on save
+      const eventDescriptionControl = this.eventForm.get('eventDescription');
+      if (eventDescriptionControl && !eventDescriptionControl.value) {
+        eventDescriptionControl.setValidators([Validators.required]);
+        eventDescriptionControl.setErrors({ required: true });
+        eventDescriptionControl.updateValueAndValidity();
+      }
+    }
   }
+  
 
   enableDisable(event: any) {
     const eventId = event.value;
     const selectedIndex = this.classes.findIndex(event => event.classId === eventId); // Get the index directly
 
     if (selectedIndex !== -1) {
-
       this.isNewEventClass = false;
       const selectedClass = this.classes[selectedIndex];
       this.eventForm.get('existingClassName')?.setValue(selectedClass.className);
@@ -178,6 +224,22 @@ export class AddEditDialogComponent implements OnInit {
     } else {
       this.isNewEventClass = true;
       this.eventForm.get('eventDescription')?.setValue('');
+    }
+  }
+
+  onReservationChange(event:any){
+    if(event.checked === true){
+      this.setReservation = true;
+    }else{
+      this.setReservation = false;
+    }
+  }
+
+  onCostToAttendChange(event:any){
+    if(event.checked === true){
+      this.setCostToAttend = true;
+    }else{
+      this.setCostToAttend = false;
     }
   }
 }

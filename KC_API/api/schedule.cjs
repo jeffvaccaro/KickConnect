@@ -32,6 +32,26 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
         }
   });   
 
+  router.get('/get-reservationCounts', authenticateToken, async (req, res) => {
+    let connection;
+    try {
+          const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+          connection = await Promise.race([connectToDatabase(), timeout]);
+
+          const [results] = await connection.query('SELECT reservationCountId, reservationCountValue FROM common.reservationcounts');
+          res.status(200).json(results);
+        } catch (error) {
+          console.error('Error fetching Reservation Values:', error);
+          res.status(500).json({ errror: 'Error fetching Reservation Values' + error.message});
+        }finally{
+          if (connection) {
+            connection.release();
+          } else {
+            console.warn('get-reservationCounts: Connection not established.');
+          };
+        }
+  });   
+
   const formatTime = (time) => {
     const [hoursMinutes, modifier] = time.split(' ');
     let [hours, minutes] = hoursMinutes.split(':').map(Number);

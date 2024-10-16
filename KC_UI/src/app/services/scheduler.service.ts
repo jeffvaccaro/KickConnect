@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, Observable, of } from 'rxjs';
 import { IDuration } from '../interfaces/duration';
+import { IReservationCount } from '../interfaces/reservation-count';
 import { environment } from '../../environments/environment';
 import { ISchedule } from '../interfaces/schedule';
 @Injectable({
@@ -18,6 +19,11 @@ export class SchedulerService {
     return this.http.get<IDuration[]>(url);
   }
 
+  getReservationCount(): Observable<any> {
+    let url = `${this.apiUrl}/get-reservationCounts`;
+    return this.http.get<IReservationCount[]>(url);
+
+  }
   addScheduleEvent(eventData: any): Observable<any> {
     const url = `${this.apiUrl}/add-schedule`;
     console.log('Making HTTP POST request to:', url);
