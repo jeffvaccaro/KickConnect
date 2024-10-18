@@ -58,6 +58,7 @@ export class AddEditDialogComponent implements OnInit {
   isNew: string;
   setReservation: boolean = false;
   setCostToAttend: boolean = false;
+  isReadOnly : boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -85,7 +86,6 @@ export class AddEditDialogComponent implements OnInit {
     const localSelectedDate = new Date(year, month - 1, day);
     const dayNumber = localSelectedDate.getDay(); // Calculate initial day number
 
-    console.log('data', this.data);
 
     // Ensure data exists before accessing properties
     const existingClassValue = this.data?.existingClassValue || 'newEventClass';
@@ -96,41 +96,60 @@ export class AddEditDialogComponent implements OnInit {
     const duration = Number(this.data?.duration) || 60;
     const locationValues = this.data?.locationValues !== undefined ? Number(this.data.locationValues) : -99;
     const accountId = this.data?.accountId || 0;
+    const scheduleMainId = this.data?.scheduleMainId || 0;
     const isRepeat = this.data?.isRepeat || false;
     const isReservation = this.data?.isReservation || false;
     const isCostToAttend = this.data?.isCostToAttend || false;
     const reservationCount = this.data?.reservationCount || 1;
     const costToAttend = this.data?.costToAttend || '';
+    const isReadOnly = existingClassValue !== 'newEventClass';
+
 
   
     this.eventForm = this.fb.group({
-      existingClassValue: [existingClassValue],
-      existingClassName: [existingClassName],
-      eventName: [eventName, []],
-      eventDescription: [eventDescription, []],
+      existingClassValue: [{ value: existingClassValue, disabled: isReadOnly }, []],
+      existingClassName: [{ value: existingClassName, disabled: isReadOnly }, []],
+      eventName: [{ value: eventName, disabled: isReadOnly }, []],
+      eventDescription: [{ value: eventDescription, disabled: isReadOnly }, []],
+      locationValues: [{ value: locationValues, disabled: isReadOnly }, []],
+
       selectedDate: [localSelectedDate],
       selectedTime: [selectedTime],
       duration: [duration],
-      locationValues: [locationValues],
       accountId: [accountId],
+      scheduleMainId: [scheduleMainId],
       dayNumber: [dayNumber],
-      isRepeat: [isRepeat],
+      isRepeat: [{ value: isRepeat, disabled: isReadOnly }, []],
       isActive: [true],
-      isReservation: [isReservation],
-      isCostToAttend: [isCostToAttend],
-      reservationCount: [reservationCount, []],
-      costToAttend: [costToAttend, []]
+      isReservation: [{ value: isReservation, disabled: isReadOnly }, []],
+      isCostToAttend: [{ value: isCostToAttend, disabled: isReadOnly }, []],
+      reservationCount: [{ value: reservationCount, disabled: isReadOnly }, []],
+      costToAttend: [{ value: costToAttend, disabled: isReadOnly }, []],
     });
   
     // Setup custom validators
     this.customFormValidationService.setupConditionalValidators(this.eventForm);
-    // console.log('Form initialized:', this.eventForm.value);
+
+    // Update the flag when the value changes
+    this.eventForm.get('existingClassValue')?.valueChanges.subscribe(value => {
+      const isExistingClassValuePopulated = !!value;
+      this.customFormValidationService.updateFormControlStates(this.eventForm, isExistingClassValuePopulated);
+    });  
 
     this.eventForm.get('selectedDate')?.valueChanges.subscribe(selectedDate => {
       const dayNumber = new Date(selectedDate).getDay();
       this.eventForm.patchValue({ dayNumber });
     });
-  
+
+      // Set the flag based on initial value
+      this.isReadOnly = !!this.eventForm.get('existingClassValue')?.value;
+
+      // Update the flag when the value changes
+      this.eventForm.get('existingClassValue')?.valueChanges.subscribe(value => {
+          this.isReadOnly = !!value;
+      });
+      this.snackBarService.openSnackBar('existingClassValue:' +  this.isReadOnly, '', []);
+
     this.userService.getAccountId().subscribe(accountId => {
       this.accountId = Number(accountId);
       this.eventForm.get('accountId')?.setValue(Number(this.accountId));
@@ -188,6 +207,7 @@ export class AddEditDialogComponent implements OnInit {
 
   save() {
     if (this.eventForm.valid) {
+      console.log('Form values before closing:', this.eventForm.value); 
       this.dialogRef.close(this.eventForm.value);
     } else {
       this.eventForm.markAllAsTouched();
@@ -242,4 +262,5 @@ export class AddEditDialogComponent implements OnInit {
       this.setCostToAttend = false;
     }
   }
+
 }

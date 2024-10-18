@@ -11,30 +11,6 @@ const authenticateToken = require('./middleware/authenticateToken.cjs');
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-/**
- * @swagger
- * /class/add-class:
- *   post:
- *     summary: Create a new class
- *     tags: [Class]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Class'
- *     responses:
- *       201:
- *         description: The class was successfully created
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Class'
- *       500:
- *         description: Some server error
- */
 router.post('/add-class/', authenticateToken, async (req, res) => {
   let connection;
   try {
@@ -60,24 +36,6 @@ router.post('/add-class/', authenticateToken, async (req, res) => {
   }
 });
   
-/**
- * @swagger
- * /class/get-class-list:
- *   get:
- *     summary: Returns the list of all the classes
- *     tags: [Class]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: The list of the classes
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Class'
- */
 router.get('/get-class-list/:accountId', authenticateToken, async (req, res) => {
   let connection;
   try {
@@ -94,29 +52,11 @@ router.get('/get-class-list/:accountId', authenticateToken, async (req, res) => 
     if (connection) {
       connection.release();
     } else {
-      //console.warn('get-class-list/:accountId: Connection not established.');
+      console.warn('get-class-list/:accountId: Connection not established.');
     };
   }
 }); 
 
-/**
- * @swagger
- * /class/get-active-class-list:
- *   get:
- *     summary: Returns the list of all ACTIVE classes by accountId
- *     tags: [Class]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: The list of the active classes
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Class'
- */
 router.get('/get-active-class-list/:accountId', authenticateToken, async (req, res) => {
   let connection;
   try {
@@ -134,38 +74,11 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
     if (connection) {
       connection.release();
     } else {
-      //console.warn('get-active-class-list/:accountId: Connection not established.');
+      console.warn('get-active-class-list/:accountId: Connection not established.');
     };
   }
 });
 
-  /**
- * @swagger
- * /class/get-class/{id}:
- *   get:
- *     summary: Get the class by id
- *     tags: [Class]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: The class id
- *     responses:
- *       200:
- *         description: The class description by id
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Class'
- *       404:
- *         description: The class was not found
- *       500:
- *         description: Some server error
- */
   router.get('/get-class-by-id/:accountId/:classId', authenticateToken, async (req, res) => {
     const { accountId, classId } = req.params;
     let connection;
@@ -185,44 +98,11 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
       if (connection) {
       connection.release();
     } else {
-      //console.warn('get-class-by-id/:accountId/:classId: Connection not established.');
+      console.warn('get-class-by-id/:accountId/:classId: Connection not established.');
     };
     }
   });
  
-  /**
- * @swagger
- * /class/update-class/{id}:
- *   put:
- *     summary: Update the class by the id
- *     tags: [Class]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: The class id
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Class'
- *     responses:
- *       200:
- *         description: The class was updated
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Class'
- *       404:
- *         description: The class was not found
- *       500:
- *         description: Some server error
- */
   router.put('/update-class/:classId', authenticateToken, async (req, res) => {
     const { classId } = req.params;
     const { className, classDescription, isActive } = req.body;
@@ -251,31 +131,7 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
           };
         }
   });
-  
- 
- /**
- * @swagger
- * /class/deactivate-class/{id}:
- *   delete:
- *     summary: Remove the class by id
- *     tags: [Class]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: The class id
- *     responses:
- *       204:
- *         description: The class was deleted
- *       404:
- *         description: The class was not found
- *       500:
- *         description: Some server error
- */
+
   router.delete('/deactivate-class/:accountId/:classId', authenticateToken, async (req, res) => {
     const { accountId, classId } = req.params;
     let connection;
@@ -302,51 +158,10 @@ router.get('/get-active-class-list/:accountId', authenticateToken, async (req, r
           if (connection) {
             connection.release();
           } else {
-            //console.warn('deactivate-class/:accountId/:classId: Connection not established.');
+            console.warn('deactivate-class/:accountId/:classId: Connection not established.');
           };
         }
   });
   
 
-
- /**
- * @swagger
- * components:
- *   schemas:
- *     Class:
- *       type: object
- *       required:
- *         - className
- *         - classDescription
- *       properties:
- *         accountId:
- *           type: integer
- *           description: "ID of the account"
- *         classId:
- *           type: integer
- *           description: The auto-generated id of the class
- *         className:
- *           type: string
- *           description: The name of the class
- *         classDescription:
- *           type: string
- *           description: The description of the class
- *       example:
- *         accountId: 1
- *         classId: 1
- *         className: Yoga
- *         classDescription: A relaxing yoga class
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- */
-
-/**
- * @swagger
- * tags:
- *   name: Class
- *   description: Class API
- */
 module.exports = router;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { ClassObj } from '../objects/class/class-obj';
 
 @Injectable({
@@ -29,8 +29,21 @@ export class ClassService {
   addClass(classData: any): Observable<any> {
     const url = `${this.apiUrl}/add-class`;
     console.log('addClass', classData);
-    return this.http.post<any>(url, classData);
+    return this.http.post<any>(url, classData).pipe(
+      map(response => {
+        console.log('Class added successfully:', response);
+        if (response && response.classId) {
+          return response.classId; // Return the classId
+        }
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error occurred in HTTP call:', error);
+        return of(null);
+      })
+    );
   }
+  
   
   updateClass(classId: number, classData: any) {
     return this.http.put(`${this.apiUrl}/update-class/${classId}`, classData);

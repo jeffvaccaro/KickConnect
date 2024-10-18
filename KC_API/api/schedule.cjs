@@ -86,70 +86,165 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
   
     return `${endHours}:${endMinutes}:00`;
   };
+
+  const insertScheduleMain = async (connection, insertValues) => {
+    const [insertResult] = await connection.query(
+      'INSERT INTO schedulemain (accountId, classId, day, startTime, endTime, selectedDate, isRepeat, isActive, createdBy, createdOn) VALUES (?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)',
+      insertValues
+    );
+    return insertResult.insertId;
+  };
+
+  const insertScheduleLocation = async (connection, accountId, scheduleMainId) => {
+    console.log(accountId);
+    const [locations] = await connection.query('SELECT locationId FROM location WHERE accountId = ?', [accountId]);
   
+    for (const location of locations) {
+      console.log('Location Values:', location);
+      const [scheduleLocationResult] = await connection.query(
+        'INSERT INTO schedulelocation (scheduleMainId, locationId, isActive) VALUES (?,?,?)', [scheduleMainId, location.locationId, true]
+      );
+    }
+  
+  };
+
   router.post('/add-schedule', authenticateToken, async (req, res) => {
     let connection;
     try {
-          const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
-          connection = await Promise.race([connectToDatabase(), timeout]);
-      
-          // Log the entire req.body
-          //console.log('Full req.body:', req.body);
-          const { result } = req.body;
-          const {
-            accountId = null, existingClassValue = null, locationValues = null, profileId = null,
-            dayNumber = null, selectedTime = null, duration = 60, isRepeat = false,
-            isActive = true, createdBy = 'API add-schedule', createdOn = new Date().toISOString(),
-            selectedDate = null // Ensure selectedDate is included
-          } = result;
-      
-          // Format selectedDate to YYYY-MM-DD
-          const formattedSelectedDate = new Date(selectedDate).toISOString().split('T')[0];
-      
-          const day = dayNumber;
-          const startTime = formatTime(selectedTime); // Format startTime
-          const endTime = calculateEndTime(selectedTime, duration); // Calculate and format endTime
-      
-          // Log the individual values
-          //console.log('Extracted values - Account ID:', accountId, 'Class ID:', existingClassValue, 'Location Values:', locationValues, 'Profile ID:', profileId, 'Day:', day, 'Start Time:', startTime, 'End Time:', endTime, 'SelectedDate:', formattedSelectedDate, 'Is Repeat:', isRepeat, 'Is Active:', isActive, 'Created By:', createdBy, 'Created On:', createdOn, 'DayNumber:', dayNumber);
-      
-          let insertValues = [accountId, existingClassValue, null, profileId, day, startTime, endTime, formattedSelectedDate, isRepeat, isActive, createdBy]; // Adjusted values
-      
-          if (locationValues === -99) {
-            const [locations] = await connection.query('SELECT locationId FROM location WHERE accountId = ?', [accountId]);
-            for (const location of locations) {
-              insertValues[2] = location.locationId; // Set the locationId for each location
-              console.log('Insert values:', insertValues);
-              await connection.query(
-                'INSERT INTO schedule (accountId, classId, locationId, profileId, day, startTime, endTime, selectedDate, isRepeat, isActive, createdBy, createdOn) VALUES (?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)',
-                insertValues
-              );
-            }
-          } else {
-            insertValues[2] = locationValues; // Set the locationValues
-            console.log('Insert values:', insertValues);
-            await connection.query(
-              'INSERT INTO schedule (accountId, classId, locationId, profileId, day, startTime, endTime, selectedDate, isRepeat, isActive, createdBy, createdOn) VALUES (?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)',
-              insertValues
-            );
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+      connection = await Promise.race([connectToDatabase(), timeout]);
+  
+      // console.log('Received body:', req.body); // Log the full request body
+      const result = req.body; // Directly use req.body
+  
+      // console.log('Received result:', result); // Log result for debugging
+  
+      if (!result) {
+        res.status(400).json({ error: 'Invalid request payload' });
+        return;
+      }
+  
+      // Destructure both classId and existingClassValue
+      const {
+        accountId = null,
+        classId: originalClassId = null,
+        existingClassValue = null,
+        locationValues = null,
+        dayNumber = null,
+        selectedTime = null,
+        duration = 60,
+        isRepeat = false,
+        isActive = true,
+        createdBy = 'API add-schedule',
+        createdOn = new Date().toISOString(),
+        selectedDate = null
+      } = result;
+  
+      // Assign classId based on whichever value is provided
+      const classId = originalClassId || existingClassValue;
+  
+      if (classId === null) {
+        res.status(400).json({ error: 'Missing class ID' });
+        return;
+      }
+  
+      const formattedSelectedDate = new Date(selectedDate).toISOString().split('T')[0];
+      const day = dayNumber;
+      const startTime = formatTime(selectedTime); // Format startTime
+      const endTime = calculateEndTime(selectedTime, duration); // Calculate and format endTime
+  
+      let insertValues = [accountId, classId, day, startTime, endTime, formattedSelectedDate, isRepeat, isActive, createdBy];
+      let scheduleMainId;
+  
+      if (locationValues === -99) {
+        try {
+          // Insert into schedulemain once and get scheduleId
+          scheduleMainId = await insertScheduleMain(connection, insertValues);
+  
+          if (!scheduleMainId) {
+            res.status(500).json({ error: 'Failed to insert into schedulemain' });
+            return;
           }
-          await connection.commit();
-          res.status(201).json({ message: 'Schedule added successfully' });
+  
+          // Insert into schedulelocation for each location
+          await insertScheduleLocation(connection, accountId, scheduleMainId);
         } catch (error) {
-          console.error('Error in API endpoint:', error);
-          res.status(500).json({ error: 'Error creating the Schedule: ' + error.message });
-        } finally {
-          if (connection) {
-            try {
-              connection.release();
-            } catch (releaseError) {
-              console.warn('Error releasing connection:', releaseError);
-            }
-          }
+          console.error('Error inserting into schedulemain:', error);
+          res.status(500).json({ error: 'Error inserting into schedulemain: ' + error.message });
+          return;
         }
+      } else {
+        // console.log('Insert values before query:', insertValues);
+        scheduleMainId = await insertScheduleMain(connection, insertValues);
+      }
+  
+      await connection.commit();
+      res.status(201).json({ message: 'Schedule added successfully', scheduleMainId }); // Return the scheduleMainId
+    } catch (error) {
+      console.error('Error in API endpoint:', error);
+      res.status(500).json({ error: 'Error creating the Schedule: ' + error.message });
+    } finally {
+      if (connection) {
+        try {
+          connection.release();
+        } catch (releaseError) {
+          console.warn('Error releasing connection:', releaseError);
+        }
+      }
+    }
   });
-    
-  router.get('/get-schedule-by-location/:locationId', authenticateToken, async (req, res) => {
+
+  router.put('/update-schedule/:scheduleMainId', authenticateToken, async (req, res) => {
+    let connection;
+    try {
+      const { scheduleMainId } = req.params; // Extract scheduleMainId from URL params
+      const result = req.body; // Extract data from req.body
+  
+      const {
+        //accountId = null,
+        //classId: originalClassId = null,
+        //existingClassValue = null,
+        //locationValues = null,
+        day = null,
+        selectedTime = null,
+        duration = 60,
+        //isRepeat = false,
+        //isActive = true,
+        selectedDate = null
+      } = result;
+  
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+      connection = await Promise.race([connectToDatabase(), timeout]);
+  
+      // console.log('Full req.body:', req.body);
+  
+      const formattedSelectedDate = new Date(selectedDate).toISOString().split('T')[0];
+      const startTime = formatTime(selectedTime); // Format startTime
+      const endTime = calculateEndTime(selectedTime, duration); // Calculate and format endTime
+  
+      const scheduleMainUpdateQuery = `UPDATE admin.schedulemain 
+                                       SET startTime = ?, endTime = ?, day = ?, selectedDate = ?, updatedBy = "API Update-Schedule" 
+                                       WHERE scheduleMainId = ?;`;
+  
+      const [updateResult] = await connection.query(scheduleMainUpdateQuery, [startTime, endTime, day, formattedSelectedDate, scheduleMainId]);
+  
+      res.json({ message: 'Schedule updated successfully' });
+  
+    } catch (error) {
+      console.error('Error Updating Schedule:', error);
+      res.status(500).json({ error: 'Error Updating Schedule: ' + error.message });
+    } finally {
+      if (connection) {
+        connection.release();
+      } else {
+        console.warn('update-schedule: Connection not established.');
+      }
+    }
+  });
+  
+  
+
+  router.get('/get-main-schedule', authenticateToken, async (req, res) => {
     let connection;
     try {
           const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
@@ -167,18 +262,16 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
               s.selectedDate, 
               s.isRepeat, 
               s.isActive,
-              s.locationId,
-              s.accountId
+              s.accountId,
+              s.scheduleMainId
             FROM 
-              admin.schedule s 
+              admin.schedulemain s 
             INNER JOIN 
               admin.class c 
             ON 
               s.classId = c.classId 
             AND 
               c.isActive = true
-            AND 
-              s.locationId = ?
             WHERE 
               (WEEK(s.selectedDate) = WEEK(CURDATE()) AND YEAR(s.selectedDate) = YEAR(CURDATE()) AND s.isRepeat = false) 
               OR 
@@ -188,13 +281,13 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
           
           res.status(200).json(results);
         } catch (error) {
-          console.error('Error fetching Duration Values:', error);
-          res.status(500).json({ errror: 'Error fetching Duration Values' + error.message});
+          console.error('Error fetching Schedule Values:', error);
+          res.status(500).json({ errror: 'Error fetching Schedule Values' + error.message});
         }finally{
           if (connection) {
             connection.release();
           } else {
-            console.warn('get-schedule-by-location: Connection not established.');
+            console.warn('get-main-schedule: Connection not established.');
           };
         }
   });  

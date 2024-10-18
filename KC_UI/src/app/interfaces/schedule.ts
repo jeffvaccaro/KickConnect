@@ -1,14 +1,21 @@
-import { Time } from "@angular/common";
-
+// created ISchedule to add customizations that ICustomDayPilotEventData didn't include.
 export interface ISchedule {
+    accountId: number,
+    scheduleMainId: number,
     classId: number,
     className: string,
     classDescription: string,
     day: number,
     startTime: string,
     endTime: string,
+    locationId: number,
+    reservationCount: number,
+    costToAttend: number,
+    selectedDate: Date,
+    selectedTime: string,
+    duration: number,
     isRepeat: boolean,
     isActive: boolean,
-    locationId: number,
-    accountId: number
+    isReservation: boolean,
+    isCostToAttend: boolean
 }

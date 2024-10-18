@@ -4,7 +4,8 @@
       <button class="close-btn bg-transparent p-0 border-none" (click)="close()"><i class="flaticon-close"></i></button>
     </div>
     <form [formGroup]="eventForm" (ngSubmit)="save()">
-      <input type="hidden" formControlName="accountId">
+      <input type="hidden" formControlName="accountId"/>
+      <input type="hidden" formControlName="scheduleMainId"/>
       <div class="row">
         <div class="col-lg-12 col-md-12">
           <div class="kickConnect-form-group">
@@ -151,9 +152,6 @@
                 </div>
               </div>
             </div>
-            
-
-
           </div>
         </div>   
      
