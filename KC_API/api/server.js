@@ -82,10 +82,11 @@ app.get('/current-datetime', (req, res) => {
   res.send(`Current Date and Time: ${currentDateTime}`);
 });
 
-
-// logger.error('Test log entry - Error level');
-// logger.info('Test log entry - Info level');
-
+app.post('/api/logger', (req, res) => {
+  const { message, level, ...rest } = req.body;
+  logger[level](`${message}: ${JSON.stringify(rest)}`);
+  res.status(200).send('Log received');
+});
 
 const serverHost = env === 'production' ? 'ElasticBeanStalk' : 'localhost';
 app.listen(port, () => {

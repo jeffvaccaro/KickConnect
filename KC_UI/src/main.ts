@@ -7,11 +7,13 @@ import { AppComponent } from './app/app.component';
 import { AuthInterceptor } from './app/interceptor/AuthInterceptor';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { routes } from './app/app.routes';
+import { LoggerService } from './app/services/logger.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(MatSnackBarModule, BrowserAnimationsModule, RouterModule.forRoot(routes)),
     provideHttpClient(withInterceptorsFromDi()),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    LoggerService
   ]
 });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { catchError, Observable } from 'rxjs';
 import { LoggerService } from './logger.service';
 import { environment } from '../../environments/environment';
@@ -8,11 +8,11 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class LocationService {
-  private apiUrl = environment.apiUrl + '/location'; 
+  private apiUrl = environment.apiUrl + '/location';
 
-  constructor(private http: HttpClient, private logger: LoggerService)  { }
+  constructor(private http: HttpClient, private logger: LoggerService) {}
 
-  getLocations(status:string): Observable<any> {
+  getLocations(status: string): Observable<any> {
     let url = `${this.apiUrl}`;
     switch (status) {
       case 'Active':
@@ -24,8 +24,8 @@ export class LocationService {
       default:
         url = `${this.apiUrl}/get-locations`;
         break;
-    } 
-    
+    }
+
     return this.http.get<any>(url).pipe(
       catchError(error => {
         this.logger.logError('Error fetching locations', error);
@@ -33,6 +33,7 @@ export class LocationService {
       })
     );
   }
+
 
   getLocationsById(locationId: number): Observable<any> {
     const url = `${this.apiUrl}/get-locations-by-id/${locationId}`;
