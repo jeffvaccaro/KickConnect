@@ -5,6 +5,7 @@
 
     --heraBlueColor: #000000;
     --aareRiverColor: #FFD700;
+    --warnColor: #b02a37;
 
 
     --blackColor: #000000;
@@ -1954,6 +1955,15 @@ quill-editor {
                     color: var(--blackColor);
                 }
             }
+            &.warn {
+                background-color:  var(--warnColor);
+                color: var(--blackColor);
+                margin-right: 15px;
+
+                &:hover {
+                    color: var(--whiteColor);
+                }
+            }            
         }
     }
     iframe {

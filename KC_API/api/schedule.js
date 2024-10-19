@@ -293,5 +293,43 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
         }
   });  
 
+  router.delete('/delete-schedule-event/:scheduleMainId', authenticateToken, async (req, res) => {
+    console.log('got to the delete');
+    const { scheduleMainId } = req.params;
+    let connection;
+  
+    try {
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+      connection = await Promise.race([connectToDatabase(), timeout]);
+  
+      // Delete from schedulelocation
+      const eventQuery = `DELETE FROM admin.schedulelocation WHERE scheduleMainId = ?;`;
+      const [eventResult] = await connection.query(eventQuery, [scheduleMainId]);
+  
+      if (eventResult.affectedRows === 0) {
+        return res.status(404).json({message: 'Event not found'});
+      }
+  
+      // Delete from scheduleMain
+      const scheduleMainQuery = `DELETE FROM admin.scheduleMain WHERE scheduleMainId = ?;`;
+      const [scheduleMainResult] = await connection.query(scheduleMainQuery, [scheduleMainId]);
+  
+      if (scheduleMainResult.affectedRows === 0) {
+        return res.status(404).json({message: 'Schedule not found'});
+      }
+  
+      res.status(204).json({message: 'Event and Schedule deactivated'});
+    } catch (error) {
+      console.error('Error deactivating event:', error);
+      res.status(500).json({error: 'Error deactivating event: ' + error.message});
+    } finally {
+      if (connection) {
+        connection.release();
+      } else {
+        console.warn('Connection not established.');
+      }
+    }
+  });
+  
   
   module.exports = router; 

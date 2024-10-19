@@ -25,6 +25,8 @@ import { catchError, forkJoin, of } from 'rxjs';
 import { isReactive } from '@angular/core/primitives/signals';
 import { CustomFormValidationService } from '../../../../services/custom-form-validation.service';
 
+
+
 @Component({
   selector: 'app-add-edit-dialog',
   templateUrl: './add-edit-dialog.component.html', // Reference the new HTML file
@@ -59,6 +61,7 @@ export class AddEditDialogComponent implements OnInit {
   setReservation: boolean = false;
   setCostToAttend: boolean = false;
   isReadOnly : boolean;
+  isAuthorized: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -75,6 +78,11 @@ export class AddEditDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    
+    this.userService.getRoleName().subscribe(roleName => {
+      this.isAuthorized = roleName.includes('Admin') || roleName.includes('Owner');
+    })
+
     const today = new Date();
     const currentHour = today.getHours();
     const currentMinutes = today.getMinutes();
@@ -104,7 +112,8 @@ export class AddEditDialogComponent implements OnInit {
     const costToAttend = this.data?.costToAttend || '';
     const isReadOnly = existingEventValue !== 'newEvent';
 
-
+    // console.log('existingEventValue', existingEventValue);
+    // console.log('isReadOnly', isReadOnly);
   
     this.eventForm = this.fb.group({
       existingEventValue: [{ value: existingEventValue, disabled: isReadOnly }, []],
@@ -112,7 +121,6 @@ export class AddEditDialogComponent implements OnInit {
       eventName: [{ value: eventName, disabled: isReadOnly }, []],
       eventDescription: [{ value: eventDescription, disabled: isReadOnly }, []],
       locationValues: [{ value: locationValues, disabled: isReadOnly }, []],
-
       selectedDate: [localSelectedDate],
       selectedTime: [selectedTime],
       duration: [duration],
@@ -148,7 +156,6 @@ export class AddEditDialogComponent implements OnInit {
       this.eventForm.get('existingEventValue')?.valueChanges.subscribe(value => {
           this.isReadOnly = !!value;
       });
-      this.snackBarService.openSnackBar('existingEventValue:' +  this.isReadOnly, '', []);
 
     this.userService.getAccountId().subscribe(accountId => {
       this.accountId = Number(accountId);
@@ -205,9 +212,14 @@ export class AddEditDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  //Need to add all potentially disabled fields here
+  enableFieldsBeforeClose() {
+    this.eventForm.get('eventDescription')?.enable();
+  }
+  
   save() {
     if (this.eventForm.valid) {
-      console.log('Form values before closing:', this.eventForm.value); 
+      this.enableFieldsBeforeClose();
       this.dialogRef.close(this.eventForm.value);
     } else {
       this.eventForm.markAllAsTouched();
@@ -227,6 +239,27 @@ export class AddEditDialogComponent implements OnInit {
         eventDescriptionControl.setErrors({ required: true });
         eventDescriptionControl.updateValueAndValidity();
       }
+    }
+  }
+  
+  deleteEvent(event: any) {
+    if (this.isAuthorized) {
+      const scheduleMainId = this.eventForm.get('scheduleMainId')?.value;
+      // console.log('scheduleMainId', scheduleMainId);
+  
+      this.schedulerService.deleteScheduleEvent(scheduleMainId).subscribe({
+        next: (response) => {
+          console.log('Delete successful', response);
+          this.snackBarService.openSnackBar("Event successfully deleted", '', []);
+          this.dialogRef.close();
+        },
+        error: (err) => {
+          console.error('Error deleting event', err);
+          this.snackBarService.openSnackBar("Failed to delete event: " + err.message, '', []);
+        }
+      });
+    } else {
+      this.snackBarService.openSnackBar("Unauthorized attempt to delete event", '', []);
     }
   }
   

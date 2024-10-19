@@ -204,6 +204,7 @@ export class SchedulerComponent implements AfterViewInit {
     });
       
     dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
       if (result) {
         const selectedDate = new Date(result.selectedDate);
         const [time, modifier] = result.selectedTime.split(' ');
@@ -239,8 +240,8 @@ export class SchedulerComponent implements AfterViewInit {
                 const modifiedResult = { ...event,eDataItem, eventId };
                 this.schedulerService.updateScheduleEvent(eDataItem).subscribe({
                   next: () => {
-                    console.log('event.eventName', event.eventName);
-                    console.log('event', event);
+                    // console.log('event.eventName', event.eventName);
+                    // console.log('event', event);
                     eDataItem.existingEventId = event.existingEventId;
                     eDataItem.existingEventValue  = event.existingEventId;
 
@@ -248,7 +249,7 @@ export class SchedulerComponent implements AfterViewInit {
                     eDataItem.existingEventDescription = event.existingEventDescription;
                     eDataItem.text = event.eventName === undefined ?event.existingEventName : event.eventName;
 
-                    console.log('eDataItem', eDataItem);
+                    // console.log('eDataItem', eDataItem);
                     this.customDPEvents[eventIndex] = eDataItem;
                   },
                   error: (error) => console.error('Error occurred while updating schedule event:', error)
@@ -289,20 +290,28 @@ export class SchedulerComponent implements AfterViewInit {
               error: (error) => console.error('Error occurred while adding event:', error)
             });
           } else {
-            // Existing Event          
+            // Existing Event       
+            result.eventId = result.existingEventValue;
             const modifiedResult = { ...result };
+
             this.schedulerService.addScheduleEvent(modifiedResult).subscribe({
               next: (scheduleMainId) => {
+                eDataItem.existingEventId = modifiedResult.existingEventId;
+                eDataItem.existingEventValue  = modifiedResult.existingEventId;
+                eDataItem.existingEventName = modifiedResult.eventName === undefined ? modifiedResult.existingEventName : modifiedResult.eventName;
+                eDataItem.text = modifiedResult.eventName === undefined ? modifiedResult.existingEventName : modifiedResult.eventName;
                 eDataItem.existingEventDescription = modifiedResult.eventDescription;
-                console.log('eDataItem',eDataItem);
                 this.customDPEvents.push({ ...eDataItem, scheduleMainId });
               },
               error: (error) => console.error('Error occurred while adding schedule event:', error)
             });
           }
         }
+        this.calendar.control.update();
+      }else{
+        this.loadEvents();
       }
-      this.calendar.control.update();
+      
     });
   }
 }

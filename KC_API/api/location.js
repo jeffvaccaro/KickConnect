@@ -98,4 +98,22 @@ router.get('/get-active-locations', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/get-inactive-locations', authenticateToken, async (req, res) => {
+  let connection;
+  try {
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+    connection = await Promise.race([connectToDatabase(), timeout]);
+    const [results] = await connection.query('SELECT * FROM location WHERE isActive = FALSE');
+    res.status(200).json(results);
+  } catch (error) {
+      next(error); 
+  } finally {
+    if (connection) {
+      connection.release();
+    } else {
+      console.warn('get-active-locations: Connection not established.');
+    }
+  }
+});
+
 module.exports = router;

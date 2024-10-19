@@ -10,9 +10,14 @@ export class LoggerService {
   constructor(private http: HttpClient) {}
 
   logError(message: string, error: any) {
-    console.error(`${message}: ${JSON.stringify(error)}`);
+    const errorMessage = error?.message || 'Unknown error';
+    const errorStack = error?.stack || 'No stack trace available';
     const loggerEndpoint = `${environment.apiUrl}/api/logger`;
-    this.http.post(loggerEndpoint, { message, error, level: 'error' }).subscribe();
+    this.http.post(loggerEndpoint, { message, error: { errorMessage, errorStack }, level: 'error' })
+      .subscribe({
+        next: response => console.log('Log successfully sent', response),
+        error: err => console.error('Failed to send log', err)
+      });
   }
   
   logInfo(message: string, info: any) {

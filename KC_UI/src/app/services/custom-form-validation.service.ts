@@ -58,7 +58,7 @@ export class CustomFormValidationService {
   }
 
   updateFormControlStates(form: FormGroup, isPopulated: boolean) {
-    const controlsToUpdate = ['existingClassValue', 'existingClassName', 'eventName', 'eventDescription', 'locationValues','isReservation', 'isCostToAttend', 'reservationCount', 'costToAttend'];
+    const controlsToUpdate = ['existingClassValue', 'existingClassName', 'eventName', 'eventDescription', 'isReservation', 'isCostToAttend', 'reservationCount', 'costToAttend'];
     controlsToUpdate.forEach(control => {
         if (isPopulated) {
           form.get(control)?.disable();

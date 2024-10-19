@@ -8,58 +8,6 @@ const { connectToDatabase } = require('./db');
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, `../.env.${env}`) });
 
-/**
- * @swagger
- * components:
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- * /account/add-account:
- *   post:
- *     tags:
- *       - Account
- *     summary: Register Account
- *     security:
- *      - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               accountName:
- *                 type: string
- *                 description: Name of Account Holder
- *               accountPhone:
- *                 type: string
- *                 description: Account Holder's phone
- *               accountEmail:
- *                 type: string
- *                 description: Account Holder's email
- *               accountAddress:
- *                 type: string
- *                 description: Account Holder's street address
- *               accountCity:
- *                 type: string
- *                 description: Account Holder's City
- *               accountState:
- *                 type: string
- *                 description: Account Holder's State
- *               accountZip:
- *                 type: string
- *                 description: Account Holder's Zip Code
- *               password:
- *                 type: string
- *                 description: Account Holder's initial password
- *     responses:
- *       200:
- *         description: Account Created
- *     servers:
- *       - url: http://localhost:3000
- */
 router.post('/add-account', async (req, res) => {
   const { accountName, accountPhone, accountEmail, accountAddress, accountCity, accountState, accountZip, name, email, phone, phone2, password, roleId } = req.body;
   let connection;

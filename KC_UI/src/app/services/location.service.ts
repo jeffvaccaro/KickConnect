@@ -37,15 +37,30 @@ export class LocationService {
 
   getLocationsById(locationId: number): Observable<any> {
     const url = `${this.apiUrl}/get-locations-by-id/${locationId}`;
-    return this.http.get<any>(url);
+    return this.http.get<any>(url).pipe(
+      catchError(error => {
+        this.logger.logError('Error fetching locations by Id', error);
+        throw error;
+      })
+    );
   }
 
   addLocation(locationData: any): Observable<any> {
     const url = `${this.apiUrl}/add-location`;
-    return this.http.post<any>(url, locationData);
+    return this.http.post<any>(url, locationData).pipe(
+      catchError(error => {
+        this.logger.logError('Error Adding Location', error);
+        throw error;
+      })
+    );
   }
   
   updateLocation(locationId: number, locationData: any) {
-    return this.http.put(`${this.apiUrl}/update-location/${locationId}`, locationData);
+    return this.http.put(`${this.apiUrl}/update-location/${locationId}`, locationData).pipe(
+      catchError(error => {
+        this.logger.logError('Error Updating Location', error);
+        throw error;
+      })
+    );
   }
 }

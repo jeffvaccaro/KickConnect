@@ -5,10 +5,10 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const swaggerSetup = require('./swagger.cjs');
-const authRouter = require('./account.cjs');
+const authRouter = require('./account.js');
 const userRouter = require('./user.cjs');
 const loginRouter = require('./login.cjs');
-const locationRouter = require('./location.cjs');
+const locationRouter = require('./location.js');
 const roleRouter = require('./role.cjs');
 const eventRouter = require('./event.js');
 const zipcodeRouter = require('./zipcode.cjs');
@@ -83,10 +83,18 @@ app.get('/current-datetime', (req, res) => {
 });
 
 app.post('/api/logger', (req, res) => {
-  const { message, level, ...rest } = req.body;
-  logger[level](`${message}: ${JSON.stringify(rest)}`);
-  res.status(200).send('Log received');
+  const { message, level, error } = req.body;
+
+  if (!['info', 'warn', 'error', 'debug'].includes(level)) {
+    return res.status(400).json({ error: 'Invalid log level' });
+  }
+
+  logger[level](`${message}: ${JSON.stringify(error)}`);
+  res.status(200).json({ message: 'Log received' });
 });
+
+
+
 
 const serverHost = env === 'production' ? 'ElasticBeanStalk' : 'localhost';
 app.listen(port, () => {
