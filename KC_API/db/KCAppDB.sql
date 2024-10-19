@@ -1,7 +1,7 @@
+-- MySQL dump 10.13  Distrib 8.0.39, for Win64 (x86_64)
 -- EXAMPLE 
 -- cd  c:\Program Files\MySQL\MySQL Server 8.0\bin>
 -- mysqldump -u root -p --databases admin common > c:\\KCAppDB.sql
--- MySQL dump 10.13  Distrib 8.0.39, for Win64 (x86_64)
 --
 -- Host: localhost    Database: admin
 -- ------------------------------------------------------
@@ -62,36 +62,40 @@ INSERT INTO `account` VALUES (1,'a5c4044e-5f2f-11ef-8104-c87f545b41fc','Admin','
 UNLOCK TABLES;
 
 --
--- Table structure for table `class`
+-- Table structure for table `event`
 --
 
-DROP TABLE IF EXISTS `class`;
+DROP TABLE IF EXISTS `event`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `class` (
-  `classId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `event` (
+  `eventId` int NOT NULL AUTO_INCREMENT,
   `accountId` int NOT NULL,
-  `className` varchar(250) NOT NULL,
-  `classDescription` varchar(500) NOT NULL,
+  `eventName` varchar(250) NOT NULL,
+  `eventDescription` varchar(500) NOT NULL,
+  `isReservation` tinyint DEFAULT NULL,
+  `maxReservationCount` int DEFAULT '0',
+  `isCostToAttend` tinyint DEFAULT '0',
+  `costToAttend` decimal(10,0) DEFAULT NULL,
   `isActive` tinyint NOT NULL,
   `createdOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `createdBy` varchar(250) NOT NULL,
   `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedBy` varchar(250) DEFAULT NULL,
-  PRIMARY KEY (`classId`),
+  PRIMARY KEY (`eventId`),
   KEY `classAcctFK_idx` (`accountId`),
   CONSTRAINT `classAcctFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `class`
+-- Dumping data for table `event`
 --
 
-LOCK TABLES `class` WRITE;
-/*!40000 ALTER TABLE `class` DISABLE KEYS */;
-INSERT INTO `class` VALUES (1,1,'Get-Fit-Done','Fitness Class',1,'2024-08-25 18:15:49','API Class Insert','2024-09-25 14:28:50','API Location Update'),(2,1,'Krav Maga Beginner','Beginner Krav Maga class - update1',1,'2024-08-25 18:30:39','API Class Insert','2024-09-25 13:55:08','API Location Update'),(3,1,'Yoga','A relaxing yoga class',0,'2024-08-25 18:41:25','API Class Insert','2024-09-25 13:53:02','API Location Update'),(4,1,'Krav Maga Advanced','Yellow Belts or higher',1,'2024-08-27 18:18:36','API Class Insert','2024-10-02 10:54:20','API Location Update'),(5,1,'add class #1','test addition/update',0,'2024-10-02 10:53:11','API Class Insert','2024-10-02 10:54:06','API Location Update');
-/*!40000 ALTER TABLE `class` ENABLE KEYS */;
+LOCK TABLES `event` WRITE;
+/*!40000 ALTER TABLE `event` DISABLE KEYS */;
+INSERT INTO `event` VALUES (1,1,'Fitness','Get your sweat on!',NULL,0,0,NULL,1,'2024-10-18 13:43:34','API Class Insert','2024-10-18 13:43:34',NULL),(2,1,'Beginner Krav','Krav for beginners (All levels welcome)',NULL,0,0,NULL,1,'2024-10-18 13:54:09','API Class Insert','2024-10-18 13:54:09',NULL),(3,1,'Advanced Krav','Yellow belt and above!',NULL,0,0,NULL,1,'2024-10-18 13:56:08','API Class Insert','2024-10-18 13:56:08',NULL),(4,1,'Beg/Adv Krav','Class for Beginners and Advances members',0,0,0,0,1,'2024-10-18 15:21:49','API Class Insert','2024-10-18 19:55:21','API Location Update'),(5,1,'Expert Krav','Orange Belts and above',NULL,0,0,NULL,1,'2024-10-18 15:22:35','API Class Insert','2024-10-18 15:22:35',NULL),(6,1,'All Levels','Anyone can come to this class!',NULL,0,0,NULL,1,'2024-10-18 15:42:55','API Class Insert','2024-10-18 15:42:55',NULL);
+/*!40000 ALTER TABLE `event` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -129,7 +133,7 @@ CREATE TABLE `location` (
 
 LOCK TABLES `location` WRITE;
 /*!40000 ALTER TABLE `location` DISABLE KEYS */;
-INSERT INTO `location` VALUES (1,1,'Lakewood Studio','1050 S Wadsworth Blvd','Lakewood','CO','80226','3039841957','lakewood@lakewood.com',0,'2024-08-25 16:18:26','API Location Insert','2024-09-16 08:17:08','API Location Update'),(2,1,'Denver Studio','5200 Broadway','Denver','CO','80216','3032925728','denver@denver.com',0,'2024-08-25 16:20:42','API Location Insert','2024-08-25 16:42:43','API Location Delete'),(3,1,'FoCo Studios','5800 S College Ave','Fort Collins','CO','80525','9705551216','foco@cokm.com',1,'2024-09-15 13:26:58','API Location Insert','2024-09-15 15:22:30','API Location Update'),(4,1,'Littleton','207 W. County Line Rd','Littleton','CO','80129','3035551212','littleton@cokm.com',0,'2024-09-15 13:31:16','API Location Insert','2024-09-16 09:14:43','API Location Update');
+INSERT INTO `location` VALUES (1,1,'Lakewood Studio','1050 S Wadsworth Blvd','Lakewood','CO','80226','3039841957','lakewood@lakewood.com',1,'2024-08-25 16:18:26','API Location Insert','2024-09-16 08:17:08','API Location Update'),(2,1,'Denver Studio','5200 Broadway','Denver','CO','80216','3032925728','denver@denver.com',0,'2024-08-25 16:20:42','API Location Insert','2024-08-25 16:42:43','API Location Delete'),(3,1,'FoCo Studios','5800 S College Ave','Fort Collins','CO','80525','9705551216','foco@cokm.com',1,'2024-09-15 13:26:58','API Location Insert','2024-09-15 15:22:30','API Location Update'),(4,1,'Littleton','207 W. County Line Rd','Littleton','CO','80129','3035551212','littleton@cokm.com',0,'2024-09-15 13:31:16','API Location Insert','2024-09-16 09:14:43','API Location Update');
 /*!40000 ALTER TABLE `location` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -188,46 +192,72 @@ INSERT INTO `role` VALUES (1,'Owner','Owner of Account - Admin of ALL locations'
 UNLOCK TABLES;
 
 --
--- Table structure for table `schedule`
+-- Table structure for table `schedulelocation`
 --
 
-DROP TABLE IF EXISTS `schedule`;
+DROP TABLE IF EXISTS `schedulelocation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `schedule` (
-  `scheduleId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `schedulelocation` (
+  `scheduleLocationId` int NOT NULL AUTO_INCREMENT,
+  `scheduleMainId` int NOT NULL,
+  `locationid` int NOT NULL,
+  `isActive` tinyint NOT NULL DEFAULT '1',
+  PRIMARY KEY (`scheduleLocationId`),
+  KEY `FK_ScheduleMainId_idx` (`scheduleMainId`),
+  KEY `FK_LocationId_idx` (`locationid`),
+  CONSTRAINT `FK_LocationId` FOREIGN KEY (`locationid`) REFERENCES `location` (`locationId`),
+  CONSTRAINT `FK_ScheduleMainId` FOREIGN KEY (`scheduleMainId`) REFERENCES `schedulemain` (`scheduleMainId`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `schedulelocation`
+--
+
+LOCK TABLES `schedulelocation` WRITE;
+/*!40000 ALTER TABLE `schedulelocation` DISABLE KEYS */;
+INSERT INTO `schedulelocation` VALUES (1,1,1,1),(2,1,2,1),(3,1,3,1),(4,1,4,1),(5,2,1,1),(6,2,2,1),(7,2,3,1),(8,2,4,1),(9,3,1,1),(10,3,2,1),(11,3,3,1),(12,3,4,1),(13,4,1,1),(14,4,2,1),(15,4,3,1),(16,4,4,1),(17,5,1,1),(18,5,2,1),(19,5,3,1),(20,5,4,1),(21,6,1,1),(22,6,2,1),(23,6,3,1),(24,6,4,1),(25,7,1,1),(26,7,2,1),(27,7,3,1),(28,7,4,1),(29,8,1,1),(30,8,2,1),(31,8,3,1),(32,8,4,1),(33,9,1,1),(34,9,2,1),(35,9,3,1),(36,9,4,1),(37,10,1,1),(38,10,2,1),(39,10,3,1),(40,10,4,1);
+/*!40000 ALTER TABLE `schedulelocation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `schedulemain`
+--
+
+DROP TABLE IF EXISTS `schedulemain`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `schedulemain` (
+  `scheduleMainId` int NOT NULL AUTO_INCREMENT,
   `accountId` int NOT NULL,
-  `classId` int NOT NULL,
-  `locationId` int NOT NULL,
-  `profileId` int NOT NULL,
+  `eventId` int NOT NULL,
   `day` int DEFAULT NULL,
   `startTime` time DEFAULT NULL,
   `endTime` time DEFAULT NULL,
+  `selectedDate` datetime DEFAULT NULL,
   `isRepeat` tinyint NOT NULL DEFAULT '1',
   `isActive` tinyint NOT NULL DEFAULT '1',
   `createdBy` varchar(45) NOT NULL,
   `createdOn` datetime NOT NULL,
   `updatedBy` varchar(45) DEFAULT NULL,
   `updatedOn` datetime DEFAULT NULL,
-  PRIMARY KEY (`scheduleId`),
+  PRIMARY KEY (`scheduleMainId`),
   KEY `scheduleAcctFK_idx` (`accountId`),
-  KEY `scheduleProfileFK_idx` (`profileId`),
-  KEY `scheduleLocationFK_idx` (`locationId`),
-  KEY `scheduleClassFK_idx` (`classId`),
-  CONSTRAINT `scheduleAcctFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`),
-  CONSTRAINT `scheduleClassFK` FOREIGN KEY (`classId`) REFERENCES `class` (`classId`),
-  CONSTRAINT `scheduleLocationFK` FOREIGN KEY (`locationId`) REFERENCES `location` (`locationId`),
-  CONSTRAINT `scheduleProfileFK` FOREIGN KEY (`profileId`) REFERENCES `profile` (`profileId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `eventFK_idx` (`eventId`),
+  CONSTRAINT `eventFK` FOREIGN KEY (`eventId`) REFERENCES `event` (`eventId`),
+  CONSTRAINT `scheduleAcctFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `schedule`
+-- Dumping data for table `schedulemain`
 --
 
-LOCK TABLES `schedule` WRITE;
-/*!40000 ALTER TABLE `schedule` DISABLE KEYS */;
-/*!40000 ALTER TABLE `schedule` ENABLE KEYS */;
+LOCK TABLES `schedulemain` WRITE;
+/*!40000 ALTER TABLE `schedulemain` DISABLE KEYS */;
+INSERT INTO `schedulemain` VALUES (1,1,1,1,'17:30:00','18:00:00','2024-10-14 00:00:00',1,1,'API add-schedule','2024-10-18 13:43:34','API Update-Schedule',NULL),(2,1,1,2,'17:30:00','18:00:00','2024-10-15 00:00:00',1,1,'API add-schedule','2024-10-18 13:51:37','API Update-Schedule',NULL),(3,1,1,3,'17:30:00','18:00:00','2024-10-16 00:00:00',1,1,'API add-schedule','2024-10-18 13:52:37','API Update-Schedule',NULL),(4,1,1,4,'17:30:00','18:00:00','2024-10-17 00:00:00',1,1,'API add-schedule','2024-10-18 13:53:02',NULL,NULL),(5,1,2,3,'19:00:00','19:45:00','2024-10-16 00:00:00',1,1,'API add-schedule','2024-10-18 13:54:09','API Update-Schedule',NULL),(6,1,3,3,'18:00:00','18:45:00','2024-10-16 00:00:00',1,1,'API add-schedule','2024-10-18 13:56:08','API Update-Schedule',NULL),(7,1,4,1,'18:00:00','18:45:00','2024-10-14 00:00:00',1,1,'API add-schedule','2024-10-18 15:21:49','API Update-Schedule',NULL),(8,1,5,2,'19:00:00','19:45:00','2024-10-15 00:00:00',1,1,'API add-schedule','2024-10-18 15:22:35','API Update-Schedule',NULL),(9,1,6,2,'18:00:00','19:00:00','2024-10-15 00:00:00',1,1,'API add-schedule','2024-10-18 15:42:55','API Update-Schedule',NULL),(10,1,1,6,'09:00:00','10:00:00','2024-10-19 00:00:00',0,1,'API add-schedule','2024-10-18 15:48:18','API Update-Schedule',NULL);
+/*!40000 ALTER TABLE `schedulemain` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -271,7 +301,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'Admin','admin@admin.com','3035551212',NULL,'','','',0,1,'$2a$10$oKfED6Pma1qAz.hJj8Isa.J57JMF0udQjIfkmBZVzCnOqQNkszfGq','/uploads/undefined',1,0,'2024-08-20 14:06:12','API User Insert','2024-09-02 20:13:55','API User Update'),(2,1,'JV-1','user1c@user1.com','5555555555',NULL,'PO Box 860814','Minneapolis','MN',55486,4,'$2a$10$.H3ilQsMS6gbaLFHO2zUy.PKGWcCpoSa82bBnKaR8QPlYkf.BCWzu','',0,0,'2024-08-20 14:51:44','API User Update','2024-09-19 11:10:53','API User Update'),(3,1,'USER2','user2@user2.com','5555555555','','','','',0,4,'$2a$10$uuCf6hUwFZKZD0WPV33NWeJuYy6Ld/m2dD8psBE4cNwAn6u5Z3m4y',NULL,1,0,'2024-08-24 18:12:32','API User Insert','2024-09-02 18:46:26',NULL),(4,2,'Bus1','bus1@bus1.com','7205555555',NULL,'','','',0,1,'$2a$10$DaMNXKbBSeO63aGAfeTmX.FliUPFCoKzNhR6JRRo4Nn7a4fp6pbnm',NULL,1,0,'2024-08-25 12:48:10','API Register Insert of OWNER','2024-09-02 18:46:26',NULL),(5,3,'Bus2','bus2@xyz.com','5555555555',NULL,'','','',0,1,'$2a$10$IJaXjd/h1kuxadli6zaAnewnWhR2Y.UlaAIHEGUVJtnF4dOxx6AvW',NULL,1,0,'2024-08-25 13:07:04','API Register Insert of OWNER','2024-09-02 18:46:26',NULL),(7,1,'jv1','jv1@jv1.com','7208191204','','','','',0,4,'$2a$10$O0Awdf3nOxKvEXCV2DU4weuyRjJInmhP3pMUyXErdH3Fn3cSY5CBW',NULL,1,0,'2024-08-27 19:56:16','API User Insert','2024-09-02 18:46:26',NULL),(8,1,'Champ','champnbarks@champ.com','7203035555','','','','',0,2,'$2a$10$/qlyvLZ1OzkMpxPLwMtD4OaPf6Bi2EuW9LRllQ7QNGpZE2bta6Q1.','champ_barks.jpg',1,1,'2024-08-31 18:22:48','API User Insert','2024-09-06 17:24:11','API User Update'),(9,1,'Newuser','newuser@newuser.com','9515551212',NULL,'NewUser Address1','','',55548,4,'$2a$10$78ToAgQe0C7N4cZOt8I98OgLDmdp1tpM.R4h/oxr4.dwbbYSpxFwO',NULL,1,1,'2024-09-22 12:32:11','API User Insert','2024-09-22 12:32:11',NULL),(10,1,'Newuser2','newuser2@newuser.com','9515551212',NULL,'NewUser2 Address1','','',55548,4,'$2a$10$9A4YSVeixKqC4MkKjkQPiO.r/deqxdseHrczJta4XXqTSZWzFpXe6','',0,0,'2024-09-22 12:33:46','API User Insert','2024-09-22 12:34:01','API User Update');
+INSERT INTO `user` VALUES (1,1,'Admin','admin@admin.com','3035551212',NULL,'','','',0,1,'$2a$10$oKfED6Pma1qAz.hJj8Isa.J57JMF0udQjIfkmBZVzCnOqQNkszfGq','/uploads/undefined',1,0,'2024-08-20 14:06:12','API User Insert','2024-09-02 20:13:55','API User Update'),(2,1,'JV-1','user1c@user1.com','5555555555',NULL,'PO Box 860814','Minneapolis','MN',55486,4,'$2a$10$.H3ilQsMS6gbaLFHO2zUy.PKGWcCpoSa82bBnKaR8QPlYkf.BCWzu','',0,0,'2024-08-20 14:51:44','API User Update','2024-09-19 11:10:53','API User Update'),(3,1,'USER2','user2@user2.com','5555555555','','','','',0,4,'$2a$10$uuCf6hUwFZKZD0WPV33NWeJuYy6Ld/m2dD8psBE4cNwAn6u5Z3m4y',NULL,1,0,'2024-08-24 18:12:32','API User Insert','2024-09-02 18:46:26',NULL),(4,2,'Bus1','bus1@bus1.com','7205555555',NULL,'','','',0,1,'$2a$10$DaMNXKbBSeO63aGAfeTmX.FliUPFCoKzNhR6JRRo4Nn7a4fp6pbnm',NULL,1,0,'2024-08-25 12:48:10','API Register Insert of OWNER','2024-09-02 18:46:26',NULL),(5,3,'Bus2','bus2@xyz.com','5555555555',NULL,'','','',0,1,'$2a$10$IJaXjd/h1kuxadli6zaAnewnWhR2Y.UlaAIHEGUVJtnF4dOxx6AvW',NULL,1,0,'2024-08-25 13:07:04','API Register Insert of OWNER','2024-09-02 18:46:26',NULL),(7,1,'jv1','jv1@jv1.com','3035551212',NULL,'','','',0,4,'$2a$10$O0Awdf3nOxKvEXCV2DU4weuyRjJInmhP3pMUyXErdH3Fn3cSY5CBW','',1,0,'2024-08-27 19:56:16','API User Insert','2024-10-08 15:32:00','API User Update'),(8,1,'Champ','champnbarks@champ.com','7203035555','','','','',0,2,'$2a$10$/qlyvLZ1OzkMpxPLwMtD4OaPf6Bi2EuW9LRllQ7QNGpZE2bta6Q1.','champ_barks.jpg',1,1,'2024-08-31 18:22:48','API User Insert','2024-09-06 17:24:11','API User Update'),(9,1,'Newuser','newuser@newuser.com','9515551212',NULL,'NewUser Address1','','',55548,4,'$2a$10$78ToAgQe0C7N4cZOt8I98OgLDmdp1tpM.R4h/oxr4.dwbbYSpxFwO',NULL,1,1,'2024-09-22 12:32:11','API User Insert','2024-09-22 12:32:11',NULL),(10,1,'Newuser2','newuser2@newuser.com','9515551212',NULL,'NewUser2 Address1','','',55548,4,'$2a$10$9A4YSVeixKqC4MkKjkQPiO.r/deqxdseHrczJta4XXqTSZWzFpXe6','',0,0,'2024-09-22 12:33:46','API User Insert','2024-09-22 12:34:01','API User Update');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -338,6 +368,30 @@ INSERT INTO `duration` VALUES (1,15,'15 minutes'),(2,30,'30 minutes'),(3,45,'45 
 UNLOCK TABLES;
 
 --
+-- Table structure for table `reservationcounts`
+--
+
+DROP TABLE IF EXISTS `reservationcounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reservationcounts` (
+  `reservationCountId` int NOT NULL AUTO_INCREMENT,
+  `reservationCountValue` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`reservationCountId`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reservationcounts`
+--
+
+LOCK TABLES `reservationcounts` WRITE;
+/*!40000 ALTER TABLE `reservationcounts` DISABLE KEYS */;
+INSERT INTO `reservationcounts` VALUES (1,'< 10'),(2,'10 - 25'),(3,'25 - 50'),(4,'50 - 100'),(5,'100 - 250'),(6,'250+');
+/*!40000 ALTER TABLE `reservationcounts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `states`
 --
 
@@ -370,4 +424,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-05  9:45:04
+-- Dump completed on 2024-10-19  5:28:00
