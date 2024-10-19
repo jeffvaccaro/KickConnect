@@ -1,5 +1,5 @@
 <mat-card class="mb-25 kickConnect-card">
-    <h5 class="mb-0">Classes</h5><br/>
+    <h5 class="mb-0">Events</h5><br/>
     <mat-card-header>
         <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" animationDuration="0ms"  (selectedTabChange)="onTabChange($event)">
             <mat-tab label="Active"></mat-tab>
@@ -13,16 +13,16 @@
         <div class="teamMembersListTable kickConnect-mat-table mat-elevation-z8">
             <table mat-table [dataSource]="dataSource">
                 <ng-container matColumnDef="Name">
-                    <th mat-header-cell *matHeaderCellDef class="text-start">Class Name</th>
+                    <th mat-header-cell *matHeaderCellDef class="text-start">Event Name</th>
                     <td mat-cell *matCellDef="let element" class="text-start">
-                        {{element.className}}
+                        {{element.eventName}}
                     </td>
                 </ng-container>
 
                 <!-- Description Column -->
                 <ng-container matColumnDef="Description">
                     <th mat-header-cell *matHeaderCellDef>Description</th>
-                    <td mat-cell *matCellDef="let element">{{element.classDescription}}</td>
+                    <td mat-cell *matCellDef="let element">{{element.eventDescription}}</td>
                 </ng-container>                
 
                 <ng-container matColumnDef="Action">
@@ -32,7 +32,7 @@
                             <i class="{{element.action}}"></i>
                         </button>
                         <mat-menu #actionMenu="matMenu" class="dotMenu two monthMenu" xPosition="before">
-                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="editClass(element.classId)">
+                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="editEvent(element.eventId)">
                                 <i class="ri-edit-line"></i> Edit
                             </button>
                         </mat-menu>

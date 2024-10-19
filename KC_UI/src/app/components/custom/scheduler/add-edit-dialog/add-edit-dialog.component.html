@@ -11,26 +11,26 @@
           <div class="kickConnect-form-group">
             <mat-form-field appearance="fill">
               <i class="ri-bookmark-2-line"></i>
-              <mat-label>Existing Class</mat-label>
-              <mat-select formControlName="existingClassValue" (selectionChange)="enableDisable($event)">
-                <mat-option *ngFor="let classItem of classes" [value]="classItem.classId">
-                  {{ classItem.className }}
+              <mat-label>Existing Event</mat-label>
+              <mat-select formControlName="existingEventValue" (selectionChange)="enableDisable($event)">
+                <mat-option *ngFor="let eventItem of events" [value]="eventItem.eventId">
+                  {{ eventItem.eventName }}
                 </mat-option>
-                <mat-option value="newEventClass">Add New Event/Class</mat-option>
+                <mat-option value="newEvent">Add New Event</mat-option>
               </mat-select>  
-              <div *ngIf="eventForm.get('existingClassValue')?.touched && eventForm.get('existingClassValue')?.invalid" class="error-message">
-                Please select an Existing Class or Add New Event/Class
+              <div *ngIf="eventForm.get('existingEventValue')?.touched && eventForm.get('existingEventValue')?.invalid" class="error-message">
+                Please select an Existing Event or Add New Event
               </div>         
             </mat-form-field>
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="col-lg-12 col-md-12" *ngIf="isNewEventClass">
+        <div class="col-lg-12 col-md-12" *ngIf="isNewEvent">
           <div class="form-group">
-            <input type="text" class="input-control" placeholder="New Class/Event Name *" formControlName="eventName" required>
+            <input type="text" class="input-control" placeholder="New Event Name *" formControlName="eventName" required>
             <div *ngIf="eventForm.get('eventName')?.touched && eventForm.get('eventName')?.invalid" class="error-message">
-              Class/Event Name is required
+              Event Name is required
             </div>
           </div>
         </div>
@@ -39,10 +39,10 @@
         <div class="col-lg-12 col-md-12" >
           <div class="kickConnect-form-group custom-style">
               <mat-form-field appearance="fill">
-                  <mat-label>Class/Event Description</mat-label>
+                  <mat-label>Event Description</mat-label>
                   <textarea matInput rows="6" formControlName="eventDescription"></textarea>
                   <div *ngIf="eventForm.get('eventDescription')?.touched && eventForm.get('eventDescription')?.invalid" class="error-message">
-                    Class/Event Description is required
+                    Event Description is required
                   </div>
               </mat-form-field>
           </div>
@@ -66,7 +66,7 @@
         </div>
         <div class="col-lg-5 col-md-5">
           <div class="kickConnect-form-group mb-12" style="padding-top:15px;">
-            <mat-checkbox formControlName="isRepeat">Class/Event Repeats?</mat-checkbox>
+            <mat-checkbox formControlName="isRepeat">Event Repeats?</mat-checkbox>
           </div>
         </div>
       </div>

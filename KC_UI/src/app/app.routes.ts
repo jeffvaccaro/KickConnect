@@ -20,9 +20,9 @@ import { EditUserComponent } from './components/custom/user/edit-user/edit-user.
 import { RoleListComponent } from './components/custom/roles/role-list/role-list.component';
 import { AddNewRoleComponent } from './components/custom/roles/add-new-role/add-new-role.component';
 import { EditRoleComponent } from './components/custom/roles/edit-role/edit-role.component';
-import { ClassListComponent } from './components/custom/class/class-list/class-list.component';
-import { AddNewClassComponent } from './components/custom/class/add-new-class/add-new-class.component';
-import { EditClassComponent } from './components/custom/class/edit-class/edit-class.component';
+import { EventListComponent } from './components/custom/event/event-list/event-list.component';
+import { AddNewEventComponent } from './components/custom/event/add-new-event/add-new-event.component';
+import { EditEventComponent } from './components/custom/event/edit-event/edit-event.component';
 import { SchedulerComponent } from './components/custom/scheduler/scheduler.component';
 import { AddEditDialogComponent } from './components/custom/scheduler/add-edit-dialog/add-edit-dialog.component';
 
@@ -41,9 +41,9 @@ export const routes: Routes = [
     {path: 'app-add-new-role', component: AddNewRoleComponent },
     {path: 'app-edit-role/:roleId', component: EditRoleComponent },
 
-    {path: 'app-class-list', component: ClassListComponent},
-    {path: 'app-add-new-class', component: AddNewClassComponent},
-    {path: 'app-edit-class/:classId', component: EditClassComponent },
+    {path: 'app-event-list', component: EventListComponent},
+    {path: 'app-add-new-event', component: AddNewEventComponent},
+    {path: 'app-edit-event/:eventId', component: EditEventComponent },
 
     {path: 'app-scheduler', component: SchedulerComponent},
     {path: 'app-add-edit-dialog', component: AddEditDialogComponent},

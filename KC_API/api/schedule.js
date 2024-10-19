@@ -89,7 +89,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
   const insertScheduleMain = async (connection, insertValues) => {
     const [insertResult] = await connection.query(
-      'INSERT INTO schedulemain (accountId, classId, day, startTime, endTime, selectedDate, isRepeat, isActive, createdBy, createdOn) VALUES (?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)',
+      'INSERT INTO schedulemain (accountId, eventId, day, startTime, endTime, selectedDate, isRepeat, isActive, createdBy, createdOn) VALUES (?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)',
       insertValues
     );
     return insertResult.insertId;
@@ -124,10 +124,10 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
         return;
       }
   
-      // Destructure both classId and existingClassValue
+      // Destructure both eventId and existingClassValue
       const {
         accountId = null,
-        classId: originalClassId = null,
+        eventId: originalClassId = null,
         existingClassValue = null,
         locationValues = null,
         dayNumber = null,
@@ -140,11 +140,11 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
         selectedDate = null
       } = result;
   
-      // Assign classId based on whichever value is provided
-      const classId = originalClassId || existingClassValue;
+      // Assign eventId based on whichever value is provided
+      const eventId = originalClassId || existingClassValue;
   
-      if (classId === null) {
-        res.status(400).json({ error: 'Missing class ID' });
+      if (eventId === null) {
+        res.status(400).json({ error: 'Missing event ID' });
         return;
       }
   
@@ -153,7 +153,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
       const startTime = formatTime(selectedTime); // Format startTime
       const endTime = calculateEndTime(selectedTime, duration); // Calculate and format endTime
   
-      let insertValues = [accountId, classId, day, startTime, endTime, formattedSelectedDate, isRepeat, isActive, createdBy];
+      let insertValues = [accountId, eventId, day, startTime, endTime, formattedSelectedDate, isRepeat, isActive, createdBy];
       let scheduleMainId;
   
       if (locationValues === -99) {
@@ -201,15 +201,9 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
       const result = req.body; // Extract data from req.body
   
       const {
-        //accountId = null,
-        //classId: originalClassId = null,
-        //existingClassValue = null,
-        //locationValues = null,
         day = null,
         selectedTime = null,
         duration = 60,
-        //isRepeat = false,
-        //isActive = true,
         selectedDate = null
       } = result;
   
@@ -225,11 +219,18 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
       const scheduleMainUpdateQuery = `UPDATE admin.schedulemain 
                                        SET startTime = ?, endTime = ?, day = ?, selectedDate = ?, updatedBy = "API Update-Schedule" 
                                        WHERE scheduleMainId = ?;`;
+      const scheduleMainUpdateParams = [startTime, endTime, day, formattedSelectedDate, scheduleMainId];
+
+      console.log('Executing query:', scheduleMainUpdateQuery);
+      console.log('With parameters:', scheduleMainUpdateParams);
+      
   
-      const [updateResult] = await connection.query(scheduleMainUpdateQuery, [startTime, endTime, day, formattedSelectedDate, scheduleMainId]);
-  
-      res.json({ message: 'Schedule updated successfully' });
-  
+      const [updateResult] = await connection.query(scheduleMainUpdateQuery, scheduleMainUpdateParams);
+
+      if (updateResult.affectedRows === 0) {
+        return res.status(404).json({ message: 'scheduleMain not updated' });
+      }
+      res.status(200).json({ message: 'Schedule updated successfully' });
     } catch (error) {
       console.error('Error Updating Schedule:', error);
       res.status(500).json({ error: 'Error Updating Schedule: ' + error.message });
@@ -253,9 +254,9 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
           const { locationId } = req.params;
           const query = `
               SELECT 
-              c.classId, 
-              c.className, 
-              c.classDescription, 
+              e.eventId, 
+              e.eventName, 
+              e.eventDescription, 
               s.day, 
               s.startTime, 
               s.endTime, 
@@ -267,11 +268,11 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
             FROM 
               admin.schedulemain s 
             INNER JOIN 
-              admin.class c 
+              admin.event e 
             ON 
-              s.classId = c.classId 
+              s.eventId = e.eventId 
             AND 
-              c.isActive = true
+              e.isActive = true
             WHERE 
               (WEEK(s.selectedDate) = WEEK(CURDATE()) AND YEAR(s.selectedDate) = YEAR(CURDATE()) AND s.isRepeat = false) 
               OR 

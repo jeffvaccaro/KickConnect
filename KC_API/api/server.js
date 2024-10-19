@@ -10,9 +10,9 @@ const userRouter = require('./user.cjs');
 const loginRouter = require('./login.cjs');
 const locationRouter = require('./location.cjs');
 const roleRouter = require('./role.cjs');
-const classRouter = require('./class.cjs');
+const eventRouter = require('./event.js');
 const zipcodeRouter = require('./zipcode.cjs');
-const scheduleRouter = require('./schedule.cjs');
+const scheduleRouter = require('./schedule.js');
 const app = express();
 
 const env = process.env.NODE_ENV || 'development';
@@ -48,7 +48,7 @@ const routers = [
   { path: '/login', router: loginRouter },
   { path: '/location', router: locationRouter },
   { path: '/role', router: roleRouter },
-  { path: '/class', router: classRouter },
+  { path: '/event', router: eventRouter },
   { path: '/common', router: zipcodeRouter },
   { path: '/schedule', router: scheduleRouter },
 ];

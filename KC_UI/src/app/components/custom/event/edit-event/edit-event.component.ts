@@ -13,33 +13,42 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../../services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../../services/user.service';
-import { ClassService } from '../../../../services/class.service';
+import { EventService } from '../../../../services/event.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
+import { SchedulerService } from '../../../../services/scheduler.service';
+import { IReservationCount } from '../../../../interfaces/reservation-count';
 
 @Component({
-  selector: 'app-edit-class',
+  selector: 'app-edit-event',
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
   ],
-  templateUrl: './edit-class.component.html',
-  styleUrls: ['./edit-class.component.scss']
+  templateUrl: './edit-event.component.html',
+  styleUrls: ['./edit-event.component.scss']
 })
-export class EditClassComponent implements OnInit {
+export class EditEventComponent implements OnInit {
   form: FormGroup;
-  classId: number;
+  eventId: number;
   accountCode: string;
   accountId: number;
+  setReservation: boolean = false;
+  setCostToAttend: boolean = false;
+  reservationCounts: IReservationCount[] = [];
 
-  constructor(private fb: FormBuilder, private classService: ClassService, private snackBarService: SnackbarService, 
+  constructor(private fb: FormBuilder, private eventService: EventService, private snackBarService: SnackbarService, 
               private userService: UserService, private commonService: CommonService, private route: ActivatedRoute, 
-              private router: Router, private cdr: ChangeDetectorRef) {}
+              private schedulerService: SchedulerService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
       nameControl: ['', Validators.required],
       descriptionControl: ['', [Validators.required]],
+      isReservation: ['',[]],
+      reservationCount: ['',[]],
+      isCostToAttend: ['',[]],
+      costToAttend: ['',[]],
       isActiveControl: [true]
     });
 
@@ -55,17 +64,21 @@ export class EditClassComponent implements OnInit {
 
     // Get the roleId from the route parameters
     this.route.params.subscribe(params => {
-      this.classId = +params['classId']; // Assuming 'id' is the route parameter name
-      this.loadClassData(this.classId);
+      this.eventId = +params['eventId']; // Assuming 'id' is the route parameter name
+      this.loadEventData(this.eventId);
     });
+
+    this.schedulerService.getReservationCount().subscribe(reservationCounts => {
+      this.reservationCounts = reservationCounts;
+    })
   }
 
-  loadClassData(classId: number): void {
-    this.classService.getClassById(this.accountId, classId).subscribe({
+  loadEventData(eventId: number): void {
+    this.eventService.getEventById(this.accountId, eventId).subscribe({
       next: response => {
         this.form.patchValue({
-          nameControl: response.className,
-          descriptionControl: response.classDescription,
+          nameControl: response.eventName,
+          descriptionControl: response.eventDescription,
           isActiveControl: response.isActive === 0
         });
       },
@@ -77,31 +90,41 @@ export class EditClassComponent implements OnInit {
   
   onSubmit(event: Event): void {
     event.preventDefault(); // Prevent the default form submission
-    //console.log('location form info', this.form.value); // Log the form values
   
-
-    let classData = {
-      className: this.form.value.nameControl,
-      classDescription: this.form.value.descriptionControl,
+    let eventData = {
+      eventName: this.form.value.nameControl,
+      eventDescription: this.form.value.descriptionControl,
       isActive: this.form.value.isActiveControl ? 0 : 1,
     };
   
-    //console.log('classData:', classData); // Log the data being sent to the server
   
     // Call the updateLocation method and pass the form values along with accountId
-    this.classService.updateClass(this.classId, classData).subscribe({
+    this.eventService.updateEvent(this.eventId, eventData).subscribe({
       next: response => {
-        // console.log('Role updated successfully:', response); // Log the response
-        this.router.navigate(['/app-class-list']); // Navigate to role-list 
-        // console.log('Navigation triggered'); // Log navigation trigger
+        this.router.navigate(['/app-event-list']); // Navigate to role-list 
       },
       error: error => {
-        this.snackBarService.openSnackBar('Error Updating Class data:' + error.message, '',  []);
+        this.snackBarService.openSnackBar('Error Updating event data:' + error.message, '',  []);
       }
     });
   }
-  
+
+  onReservationChange(event:any){
+    if(event.checked === true){
+      this.setReservation = true;
+    }else{
+      this.setReservation = false;
+    }
+  }
+
+  onCostToAttendChange(event:any){
+    if(event.checked === true){
+      this.setCostToAttend = true;
+    }else{
+      this.setCostToAttend = false;
+    }
+  }
   cancel(event: Event): void {
-    this.router.navigate(['/app-class-list']); // Navigate to role-list 
+    this.router.navigate(['/app-event-list']); // Navigate to role-list 
   }
 }

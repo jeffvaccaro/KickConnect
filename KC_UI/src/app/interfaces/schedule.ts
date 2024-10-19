@@ -2,9 +2,9 @@
 export interface ISchedule {
     accountId: number,
     scheduleMainId: number,
-    classId: number,
-    className: string,
-    classDescription: string,
+    eventId: number,
+    eventName: string,
+    eventDescription: string,
     day: number,
     startTime: string,
     endTime: string,

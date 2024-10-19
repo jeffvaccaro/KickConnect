@@ -3,10 +3,10 @@ import { DayPilot } from "@daypilot/daypilot-lite-angular";
 export interface ICustomDayPilotEventData extends DayPilot.EventData {
     accountId?: number;
     scheduleMainId?: number;
-    existingClassId: number;
-    existingClassName: string;
-    existingClassValue: string;
-    existingClassDescription: string;
+    existingEventId: number;
+    existingEventName: string;
+    existingEventValue: string;
+    existingEventDescription: string;
     isRepeat: boolean;
     scheduleId?: number;
     isActive: boolean;

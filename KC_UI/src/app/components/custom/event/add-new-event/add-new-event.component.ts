@@ -13,26 +13,26 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../../services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../../services/user.service';
-import { ClassService } from '../../../../services/class.service';
+import { EventService } from '../../../../services/event.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 
 @Component({
-  selector: 'app-add-new-class',
+  selector: 'app-add-new-event',
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
   ],
-  templateUrl: './add-new-class.component.html',
-  styleUrl: './add-new-class.component.scss'
+  templateUrl: './add-new-event.component.html',
+  styleUrl: './add-new-event.component.scss'
 })
-export class AddNewClassComponent implements OnInit {
+export class AddNewEventComponent implements OnInit {
   form: FormGroup;
-  classId: number;
+  eventId: number;
   accountCode: string;
   accountId: number;
 
-  constructor(private fb: FormBuilder, private classService: ClassService, private snackBarService: SnackbarService, 
+  constructor(private fb: FormBuilder, private eventService: EventService, private snackBarService: SnackbarService, 
               private userService: UserService, private commonService: CommonService, private route: ActivatedRoute, 
               private router: Router, private cdr: ChangeDetectorRef) {}
 
@@ -52,57 +52,30 @@ export class AddNewClassComponent implements OnInit {
       this.accountId = Number(accountId);
       this.cdr.detectChanges;
     })
-
-    // Get the roleId from the route parameters
-    // this.route.params.subscribe(params => {
-    //   this.classId = +params['classId']; // Assuming 'id' is the route parameter name
-    //   this.loadClassData(this.classId);
-    // });
   }
 
-  // loadClassData(classId: number): void {
-  //   this.classService.getClassById(this.accountId, classId).subscribe({
-  //     next: response => {
-  //       this.form.patchValue({
-  //         nameControl: response.className,
-  //         descriptionControl: response.classDescription,
-  //         isActiveControl: response.isActive === 0
-  //       });
-  //     },
-  //     error: error => {
-  //       this.snackBarService.openSnackBar('Error fetching Role data:' + error.message, '',  []);
-  //     }
-  //   });
-  // }
-  
   onSubmit(event: Event): void {
     event.preventDefault(); // Prevent the default form submission
-    //console.log('location form info', this.form.value); // Log the form values
-  
 
-    let classData = {
+    let eventData = {
       accountId: this.accountId,
-      className: this.form.value.nameControl,
-      classDescription: this.form.value.descriptionControl,
+      eventName: this.form.value.nameControl,
+      eventDescription: this.form.value.descriptionControl,
       isActive: this.form.value.isActiveControl ? 0 : 1,
     };
   
-    // console.log('classData:', classData); // Log the data being sent to the server
-  
     // Call the updateLocation method and pass the form values along with accountId
-    this.classService.addClass(classData).subscribe({
+    this.eventService.addEvent(eventData).subscribe({
       next: response => {
-        // console.log('Role updated successfully:', response); // Log the response
-        this.router.navigate(['/app-class-list']); // Navigate to role-list 
-        // console.log('Navigation triggered'); // Log navigation trigger
+        this.router.navigate(['/app-event-list']); // Navigate to role-list 
       },
       error: error => {
-        this.snackBarService.openSnackBar('Error Updating Class data:' + error.message, '',  []);
+        this.snackBarService.openSnackBar('Error Updating Event data:' + error.message, '',  []);
       }
     });
   }
   
   cancel(event: Event): void {
-    this.router.navigate(['/app-class-list']); // Navigate to role-list 
+    this.router.navigate(['/app-event-list']);
   }
 }

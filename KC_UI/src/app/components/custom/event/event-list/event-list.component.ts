@@ -10,26 +10,26 @@ import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserService } from '../../../../services/user.service';
-import { ClassService } from '../../../../services/class.service';
+import { EventService } from '../../../../services/event.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 
 @Component({
-  selector: 'app-class-list',
+  selector: 'app-event-list',
   standalone: true,
   imports: [RouterLink, MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule,MatTabsModule, NgIf],
-  templateUrl: './class-list.component.html',
-  styleUrl: './class-list.component.scss'
+  templateUrl: './event-list.component.html',
+  styleUrl: './event-list.component.scss'
 })
-export class ClassListComponent implements OnInit, AfterViewInit {
-  private classArr: any[] = [];
+export class EventListComponent implements OnInit, AfterViewInit {
+  private eventArr: any[] = [];
   accountCode: string;
   accountId: number;
   displayedColumns: string[] = ['Name', 'Description','Action'];
-  dataSource = new MatTableDataSource(this.classArr);
+  dataSource = new MatTableDataSource(this.eventArr);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private classService: ClassService, private userService: UserService, private router: Router,
+  constructor(private eventService: EventService, private userService: UserService, private router: Router,
               private route: ActivatedRoute, private cdr: ChangeDetectorRef, 
               private snackbarService: SnackbarService) {}
 
@@ -43,7 +43,7 @@ export class ClassListComponent implements OnInit, AfterViewInit {
       this.accountId = Number(accountId);
       this.cdr.detectChanges;
     })
-    this.getClassList(this.accountId);
+    this.getEventList(this.accountId);
   }
 
   ngAfterViewInit() {
@@ -53,14 +53,14 @@ export class ClassListComponent implements OnInit, AfterViewInit {
   active = true;
   inactive = true;
 
-  getClassList(accountId: number, status = 'Active'): void {
-    this.classService.getClasses(accountId).subscribe({
+  getEventList(accountId: number, status = 'Active'): void {
+    this.eventService.getEvents(accountId).subscribe({
       next: response => {
-        this.classArr = response;
-        this.dataSource.data = status === 'All' ? this.classArr : this.classArr.filter(item => item.isActive === (status === 'Active' ? 1 : 0));
+        this.eventArr = response;
+        this.dataSource.data = status === 'All' ? this.eventArr : this.eventArr.filter(item => item.isActive === (status === 'Active' ? 1 : 0));
       },
       error: error => {
-        this.snackbarService.openSnackBar('Error fetching Class data!','',[]);
+        this.snackbarService.openSnackBar('Error fetching event data!','',[]);
       }
     });
   }
@@ -80,24 +80,24 @@ export class ClassListComponent implements OnInit, AfterViewInit {
       default:
         status = 'Active';
     }
-    this.getClassList(this.accountId, status);
+    this.getEventList(this.accountId, status);
   }
 
   btnAddNewClick() {
-    this.router.navigate(['/app-add-new-class']);
+    this.router.navigate(['/app-add-new-event']);
   }
 
-  editClass(classId: number){
-    this.router.navigate(['/app-edit-class', classId]);
+  editEvent(eventId: number){
+    this.router.navigate(['/app-edit-event', eventId]);
   }
 
-  deleteClass(classId: number){
-    this.classService.deactivateClass(this.accountId,classId).subscribe({
+  deleteEvent(eventId: number){
+    this.eventService.deactivateEvent(this.accountId,eventId).subscribe({
       next: response => {
-        this.getClassList(this.accountId);
+        this.getEventList(this.accountId);
       },
       error: error => {
-        this.snackbarService.openSnackBar('Error Deleting the Class!','',[]);
+        this.snackbarService.openSnackBar('Error Deleting the Event!','',[]);
       }
     });
 
@@ -106,7 +106,5 @@ export class ClassListComponent implements OnInit, AfterViewInit {
   }
 
   filterLocations(){
-    //this.router.navigate(['/app-location-list'], { queryParams: { status: 'InActive' } });
-
   }
 }

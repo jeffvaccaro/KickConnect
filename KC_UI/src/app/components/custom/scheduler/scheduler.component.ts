@@ -8,9 +8,9 @@ import { RouterLink } from '@angular/router';
 import { DataService } from '../../../services/data.service';
 import { AddEditDialogComponent } from './add-edit-dialog/add-edit-dialog.component';
 import { ICustomDayPilotEventData } from '../../../interfaces/customDayPilotEventData';
-import { ClassService } from '../../../services/class.service';
+import { EventService } from '../../../services/event.service';
 import { SchedulerService } from '../../../services/scheduler.service';
-import { IClass } from '../../../interfaces/classes';
+import { IEvent } from '../../../interfaces/event';
 import { ISchedule } from '../../../interfaces/schedule';
 import { SnackbarService } from '../../../services/snackbar.service';
 
@@ -25,7 +25,7 @@ export class SchedulerComponent implements AfterViewInit {
   @ViewChild('calendar') calendar!: DayPilotCalendarComponent;
   private createEventDataManager = createEventData(); 
   
-  class : IClass;
+  eventObj : IEvent;
   scheduleList : ISchedule[] = [];
   customDPEvents: ICustomDayPilotEventData[] = [];
 
@@ -44,9 +44,9 @@ export class SchedulerComponent implements AfterViewInit {
         ...args.e.data,
         accountId: args.e.data.accountId,
         scheduleMainId: args.e.data.scheduleMainId,
-        existingClassId: args.e.data.existingClassId || 'defaultId',
-        existingClassValue: args.e.data.existingClassValue,
-        existingClassName: args.e.data.existingClassName || 'defaultName',
+        existingEventId: args.e.data.existingEventId || 'defaultId',
+        existingEventValue: args.e.data.existingEventValue,
+        existingEventName: args.e.data.existingEventName || 'defaultName',
         eventDescription: args.e.data.eventDescription || '',
         eventName: args.e.data.text || '',
         selectedDate: args.e.data.start.toString('yyyy-MM-dd'),
@@ -88,7 +88,7 @@ export class SchedulerComponent implements AfterViewInit {
   };
   
   constructor(public dialog: MatDialog, private ds: DataService, private schedulerService: SchedulerService, 
-    private classService: ClassService, private snackBarService: SnackbarService) {
+    private eventService: EventService, private snackBarService: SnackbarService) {
     
   }
   ngOnInit():void{
@@ -124,15 +124,15 @@ export class SchedulerComponent implements AfterViewInit {
         return {
           accountId: schedule.accountId,
           scheduleMainId: schedule.scheduleMainId,
-          id: schedule.classId,
-          text: schedule.className,
+          id: schedule.eventId,
+          text: schedule.eventName,
           start: `${formattedDate}T${this.formatTime(schedule.startTime)}`,
           end: `${formattedDate}T${this.formatTime(schedule.endTime)}`,
-          resource: schedule.classId,
-          existingClassId: schedule.classId,
-          existingClassName: schedule.className,
-          existingClassValue: String(schedule.classId),
-          existingClassDescription: schedule.classDescription,
+          resource: schedule.eventId,
+          existingEventId: schedule.eventId,
+          existingEventName: schedule.eventName,
+          existingEventValue: String(schedule.eventId),
+          existingEventDescription: schedule.eventDescription,
           reservationCount: schedule.reservationCount,
           costToAttend: schedule.costToAttend,
           selectedDate: schedule.selectedDate,
@@ -188,10 +188,10 @@ export class SchedulerComponent implements AfterViewInit {
         selectedDate: event.start.toString('yyyy-MM-dd') || '',
         selectedTime: event.start.toString('HH:mm') || '',
         duration: (event.end.getTime() - event.start.getTime()) / (60 * 1000) || 60,
-        existingClassId: event.existingClassId || 'blank?',
-        existingClassName: event.existingClassName || '',
-        existingClassValue: event.existingClassValue,
-        existingClassDescription: event.existingClassDescription || '',
+        existingEventId: event.existingEventId || 'blank?',
+        existingEventName: event.existingEventName || '',
+        existingEventValue: event.existingEventValue,
+        existingEventDescription: event.existingEventDescription || '',
         isRepeat: event.isRepeat || false,
         isActive: event.isActive || false,
         locationValues: event.locationValues,
@@ -231,48 +231,69 @@ export class SchedulerComponent implements AfterViewInit {
             eDataItem = eventDataManager.updateEvent(event, result, startDate, endDate);
            
             // Update the event in customDPEvents
-            this.customDPEvents[eventIndex] = eDataItem;
+            //this.customDPEvents[eventIndex] = eDataItem;
             
             // Update the backend and refresh UI
-            this.schedulerService.updateScheduleEvent(eDataItem).subscribe({
-              next: () => {
-                this.customDPEvents[eventIndex] = eDataItem;
-              },
-              error: (error) => console.error('Error occurred while updating schedule event:', error)
-            });
+            this.eventService.updateEvent(event.existingEventId, event).subscribe({
+              next: (eventId) => {
+                const modifiedResult = { ...event,eDataItem, eventId };
+                this.schedulerService.updateScheduleEvent(eDataItem).subscribe({
+                  next: () => {
+                    console.log('event.eventName', event.eventName);
+                    console.log('event', event);
+                    eDataItem.existingEventId = event.existingEventId;
+                    eDataItem.existingEventValue  = event.existingEventId;
+
+                    eDataItem.existingEventName = event.eventName === undefined ?event.existingEventName : event.eventName;
+                    eDataItem.existingEventDescription = event.existingEventDescription;
+                    eDataItem.text = event.eventName === undefined ?event.existingEventName : event.eventName;
+
+                    console.log('eDataItem', eDataItem);
+                    this.customDPEvents[eventIndex] = eDataItem;
+                  },
+                  error: (error) => console.error('Error occurred while updating schedule event:', error)
+                });
+              }
+            })
+            this.calendar.control.update();
           }
         } else {
+          //From Add New Button
           eDataItem = eventDataManager.createEvent(result, startDate, endDate);
-          if (eDataItem.existingClassValue === "newEventClass") {
+          if (eDataItem.existingEventValue === "newEvent") {
 
-            this.class = {
-              classId: 0,
-              className: result.eventName,
-              classDescription: result.eventDescription,
+            this.eventObj = {
+              eventId: 0,
+              eventName: result.eventName,
+              eventDescription: result.eventDescription,
+              isReservation: result.isReservation,
+              maxReservationCount: result.maxReservationCount,
+              isCostToAttend: result.isCostToAttend,
+              costToAttend: result.costToAttend,
               isActive: true,
               createdBy: '',
               accountId: result.accountId
             };
-          
-            this.classService.addClass(this.class).subscribe({
-              next: (classId) => {
-                const modifiedResult = { ...result, classId };
+            // Add New Event
+            this.eventService.addEvent(this.eventObj).subscribe({
+              next: (eventId) => {
+                const modifiedResult = { ...result, eventId };
                 this.schedulerService.addScheduleEvent(modifiedResult).subscribe({
                   next: (scheduleMainId) => {scheduleMainId
-                    eDataItem.existingClassDescription = result.eventDescription;
+                    eDataItem.existingEventDescription = result.eventDescription;
                     this.customDPEvents.push({ ...eDataItem, scheduleMainId });
                   },
                   error: (error) => console.error('Error occurred while adding schedule event:', error)
                 });
               },
-              error: (error) => console.error('Error occurred while adding class:', error)
+              error: (error) => console.error('Error occurred while adding event:', error)
             });
           } else {
-            // Existing Class          
+            // Existing Event          
             const modifiedResult = { ...result };
             this.schedulerService.addScheduleEvent(modifiedResult).subscribe({
               next: (scheduleMainId) => {
-                eDataItem.existingClassDescription = modifiedResult.eventDescription;
+                eDataItem.existingEventDescription = modifiedResult.eventDescription;
                 console.log('eDataItem',eDataItem);
                 this.customDPEvents.push({ ...eDataItem, scheduleMainId });
               },
@@ -312,11 +333,11 @@ function createEventDataManager() {
         id: DayPilot.guid(),
         start: startDate,
         end: endDate,
-        text: result.eventName === "" ? result.existingClassName : result.eventName,
-        existingClassId: result.existingClassValue !== undefined ? Number(result.existingClassValue) : 0,
-        existingClassName: result.existingClassName || '',
-        existingClassValue: result.existingClassValue,
-        existingClassDescription: result.existingClassDescription || '',
+        text: result.eventName === "" ? result.existingEventName : result.eventName,
+        existingEventId: result.existingEventId !== undefined ? Number(result.existingEventId) : 0,
+        existingEventName: result.existingEventName || '',
+        existingEventValue: result.existingEventValue,
+        existingEventDescription: result.existingEventDescription || '',
         isRepeat: result.isRepeat,
         isActive: true,
         isReservation: result.isReservation,
@@ -336,11 +357,11 @@ function createEventDataManager() {
         ...existingEvent,
         start: startDate,
         end: endDate,
-        text: result.eventName === "" ? result.existingClassName : result.eventName,
-        existingClassId: result.existingClassValue !== undefined ? Number(result.existingClassValue) : 0,
-        existingClassName: result.existingClassName || '',
-        existingClassValue: result.existingClassValue,
-        existingClassDescription: result.existingClassDescription || '',
+        text: result.eventName === "" ? result.existingEventName : result.eventName,
+        existingEventId: result.existingEventValue !== undefined ? Number(result.existingEventValue) : 0,
+        existingEventName: result.existingEventName || '',
+        existingEventValue: result.existingEventValue,
+        existingEventDescription: result.existingEventDescription || '',
         isRepeat: result.isRepeat,
         isActive: true,
         isReservation: result.isReservation,

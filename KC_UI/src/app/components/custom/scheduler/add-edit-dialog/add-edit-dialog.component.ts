@@ -13,12 +13,12 @@ import { MatNativeDateModule, NativeDateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DA
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { UserService } from '../../../../services/user.service';
-import { ClassService } from '../../../../services/class.service';
+import { EventService } from '../../../../services/event.service';
 import { LocationService } from '../../../../services/location.service';
 import { SchedulerService } from '../../../../services/scheduler.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 import { IDuration } from '../../../../interfaces/duration';
-import { IClass } from '../../../../interfaces/classes';
+import { IEvent } from '../../../../interfaces/event';
 import { ILocations } from '../../../../interfaces/locations';
 import { IReservationCount } from '../../../../interfaces/reservation-count';
 import { catchError, forkJoin, of } from 'rxjs';
@@ -51,10 +51,10 @@ export class AddEditDialogComponent implements OnInit {
   eventForm: FormGroup;
   durations: IDuration[] = [];
   reservationCounts: IReservationCount[] = [];
-  classes: IClass[] = [];
+  events: IEvent[] = [];
   locations: ILocations[] = [];
   accountId: number;
-  isNewEventClass: boolean = true;
+  isNewEvent: boolean = true;
   isNew: string;
   setReservation: boolean = false;
   setCostToAttend: boolean = false;
@@ -63,7 +63,7 @@ export class AddEditDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private classService: ClassService,
+    private eventService: EventService,
     private locationService: LocationService,
     private schedulerService: SchedulerService,
     private snackBarService: SnackbarService,
@@ -88,10 +88,10 @@ export class AddEditDialogComponent implements OnInit {
 
 
     // Ensure data exists before accessing properties
-    const existingClassValue = this.data?.existingClassValue || 'newEventClass';
-    const existingClassName = this.data?.existingClassName || '';
+    const existingEventValue = this.data?.existingEventValue || 'newEvent';
+    const existingEventName = this.data?.existingEventName || '';
     const eventName = this.data?.eventName || '';
-    const eventDescription = this.data?.existingClassDescription || '';
+    const eventDescription = this.data?.existingEventDescription || '';
     const selectedTime = this.data?.selectedTime || defaultTime;
     const duration = Number(this.data?.duration) || 60;
     const locationValues = this.data?.locationValues !== undefined ? Number(this.data.locationValues) : -99;
@@ -102,13 +102,13 @@ export class AddEditDialogComponent implements OnInit {
     const isCostToAttend = this.data?.isCostToAttend || false;
     const reservationCount = this.data?.reservationCount || 1;
     const costToAttend = this.data?.costToAttend || '';
-    const isReadOnly = existingClassValue !== 'newEventClass';
+    const isReadOnly = existingEventValue !== 'newEvent';
 
 
   
     this.eventForm = this.fb.group({
-      existingClassValue: [{ value: existingClassValue, disabled: isReadOnly }, []],
-      existingClassName: [{ value: existingClassName, disabled: isReadOnly }, []],
+      existingEventValue: [{ value: existingEventValue, disabled: isReadOnly }, []],
+      existingEventName: [{ value: existingEventName, disabled: isReadOnly }, []],
       eventName: [{ value: eventName, disabled: isReadOnly }, []],
       eventDescription: [{ value: eventDescription, disabled: isReadOnly }, []],
       locationValues: [{ value: locationValues, disabled: isReadOnly }, []],
@@ -131,9 +131,9 @@ export class AddEditDialogComponent implements OnInit {
     this.customFormValidationService.setupConditionalValidators(this.eventForm);
 
     // Update the flag when the value changes
-    this.eventForm.get('existingClassValue')?.valueChanges.subscribe(value => {
-      const isExistingClassValuePopulated = !!value;
-      this.customFormValidationService.updateFormControlStates(this.eventForm, isExistingClassValuePopulated);
+    this.eventForm.get('existingEventValue')?.valueChanges.subscribe(value => {
+      const isExistingEventValuePopulated = !!value;
+      this.customFormValidationService.updateFormControlStates(this.eventForm, isExistingEventValuePopulated);
     });  
 
     this.eventForm.get('selectedDate')?.valueChanges.subscribe(selectedDate => {
@@ -142,13 +142,13 @@ export class AddEditDialogComponent implements OnInit {
     });
 
       // Set the flag based on initial value
-      this.isReadOnly = !!this.eventForm.get('existingClassValue')?.value;
+      this.isReadOnly = !!this.eventForm.get('existingEventValue')?.value;
 
       // Update the flag when the value changes
-      this.eventForm.get('existingClassValue')?.valueChanges.subscribe(value => {
+      this.eventForm.get('existingEventValue')?.valueChanges.subscribe(value => {
           this.isReadOnly = !!value;
       });
-      this.snackBarService.openSnackBar('existingClassValue:' +  this.isReadOnly, '', []);
+      this.snackBarService.openSnackBar('existingEventValue:' +  this.isReadOnly, '', []);
 
     this.userService.getAccountId().subscribe(accountId => {
       this.accountId = Number(accountId);
@@ -169,9 +169,9 @@ export class AddEditDialogComponent implements OnInit {
           return of(null);
         })
       ),
-      activeClasses: this.classService.getActiveClasses(this.accountId).pipe(
+      events: this.eventService.getActiveEvents(this.accountId).pipe(
         catchError(error => {
-          this.snackBarService.openSnackBar('Error Fetching Class data:' + error.message, '', []);
+          this.snackBarService.openSnackBar('Error Fetching Event data:' + error.message, '', []);
           return of(null);
         })
       ),
@@ -185,7 +185,7 @@ export class AddEditDialogComponent implements OnInit {
       next: response => {
         this.durations = response.durations;
         this.reservationCounts = response.reservationCounts;
-        this.classes = response.activeClasses;
+        this.events = response.events;
         this.locations = response.locations;
       },
       error: error => {
@@ -233,16 +233,16 @@ export class AddEditDialogComponent implements OnInit {
 
   enableDisable(event: any) {
     const eventId = event.value;
-    const selectedIndex = this.classes.findIndex(event => event.classId === eventId); // Get the index directly
+    const selectedIndex = this.events.findIndex(event => event.eventId === eventId); // Get the index directly
 
     if (selectedIndex !== -1) {
-      this.isNewEventClass = false;
-      const selectedClass = this.classes[selectedIndex];
-      this.eventForm.get('existingClassName')?.setValue(selectedClass.className);
-      this.eventForm.get('eventDescription')?.setValue(selectedClass.classDescription);
+      this.isNewEvent = false;
+      const selectedEvent = this.events[selectedIndex];
+      this.eventForm.get('existingEventName')?.setValue(selectedEvent.eventName);
+      this.eventForm.get('eventDescription')?.setValue(selectedEvent.eventDescription);
       this.eventForm.get('eventName')?.setValue('');
     } else {
-      this.isNewEventClass = true;
+      this.isNewEvent = true;
       this.eventForm.get('eventDescription')?.setValue('');
     }
   }
