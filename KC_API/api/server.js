@@ -13,6 +13,7 @@ const roleRouter = require('./role.cjs');
 const eventRouter = require('./event.js');
 const zipcodeRouter = require('./zipcode.cjs');
 const scheduleRouter = require('./schedule.js');
+const logger = require('./logger');
 const app = express();
 
 const env = process.env.NODE_ENV || 'development';
@@ -41,6 +42,13 @@ if (typeof swaggerSetup === 'function') {
 } else {
   console.error('swaggerSetup is not a function. Ensure it exports correctly.');
 }
+
+app.use((err, req, res, next) => {
+  logger.error(`Error occurred: ${err.message}`);
+  console.error(`Error occurred: ${err.message}`);
+  res.status(500).json({ error: 'An error occurred, please try again later.' });
+});
+
 
 // Ensure all routers are middleware functions
 const routers = [
@@ -73,6 +81,11 @@ app.get('/current-datetime', (req, res) => {
   const currentDateTime = new Date();
   res.send(`Current Date and Time: ${currentDateTime}`);
 });
+
+
+// logger.error('Test log entry - Error level');
+// logger.info('Test log entry - Info level');
+
 
 const serverHost = env === 'production' ? 'ElasticBeanStalk' : 'localhost';
 app.listen(port, () => {

@@ -6,6 +6,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const { connectToDatabase } = require('./db');
 const authenticateToken = require('./middleware/authenticateToken.cjs');
+
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
@@ -87,8 +88,7 @@ router.get('/get-active-locations', authenticateToken, async (req, res) => {
     const [results] = await connection.query('SELECT * FROM location WHERE isActive = TRUE');
     res.status(200).json(results);
   } catch (error) {
-    console.error('Error fetching locations:', error);
-    res.status(500).send('Error fetching locations');
+      next(error); 
   } finally {
     if (connection) {
       connection.release();
