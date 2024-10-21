@@ -21,11 +21,9 @@ import { IDuration } from '../../../../interfaces/duration';
 import { IEvent } from '../../../../interfaces/event';
 import { ILocations } from '../../../../interfaces/locations';
 import { IReservationCount } from '../../../../interfaces/reservation-count';
-import { catchError, forkJoin, of } from 'rxjs';
+import { catchError, forkJoin, Observable, of } from 'rxjs';
 import { isReactive } from '@angular/core/primitives/signals';
 import { CustomFormValidationService } from '../../../../services/custom-form-validation.service';
-
-
 
 @Component({
   selector: 'app-add-edit-dialog',
@@ -78,183 +76,165 @@ export class AddEditDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.checkAuthorization();
+    this.initializeForm();
+    this.subscribeToFormChanges();
     
+  }
+  
+  subscribeToFormChanges(): void {
+    this.eventForm.get('existingEventValue')?.valueChanges.subscribe(this.handleExistingEventValueChange.bind(this));
+    this.eventForm.get('selectedDate')?.valueChanges.subscribe(this.handleSelectedDateChange.bind(this));
+    this.userService.getAccountId().subscribe({
+      next: (accountId: string) => {
+        this.handleAccountIdChange(accountId);
+        this.loadInitialData(); // Ensure loadInitialData is called after setting accountId
+      },
+      error: (err) => this.snackBarService.openSnackBar("Error fetching account ID: " + err.message, '', [])
+    });
+  }
+  
+  handleExistingEventValueChange(value: any): void {
+    const isExistingEventValuePopulated = !!value;
+    this.customFormValidationService.updateFormControlStates(this.eventForm, isExistingEventValuePopulated);
+  
+    // Enable fields for new events
+    if (value === 'newEvent') {
+      this.eventForm.get('eventName')?.enable();
+      this.eventForm.get('eventDescription')?.enable();
+      this.eventForm.get('locationValues')?.enable();
+    } else {
+      this.eventForm.get('eventName')?.disable();
+      this.eventForm.get('eventDescription')?.disable();
+      // this.eventForm.get('locationValues')?.disable();
+    }
+  
+    this.isReadOnly = !!value && value !== 'newEvent';
+  }
+    
+  handleSelectedDateChange(selectedDate: any): void {
+    const dayNumber = new Date(selectedDate).getDay();
+    this.eventForm.patchValue({ dayNumber });
+  }
+
+  handleAccountIdChange(accountId: string): void {
+    this.accountId = Number(accountId);
+    this.eventForm.get('accountId')?.setValue(this.accountId);
+    this.cdr.detectChanges();
+  }
+  
+  handleError(message: string, error: any): Observable<null> {
+    this.snackBarService.openSnackBar(`${message}: ${error.message}`, '', []);
+    return of(null);
+  }
+  
+  checkAuthorization(): void {
     this.userService.getRoleName().subscribe(roleName => {
       this.isAuthorized = roleName.includes('Admin') || roleName.includes('Owner');
-    })
-
+    });
+  }
+  
+  initializeForm(): void {
     const today = new Date();
-    const currentHour = today.getHours();
-    const currentMinutes = today.getMinutes();
-    const closestHour = currentMinutes >= 30 ? currentHour + 1 : currentHour;
+    const closestHour = today.getMinutes() >= 30 ? today.getHours() + 1 : today.getHours();
     const defaultTime = closestHour >= 12 ? `${closestHour - 12 === 0 ? 12 : closestHour - 12}:00 PM` : `${closestHour === 0 ? 12 : closestHour}:00 AM`;
   
-    const selectedDateString = this.data?.selectedDate || today.toISOString().split('T')[0];
-    const [year, month, day] = selectedDateString.split('-').map(Number);
-    const localSelectedDate = new Date(year, month - 1, day);
-    const dayNumber = localSelectedDate.getDay(); // Calculate initial day number
-
-
-    // Ensure data exists before accessing properties
-    const existingEventValue = this.data?.existingEventValue || 'newEvent';
-    const existingEventName = this.data?.existingEventName || '';
-    const eventName = this.data?.eventName || '';
-    const eventDescription = this.data?.existingEventDescription || '';
-    const selectedTime = this.data?.selectedTime || defaultTime;
-    const duration = Number(this.data?.duration) || 60;
-    const locationValues = this.data?.locationValues !== undefined ? Number(this.data.locationValues) : -99;
-    const accountId = this.data?.accountId || 0;
-    const scheduleMainId = this.data?.scheduleMainId || 0;
-    const isRepeat = this.data?.isRepeat || false;
-    const isReservation = this.data?.isReservation || false;
-    const isCostToAttend = this.data?.isCostToAttend || false;
-    const reservationCount = this.data?.reservationCount || 1;
-    const costToAttend = this.data?.costToAttend || '';
-    const isReadOnly = existingEventValue !== 'newEvent';
-
-    // console.log('existingEventValue', existingEventValue);
-    // console.log('isReadOnly', isReadOnly);
+    const data = this.data;
+    const isReadOnly = data?.existingEventValue !== 'newEvent' && !!data?.existingEventValue;
   
+    // Correctly parse selectedDate to avoid timezone issues
+    const selectedDate = data?.selectedDate ? new Date(`${data.selectedDate}T00:00:00`) : new Date();
+    // console.log(data);
     this.eventForm = this.fb.group({
-      existingEventValue: [{ value: existingEventValue, disabled: isReadOnly }, []],
-      existingEventName: [{ value: existingEventName, disabled: isReadOnly }, []],
-      eventName: [{ value: eventName, disabled: isReadOnly }, []],
-      eventDescription: [{ value: eventDescription, disabled: isReadOnly }, []],
-      locationValues: [{ value: locationValues, disabled: isReadOnly }, []],
-      selectedDate: [localSelectedDate],
-      selectedTime: [selectedTime],
-      duration: [duration],
-      accountId: [accountId],
-      scheduleMainId: [scheduleMainId],
-      dayNumber: [dayNumber],
-      isRepeat: [{ value: isRepeat, disabled: isReadOnly }, []],
+      existingEventValue: [{ value: data?.existingEventValue || 'newEvent', disabled: !!data?.existingEventValue }, []],
+      existingEventName: [{ value: data?.existingEventName || '', disabled: !!data?.existingEventValue }, []],
+      eventName: [data?.eventName || '', []], 
+      eventDescription: [data?.eventDescription === undefined || '' ? data?.existingEventDescription : '', []], 
+      locationValues: [data?.locationValues !== undefined ? Number(data.locationValues) : -99, []], 
+      selectedDate: [selectedDate], 
+      selectedTime: [data?.selectedTime || defaultTime],
+      duration: [Number(data?.duration) || 60],
+      accountId: [data?.accountId || 0],
+      scheduleMainId: [data?.scheduleMainId || 0],
+      day: [selectedDate.getDay()], 
+      isRepeat: [data?.isRepeat ?? true, []], 
       isActive: [true],
-      isReservation: [{ value: isReservation, disabled: isReadOnly }, []],
-      isCostToAttend: [{ value: isCostToAttend, disabled: isReadOnly }, []],
-      reservationCount: [{ value: reservationCount, disabled: isReadOnly }, []],
-      costToAttend: [{ value: costToAttend, disabled: isReadOnly }, []],
+      isReservation: [data?.isReservation || false, []],
+      isCostToAttend: [data?.isCostToAttend || false, []],
+      reservationCount: [data?.reservationCount || 1, []],
+      costToAttend: [data?.costToAttend || 0, []], 
     });
   
-    // Setup custom validators
-    this.customFormValidationService.setupConditionalValidators(this.eventForm);
-
-    // Update the flag when the value changes
-    this.eventForm.get('existingEventValue')?.valueChanges.subscribe(value => {
-      const isExistingEventValuePopulated = !!value;
-      this.customFormValidationService.updateFormControlStates(this.eventForm, isExistingEventValuePopulated);
-    });  
-
-    this.eventForm.get('selectedDate')?.valueChanges.subscribe(selectedDate => {
-      const dayNumber = new Date(selectedDate).getDay();
-      this.eventForm.patchValue({ dayNumber });
-    });
-
-      // Set the flag based on initial value
-      this.isReadOnly = !!this.eventForm.get('existingEventValue')?.value;
-
-      // Update the flag when the value changes
-      this.eventForm.get('existingEventValue')?.valueChanges.subscribe(value => {
-          this.isReadOnly = !!value;
-      });
-
-    this.userService.getAccountId().subscribe(accountId => {
-      this.accountId = Number(accountId);
-      this.eventForm.get('accountId')?.setValue(Number(this.accountId));
-      this.cdr.detectChanges();
-    });
-  
+    this.subscribeToFormChanges();
+  }
+   
+  loadInitialData(): void {
     forkJoin({
       durations: this.schedulerService.getDurations().pipe(
-        catchError(error => {
-          this.snackBarService.openSnackBar('Error Fetching Duration data:' + error.message, '', []);
-          return of(null); // Provide a fallback value if necessary
-        })
+        catchError(error => this.handleError('Error Fetching Duration data', error))
       ),
       reservationCounts: this.schedulerService.getReservationCount().pipe(
-        catchError(error => {
-          this.snackBarService.openSnackBar('Error Fetching ReservationCount data:' + error.message, '', []);
-          return of(null);
-        })
+        catchError(error => this.handleError('Error Fetching ReservationCount data', error))
       ),
       events: this.eventService.getActiveEvents(this.accountId).pipe(
-        catchError(error => {
-          this.snackBarService.openSnackBar('Error Fetching Event data:' + error.message, '', []);
-          return of(null);
-        })
+        catchError(error => this.handleError('Error Fetching Event data', error))
       ),
       locations: this.locationService.getLocations('active').pipe(
-        catchError(error => {
-          this.snackBarService.openSnackBar('Error Fetching Location data:' + error.message, '', []);
-          return of(null);
-        })
+        catchError(error => this.handleError('Error Fetching Location data', error))
       )
     }).subscribe({
-      next: response => {
-        this.durations = response.durations;
-        this.reservationCounts = response.reservationCounts;
-        this.events = response.events;
-        this.locations = response.locations;
+      next: (response) => {
+        this.durations = response.durations || [];
+        this.reservationCounts = response.reservationCounts || [];
+        this.events = response.events || [];
+        this.locations = response.locations || [];
       },
-      error: error => {
-        this.snackBarService.openSnackBar('General Error Fetching data:' + error.message, '', []);
-      }
+      error: error => this.snackBarService.openSnackBar('General Error Fetching data:' + error.message, '', [])
     });
-
-    if(this.data?.isNew === undefined){
-      this.isNew = "Add New";
-    }else{
-      this.isNew = "Update";
-    }
-   
   }
 
   close() {
     this.dialogRef.close();
   }
 
-  //Need to add all potentially disabled fields here
-  enableFieldsBeforeClose() {
-    this.eventForm.get('eventDescription')?.enable();
+  enableFieldsBeforeClose(): void {
+    ['eventDescription', 'existingEventValue', 'existingEventName', 'eventName', 'locationValues', 'isRepeat', 'isReservation', 'reservationCount', 'costToAttend', 'isCostToAttend']
+      .forEach(field => this.eventForm.get(field)?.enable());
   }
   
-  save() {
+  save(): void {
     if (this.eventForm.valid) {
       this.enableFieldsBeforeClose();
-      this.dialogRef.close(this.eventForm.value);
+      setTimeout(() => {
+        // console.log("saving of form", this.eventForm.value); // Debug log
+        this.dialogRef.close(this.eventForm.value);
+      }, 100); // Add a slight delay to ensure fields are enabled
     } else {
-      this.eventForm.markAllAsTouched();
-  
-      const invalidFields = [];
-      const controls = this.eventForm.controls;
-      for (const name in controls) {
-        if (controls[name].invalid) {
-          invalidFields.push(name);
-        }
-      }
-  
-      // Force validation on save
-      const eventDescriptionControl = this.eventForm.get('eventDescription');
-      if (eventDescriptionControl && !eventDescriptionControl.value) {
-        eventDescriptionControl.setValidators([Validators.required]);
-        eventDescriptionControl.setErrors({ required: true });
-        eventDescriptionControl.updateValueAndValidity();
-      }
+      this.validateFormFields();
     }
   }
   
-  deleteEvent(event: any) {
+  validateFormFields(): void {
+    this.eventForm.markAllAsTouched();
+    const invalidFields = Object.keys(this.eventForm.controls).filter(name => this.eventForm.controls[name].invalid);
+  
+    const eventDescriptionControl = this.eventForm.get('eventDescription');
+    if (eventDescriptionControl && !eventDescriptionControl.value) {
+      eventDescriptionControl.setValidators([Validators.required]);
+      eventDescriptionControl.setErrors({ required: true });
+      eventDescriptionControl.updateValueAndValidity();
+    }
+  }
+  
+  deleteEvent(event: any): void {
     if (this.isAuthorized) {
       const scheduleMainId = this.eventForm.get('scheduleMainId')?.value;
-      // console.log('scheduleMainId', scheduleMainId);
-  
       this.schedulerService.deleteScheduleEvent(scheduleMainId).subscribe({
         next: (response) => {
-          console.log('Delete successful', response);
           this.snackBarService.openSnackBar("Event successfully deleted", '', []);
           this.dialogRef.close();
         },
         error: (err) => {
-          console.error('Error deleting event', err);
           this.snackBarService.openSnackBar("Failed to delete event: " + err.message, '', []);
         }
       });
@@ -263,37 +243,35 @@ export class AddEditDialogComponent implements OnInit {
     }
   }
   
-
-  enableDisable(event: any) {
+  enableDisable(event: any): void {
     const eventId = event.value;
-    const selectedIndex = this.events.findIndex(event => event.eventId === eventId); // Get the index directly
-
+    const selectedIndex = this.events.findIndex(event => event.eventId === eventId);
+    this.isNewEvent = selectedIndex === -1;
+  
     if (selectedIndex !== -1) {
-      this.isNewEvent = false;
       const selectedEvent = this.events[selectedIndex];
-      this.eventForm.get('existingEventName')?.setValue(selectedEvent.eventName);
-      this.eventForm.get('eventDescription')?.setValue(selectedEvent.eventDescription);
-      this.eventForm.get('eventName')?.setValue('');
+      this.populateFormForExistingEvent(selectedEvent);
     } else {
-      this.isNewEvent = true;
-      this.eventForm.get('eventDescription')?.setValue('');
+      this.resetFormForNewEvent();
     }
   }
-
-  onReservationChange(event:any){
-    if(event.checked === true){
-      this.setReservation = true;
-    }else{
-      this.setReservation = false;
-    }
+  
+  populateFormForExistingEvent(event: IEvent): void {
+    this.eventForm.get('existingEventName')?.setValue(event.eventName);
+    this.eventForm.get('eventDescription')?.setValue(event.eventDescription);
+    this.eventForm.get('eventName')?.setValue('');
   }
-
-  onCostToAttendChange(event:any){
-    if(event.checked === true){
-      this.setCostToAttend = true;
-    }else{
-      this.setCostToAttend = false;
-    }
+  
+  resetFormForNewEvent(): void {
+    this.eventForm.get('eventDescription')?.setValue('');
+  }
+  
+  onReservationChange(event: any): void {
+    this.setReservation = event.checked === true;
+  }
+  
+  onCostToAttendChange(event: any): void {
+    this.setCostToAttend = event.checked === true;
   }
 
 }

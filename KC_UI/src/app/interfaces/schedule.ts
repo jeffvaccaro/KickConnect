@@ -8,7 +8,7 @@ export interface ISchedule {
     day: number,
     startTime: string,
     endTime: string,
-    locationId: number,
+    locationValues: number,
     reservationCount: number,
     costToAttend: number,
     selectedDate: Date,

@@ -12,6 +12,9 @@ export interface ICustomDayPilotEventData extends DayPilot.EventData {
     isActive: boolean;
     selectedDate: Date;
     selectedTime: string;
+    startTime: string;
+    endTime: string;
+    locationValues: number;
     day: number;
     duration: number;
     isReservation: boolean,

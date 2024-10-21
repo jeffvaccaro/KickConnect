@@ -44,34 +44,33 @@ export class SchedulerComponent implements AfterViewInit {
         ...args.e.data,
         accountId: args.e.data.accountId,
         scheduleMainId: args.e.data.scheduleMainId,
-        existingEventId: args.e.data.existingEventId || 'defaultId',
+        existingEventId: args.e.data.existingEventId,
         existingEventValue: args.e.data.existingEventValue,
         existingEventName: args.e.data.existingEventName || 'defaultName',
         eventDescription: args.e.data.eventDescription || '',
         eventName: args.e.data.text || '',
         selectedDate: args.e.data.start.toString('yyyy-MM-dd'),
-        day: args.e.data.day,
+        day: new Date(args.e.data.start).getDay(), // Use getDay to get the day of the week (0-6)
         selectedTime: args.e.data.start.toString('HH:mm'),
         duration: (args.e.data.end.getTime() - args.e.data.start.getTime()) / (60 * 1000),
-        locationValues: args.e.data.locationValues !== undefined ? args.e.data.locationValues : -99, 
+        locationValues: args.e.data.locationValues !== undefined ? args.e.data.locationValues : -99,
         reservationCount: args.e.data.reservationCount,
         costToAttend: args.e.data.costToAttend,
         isRepeat: args.e.data.isRepeat || false,
         isActive: args.e.data.isActive || false,
         isReservation: args.e.data.isReservation,
-        isCostToAttend: args.e.data.isCostToAttend,        
+        isCostToAttend: args.e.data.isCostToAttend,
       };
+      //console.log('eventData onClick:', eventData); // Debug log
     
       this.openAddEventDialog('300ms', '100ms', false, eventData);
-    },
-    
+    },    
     onEventMoved: (args) => {
       const updatedEvent = {
         ...args.e.data,
         start: new DayPilot.Date(args.newStart), // Ensure start is a Date object
         end: new DayPilot.Date(args.newEnd) // Ensure end is a Date object
     };
-      // this.createEventDataManager.updateEvent(args.e.data);
       this.openAddEventDialog('300ms', '100ms', false, updatedEvent);
     },
     onEventResized: (args) => {
@@ -81,7 +80,6 @@ export class SchedulerComponent implements AfterViewInit {
     };
 
       updatedEvent.duration = (args.newEnd.getTime() - args.newStart.getTime()) / (60 * 1000); // Calculate duration in minutes
-      // this.createEventDataManager.updateEvent(updatedEvent);
       this.openAddEventDialog('300ms', '100ms', false, updatedEvent);
     }
     
@@ -109,49 +107,55 @@ export class SchedulerComponent implements AfterViewInit {
   }  
   loadEvents(): void {
     this.schedulerService.getSchedules().subscribe((data: ISchedule[]) => {
-      console.log('Fetched schedules:', data); // Log fetched data
-  
       this.scheduleList = data;
-  
-      const currentDate = new Date(); // Get the current date
-      const startOfWeek = currentDate.getDate() - currentDate.getDay(); // Get the start of the current week (Sunday)
-  
-      this.customDPEvents = this.scheduleList.map(schedule => {
-        const eventDate = new Date(currentDate);
-        eventDate.setDate(startOfWeek + schedule.day); // Calculate the exact date based on dayNumber
-        const formattedDate = this.formatDate(eventDate.toISOString()); // Format the calculated date
-      
-        return {
-          accountId: schedule.accountId,
-          scheduleMainId: schedule.scheduleMainId,
-          id: schedule.eventId,
-          text: schedule.eventName,
-          start: `${formattedDate}T${this.formatTime(schedule.startTime)}`,
-          end: `${formattedDate}T${this.formatTime(schedule.endTime)}`,
-          resource: schedule.eventId,
-          existingEventId: schedule.eventId,
-          existingEventName: schedule.eventName,
-          existingEventValue: String(schedule.eventId),
-          existingEventDescription: schedule.eventDescription,
-          reservationCount: schedule.reservationCount,
-          costToAttend: schedule.costToAttend,
-          selectedDate: schedule.selectedDate,
-          selectedTime: schedule.selectedTime,
-          day: schedule.day,
-          duration: schedule.duration,
-          isRepeat: schedule.isRepeat,
-          isActive: schedule.isActive,
-          isReservation: schedule.isReservation,
-          isCostToAttend: schedule.isCostToAttend
-        };
-      });
-  
-      if (this.calendar && this.calendar.control) {
-        this.calendar.control.events.list = this.customDPEvents; // Bind events to calendar
-        this.calendar.control.update(); // Ensure the calendar updates
-      }
+      this.customDPEvents = this.scheduleList.map(schedule => this.mapScheduleToEvent(schedule));
+      this.updateCalendar();
+      // console.log('loadEvents: scheduleList:', this.scheduleList);
     });
+    
   }
+  
+  mapScheduleToEvent(schedule: ISchedule): ICustomDayPilotEventData {
+    const eventDate = new Date();
+    eventDate.setDate(eventDate.getDate() - eventDate.getDay() + schedule.day);
+    const formattedDate = this.formatDate(eventDate.toISOString());
+  
+    return {
+      accountId: schedule.accountId,
+      scheduleMainId: schedule.scheduleMainId,
+      id: schedule.eventId,
+      text: schedule.eventName,
+      start: `${formattedDate}T${this.formatTime(schedule.startTime)}`,
+      end: `${formattedDate}T${this.formatTime(schedule.endTime)}`,
+      resource: schedule.eventId,
+      existingEventId: schedule.eventId,
+      existingEventName: schedule.eventName,
+      existingEventValue: String(schedule.eventId),
+      existingEventDescription: schedule.eventDescription,
+      reservationCount: schedule.reservationCount,
+      costToAttend: schedule.costToAttend,
+      selectedDate: schedule.selectedDate,
+      selectedTime: schedule.selectedTime,
+      locationValues: schedule.locationValues,
+      day: schedule.day,
+      duration: schedule.duration,
+      isRepeat: schedule.isRepeat,
+      isActive: schedule.isActive,
+      isReservation: schedule.isReservation,
+      isCostToAttend: schedule.isCostToAttend,
+      startTime: this.formatTime(schedule.startTime), // Add this property
+      endTime: this.formatTime(schedule.endTime) // Add this property
+    };
+  }
+  
+  
+  updateCalendar(): void {
+    if (this.calendar && this.calendar.control) {
+      this.calendar.control.events.list = this.customDPEvents;
+      this.calendar.control.update();
+    }
+  }
+  
   
   formatDate(date: string): string {
     const formattedDate = new Date(date);
@@ -181,140 +185,167 @@ export class SchedulerComponent implements AfterViewInit {
       width: '600px',
       enterAnimationDuration,
       exitAnimationDuration,
-      data: event ? {
-        accountId: event.accountId,
-        scheduleMainId: event.scheduleMainId,
-        eventName: event.text || '',
-        selectedDate: event.start.toString('yyyy-MM-dd') || '',
-        selectedTime: event.start.toString('HH:mm') || '',
-        duration: (event.end.getTime() - event.start.getTime()) / (60 * 1000) || 60,
-        existingEventId: event.existingEventId || 'blank?',
-        existingEventName: event.existingEventName || '',
-        existingEventValue: event.existingEventValue,
-        existingEventDescription: event.existingEventDescription || '',
-        isRepeat: event.isRepeat || false,
-        isActive: event.isActive || false,
-        locationValues: event.locationValues,
-        isReservation: event.isReservation,
-        reservationCount: event.reservationCount,
-        isCostToAttend: event.isCostToAttend,          
-        costToAttend: event.costToAttend,
-        isNew: isNew        
-      } : {}
+      data: this.createEventData(isNew, event)
     });
-      
+  
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       if (result) {
-        const selectedDate = new Date(result.selectedDate);
-        const [time, modifier] = result.selectedTime.split(' ');
-        let [hours, minutes] = time.split(':').map(Number);
-    
-        if (modifier === 'PM' && hours !== 12) {
-          hours += 12;
-        } else if (modifier === 'AM' && hours === 12) {
-          hours = 0;
-        }
-    
-        selectedDate.setHours(hours, minutes);
-        const localOffset = selectedDate.getTimezoneOffset() * 60000;
-        const localStartDateTime = new Date(selectedDate.getTime() - localOffset);
-        const startDate = new DayPilot.Date(localStartDateTime);
-        const endDate = new DayPilot.Date(new Date(localStartDateTime.getTime() + result.duration * 60 * 1000));
-    
-        let eDataItem: ICustomDayPilotEventData;
-    
-        if (event) {
-          // Ensure eventDataManager.updateEvent updates correctly
-          const eventIndex = this.customDPEvents.findIndex(evt => evt.scheduleMainId === event.scheduleMainId);
-
-          if (eventIndex !== -1) {
-            eDataItem = eventDataManager.updateEvent(event, result, startDate, endDate);
-           
-            // Update the event in customDPEvents
-            //this.customDPEvents[eventIndex] = eDataItem;
-            
-            // Update the backend and refresh UI
-            this.eventService.updateEvent(event.existingEventId, event).subscribe({
-              next: (eventId) => {
-                const modifiedResult = { ...event,eDataItem, eventId };
-                this.schedulerService.updateScheduleEvent(eDataItem).subscribe({
-                  next: () => {
-                    // console.log('event.eventName', event.eventName);
-                    // console.log('event', event);
-                    eDataItem.existingEventId = event.existingEventId;
-                    eDataItem.existingEventValue  = event.existingEventId;
-
-                    eDataItem.existingEventName = event.eventName === undefined ?event.existingEventName : event.eventName;
-                    eDataItem.existingEventDescription = event.existingEventDescription;
-                    eDataItem.text = event.eventName === undefined ?event.existingEventName : event.eventName;
-
-                    // console.log('eDataItem', eDataItem);
-                    this.customDPEvents[eventIndex] = eDataItem;
-                  },
-                  error: (error) => console.error('Error occurred while updating schedule event:', error)
-                });
-              }
-            })
-            this.calendar.control.update();
-          }
-        } else {
-          //From Add New Button
-          eDataItem = eventDataManager.createEvent(result, startDate, endDate);
-          if (eDataItem.existingEventValue === "newEvent") {
-
-            this.eventObj = {
-              eventId: 0,
-              eventName: result.eventName,
-              eventDescription: result.eventDescription,
-              isReservation: result.isReservation,
-              maxReservationCount: result.maxReservationCount,
-              isCostToAttend: result.isCostToAttend,
-              costToAttend: result.costToAttend,
-              isActive: true,
-              createdBy: '',
-              accountId: result.accountId
-            };
-            // Add New Event
-            this.eventService.addEvent(this.eventObj).subscribe({
-              next: (eventId) => {
-                const modifiedResult = { ...result, eventId };
-                this.schedulerService.addScheduleEvent(modifiedResult).subscribe({
-                  next: (scheduleMainId) => {scheduleMainId
-                    eDataItem.existingEventDescription = result.eventDescription;
-                    this.customDPEvents.push({ ...eDataItem, scheduleMainId });
-                  },
-                  error: (error) => console.error('Error occurred while adding schedule event:', error)
-                });
-              },
-              error: (error) => console.error('Error occurred while adding event:', error)
-            });
-          } else {
-            // Existing Event       
-            result.eventId = result.existingEventValue;
-            const modifiedResult = { ...result };
-
-            this.schedulerService.addScheduleEvent(modifiedResult).subscribe({
-              next: (scheduleMainId) => {
-                eDataItem.existingEventId = modifiedResult.existingEventId;
-                eDataItem.existingEventValue  = modifiedResult.existingEventId;
-                eDataItem.existingEventName = modifiedResult.eventName === undefined ? modifiedResult.existingEventName : modifiedResult.eventName;
-                eDataItem.text = modifiedResult.eventName === undefined ? modifiedResult.existingEventName : modifiedResult.eventName;
-                eDataItem.existingEventDescription = modifiedResult.eventDescription;
-                this.customDPEvents.push({ ...eDataItem, scheduleMainId });
-              },
-              error: (error) => console.error('Error occurred while adding schedule event:', error)
-            });
-          }
-        }
-        this.calendar.control.update();
-      }else{
+        this.handleEventDialogClose(event, result, eventDataManager);
+      } else {
         this.loadEvents();
       }
-      
     });
   }
-}
+  
+  createEventData(isNew: boolean, event?: any): any {
+    return event ? {
+      accountId: event.accountId,
+      scheduleMainId: event.scheduleMainId,
+      eventName: event.text || '',
+      selectedDate: event.start.toString('yyyy-MM-dd') || '',
+      selectedTime: event.start.toString('HH:mm') || '',
+      duration: (event.end.getTime() - event.start.getTime()) / (60 * 1000) || 60,
+      existingEventId: event.existingEventId || 'blank?',
+      existingEventName: event.existingEventName || '',
+      existingEventValue: event.existingEventValue,
+      existingEventDescription: event.existingEventDescription || '',
+      isRepeat: event.isRepeat || false,
+      isActive: event.isActive || false,
+      locationValues: event.locationValues,
+      isReservation: event.isReservation,
+      reservationCount: event.reservationCount,
+      isCostToAttend: event.isCostToAttend,
+      costToAttend: event.costToAttend,
+      isNew
+    } : {};
+  }
+
+  handleEventDialogClose(event: any, result: any, eventDataManager: any): void {
+    //console.log('onClose', result);
+    const startDate = this.createDayPilotDate(result.selectedDate, result.selectedTime);
+    const endDate = new DayPilot.Date(new Date(startDate.getTime() + result.duration * 60 * 1000));
+  
+    result.costToAttend = result.costToAttend === '' ? 0 : result.costToAttend;
+  
+    const standardDate = new Date(startDate.toString());
+    result.day = new Date(startDate.toString()).getDay(); // Correctly capture the day of the week (0-6)
+  
+    result.selectedDate = startDate.toString('yyyy-MM-dd');
+    result.startTime = startDate.toString('HH:mm:ss');
+    result.endTime = endDate.toString('HH:mm:ss');
+
+    if (event) {
+      const eventIndex = this.customDPEvents.findIndex(evt => evt.scheduleMainId === event.scheduleMainId);
+      if (eventIndex !== -1) {
+        result.existingEventDescription = event.existingEventDescription;
+        const updatedEvent = eventDataManager.updateEvent(event, result, startDate, endDate);
+        this.updateBackendAndUI(event, updatedEvent, eventIndex);
+      }
+    } else {
+      this.addNewEvent(result, startDate, endDate, eventDataManager);
+    }
+  }
+  
+  createDayPilotDate(selectedDate: string, selectedTime: string): DayPilot.Date {
+    
+    const [time, modifier] = selectedTime.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+    
+    if (modifier === 'PM' && hours !== 12) hours += 12;
+    else if (modifier === 'AM' && hours === 12) hours = 0;
+    
+    const localSelectedDate = new Date(selectedDate);
+    localSelectedDate.setHours(hours, minutes);
+    
+    // Adjust for local time zone
+    const localTimeOffset = localSelectedDate.getTimezoneOffset() * 60000;
+    const localDateTime = new Date(localSelectedDate.getTime() - localTimeOffset);
+   
+    return new DayPilot.Date(localDateTime);
+  }
+  
+  updateBackendAndUI(event: any, updatedEvent: ICustomDayPilotEventData, eventIndex: number): void {
+    // console.log('updatedEvent', updatedEvent);
+    this.eventService.updateEvent(event.existingEventId, updatedEvent).subscribe({
+      next: (eventId) => {
+        const modifiedResult = { 
+          ...event, 
+          eventId, 
+          startTime: updatedEvent.startTime, 
+          endTime: updatedEvent.endTime, 
+          day: updatedEvent.day,
+          locationValues: updatedEvent.locationValues
+        };
+        this.schedulerService.updateScheduleEvent(modifiedResult).subscribe({
+          next: () => {
+            updatedEvent.existingEventId = event.existingEventId;
+            updatedEvent.existingEventValue = event.existingEventId;
+            updatedEvent.existingEventName = event.eventName || event.existingEventName;
+            updatedEvent.existingEventDescription = event.eventDescription || event.existingEventDescription;
+            updatedEvent.text = event.eventName || event.existingEventName;
+            this.customDPEvents[eventIndex] = updatedEvent;
+            this.calendar.control.update();
+            this.loadEvents()
+          },
+          error: (error) => console.error('Error occurred while updating schedule event:', error)
+        });
+      }
+    });
+  }
+  
+  addNewEvent(result: any, startDate: DayPilot.Date, endDate: DayPilot.Date, eventDataManager: any): void {
+    const eDataItem = eventDataManager.createEvent(result, startDate, endDate);
+  
+    if (eDataItem.existingEventValue === "newEvent") {
+      const eventObj: IEvent = {
+        eventId: 0,
+        eventName: result.eventName,
+        eventDescription: result.eventDescription,
+        isReservation: result.isReservation,
+        maxReservationCount: result.reservationCount,
+        isCostToAttend: result.isCostToAttend,
+        costToAttend: result.costToAttend,
+        isActive: true,
+        createdBy: '',
+        accountId: result.accountId
+      };
+  
+      this.eventService.addEvent(eventObj).subscribe({
+        next: (eventId) => {
+          const modifiedResult = { ...result, eventId };
+          // console.log('modifiedResult:', modifiedResult);
+          this.schedulerService.addScheduleEvent(modifiedResult).subscribe({
+            next: (scheduleMainId) => {
+              eDataItem.existingEventDescription = result.eventDescription;
+              this.customDPEvents.push({ ...eDataItem, scheduleMainId });
+              this.calendar.control.update();
+              this.loadEvents()
+            },
+            error: (error) => console.error('Error occurred while adding schedule event:', error)
+          });
+        },
+        error: (error) => console.error('Error occurred while adding event:', error)
+      });
+    } else {
+
+      result.eventId = result.existingEventValue;
+      const modifiedResult = { ...result };
+      this.schedulerService.addScheduleEvent(modifiedResult).subscribe({
+        next: (scheduleMainId) => {
+          eDataItem.existingEventId = modifiedResult.existingEventId;
+          eDataItem.existingEventValue = modifiedResult.existingEventId;
+          eDataItem.existingEventName = modifiedResult.eventName || modifiedResult.existingEventName;
+          eDataItem.text = modifiedResult.eventName || modifiedResult.existingEventName;
+          eDataItem.existingEventDescription = modifiedResult.existingEventDescription;
+          this.customDPEvents.push({ ...eDataItem, scheduleMainId });
+          this.calendar.control.update();
+          this.loadEvents()
+        },
+        error: (error) => console.error('Error occurred while adding schedule event:', error)
+      });
+    }
+  }
+}  
 
 function createEventData() {
   let customDPEvents: ICustomDayPilotEventData[] = [];
@@ -338,6 +369,7 @@ function createEventData() {
 function createEventDataManager() {
   return {
     createEvent(result: any, startDate: DayPilot.Date, endDate: DayPilot.Date): ICustomDayPilotEventData {
+      // console.log('createEvent', result);
       return {
         id: DayPilot.guid(),
         start: startDate,
@@ -351,17 +383,19 @@ function createEventDataManager() {
         isActive: true,
         isReservation: result.isReservation,
         reservationCount: result.reservationCount,
-        isCostToAttend: result.isCostToAttend,          
+        isCostToAttend: result.isCostToAttend,
         costToAttend: result.costToAttend,
         selectedDate: result.selectedDate,
         selectedTime: result.selectedTime,
-        day: result.dayNumber,
-        duration: result.duration
+        day: result.day,
+        duration: result.duration,
+        startTime: startDate.toString('HH:mm:ss'), // Add this property
+        endTime: endDate.toString('HH:mm:ss'), // Add this property
+        locationValues: result.locationValues
       };
     },
     updateEvent(existingEvent: ICustomDayPilotEventData, result: any, startDate: DayPilot.Date, endDate: DayPilot.Date): ICustomDayPilotEventData {
-        console.log('Existing event data:', existingEvent);
-        console.log('Result data:', result);
+      // console.log('updateEvent', result);
       return {
         ...existingEvent,
         start: startDate,
@@ -379,10 +413,12 @@ function createEventDataManager() {
         costToAttend: result.costToAttend,
         selectedTime: result.selectedTime,
         selectedDate: result.selectedDate,
-        day: result.dayNumber,
-        duration: result.duration
-
+        day: result.day,
+        duration: result.duration,
+        startTime: startDate.toString('HH:mm:ss'),
+        endTime: endDate.toString('HH:mm:ss'),
+        locationValues: result.locationValues
       };
-    }    
+    }
   };
 }

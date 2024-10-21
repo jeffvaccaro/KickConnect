@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "This application will have the support the features:\r  - multiple gym locations\r  - individule gym schedules\r  - admin portal\r  - public portal\r  - membership check-ins\r  - member app (iphone/android)",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jeffvaccaro/KickConnect.git"
@@ -30,5 +28,9 @@
     "mysql2": "^3.11.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.1",
+    "@types/node": "^22.7.7"
   }
 }
