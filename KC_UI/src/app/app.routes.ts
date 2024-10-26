@@ -22,6 +22,10 @@ import { AddNewEventComponent } from './components/custom/event/add-new-event/ad
 import { EditEventComponent } from './components/custom/event/edit-event/edit-event.component';
 import { SchedulerComponent } from './components/custom/scheduler/scheduler.component';
 import { AddEditDialogComponent } from './components/custom/scheduler/add-edit-dialog/add-edit-dialog.component';
+import { ProfileListComponent } from './components/custom/profiles/profile-list/profile-list.component';
+import { AddNewProfileComponent } from './components/custom/profiles/add-new-profile/add-new-profile.component';
+import { EditProfileComponent } from './components/custom/profiles/edit-profile/edit-profile.component';
+
 
 export const routes: Routes = [
     { path: '', component: OwnerComponent, canActivate: [AuthGuard] },
@@ -39,6 +43,9 @@ export const routes: Routes = [
     { path: 'app-edit-event/:eventId', component: EditEventComponent, canActivate: [AuthGuard] },
     { path: 'app-scheduler', component: SchedulerComponent, canActivate: [AuthGuard] },
     { path: 'app-add-edit-dialog', component: AddEditDialogComponent, canActivate: [AuthGuard] },
+    { path: 'app-profile-list', component: ProfileListComponent, canActivate: [AuthGuard] },
+    { path: 'app-add-new-profile', component: AddNewProfileComponent, canActivate: [AuthGuard] },
+    { path: 'app-edit-profile/:profileId', component: EditProfileComponent, canActivate: [AuthGuard] },
     {
       path: 'authentication',
       component: AuthenticationComponent,

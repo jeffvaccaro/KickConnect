@@ -115,9 +115,15 @@
           <div class="row">
             <div class="col-lg-8 col-md-8">
               <div class="kickConnect-form-group mb-12" style="padding-top:15px;">
-                <mat-checkbox id="kc-checkbox-isReservation" formControlName="isReservation" (change)="onReservationChange($event)">Set Reservation Count?</mat-checkbox>
+                <mat-checkbox 
+                  id="kc-checkbox-isReservation" 
+                  formControlName="isReservation"
+                  (change)="onReservationChange($event)">
+                  Set Reservation Count?
+                </mat-checkbox>
               </div>
             </div>
+            
             <div class="col-lg-4 col-md-4">
               <div class="kickConnect-form-group" *ngIf="setReservation">
                 <mat-form-field appearance="fill">

@@ -39,6 +39,7 @@ export class SchedulerComponent implements AfterViewInit {
     },
     onEventClick: (args) => {
       const updatedEvent = args.e.data;
+      console.log('args', args.e.data);
       const eventIndex = this.customDPEvents.findIndex(event => event.id === updatedEvent.id);
       const eventData = {
         ...args.e.data,
@@ -61,7 +62,7 @@ export class SchedulerComponent implements AfterViewInit {
         isReservation: args.e.data.isReservation,
         isCostToAttend: args.e.data.isCostToAttend,
       };
-      //console.log('eventData onClick:', eventData); // Debug log
+      console.log('eventData onClick:', eventData);
     
       this.openAddEventDialog('300ms', '100ms', false, eventData);
     },    
@@ -108,6 +109,7 @@ export class SchedulerComponent implements AfterViewInit {
   loadEvents(): void {
     this.schedulerService.getSchedules().subscribe((data: ISchedule[]) => {
       this.scheduleList = data;
+      console.log('scheduleList',this.scheduleList);
       this.customDPEvents = this.scheduleList.map(schedule => this.mapScheduleToEvent(schedule));
       this.updateCalendar();
       // console.log('loadEvents: scheduleList:', this.scheduleList);
@@ -119,7 +121,7 @@ export class SchedulerComponent implements AfterViewInit {
     const eventDate = new Date();
     eventDate.setDate(eventDate.getDate() - eventDate.getDay() + schedule.day);
     const formattedDate = this.formatDate(eventDate.toISOString());
-  
+    
     return {
       accountId: schedule.accountId,
       scheduleMainId: schedule.scheduleMainId,
@@ -302,7 +304,7 @@ export class SchedulerComponent implements AfterViewInit {
         eventName: result.eventName,
         eventDescription: result.eventDescription,
         isReservation: result.isReservation,
-        maxReservationCount: result.reservationCount,
+        reservationCount: result.reservationCount,
         isCostToAttend: result.isCostToAttend,
         costToAttend: result.costToAttend,
         isActive: true,

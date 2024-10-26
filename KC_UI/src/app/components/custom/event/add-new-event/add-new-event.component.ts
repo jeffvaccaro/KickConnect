@@ -15,6 +15,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../../services/user.service';
 import { EventService } from '../../../../services/event.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
+import { IReservationCount } from '../../../../interfaces/reservation-count';
+import { SchedulerService } from '../../../../services/scheduler.service';
 
 @Component({
   selector: 'app-add-new-event',
@@ -31,15 +33,22 @@ export class AddNewEventComponent implements OnInit {
   eventId: number;
   accountCode: string;
   accountId: number;
+  setCostToAttend: boolean;
+  setReservation: boolean;
+  reservationCounts: IReservationCount[] = [];
 
   constructor(private fb: FormBuilder, private eventService: EventService, private snackBarService: SnackbarService, 
               private userService: UserService, private commonService: CommonService, private route: ActivatedRoute, 
-              private router: Router, private cdr: ChangeDetectorRef) {}
+              private router: Router, private schedulerService: SchedulerService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
       nameControl: ['', Validators.required],
       descriptionControl: ['', [Validators.required]],
+      isReservation: ['',[]],
+      reservationCount: ['',[]],
+      isCostToAttend: ['',[]],
+      costToAttend: ['',[]],
       isActiveControl: [false]
     });
 
@@ -52,17 +61,43 @@ export class AddNewEventComponent implements OnInit {
       this.accountId = Number(accountId);
       this.cdr.detectChanges;
     })
+
+    this.schedulerService.getReservationCount().subscribe(reservationCounts => {
+      this.reservationCounts = reservationCounts;
+    })
+  }
+
+  onReservationChange(event:any){
+    if(event.checked === true){
+      this.setReservation = true;
+    }else{
+      this.setReservation = false;
+    }
+  }
+
+  onCostToAttendChange(event:any){
+    if(event.checked === true){
+      this.setCostToAttend = true;
+    }else{
+      this.setCostToAttend = false;
+    }
   }
 
   onSubmit(event: Event): void {
     event.preventDefault(); // Prevent the default form submission
 
-    let eventData = {
+    let eventData = 
+    {
       accountId: this.accountId,
       eventName: this.form.value.nameControl,
       eventDescription: this.form.value.descriptionControl,
       isActive: this.form.value.isActiveControl ? 0 : 1,
-    };
+      isReservation: this.form.value.isReservation ?? 0,
+      isCostToAttend: this.form.value.isCostToAttend ?? 0,
+      reservationCount: this.form.value.reservationCount ?? 0,
+      costToAttend: this.form.value.costToAttend ?? 0
+     };
+  
   
     // Call the updateLocation method and pass the form values along with accountId
     this.eventService.addEvent(eventData).subscribe({

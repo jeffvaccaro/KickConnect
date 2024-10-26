@@ -18,6 +18,10 @@ import { EditEventComponent } from '../../../custom/event/edit-event/edit-event.
 
 import { SchedulerComponent } from '../../../custom/scheduler/scheduler.component';
 
+import { AddNewProfileComponent } from '../../../custom/profiles/add-new-profile/add-new-profile.component';
+import { EditProfileComponent } from '../../../custom/profiles/edit-profile/edit-profile.component';
+import { ProfileListComponent } from '../../../custom/profiles/profile-list/profile-list.component';
+
 
 @Component({
   selector: 'app-owner',
@@ -26,7 +30,8 @@ import { SchedulerComponent } from '../../../custom/scheduler/scheduler.componen
     LocationListComponent,AddNewLocationComponent, EditLocationComponent, 
     UserListComponent, AddNewUserComponent, EditUserComponent,
     RoleListComponent, AddNewRoleComponent, EditRoleComponent,
-    EventListComponent, AddNewEventComponent, EditEventComponent, SchedulerComponent
+    EventListComponent, AddNewEventComponent, EditEventComponent, SchedulerComponent, 
+    AddNewProfileComponent, EditProfileComponent, ProfileListComponent
   ],
   templateUrl: './owner.component.html',
   styleUrl: './owner.component.scss'

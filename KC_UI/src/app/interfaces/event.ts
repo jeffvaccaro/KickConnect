@@ -3,7 +3,7 @@ export interface IEvent {
     eventName: string;
     eventDescription: string;
     isReservation: boolean;
-    maxReservationCount: number;
+    reservationCount: number;
     isCostToAttend: boolean;
     costToAttend: number;
     isActive: boolean;

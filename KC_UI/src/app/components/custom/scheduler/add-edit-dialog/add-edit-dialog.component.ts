@@ -78,21 +78,51 @@ export class AddEditDialogComponent implements OnInit {
   ngOnInit(): void {
     this.checkAuthorization();
     this.initializeForm();
+    this.customFormValidationService.setupConditionalValidators(this.eventForm);
     this.subscribeToFormChanges();
-    
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
+  }
+
+  ngAfterContentChecked(): void {
+    // console.log('Change detection triggered');
   }
   
   subscribeToFormChanges(): void {
-    this.eventForm.get('existingEventValue')?.valueChanges.subscribe(this.handleExistingEventValueChange.bind(this));
-    this.eventForm.get('selectedDate')?.valueChanges.subscribe(this.handleSelectedDateChange.bind(this));
+    // console.log('initial existingEventValue', this.eventForm.get('existingEventValue')?.value);
+  
+    this.eventForm.get('existingEventValue')?.valueChanges.subscribe(value => {
+      this.handleExistingEventValueChange.bind(this)(value);
+      console.log('existingEventValue changed:', value);
+    });
+    
+    this.eventForm.get('selectedDate')?.valueChanges.subscribe(value => {
+      this.handleSelectedDateChange.bind(this)(value);
+      //console.log('selectedDate changed:', value);
+    });
+    
+    this.eventForm.get('isReservation')?.valueChanges.subscribe(value => {
+      this.setReservation = value;
+      //console.log('isReservation changed:', value);
+    });
+  
+    this.eventForm.get('isCostToAttend')?.valueChanges.subscribe(value => {
+      this.setCostToAttend = value;
+      //console.log('isCostToAttend changed:', value);
+    });
+  
     this.userService.getAccountId().subscribe({
       next: (accountId: string) => {
         this.handleAccountIdChange(accountId);
         this.loadInitialData(); // Ensure loadInitialData is called after setting accountId
+        //console.log('accountId fetched:', accountId);
       },
       error: (err) => this.snackBarService.openSnackBar("Error fetching account ID: " + err.message, '', [])
     });
   }
+  
   
   handleExistingEventValueChange(value: any): void {
     const isExistingEventValuePopulated = !!value;
@@ -106,6 +136,8 @@ export class AddEditDialogComponent implements OnInit {
     } else {
       this.eventForm.get('eventName')?.disable();
       this.eventForm.get('eventDescription')?.disable();
+
+
       // this.eventForm.get('locationValues')?.disable();
     }
   
@@ -144,28 +176,42 @@ export class AddEditDialogComponent implements OnInit {
   
     // Correctly parse selectedDate to avoid timezone issues
     const selectedDate = data?.selectedDate ? new Date(`${data.selectedDate}T00:00:00`) : new Date();
-    // console.log(data);
+    
+    // console.log("Initialize form:", data);
+
     this.eventForm = this.fb.group({
-      existingEventValue: [{ value: data?.existingEventValue || 'newEvent', disabled: !!data?.existingEventValue }, []],
-      existingEventName: [{ value: data?.existingEventName || '', disabled: !!data?.existingEventValue }, []],
-      eventName: [data?.eventName || '', []], 
-      eventDescription: [data?.eventDescription === undefined || '' ? data?.existingEventDescription : '', []], 
-      locationValues: [data?.locationValues !== undefined ? Number(data.locationValues) : -99, []], 
-      selectedDate: [selectedDate], 
-      selectedTime: [data?.selectedTime || defaultTime],
-      duration: [Number(data?.duration) || 60],
-      accountId: [data?.accountId || 0],
-      scheduleMainId: [data?.scheduleMainId || 0],
-      day: [selectedDate.getDay()], 
-      isRepeat: [data?.isRepeat ?? true, []], 
-      isActive: [true],
-      isReservation: [data?.isReservation || false, []],
-      isCostToAttend: [data?.isCostToAttend || false, []],
-      reservationCount: [data?.reservationCount || 1, []],
-      costToAttend: [data?.costToAttend || 0, []], 
+      existingEventValue: [{ value: data?.existingEventValue || 'newEvent', disabled: !!data?.existingEventValue }, Validators.required],
+      existingEventName: [{ value: data?.existingEventName || '', disabled: !!data?.existingEventValue }, []], // No initial validation
+      eventName: [data?.eventName || '', Validators.required], // Required
+      eventDescription: [data?.eventDescription || data?.existingEventDescription || '', Validators.required],
+      locationValues: [data?.locationValues !== undefined ? Number(data.locationValues) : -99, []],
+      selectedDate: [selectedDate, Validators.required],
+      selectedTime: [data?.selectedTime || defaultTime, Validators.required],
+      duration: [Number(data?.duration) || 60, Validators.required],
+      accountId: [data?.accountId || 0, []],
+      scheduleMainId: [data?.scheduleMainId || 0, []],
+      day: [selectedDate.getDay(), []],
+      isRepeat: [data?.isRepeat ?? true, []],
+      isActive: [true, []],
+      isReservation: [data?.isReservation ?? false, []],
+      isCostToAttend: [data?.isCostToAttend ?? false, []],
+      reservationCount: [0, []],
+      costToAttend: [0, []],
     });
   
     this.subscribeToFormChanges();
+
+    // Explicitly set and detect changes with setTimeout
+    setTimeout(() => {
+      this.eventForm.patchValue({
+        isReservation: data?.isReservation ?? false,
+        isCostToAttend: data?.isCostToAttend ?? false,
+        reservationCount: data?.reservationCount ?? 0,
+        costToAttend: data?.costToAttend ?? 0
+      });
+
+      this.cdr.detectChanges();
+    }, 100); 
   }
    
   loadInitialData(): void {
@@ -206,13 +252,17 @@ export class AddEditDialogComponent implements OnInit {
     if (this.eventForm.valid) {
       this.enableFieldsBeforeClose();
       setTimeout(() => {
-        // console.log("saving of form", this.eventForm.value); // Debug log
         this.dialogRef.close(this.eventForm.value);
-      }, 100); // Add a slight delay to ensure fields are enabled
+      }, 100);
     } else {
       this.validateFormFields();
+      // console.log('Form is invalid', this.eventForm);
+      // Object.keys(this.eventForm.controls).forEach(field => {
+      //   console.log(`${field} errors:`, this.eventForm.get(field)?.errors);
+      // });
     }
   }
+  
   
   validateFormFields(): void {
     this.eventForm.markAllAsTouched();
@@ -260,6 +310,14 @@ export class AddEditDialogComponent implements OnInit {
     this.eventForm.get('existingEventName')?.setValue(event.eventName);
     this.eventForm.get('eventDescription')?.setValue(event.eventDescription);
     this.eventForm.get('eventName')?.setValue('');
+    this.eventForm.get('isCostToAttend')?.setValue(event.isCostToAttend);
+    this.eventForm.get('costToAttend')?.setValue(event.costToAttend);
+    this.eventForm.get('isReservation')?.setValue(event.isReservation);
+    this.eventForm.get('reservationCount')?.setValue(event.reservationCount);
+    
+    console.log('populateformForExistingEvent', event);
+
+
   }
   
   resetFormForNewEvent(): void {

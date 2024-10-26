@@ -36,7 +36,7 @@ router.post('/add-event/', authenticateToken, async (req, res) => {
       eventName,
       eventDescription,
       isReservation,
-      maxReservationCount,
+      reservationCount,
       isCostToAttend,
       costToAttend,
       isActive
@@ -44,13 +44,13 @@ router.post('/add-event/', authenticateToken, async (req, res) => {
     
     // Ensure default values
     isReservation = isReservation ?? false;
-    maxReservationCount = maxReservationCount ?? 0;
+    reservationCount = reservationCount ?? 0;
     isCostToAttend = isCostToAttend ?? false;
     costToAttend = costToAttend === '' ? 0 : costToAttend; // Handle empty string case
     isActive = isActive ?? true;
     
-    const query = 'INSERT INTO event (accountId, eventName, eventDescription, isReservation, maxReservationCount, isCostToAttend, costToAttend, isActive, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    const params = [accountId, eventName, eventDescription, isReservation, maxReservationCount, isCostToAttend, costToAttend, isActive, 'API event Insert'];
+    const query = 'INSERT INTO event (accountId, eventName, eventDescription, isReservation, reservationCount, isCostToAttend, costToAttend, isActive, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const params = [accountId, eventName, eventDescription, isReservation, reservationCount, isCostToAttend, costToAttend, isActive, 'API event Insert'];
 
     const result = await executeQuery(connection, query, params);
     res.status(201).json({ eventId: result.insertId });
@@ -83,7 +83,7 @@ router.get('/get-active-event-list/:accountId', authenticateToken, async (req, r
   try {
     connection = await connectWithTimeout();
     const { accountId } = req.params;
-    const [results] = await connection.query('SELECT eventId, eventName, eventDescription, isReservation, maxReservationCount, isCostToAttend, costToAttend, isActive FROM event WHERE accountId = ? AND isActive = true', [accountId]);
+    const [results] = await connection.query('SELECT eventId, eventName, eventDescription, isReservation, reservationCount, isCostToAttend, costToAttend, isActive FROM event WHERE accountId = ? AND isActive = true', [accountId]);
     res.status(200).json(results);
   } catch (error) {
     handleError(res, error, 'Error fetching Events: ');
@@ -113,22 +113,36 @@ router.get('/get-active-event-list/:accountId', authenticateToken, async (req, r
     let connection;
     try{
       connection = await connectWithTimeout();
+      
+      let eventName = req.body.eventName == undefined ? req.body.existingEventName: req.body.eventName || 'defaultEventName';
+      let eventDescription = req.body.existingEventDescription == undefined ? req.body.eventDescription : req.body.existingEventDescription || 'defaultEventDescription' ;
+      let isReservation = req.body.isReservation !== undefined ? req.body.isReservation : false;
+      let reservationCount = req.body.reservationCount !== undefined ? req.body.reservationCount : 0;
+      let isCostToAttend = req.body.isCostToAttend !== undefined ? req.body.isCostToAttend : false;
+      let costToAttend = req.body.costToAttend !== undefined ? req.body.costToAttend : 0;
+      let isActive = req.body.isActive !== undefined ? req.body.isActive : true;
+      let eventId = req.params.eventId;
 
-      const eventName = req.body.eventName == undefined ? req.body.existingEventName: req.body.eventName || 'defaultEventName';
-      const eventDescription = req.body.existingEventDescription;
-      const isReservation = req.body.isReservation !== undefined ? req.body.isReservation : false;
-      const maxReservationCount = req.body.maxReservationCount !== undefined ? req.body.maxReservationCount : 0;
-      const isCostToAttend = req.body.isCostToAttend !== undefined ? req.body.isCostToAttend : false;
-      const costToAttend = req.body.costToAttend !== undefined ? req.body.costToAttend : 0;
-      const isActive = req.body.isActive !== undefined ? req.body.isActive : true;
-      const eventId = req.params.eventId;
+      if (!isReservation) {
+        reservationCount = 0;
+      }
+
+      if(!isCostToAttend) {
+        costToAttend = 0;
+      }
 
       const query = 
       `UPDATE event
-       SET eventName = ?, eventDescription = ?, isReservation = ?, maxReservationCount = ?, 
+       SET eventName = ?, eventDescription = ?, isReservation = ?, reservationCount = ?, 
            isCostToAttend = ?, costToAttend = ?, isActive = ?, updatedBy = 'API Location Update', updatedOn = CURRENT_TIMESTAMP
        WHERE eventId = ?`;
-      const queryParams = [eventName, eventDescription, isReservation, maxReservationCount, isCostToAttend, costToAttend, isActive, eventId];
+      const queryParams = [eventName, eventDescription, isReservation, reservationCount, isCostToAttend, costToAttend, isActive, eventId];
+
+      // console.log('req.body',req.body);
+      // console.log('Query:', query);
+      // console.log('Query Parameters:', queryParams);
+
+
       const [results] = await connection.query(query, queryParams); 
       if (results.affectedRows === 0) {
         return res.status(404).json({ message: 'event not found' });

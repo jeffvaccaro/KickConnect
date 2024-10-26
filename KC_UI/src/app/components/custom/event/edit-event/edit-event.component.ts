@@ -62,7 +62,7 @@ export class EditEventComponent implements OnInit {
       this.cdr.detectChanges;
     })
 
-    // Get the roleId from the route parameters
+    // Get the eventId from the route parameters
     this.route.params.subscribe(params => {
       this.eventId = +params['eventId']; // Assuming 'id' is the route parameter name
       this.loadEventData(this.eventId);
@@ -71,6 +71,20 @@ export class EditEventComponent implements OnInit {
     this.schedulerService.getReservationCount().subscribe(reservationCounts => {
       this.reservationCounts = reservationCounts;
     })
+
+    this.subscribeToFormChanges();
+  }
+
+  subscribeToFormChanges(): void {
+    this.form.get('isReservation')?.valueChanges.subscribe(value => {
+      // console.log('setReservation', value);
+      this.setReservation = value;
+    });
+  
+    this.form.get('isCostToAttend')?.valueChanges.subscribe(value => {
+      // console.log('setCostToAttend', value);
+      this.setCostToAttend = value;
+    });
   }
 
   loadEventData(eventId: number): void {
@@ -79,32 +93,17 @@ export class EditEventComponent implements OnInit {
         this.form.patchValue({
           nameControl: response.eventName,
           descriptionControl: response.eventDescription,
-          isActiveControl: response.isActive === 0
+          isActiveControl: response.isActive === 0,
+          isReservation: response?.isReservation ?? false,
+          isCostToAttend: response?.isCostToAttend ?? false,
+          reservationCount: response?.reservationCount ?? 0,
+          costToAttend: response?.costToAttend ?? 0
         });
+
+
       },
       error: error => {
         this.snackBarService.openSnackBar('Error fetching Role data:' + error.message, '',  []);
-      }
-    });
-  }
-  
-  onSubmit(event: Event): void {
-    event.preventDefault(); // Prevent the default form submission
-  
-    let eventData = {
-      eventName: this.form.value.nameControl,
-      eventDescription: this.form.value.descriptionControl,
-      isActive: this.form.value.isActiveControl ? 0 : 1,
-    };
-  
-  
-    // Call the updateLocation method and pass the form values along with accountId
-    this.eventService.updateEvent(this.eventId, eventData).subscribe({
-      next: response => {
-        this.router.navigate(['/app-event-list']); // Navigate to role-list 
-      },
-      error: error => {
-        this.snackBarService.openSnackBar('Error Updating event data:' + error.message, '',  []);
       }
     });
   }
@@ -126,5 +125,52 @@ export class EditEventComponent implements OnInit {
   }
   cancel(event: Event): void {
     this.router.navigate(['/app-event-list']); // Navigate to role-list 
+  }
+
+  onSubmit(event: Event): void {
+    event.preventDefault(); // Prevent the default form submission
+  
+    let eventData = {
+      eventName: this.form.value.nameControl,
+      eventDescription: this.form.value.descriptionControl,
+      isActive: this.form.value.isActiveControl ? 0 : 1,
+      isReservation: this.form.value.isReservation ?? 0,
+      isCostToAttend: this.form.value.isCostToAttend ?? 0,
+      reservationCount: this.form.value.reservationCount ?? 0,
+      costToAttend: this.form.value.costToAttend ?? 0
+    };
+  
+    this.updateEventCall(eventData);  
+
+  }
+
+  deleteEvent(event: Event): void {
+    event.preventDefault(); // Prevent the default form submission
+    this.form.get('isActiveControl')?.setValue(false);
+
+    let eventData = {
+      eventName: this.form.value.nameControl,
+      eventDescription: this.form.value.descriptionControl,
+      isActive: this.form.get('isActiveControl')?.value,
+      isReservation: this.form.value.isReservation ?? 0,
+      isCostToAttend: this.form.value.isCostToAttend ?? 0,
+      reservationCount: this.form.value.reservationCount ?? 0,
+      costToAttend: this.form.value.costToAttend ?? 0
+    };
+
+    this.updateEventCall(eventData);
+
+  }
+
+  updateEventCall(eventData: any){
+    // Call the updateEventMethod method and pass the form values along with accountId
+    this.eventService.updateEvent(this.eventId, eventData).subscribe({
+      next: response => {
+        this.router.navigate(['/app-event-list']); // Navigate to role-list 
+      },
+      error: error => {
+        this.snackBarService.openSnackBar('Error Updating event data:' + error.message, '',  []);
+      }
+    });
   }
 }

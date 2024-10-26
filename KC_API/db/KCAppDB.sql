@@ -74,7 +74,7 @@ CREATE TABLE `event` (
   `eventName` varchar(250) NOT NULL,
   `eventDescription` varchar(500) NOT NULL,
   `isReservation` tinyint DEFAULT NULL,
-  `maxReservationCount` int DEFAULT '0',
+  `reservationCount` int DEFAULT '0',
   `isCostToAttend` tinyint DEFAULT '0',
   `costToAttend` decimal(10,0) DEFAULT NULL,
   `isActive` tinyint NOT NULL,

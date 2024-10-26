@@ -1,5 +1,5 @@
 <div class="breadcrumb-card mb-25 d-md-flex align-items-center justify-content-space-between">
-    <h5 class="mb-0">Class Role</h5>
+    <h5 class="mb-0">Edit Event</h5>
     <ol class="breadcrumb mb-0 ps-0">
       <li class="breadcrumb-item">
         <a routerLink="/">
@@ -36,62 +36,51 @@
             </div>
           </div>
         </div>
-
-        <!-- ADD THIS -->
-        
-        <div class="create-dialog-box">
-          <div class="row">
-            <div class="col-lg-8 col-md-8">
-              <div class="kickConnect-form-group mb-12" style="padding-top:15px;">
-                <mat-checkbox formControlName="isReservation" (change)="onReservationChange($event)">Set Reservation Count?</mat-checkbox>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-4">
-              <div class="kickConnect-form-group" *ngIf="setReservation">
-                <mat-form-field appearance="fill">
-                  <mat-label>Count</mat-label>
-                  <mat-select formControlName="reservationCount">
-                    <mat-option *ngFor="let resCount of reservationCounts" [value]="resCount.reservationCountId">
-                      {{ resCount.reservationCountValue }}
-                    </mat-option>
-                  </mat-select>              
-                </mat-form-field>
-              </div>
+        <div class="row">
+          <div class="col-lg-2 col-md-2">
+            <div class="kickConnect-form-group" style="padding-top:15px;">
+              <mat-checkbox formControlName="isReservation" (change)="onReservationChange($event)">Set Reservation Count?</mat-checkbox>
             </div>
           </div>
-        </div>        
-
-        <div class="create-dialog-box">
-          <div class="row">
-            <div class="col-lg-8 col-md-8">
-              <div class="kickConnect-form-group mb-12" style="padding-top:15px;">
-                <mat-checkbox formControlName="isCostToAttend" (change)="onCostToAttendChange($event)">Set Cost to Attend?</mat-checkbox>
-              </div>
+          <div class="col-lg-2 col-md-2">
+            <div class="kickConnect-form-group" *ngIf="setReservation">
+              <label class="d-block mb-12 fw-semibold gray-color">Reservation Count<span>*</span></label>
+              <mat-form-field appearance="fill">
+                <i><mat-icon>people</mat-icon></i>
+                <mat-select formControlName="reservationCount">
+                  <mat-option *ngFor="let resCount of reservationCounts" [value]="resCount.reservationCountId">
+                    {{ resCount.reservationCountValue }}
+                  </mat-option>
+                </mat-select>              
+              </mat-form-field>
             </div>
-            
-            <div class="col-lg-4 col-md-4">
-              <div class="form-group" *ngIf="setCostToAttend">
-                <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  <input type="text" class="input-control" placeholder="Cost to Attend" formControlName="costToAttend">
-                </div>
-                <div *ngIf="form.get('costToAttend')?.touched && form.get('costToAttend')?.invalid" class="error-message">
-                  Must be greater than $0
-                </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-2 col-md-2">
+            <div class="kickConnect-form-group" style="padding-top:15px;">
+              <mat-checkbox formControlName="isCostToAttend" (change)="onCostToAttendChange($event)">Set Cost to Attend?</mat-checkbox>
+            </div>
+          </div>
+          
+          <div class="col-lg-2 col-md-2">
+            <div class="kickConnect-form-group" *ngIf="setCostToAttend">
+              <label class="d-block mb-12 fw-semibold gray-color">Cost to Attend<span>*</span></label>
+              <mat-form-field appearance="fill">
+                <i><mat-icon> attach_money</mat-icon></i>
+                
+                <input matInput placeholder="Cost to Attend" formControlName="costToAttend">
+              </mat-form-field>
+              <div *ngIf="form.get('costToAttend')?.touched && form.get('costToAttend')?.invalid" class="error-message">
+                Must be greater than $0
               </div>
             </div>
           </div>
         </div>
-
-
-        <div class="row">
-            <div class="kickConnect-form-group mb-12">
-                <mat-checkbox formControlName="isActiveControl">Remove Class</mat-checkbox>
-            </div>
-        </div>        
         <div class="col-lg-4 col-md-4 col-sm-4">
-            <button mat-flat-button type="submit" [disabled]="form.invalid" class="kickConnect fw-semibold">Update Class</button> &nbsp;
-            <button mat-flat-button (click)="cancel($event)" class="kickConnect fw-semibold" color="warn">Cancel</button>
+            <button  mat-flat-button  id="kc-btn-delete-event" class="kickConnect fw-semibold warn" (click)="deleteEvent($event)"><i class="ri-delete-bin-fill"></i>Delete Event</button>
+            <button  mat-flat-button  (click)="cancel($event)" class="kickConnect fw-semibold gray"><i class="ri-close-fill"></i>Cancel</button>
+            <button  mat-flat-button  type="submit" [disabled]="form.invalid" class="kickConnect fw-semibold black"><i class="ri-add-fill"></i>Update Event</button> &nbsp;
         </div>
       </form>
     </mat-card-content>
