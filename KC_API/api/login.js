@@ -1,13 +1,12 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
-const mysql = require('mysql2/promise');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { connectToDatabase } = require('./db');
-const authenticateToken = require('./middleware/authenticateToken.cjs');
 const env = process.env.NODE_ENV || 'development';
+
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 router.post('/user-login', async (req, res) => {
@@ -18,12 +17,16 @@ router.post('/user-login', async (req, res) => {
     connection = await Promise.race([connectToDatabase(), timeout]);
 
     const [results] = await connection.query(`
-      SELECT user.name, user.password, account.accountCode, account.accountId, role.roleName
-      FROM user 
-      INNER JOIN account ON user.accountId = account.accountId
-      INNER JOIN role on user.roleId = role.roleId
-      WHERE user.email = ?
+      SELECT u.name, u.password, a.accountCode, a.accountId,
+             GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames
+      FROM user u
+      INNER JOIN account a ON u.accountId = a.accountId
+      INNER JOIN userroles ur ON u.userId = ur.userId
+      INNER JOIN role r ON ur.roleId = r.roleId
+      WHERE u.email = ?
+      GROUP BY u.userId, a.accountCode, a.accountId
     `, [email]);
+    
 
     if (results.length > 0) {
       const user = results[0];

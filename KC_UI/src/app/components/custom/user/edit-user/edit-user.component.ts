@@ -66,7 +66,7 @@ export class EditUserComponent implements OnInit {
   loadUserData(userId: number): void {
     this.userService.getUser(userId).subscribe({
       next: userResponse => {
-        // console.log('user', userResponse);
+        console.log('user', userResponse);
         this.form.patchValue({
           nameControl: userResponse.name,
           emailControl: userResponse.email,
@@ -75,10 +75,11 @@ export class EditUserComponent implements OnInit {
           cityControl: userResponse.city,
           stateControl: userResponse.state,
           zipControl: userResponse.zip,
-          isActiveControl: userResponse.isActive === 0
+          isActiveControl: userResponse.isActive === 0,
         });
   
-        //console.log('Form values after patching:', this.form.value); // Log form values after patching
+        // Set the imageSrc to the photoURL
+        this.imageSrc = userResponse.photoURL;
   
         // Load roles after user data is patched
         this.roleService.getRoles().subscribe({
@@ -101,11 +102,13 @@ export class EditUserComponent implements OnInit {
   }
   
   
+  
   onSubmit(event: Event): void {
     event.preventDefault(); // Prevent the default form submission
     this.form.get('cityControl')!.enable();
     this.form.get('stateControl')!.enable();
     console.log('user form info', this.form.value); // Log the form values
+  
     const accountId = localStorage.getItem('accountId'); // Retrieve accountId from local storage
     let userData = {
       accountId: accountId,
@@ -118,23 +121,28 @@ export class EditUserComponent implements OnInit {
       email: this.form.value.emailControl,
       isActive: this.form.value.isActiveControl ? 0 : 1,
       roleId: this.form.value.roleControl,
-      photoURL: '',
       resetPassword: false
     };
   
-    console.log('userData:', userData); // Log the data being sent to the server
+    const formData: FormData = new FormData();
+    formData.append('userData', JSON.stringify(userData)); // Add user data
+    if (this.selectedFile) {
+      formData.append('photo', this.selectedFile, this.selectedFile.name); // Add photo file if available
+    }
   
-    // Call the updateLocation method and pass the form values along with accountId
-    this.userService.updateUser(this.userId, userData).subscribe(
+    console.log('formData:', formData); // Log the form data being sent to the server
+    // Call the updateLocation method and pass the form data
+    this.userService.updateUser(this.userId, formData).subscribe(
       (response: any) => {
         console.log('User updated successfully:', response?.message);
-        this.router.navigate(['/']); // Navigate to location-list 
+        this.router.navigate(['/']); // Navigate to location-list
       },
       error => {
         console.error('Error updating user:', error.message);
       }
     );
   }
+  
   
   
 
@@ -162,10 +170,25 @@ export class EditUserComponent implements OnInit {
   
 
   cancel(event: Event): void {
-    this.router.navigate(['/app-location-list']); // Navigate to location-list 
+    this.router.navigate(['/app-user-list']); // Navigate to location-list 
   }
 
   trackByRoleId(index: number, role: Role): number {
     return role.roleId;
+  }
+
+  imageSrc: string | ArrayBuffer | null = null;
+  selectedFile: File | null = null;
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    this.selectedFile = file;
+  
+    // Optionally, set image preview
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.imageSrc = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 }

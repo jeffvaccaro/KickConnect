@@ -83,11 +83,12 @@ export class UserService {
     return this.http.get<any>(url, { params });
   }
   
-  updateUser(userId: number, userData: any) {
-    return this.http.put(`${this.apiUrl}/update-user/${userId}`, userData);
+  updateUser(userId: number, formData: FormData) {
+    return this.http.put(`${this.apiUrl}/update-user/${userId}`, formData);
   }
+  
 
-  addUser(userData: any) {
-    return this.http.post(`${this.apiUrl}/add-user`, userData);
-  }  
+  addUser(formData: FormData) {
+    return this.http.post(`${this.apiUrl}/add-user`, formData);
+  }
 }

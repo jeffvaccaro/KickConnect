@@ -1,4 +1,4 @@
-require('dotenv').config(); // Ensure environment variables are loaded
+// require('dotenv').config(); // Ensure environment variables are loaded
 
 const express = require('express');
 const path = require('path');
@@ -6,8 +6,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const swaggerSetup = require('./swagger.cjs');
 const authRouter = require('./account.js');
-const userRouter = require('./user.cjs');
-const loginRouter = require('./login.cjs');
+const userRouter = require('./user.js');
+const loginRouter = require('./login.js');
 const locationRouter = require('./location.js');
 const roleRouter = require('./role.cjs');
 const eventRouter = require('./event.js');
