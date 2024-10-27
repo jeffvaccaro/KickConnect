@@ -81,13 +81,19 @@ export class EditUserComponent implements OnInit {
         // Set the imageSrc to the photoURL
         this.imageSrc = userResponse.photoURL;
   
+        // Convert roleId string to an array
+        const rolesArray = userResponse.roleId.split(',').map(Number);
+  
+        // Patch the roleControl with the user's roles
+        this.form.get('roleControl')!.setValue(rolesArray);
+  
         // Load roles after user data is patched
         this.roleService.getRoles().subscribe({
           next: roleResponse => {
             this.roleArr = roleResponse;
-            // Set the roleControl value based on the user's roleId
-            this.form.get('roleControl')!.setValue(userResponse.roleId);
-            console.log('userResponse.roleId', userResponse.roleId);
+            // Ensure the roleControl value is still correct after loading roles
+            this.form.get('roleControl')!.setValue(rolesArray);
+            console.log('userResponse.roles', rolesArray);
           },
           error: error => {
             console.error('Error fetching role data:', error);
@@ -100,6 +106,7 @@ export class EditUserComponent implements OnInit {
       }
     });
   }
+  
   
   
   

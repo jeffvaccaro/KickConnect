@@ -233,6 +233,16 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
     });
     await Promise.all(userRolePromises);
 
+    // Insert into profile table if roleId is Instructor (4)
+    if (roleId.includes(4)) {
+      const profileQuery = `
+        INSERT INTO profile (userId, description, skills, URL)
+        VALUES (?, ?, ?, ?);
+      `;
+      await connection.query(profileQuery, [userId, '', '', '']);
+      console.log('Profile created for Instructor user:', userId);
+    }
+
     res.json({ message: 'User registered' });
   } catch (error) {
     console.error('Error during user registration:', error);
@@ -240,13 +250,13 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
   } finally {
     if (connection) {
       connection.release();
+      console.log('Database connection released'); // Log the connection release
     } else {
       console.warn('add-user: Connection not established.');
     }
   }
 });
 
-  
 router.put('/update-user/:userId', authenticateToken, upload.single('photo'), async (req, res) => {
   const { userId } = req.params; // Use req.params instead of req.query
   console.log('User ID:', userId); // Log the userId
@@ -304,6 +314,16 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
     await Promise.all(userRolePromises);
     console.log('New user roles inserted:', { userId, roleId });
 
+    // Insert into profile table if roleId is Instructor (4)
+    if (roleId.includes(4)) {
+      const profileQuery = `
+        INSERT INTO profile (userId, description, skills, URL)
+        VALUES (?, ?, ?, ?);
+      `;
+      await connection.query(profileQuery, [userId, '', '', '']);
+      console.log('Profile created for Instructor user:', userId);
+    }
+
     res.json({ message: 'User updated successfully' });
   } catch (error) {
     console.error('Error updating user:', error); // Log the error
@@ -317,9 +337,6 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
     }
   }
 });
-
-
-
  
 router.put('/deactivate-user', authenticateToken, async (req, res) => {
   const { userId } = req.query;
