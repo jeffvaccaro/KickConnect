@@ -14,13 +14,9 @@ import { RoleService } from '../../../../services/role.service';
 import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../../services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Role } from '../../../../interfaces/role';
 
-interface Role {
-  roleId: number;
-  roleName: string;
-  roleDescription: string;
-  roleOrderId: number;
-}
+
 
 @Component({
   selector: 'app-add-new-user',
@@ -50,8 +46,7 @@ export class AddNewUserComponent {
         addressControl: [''],
         cityControl: [''],
         stateControl: [''],
-        zipControl: [''],
-        isActiveControl: [true]
+        zipControl: ['']
       });   
 
       this.form.get('cityControl')!.disable();
@@ -88,7 +83,6 @@ export class AddNewUserComponent {
       zip: this.form.value.zipControl,
       phone: this.form.value.phoneControl,
       email: this.form.value.emailControl,
-      isActive: this.form.value.isActiveControl ? 1 : 0,
       roleId: this.form.value.roleControl || 4, // Default of Staff
       password: accountCode,
       resetPassword: false

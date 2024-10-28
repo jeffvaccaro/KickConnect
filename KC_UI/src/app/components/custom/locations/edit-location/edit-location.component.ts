@@ -56,14 +56,14 @@ export class EditLocationComponent implements OnInit {
     this.locationService.getLocationsById(locationId).subscribe({
       next: response => {
         this.form.patchValue({
-          nameControl: response.locationName,
-          emailControl: response.locationEmail,
-          phoneControl: response.locationPhone,
-          addressControl: response.locationAddress,
-          cityControl: response.locationCity,
-          stateControl: response.locationState,
-          zipControl: response.locationZip,
-          isActiveControl:response.isActive === 0
+          nameControl: response[0].locationName,
+          emailControl: response[0].locationEmail,
+          phoneControl: response[0].locationPhone,
+          addressControl: response[0].locationAddress,
+          cityControl: response[0].locationCity,
+          stateControl: response[0].locationState,
+          zipControl: response[0].locationZip,
+          isActiveControl:response[0].isActive === 0
         });
       },
       error: error => {

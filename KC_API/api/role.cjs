@@ -15,7 +15,7 @@ router.get('/get-roles', authenticateToken, async (req, res) => {
   try {
     const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
     connection = await Promise.race([connectToDatabase(), timeout]);
-    const [results] = await connection.query('SELECT * FROM role ORDER BY roleOrderId ASC');
+    const [results] = await connection.query('SELECT * FROM role WHERE roleId != 1 ORDER BY roleOrderId ASC');
     res.json(results);
   } catch (err) {
     res.status(500).json({ error: 'Error executing query' });

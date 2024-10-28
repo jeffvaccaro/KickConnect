@@ -51,10 +51,10 @@ export const routes: Routes = [
       component: AuthenticationComponent,
       children: [
         { path: '', component: LoginComponent },
-        { path: 'register', component: RegisterComponent },
         { path: 'logout', component: LogoutComponent },
       ]
     },
+    { path: 'authentication/register', component: RegisterComponent },
     { path: 'error', component: InternalErrorComponent },
     { path: 'error-500', component: InternalErrorComponent },
     { path: '**', component: NotFoundComponent}

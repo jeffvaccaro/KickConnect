@@ -13,6 +13,7 @@ const roleRouter = require('./role.cjs');
 const eventRouter = require('./event.js');
 const zipcodeRouter = require('./zipcode.cjs');
 const scheduleRouter = require('./schedule.js');
+const accountRouter = require('./account.js');
 const logger = require('./logger');
 const app = express();
 
@@ -60,6 +61,7 @@ const routers = [
   { path: '/event', router: eventRouter },
   { path: '/common', router: zipcodeRouter },
   { path: '/schedule', router: scheduleRouter },
+  { path: '/account', router: accountRouter }
 ];
 
 routers.forEach(({ path, router }) => {

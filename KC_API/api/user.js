@@ -27,6 +27,7 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
       INNER JOIN userroles ON user.userId = userroles.userId
       INNER JOIN role ON userroles.roleId = role.roleId
       WHERE account.accountcode = ?
+      AND userroles.roleId != 1
     `;
     const [results] = await connection.query(query, [accountCode]);
     res.json(results);
@@ -66,6 +67,7 @@ router.get('/get-users', authenticateToken, async (req, res) => {
         JOIN admin.userroles ur ON u.userId = ur.userId
         JOIN admin.role r ON ur.roleId = r.roleId
         WHERE u.accountId = ?
+        AND ur.roleId != 1
         GROUP BY u.userId
       `;
 
@@ -103,6 +105,7 @@ router.get('/get-user-by-id', authenticateToken, async (req, res) => {
     JOIN admin.userroles ur ON u.userId = ur.userId
     JOIN admin.role r ON ur.roleId = r.roleId
     WHERE u.userId = ?
+    AND ur.roleId != 1 
     GROUP BY u.userId
     `;    
     const [userResults] = await connection.query(query, [userId]);
@@ -142,6 +145,7 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
     JOIN admin.userroles ur ON u.userId = ur.userId
     JOIN admin.role r ON ur.roleId = r.roleId
     WHERE u.accountId = ? AND u.isActive = ?
+    AND ur.roleId != -1
     GROUP BY u.userId
     `;  
 
@@ -184,10 +188,10 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
     }
 
     const accountId = accountResults[0].accountId;
-    console.log('Retrieved accountId:', accountId); // Log the retrieved accountId
+    // console.log('Retrieved accountId:', accountId); // Log the retrieved accountId
 
     const photoURL = req.file ? `/uploads/${req.file.filename}` : null;
-    console.log('Photo URL:', photoURL); // Log the photo URL
+    // console.log('Photo URL:', photoURL); // Log the photo URL
 
     // Check for duplicate user
     const duplicateQuery = `
@@ -211,12 +215,12 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "API User Insert");
     `;
     await connection.query(userQuery, [accountId, name, email, phone, phone2, address, city, state, zip, hashedPassword, photoURL]);
-    console.log('New user inserted:', { accountId, name, email, phone, phone2, address, city, state, zip, photoURL });
+    // console.log('New user inserted:', { accountId, name, email, phone, phone2, address, city, state, zip, photoURL });
 
     // Retrieve the inserted userId (assuming userId is auto-incremented)
     const [result] = await connection.query('SELECT LAST_INSERT_ID() AS userId');
     const userId = result[0].userId;
-    console.log('Inserted userId:', userId);
+    // console.log('Inserted userId:', userId);
 
     // Insert the new user roles with the retrieved userId and roleId array
     if (!Array.isArray(roleId)) {

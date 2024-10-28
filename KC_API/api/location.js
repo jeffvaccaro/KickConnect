@@ -60,6 +60,26 @@ router.get('/get-locations', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/get-locations-by-id/:locationId', authenticateToken, async (req, res) => {
+  let connection;
+  try {
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+    connection = await Promise.race([connectToDatabase(), timeout]);
+    const { locationId } = req.params;
+    const [results] = await connection.query('SELECT * FROM admin.location WHERE locationId = ?', [locationId]);
+    res.status(200).json(results);
+  } catch (error) {
+    console.error('Error fetching locations:', error);
+    res.status(500).send('Error fetching locations');
+  } finally {
+    if (connection) {
+      connection.release();
+    } else {
+      console.warn('get-locations: Connection not established.');
+    }
+  }
+});
+
 router.get('/get-locations-by-acct-id/:acctId', authenticateToken, async (req, res) => {
   let connection;
   try {
