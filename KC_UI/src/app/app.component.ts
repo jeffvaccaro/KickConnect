@@ -30,7 +30,6 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
         localStorage.setItem('lastModule', event.urlAfterRedirects);
-        // Scroll to the top after each navigation end
         this.viewportScroller.scrollToPosition([0, 0]);
       }
     });
@@ -39,36 +38,8 @@ export class AppComponent implements OnInit {
       this.isToggled = isToggled;
     });
   }
-  
 
   ngOnInit(): void {
-    setTimeout(() => {
-      const routePath = this.router.url;
-      console.log('Delayed route path:', routePath); // Debugging log
-  
-      // Allow access to the registration page without any redirects
-      if (routePath === '/authentication/register') {
-        console.log('User is trying to access registration page, allow it');
-        return; // Exit to avoid any redirects
-      }
-  
-      if (this.authService.isAuthenticated()) {
-        console.log('User is authenticated');
-        const lastModule = localStorage.getItem('lastModule');
-        if (lastModule) {
-          console.log('Navigating to last module:', lastModule);
-          this.router.navigateByUrl(lastModule);
-        } else {
-          console.log('Navigating to default route /');
-          this.router.navigate(['/']); // Default route if no last module
-        }
-      } else {
-        console.log('User not authenticated');
-        this.router.navigate(['/authentication']);
-      }
-    }, 100); // Adjust the delay as needed
+    console.log('AppComponent initialized.');
   }
-  
-  
-
 }

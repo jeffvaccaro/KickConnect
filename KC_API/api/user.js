@@ -7,6 +7,9 @@ const mysql = require('mysql2/promise');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
+const { sendEmail } = require('./middleware/emailService.js');
 const { connectToDatabase } = require('./db');
 const authenticateToken = require('./middleware/authenticateToken.cjs');
 
@@ -22,12 +25,12 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
 
     const query = `
       SELECT user.*, role.roleName
-      FROM account
-      INNER JOIN user ON account.accountId = user.accountId
-      INNER JOIN userroles ON user.userId = userroles.userId
-      INNER JOIN role ON userroles.roleId = role.roleId
-      WHERE account.accountcode = ?
-      AND userroles.roleId != 1
+      FROM admin.account a
+      INNER JOIN admin.user u ON a.accountId = u.accountId
+      INNER JOIN admin.userroles ur ON u.userId = ur.userId
+      INNER JOIN admin.role r ON ur.roleId = r.roleId
+      WHERE a.accountcode = ?
+      AND ur.roleId != 1
     `;
     const [results] = await connection.query(query, [accountCode]);
     res.json(results);
@@ -166,19 +169,18 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
 
 router.post('/add-user', authenticateToken, upload.single('photo'), async (req, res) => {
   let { accountcode, name, email, phone, phone2, address, city, state, zip, password: originalPassword, roleId } = JSON.parse(req.body.userData);
-  
-  console.log('Parsed userData:', { accountcode, name, email, phone, phone2, address, city, state, zip, originalPassword, roleId });
-  
+
+  //console.log('Parsed userData:', { accountcode, name, email, phone, phone2, address, city, state, zip, originalPassword, roleId });
+
   let connection;
   try {
     const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
     connection = await Promise.race([connectToDatabase(), timeout]);
-
     console.log('Request body:', req.body); // Log the request body
 
     let password = originalPassword || accountcode; // Set default password to accountcode if not provided
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log('Hashed password:', hashedPassword); // Log the hashed password
+    //console.log('Hashed password:', hashedPassword); // Log the hashed password
 
     const accountQuery = 'SELECT accountId FROM admin.account WHERE accountcode = ?';
     const [accountResults] = await connection.query(accountQuery, [accountcode]);
@@ -188,16 +190,11 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
     }
 
     const accountId = accountResults[0].accountId;
-    // console.log('Retrieved accountId:', accountId); // Log the retrieved accountId
-
+   
     const photoURL = req.file ? `/uploads/${req.file.filename}` : null;
-    // console.log('Photo URL:', photoURL); // Log the photo URL
 
     // Check for duplicate user
-    const duplicateQuery = `
-      SELECT * FROM user
-      WHERE name = ? AND email = ? AND phone = ? AND address = ? AND city = ? AND state = ? AND zip = ?
-    `;
+    const duplicateQuery = `SELECT * FROM admin.user WHERE name = ? AND email = ? AND phone = ? AND address = ? AND city = ? AND state = ? AND zip = ?`;
     const [duplicateResults] = await connection.query(duplicateQuery, [name, email, phone, address, city, state, zip]);
     if (duplicateResults.length > 0) {
       if (connection) {
@@ -210,39 +207,31 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
     }
 
     // Insert the new user with the retrieved accountId
-    const userQuery = `
-      INSERT INTO user (accountId, name, email, phone, phone2, address, city, state, zip, password, photoURL, createdBy)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "API User Insert");
-    `;
+    const userQuery = `INSERT INTO admin.user (accountId, name, email, phone, phone2, address, city, state, zip, password, photoURL, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "API User Insert")`;
     await connection.query(userQuery, [accountId, name, email, phone, phone2, address, city, state, zip, hashedPassword, photoURL]);
-    // console.log('New user inserted:', { accountId, name, email, phone, phone2, address, city, state, zip, photoURL });
 
-    // Retrieve the inserted userId (assuming userId is auto-incremented)
     const [result] = await connection.query('SELECT LAST_INSERT_ID() AS userId');
     const userId = result[0].userId;
-    // console.log('Inserted userId:', userId);
 
-    // Insert the new user roles with the retrieved userId and roleId array
     if (!Array.isArray(roleId)) {
       console.error('roleId is not an array:', roleId);
       return res.status(400).json({ error: 'roleId must be an array' });
     }
-    const userRoleQuery = `
-      INSERT INTO userroles (userId, roleId)
-      VALUES (?, ?);
-    `;
+
+    const userRoleQuery = `INSERT INTO admin.userroles (userId, roleId) VALUES (?, ?)`;
     const userRolePromises = roleId.map((role) => {
-      console.log('Inserting role:', role); // Log each role being inserted
+      console.log('Inserting role:', role);
       return connection.query(userRoleQuery, [userId, role]);
     });
+
     await Promise.all(userRolePromises);
+    
+    // Send email only after all roles are inserted
+    await sendEmail(email, name, userId, accountId, accountcode);
 
     // Insert into profile table if roleId is Instructor (4)
     if (roleId.includes(4)) {
-      const profileQuery = `
-        INSERT INTO profile (userId, description, skills, URL)
-        VALUES (?, ?, ?, ?);
-      `;
+      const profileQuery = `INSERT INTO admin.profile (userId, description, skills, URL) VALUES (?, ?, ?, ?)`;
       await connection.query(profileQuery, [userId, '', '', '']);
       console.log('Profile created for Instructor user:', userId);
     }
@@ -254,16 +243,17 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
   } finally {
     if (connection) {
       connection.release();
-      console.log('Database connection released'); // Log the connection release
+      console.log('Database connection released');
     } else {
       console.warn('add-user: Connection not established.');
     }
   }
 });
 
+
 router.put('/update-user/:userId', authenticateToken, upload.single('photo'), async (req, res) => {
   const { userId } = req.params; // Use req.params instead of req.query
-  console.log('User ID:', userId); // Log the userId
+  //console.log('User ID:', userId); // Log the userId
 
   const userData = JSON.parse(req.body.userData);
   const { name, email, phone, phone2, address, city, state, zip, isActive, resetPassword } = userData;
@@ -292,7 +282,7 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
 
     // Update user with userId
     const userQuery = `
-      UPDATE user
+      UPDATE admin.user
       SET name = ?, email = ?, phone = ?, phone2 = ?, address = ?, city = ?, state = ?, zip = ?, isActive = ?, resetPassword = ?, photoURL = ?, updatedBy = "API User Update"
       WHERE userId = ?;
     `;
@@ -301,14 +291,14 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
 
     // Delete existing user roles
     const deleteUserRoleQuery = `
-      DELETE FROM userroles WHERE userId = ?;
+      DELETE FROM admin.userroles WHERE userId = ?;
     `;
     await connection.query(deleteUserRoleQuery, [userId]);
     console.log('Existing user roles deleted for userId:', userId);
 
     // Insert new user roles
     const insertUserRoleQuery = `
-      INSERT INTO userroles (userId, roleId)
+      INSERT INTO admin.userroles (userId, roleId)
       VALUES (?, ?);
     `;
     const userRolePromises = roleId.map((role) => {
@@ -321,7 +311,7 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
     // Insert into profile table if roleId is Instructor (4)
     if (roleId.includes(4)) {
       const profileQuery = `
-        INSERT INTO profile (userId, description, skills, URL)
+        INSERT INTO admin.profile (userId, description, skills, URL)
         VALUES (?, ?, ?, ?);
       `;
       await connection.query(profileQuery, [userId, '', '', '']);
@@ -349,7 +339,7 @@ router.put('/deactivate-user', authenticateToken, async (req, res) => {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
         connection = await Promise.race([connectToDatabase(), timeout]);
 
-        const userQuery = `UPDATE user 
+        const userQuery = `UPDATE admin.user 
             SET isActive = -1, updatedBy = "API User Delete"
             WHERE userId = ?;`;
 
@@ -365,6 +355,56 @@ router.put('/deactivate-user', authenticateToken, async (req, res) => {
           console.warn('deactivate-user: Connection not established.');
         };
       }
+});
+
+router.put('/update-user-password/:accountCode/:userId/:accountId', async (req, res) => {
+  const { userId, accountCode, accountId } = req.params;
+  const { userData } = req.body;  // Make sure userData is correctly nested
+
+  if (!userData || !userData.password) {
+    return res.status(400).json({ error: 'Invalid JSON in userData' });
+  }
+
+  const password = userData.password;
+
+  console.log('Parsed userData:', { accountCode, accountId, userId, password });
+
+  let connection;
+  try {
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+    connection = await Promise.race([connectToDatabase(), timeout]);
+    console.log('Request body:', req.body); // Log the request body
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Verify if user credentials are valid
+    const [userValidation] = await connection.query(
+      `SELECT * FROM admin.user WHERE userId = ? AND accountId = ? AND accountId = (SELECT accountId FROM admin.account WHERE accountCode = ?)`,
+      [userId, accountId, accountCode]
+    );
+
+    if (!userValidation.length) {
+      return res.status(404).json({ message: 'User not found or credentials invalid' });
+    }
+
+    const userQuery = `
+      UPDATE admin.user 
+      SET password = ?, updatedBy = "API Password Update" 
+      WHERE userId = ? AND accountId = ? AND accountId = (SELECT accountId FROM admin.account WHERE accountCode = ?);
+    `;
+
+    const [userResult] = await connection.query(userQuery, [hashedPassword, userId, accountId, accountCode]);
+    res.json({ message: 'User password updated' });
+
+  } catch (error) {
+    console.error('Error resetting user password:', error);
+    res.status(500).json({ error: 'Error resetting user password' }); // Send a JSON error response
+  } finally {
+    if (connection) {
+      connection.release();
+    } else {
+      console.warn('update-user-password: Connection not established.');
+    }
+  }
 });
  
   module.exports = router;

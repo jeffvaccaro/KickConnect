@@ -1,20 +1,32 @@
 <div
-    [ngClass]="{'blank-page': router.url === '/error-500' || router.url === '/authentication/reset-password' || router.url === '/authentication/forgot-password' || router.url === '/authentication' || router.url === '/authentication/register' || router.url === '/authentication/signin-signup' || router.url === '/authentication/logout' || router.url === '/authentication/confirm-mail' || router.url === '/authentication/lock-screen' || router.url === '/coming-soon'}"
+[ngClass]="{
+    'blank-page': 
+    router.url.includes('/error-500') || 
+    router.url.includes('/authentication/reset-password') || 
+    router.url.includes('/authentication/forgot-password') || 
+    router.url.includes('/authentication') || 
+    router.url.includes('/authentication/register') || 
+    router.url.includes('/authentication/signin-signup') || 
+    router.url.includes('/authentication/logout') || 
+    router.url.includes('/authentication/confirm-mail') || 
+    router.url.includes('/authentication/lock-screen') || 
+    router.url.includes('/coming-soon')
+}"
     [class.card-borderd-theme]="themeService.isCardBorder()"
     [class.card-border-radius]="themeService.isCardBorderRadius()"
     [class.rtl-enabled]="themeService.isRTLEnabled()"
 >
-    <app-sidebar />
+    <app-sidebar *ngIf="!router.url.includes('/authentication/reset-password')"></app-sidebar>
     <div
         class="main-content d-flex flex-column"
         [ngClass]="{'active': isToggled}"
         [class.right-sidebar]="themeService.isRightSidebar()"
         [class.hide-sidebar]="themeService.isHideSidebar()"
     >
-        <app-header />
-        <router-outlet />
+        <app-header *ngIf="!router.url.includes('/authentication/reset-password')"></app-header>
+        <router-outlet></router-outlet>
         <div class="flex-grow-1"></div>
-        <app-footer />
+        <app-footer *ngIf="!router.url.includes('/authentication/reset-password')"></app-footer>
     </div>
-    <app-customizer-settings />
+    <app-customizer-settings *ngIf="!router.url.includes('/authentication/reset-password')"></app-customizer-settings>
 </div>

@@ -1,10 +1,4 @@
-<div
-    class="h-100vh pt-50 pb-50"
-    [class.component-dark-theme]="themeService.isDark()"
-    [class.card-borderd-theme]="themeService.isCardBorder()"
-    [class.card-border-radius]="themeService.isCardBorderRadius()"
-    [class.component-rtl-enabled]="themeService.isRTLEnabled()"
->
+<div>
     <div class="d-table">
         <div class="d-table-cell">
             <div class="kickConnect-form ms-auto me-auto">
@@ -27,20 +21,7 @@
                         </mat-form-field>
                     </div>
 
-                        <div class="col-lg-4 col-md-4 col-sm-4">
-                            <!-- <div class="kickConnect-form-group">
-                                <label class="d-block mb-12 fw-semibold gray-color">Role</label>
-                                <mat-form-field appearance="fill">
-                                    <i class="ri-list-check"></i>
-                                    <mat-label>Role</mat-label>
-                                    <mat-select formControlName="roleControl" multiple>
-                                        <mat-option *ngFor="let role of roleArr; trackBy: trackByRoleId" [value]="role.roleId">
-                                        {{ role.roleName }}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div> -->
-                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4">                       </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">

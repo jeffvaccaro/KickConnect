@@ -20,12 +20,13 @@ export class UserService {
     const storedAccountId = localStorage.getItem('accountId') || '';
     const storedUserName = localStorage.getItem('userName') || '';
     const storedRoleName = localStorage.getItem('role') || '';
-
+    // console.log('Stored role:', storedRoleName);
     this.accountCodeSubject = new BehaviorSubject<string>(storedAccountCode);
     this.accountIdSubject = new BehaviorSubject<string>(storedAccountId);
     this.userNameSubject = new BehaviorSubject<string>(storedUserName);
     this.roleNameSubject = new BehaviorSubject<string>(storedRoleName);
   }
+  
   
   setUserName(userNameValue: string): void {
     localStorage.setItem('userName', userNameValue);
@@ -54,13 +55,17 @@ export class UserService {
     return this.accountIdSubject.asObservable();
   }
 
-  setRoleName(roleNameValue: string): void {
-    localStorage.setItem('role', roleNameValue);
-    this.roleNameSubject.next(roleNameValue);
+  getRoleName(): Observable<string> {
+    return this.roleNameSubject.asObservable();
   }
 
-  getRoleName() {
-    return this.roleNameSubject.asObservable();
+  setRoleName(roleNameValue: string): void {
+    const currentRole = this.roleNameSubject.getValue();
+    if (currentRole !== roleNameValue) {
+      console.log('Setting role to:', roleNameValue);
+      localStorage.setItem('role', roleNameValue);
+      this.roleNameSubject.next(roleNameValue);
+    }
   }
   
   getUser(userId: number): Observable<any> {
@@ -87,6 +92,11 @@ export class UserService {
     return this.http.put(`${this.apiUrl}/update-user/${userId}`, formData);
   }
   
+  updateUserPassword(accountCode: string, userId: number, accountId: number, userData: any) {
+    // Nest userData inside an object
+    return this.http.put(`${this.apiUrl}/update-user-password/${accountCode}/${userId}/${accountId}`, { userData });
+  }
+
 
   addUser(formData: FormData) {
     return this.http.post(`${this.apiUrl}/add-user`, formData);

@@ -25,7 +25,7 @@ export class LocationListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private locationService: LocationService, private router: Router, private route: ActivatedRoute,) {}
+  constructor(private locationService: LocationService, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     let status: string = '';

@@ -1,10 +1,10 @@
-// require('dotenv').config(); // Ensure environment variables are loaded
-
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const dotenv = require('dotenv');
 const swaggerSetup = require('./swagger.cjs');
+const logger = require('./logger');
 const authRouter = require('./account.js');
 const userRouter = require('./user.js');
 const loginRouter = require('./login.js');
@@ -14,9 +14,10 @@ const eventRouter = require('./event.js');
 const zipcodeRouter = require('./zipcode.cjs');
 const scheduleRouter = require('./schedule.js');
 const accountRouter = require('./account.js');
-const logger = require('./logger');
-const app = express();
 
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+const app = express();
 const env = process.env.NODE_ENV || 'development';
 const port = process.env.PORT || 3000;
 
@@ -24,6 +25,7 @@ const allowedOrigins = [
   'http://localhost:4200',
   'http://kickconnect-env-1.eba-bsj8msyj.us-east-1.elasticbeanstalk.com'
 ];
+
 const corsOptions = {
   origin: function (origin, callback) {
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
@@ -37,7 +39,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
-// Make sure swaggerSetup is a function before using it
 if (typeof swaggerSetup === 'function') {
   swaggerSetup(app);
 } else {
@@ -50,8 +51,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'An error occurred, please try again later.' });
 });
 
-
-// Ensure all routers are middleware functions
 const routers = [
   { path: '/auth', router: authRouter },
   { path: '/user', router: userRouter },
@@ -74,7 +73,6 @@ routers.forEach(({ path, router }) => {
 
 app.use('/uploads', express.static('uploads'));
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -86,17 +84,12 @@ app.get('/current-datetime', (req, res) => {
 
 app.post('/api/logger', (req, res) => {
   const { message, level, error } = req.body;
-
   if (!['info', 'warn', 'error', 'debug'].includes(level)) {
     return res.status(400).json({ error: 'Invalid log level' });
   }
-
   logger[level](`${message}: ${JSON.stringify(error)}`);
   res.status(200).json({ message: 'Log received' });
 });
-
-
-
 
 const serverHost = env === 'production' ? 'ElasticBeanStalk' : 'localhost';
 app.listen(port, () => {

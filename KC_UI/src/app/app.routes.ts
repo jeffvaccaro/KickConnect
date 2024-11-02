@@ -1,13 +1,21 @@
-import { Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes, CanActivate } from '@angular/router';
 import { AuthGuard } from './guards/AuthGuard';
+import { RoleGuard } from './guards/RoleGuard';
 import { NotFoundComponent } from './components/common/not-found/not-found.component';
-
 import { AuthenticationComponent } from './components/authentication/authentication.component';
 import { LoginComponent } from './components/authentication/login/login.component';
 import { RegisterComponent } from './components/authentication/register/register.component';
 import { LogoutComponent } from './components/authentication/logout/logout.component';
+import { ResetPasswordComponent } from './components/authentication/reset-password/reset-password.component';
 import { InternalErrorComponent } from './components/common/internal-error/internal-error.component';
-import { OwnerComponent } from './components/dashboard/owner/owner/owner.component';
+import { DynamicComponent } from './components/common/dynamic/dynamic.component';
+
+import { SuperAdminComponent } from './components/dashboard/super-admin/super-admin.component';
+import { OwnerComponent } from './components/dashboard/owner/owner.component';
+import { AdminComponent } from './components/dashboard/admin/admin.component';
+import { StaffComponent } from './components/dashboard/staff/staff.component';
+
 import { LocationListComponent } from './components/custom/locations/location-list/location-list.component';
 import { AddNewLocationComponent } from './components/custom/locations/add-new-location/add-new-location.component';
 import { EditLocationComponent } from './components/custom/locations/edit-location/edit-location.component';
@@ -25,37 +33,82 @@ import { AddEditDialogComponent } from './components/custom/scheduler/add-edit-d
 import { ProfileListComponent } from './components/custom/profiles/profile-list/profile-list.component';
 import { AddNewProfileComponent } from './components/custom/profiles/add-new-profile/add-new-profile.component';
 import { EditProfileComponent } from './components/custom/profiles/edit-profile/edit-profile.component';
+import { AccountListComponent } from './components/custom/accounts/account-list/account-list.component';
+import { AddNewAccountComponent } from './components/custom/accounts/add-new-account/add-new-account.component';
 
 
 export const routes: Routes = [
-    { path: '', component: OwnerComponent, canActivate: [AuthGuard] },
-    { path: 'app-location-list', component: LocationListComponent, canActivate: [AuthGuard] },
-    { path: 'app-add-new-location', component: AddNewLocationComponent, canActivate: [AuthGuard] },
-    { path: 'app-edit-location/:locationId', component: EditLocationComponent, canActivate: [AuthGuard] },
-    { path: 'app-user-list', component: UserListComponent, canActivate: [AuthGuard] },
-    { path: 'app-add-new-user', component: AddNewUserComponent, canActivate: [AuthGuard] },
-    { path: 'app-edit-user/:userId', component: EditUserComponent, canActivate: [AuthGuard] },
-    { path: 'app-role-list', component: RoleListComponent, canActivate: [AuthGuard] },
-    { path: 'app-add-new-role', component: AddNewRoleComponent, canActivate: [AuthGuard] },
-    { path: 'app-edit-role/:roleId', component: EditRoleComponent, canActivate: [AuthGuard] },
-    { path: 'app-event-list', component: EventListComponent, canActivate: [AuthGuard] },
-    { path: 'app-add-new-event', component: AddNewEventComponent, canActivate: [AuthGuard] },
-    { path: 'app-edit-event/:eventId', component: EditEventComponent, canActivate: [AuthGuard] },
-    { path: 'app-scheduler', component: SchedulerComponent, canActivate: [AuthGuard] },
-    { path: 'app-add-edit-dialog', component: AddEditDialogComponent, canActivate: [AuthGuard] },
-    { path: 'app-profile-list', component: ProfileListComponent, canActivate: [AuthGuard] },
-    { path: 'app-add-new-profile', component: AddNewProfileComponent, canActivate: [AuthGuard] },
-    { path: 'app-edit-profile/:profileId', component: EditProfileComponent, canActivate: [AuthGuard] },
-    {
-      path: 'authentication',
-      component: AuthenticationComponent,
-      children: [
-        { path: '', component: LoginComponent },
-        { path: 'logout', component: LogoutComponent },
-      ]
-    },
-    { path: 'authentication/register', component: RegisterComponent },
-    { path: 'error', component: InternalErrorComponent },
-    { path: 'error-500', component: InternalErrorComponent },
-    { path: '**', component: NotFoundComponent}
+  { path: 'authentication/register', component: RegisterComponent },
+  { path: 'authentication/reset-password', component: ResetPasswordComponent },
+  {
+    path: 'authentication',
+    component: AuthenticationComponent,
+    children: [
+      { path: '', component: LoginComponent },
+      { path: 'logout', component: LogoutComponent },
+    ]
+  },
+  {
+    path: '',
+    component: DynamicComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { expectedRoles: ['Owner', 'Super Admin', 'Admin', 'Staff'] }
+  },
+  {
+    path: 'owner',
+    component: OwnerComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { expectedRoles: ['Owner'] }
+  },
+  {
+    path: 'super-admin',
+    component: SuperAdminComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { expectedRoles: ['Super Admin'] }
+  },
+  {
+    path: 'admin',
+    component: AdminComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { expectedRoles: ['Admin'] }
+  },
+  {
+    path: 'staff',
+    component: StaffComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { expectedRoles: ['Staff'] }
+  },
+  
+  {
+    path: 'not-authorized',
+    component: AuthenticationComponent
+  },
+  { path: 'app-location-list', component: LocationListComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-new-location', component: AddNewLocationComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-location/:locationId', component: EditLocationComponent, canActivate: [AuthGuard] },
+  { path: 'app-user-list', component: UserListComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-new-user', component: AddNewUserComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-user/:userId', component: EditUserComponent, canActivate: [AuthGuard] },
+  { path: 'app-role-list', component: RoleListComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-new-role', component: AddNewRoleComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-role/:roleId', component: EditRoleComponent, canActivate: [AuthGuard] },
+  { path: 'app-event-list', component: EventListComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-new-event', component: AddNewEventComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-event/:eventId', component: EditEventComponent, canActivate: [AuthGuard] },
+  { path: 'app-scheduler', component: SchedulerComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-edit-dialog', component: AddEditDialogComponent, canActivate: [AuthGuard] },
+  { path: 'app-profile-list', component: ProfileListComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-new-profile', component: AddNewProfileComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-profile/:profileId', component: EditProfileComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-new-account', component: AddNewAccountComponent, canActivate: [AuthGuard] },
+  { path: 'app-account-list', component: AccountListComponent, canActivate: [AuthGuard] },
+  { path: 'error', component: InternalErrorComponent },
+  { path: 'error-500', component: InternalErrorComponent },
+  { path: '**', component: NotFoundComponent }
 ];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }

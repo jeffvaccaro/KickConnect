@@ -5332,7 +5332,15 @@ quill-editor {
       }
 
 
-     
+      .mat-tooltip,
+      .no-wrap {
+        white-space: nowrap !important;
+        max-width: 300px !important; /* Adjust width as needed */
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      
+          
             
       
       

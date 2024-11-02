@@ -7,20 +7,16 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-
-  // console.log('Auth Header:', authHeader);
-  // console.log('Token:', token);
-
+  
   if (!authHeader) {
     console.error('No Auth Header found');
     return res.status(401).json({ error: 'No authentication header found' });
   }
-
   if (!token) {
     console.error('No Token found');
     return res.status(401).json({ error: 'No token found' });
   }
-
+  
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       console.error('Token verification failed:', err.message);
@@ -30,6 +26,5 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
-
 
 module.exports = authenticateToken;

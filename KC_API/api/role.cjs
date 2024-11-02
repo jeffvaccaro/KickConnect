@@ -10,6 +10,25 @@ const authenticateToken = require('./middleware/authenticateToken.cjs');
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
+router.get('/get-all-roles', authenticateToken, async (req, res) => {
+  let connection;
+  try {
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+    connection = await Promise.race([connectToDatabase(), timeout]);
+    const [results] = await connection.query('SELECT * FROM role ORDER BY roleOrderId ASC');
+    // console.log('role results', results);
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ error: 'Error executing query' });
+  } finally {
+    if (connection) {
+      connection.release();
+    } else {
+      console.warn('get-all-roles: Connection not established.');
+    }
+  }
+});
+
 router.get('/get-roles', authenticateToken, async (req, res) => {
   let connection;
   try {
@@ -60,6 +79,7 @@ router.post('/add-role', authenticateToken, async (req, res) => {
         FROM admin.role;
       `;
       const [roleResults] = await connection.query(roleInsertQuery, [roleName, roleDescription]);
+      //console.log('add-role', roleResults);
       res.status(200).json({ message: 'Role Added Successfully' });
     } catch (err) {
       res.status(500).json({ message: 'Error executing role query' });

@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.39, for Win64 (x86_64)
 -- EXAMPLE 
--- cd  c:\Program Files\MySQL\MySQL Server 8.0\bin>
+-- cd  c:\Program Files\MySQL\MySQL Server 8.0\bin
 -- mysqldump -u root -p --databases admin common > c:\\KCAppDB.sql
 --
 -- Host: localhost    Database: admin

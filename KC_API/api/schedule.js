@@ -72,11 +72,11 @@ const insertScheduleMain = async (connection, insertValues) => {
   const query = 'INSERT INTO schedulemain (accountId, eventId, day, startTime, endTime, selectedDate, isRepeat, isActive, createdBy, createdOn) VALUES (?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP)';
   const formattedQuery = formatQuery(query, [...insertValues]); // Use a copy of insertValues to preserve the original array
 
-  console.log('Formatted Query:', formattedQuery);
+  //console.log('Formatted Query:', formattedQuery);
 
   const [insertResult] = await connection.query(query, insertValues);
 
-  console.log('insertScheduleMainQuery', insertResult);
+  //console.log('insertScheduleMainQuery', insertResult);
   return insertResult.insertId;
 };
 

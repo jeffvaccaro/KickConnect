@@ -32,7 +32,7 @@ export class AddNewUserComponent {
 
   form: FormGroup;
   userId: number;
-  roleArr: Role[] = []; // Define the type of roleArr  
+  roleArr: Role[] = [];
   constructor(private fb: FormBuilder, private userService: UserService, private roleService: RoleService, 
     private commonService: CommonService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar) {}
 
@@ -56,9 +56,6 @@ export class AddNewUserComponent {
     this.roleService.getRoles().subscribe({
       next: roleResponse => {
         this.roleArr = roleResponse;
-        // Set the roleControl value based on the user's roleId
-        // this.form.get('roleControl')!.setValue(userResponse.roleId);
-        // console.log('userResponse.roleId', userResponse.roleId);
       },
       error: error => {
         console.error('Error fetching role data:', error);

@@ -13,6 +13,7 @@ import { RoleService } from '../../../../services/role.service';
 import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../../services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { catchError, of, tap } from 'rxjs';
 
 interface Role {
   roleId: number;
@@ -137,17 +138,18 @@ export class EditUserComponent implements OnInit {
       formData.append('photo', this.selectedFile, this.selectedFile.name); // Add photo file if available
     }
   
-    console.log('formData:', formData); // Log the form data being sent to the server
+    //console.log('formData:', formData); // Log the form data being sent to the server
     // Call the updateLocation method and pass the form data
-    this.userService.updateUser(this.userId, formData).subscribe(
-      (response: any) => {
+    this.userService.updateUser(this.userId, formData).pipe(
+      tap((response: any) => {
         console.log('User updated successfully:', response?.message);
         this.router.navigate(['/']); // Navigate to location-list
-      },
-      error => {
+      }),
+      catchError(error => {
         console.error('Error updating user:', error.message);
-      }
-    );
+        return of(); // Return an observable to complete the stream
+      })
+    ).subscribe();
   }
   
   

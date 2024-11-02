@@ -62,7 +62,7 @@ export class SchedulerComponent implements AfterViewInit {
         isReservation: args.e.data.isReservation,
         isCostToAttend: args.e.data.isCostToAttend,
       };
-      console.log('eventData onClick:', eventData);
+      // console.log('eventData onClick:', eventData);
     
       this.openAddEventDialog('300ms', '100ms', false, eventData);
     },    
