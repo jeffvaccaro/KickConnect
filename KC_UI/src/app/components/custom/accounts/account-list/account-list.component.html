@@ -10,34 +10,34 @@
 
     <mat-card-content>
         <div class="teamMembersListTable kickConnect-mat-table mat-elevation-z8">
-            <table mat-table [dataSource]="dataSource">
+            <table mat-table [dataSource]="dataSource" id="accountsTable">
                 <ng-container matColumnDef="accountName">
                     <th mat-header-cell *matHeaderCellDef>Name</th>
-                    <td mat-cell *matCellDef="let element">{{element.accountName}}</td>
+                    <td mat-cell *matCellDef="let element" id="accountName">{{element.accountName}}</td>
                 </ng-container>                
                 <ng-container matColumnDef="accountPhone">
                     <th mat-header-cell *matHeaderCellDef>Phone</th>
-                    <td mat-cell *matCellDef="let element">{{element.accountPhone}}</td>
+                    <td mat-cell *matCellDef="let element" id="accountPhone">{{element.accountPhone}}</td>
                 </ng-container>
                 <ng-container matColumnDef="accountEmail">
                     <th mat-header-cell *matHeaderCellDef>Email</th>
-                    <td mat-cell *matCellDef="let element"><a href="mailto:{{element.accountEmail}}">{{element.accountEmail}}</a></td>
+                    <td mat-cell *matCellDef="let element" id="accountEmail"><a href="mailto:{{element.accountEmail}}">{{element.accountEmail}}</a></td>
                 </ng-container>
                 <ng-container matColumnDef="accountAddress">
                     <th mat-header-cell *matHeaderCellDef>Address</th>
-                    <td mat-cell *matCellDef="let element">{{element.accountAddress}}</td>
+                    <td mat-cell *matCellDef="let element" id="accountAddress">{{element.accountAddress}}</td>
                 </ng-container>
                 <ng-container matColumnDef="accountCity">
                     <th mat-header-cell *matHeaderCellDef>City</th>
-                    <td mat-cell *matCellDef="let element">{{element.accountCity}}</td>
+                    <td mat-cell *matCellDef="let element" id="accountCity">{{element.accountCity}}</td>
                 </ng-container>                
                 <ng-container matColumnDef="accountState">
                     <th mat-header-cell *matHeaderCellDef>State</th>
-                    <td mat-cell *matCellDef="let element">{{element.accountState}}</td>
+                    <td mat-cell *matCellDef="let element" id="accountState">{{element.accountState}}</td>
                 </ng-container>                
                 <ng-container matColumnDef="accountZip">
                     <th mat-header-cell *matHeaderCellDef>Zip</th>
-                    <td mat-cell *matCellDef="let element">{{element.accountZip}}</td>
+                    <td mat-cell *matCellDef="let element" id="accountZip">{{element.accountZip}}</td>
                 </ng-container>                                
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

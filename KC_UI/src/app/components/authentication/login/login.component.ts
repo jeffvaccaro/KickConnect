@@ -45,8 +45,10 @@ export class LoginComponent {
         private userService: UserService,
         private router: Router) {
           this.loginForm = this.fb.group({
-            email: ['admin@admin.com', [Validators.required, Validators.email]],
-            password: ['admin12345', Validators.required]
+            // email: ['admin@admin.com', [Validators.required, Validators.email]],
+            // password: ['admin12345', Validators.required]
+            email: ['', [Validators.required, Validators.email]],
+            password: ['', Validators.required]
           });
         }
 

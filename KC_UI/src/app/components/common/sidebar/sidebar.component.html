@@ -28,7 +28,7 @@
                                 <span class="title">Dashboard</span>
                             </mat-panel-title>
                         </mat-expansion-panel-header>
-                        <ul class="sidebar-sub-menu">
+                        <ul class="sidebar-sub-menu-Dashboard">
                             <li class="sidemenu-item" *ngIf="hasRoles(['Super Admin'])">
                                 <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
                                     Super Admin
@@ -65,7 +65,7 @@
                                 <span class="badge">{{ availableOptions }}</span>
                             </mat-panel-title>
                         </mat-expansion-panel-header>  
-                        <ul id="sidebar-sub-menu" class="sidebar-sub-menu">
+                        <ul id="sidebar-sub-menu-Administration" class="sidebar-sub-menu">
                             <li class="sidemenu-item" *ngIf="hasRoles(['Super Admin'])" #option>
                                 <a routerLink="/app-account-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">                                
                                     Accounts
