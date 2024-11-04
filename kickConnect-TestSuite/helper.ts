@@ -57,9 +57,9 @@ export async function validateUserInTable(page, sharedData: SharedData, tableNam
   // Extract table rows
   const rows = await page.$$eval('#userTable tr', rows => {
     return rows.map(row => {
-      const nameElement = row.querySelector('td[id^="userName"]') as HTMLElement;
-      const phoneElement = row.querySelector('td[id^="userPhone"]') as HTMLElement;
-      const roleElement = row.querySelector('td[id^="userRole"]') as HTMLElement;
+      const nameElement = row.querySelector('td[id^="name"]') as HTMLElement;
+      const phoneElement = row.querySelector('td[id^="phone"]') as HTMLElement;
+      const roleElement = row.querySelector('td[id^="role"]') as HTMLElement;
 
       const name = nameElement ? nameElement.innerText : null;
       const phone = phoneElement ? phoneElement.innerText : null;
@@ -83,6 +83,44 @@ export async function validateUserInTable(page, sharedData: SharedData, tableNam
   }
 }
 
+export async function validateLocationsInTable(page, sharedData: SharedData, tableName: string, locationName: string) {
+  // Debug Render Time
+  console.log('Page loaded, checking for table...');
+
+  // Wait for table to load with extended timeout and check visibility
+  await page.waitForSelector('#locationsTable', { timeout: 20000, state: 'visible' });
+  console.log('Table is visible, proceeding with validation...');
+
+  // Extract table rows
+  const rows = await page.$$eval('#locationsTable tr', rows => {
+    return rows.map(row => {
+      const nameElement = row.querySelector('td[id^="name"]') as HTMLElement;
+      const phoneElement = row.querySelector('td[id^="phone"]') as HTMLElement;
+      const roleElement = row.querySelector('td[id^="role"]') as HTMLElement;
+
+      const name = nameElement ? nameElement.innerText : null;
+      const phone = phoneElement ? phoneElement.innerText : null;
+      const role = roleElement ? roleElement.innerText : null;
+
+      return { name, phone, role };
+    });
+  });
+
+  console.log('Extracted rows:', rows);
+
+  // Validate newly added user data using shared data
+  const newLocation = rows.find(row => row.name === locationName);
+  console.log('New Location data:', newLocation);
+
+  if (newLocation) {
+    expect(newLocation.phone).toBe(sharedData.phone);
+    // expect(newLocation.role).toBe(sharedData.role);
+  } else {
+    throw new Error(`New account "${sharedData.name}" not found in the list.`);
+  }
+}
 
 
-module.exports = { loginSuperUser, loginOwnerUser, validateUserInTable };
+
+
+module.exports = { loginSuperUser, loginOwnerUser, validateUserInTable, validateLocationsInTable };

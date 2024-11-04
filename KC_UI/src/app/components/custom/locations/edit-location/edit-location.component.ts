@@ -76,6 +76,9 @@ export class EditLocationComponent implements OnInit {
   onSubmit(event: Event): void {
     event.preventDefault(); // Prevent the default form submission
     //console.log('location form info', this.form.value); // Log the form values
+
+    this.form.get('cityControl')!.enable();
+    this.form.get('stateControl')!.enable();
   
     const accountId = localStorage.getItem('accountId'); // Retrieve accountId from local storage
     let locationData = {

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-const { loginSuperUser, loginOwnerUser }= require('./helper');
+const { loginSuperUser, loginOwnerUser, validateDataInTable }= require('./helper');
 
 test('Verify SuperUserLogin', async ({ page }) => {
     await loginSuperUser(page);
@@ -30,3 +30,4 @@ test('Verify Navigation to app-account-list', async ({ page }) => {
     console.log('Account Header:', accountHeader);
     expect(accountHeader).toBe('Accounts');
 });
+

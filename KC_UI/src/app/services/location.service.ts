@@ -54,13 +54,14 @@ export class LocationService {
       })
     );
   }
-  
   updateLocation(locationId: number, locationData: any) {
-    return this.http.put(`${this.apiUrl}/update-location/${locationId}`, locationData).pipe(
+    console.log('locationData', locationData);
+    return this.http.put(`${this.apiUrl}/update-location/${locationId}`, { locationData: JSON.stringify(locationData) }).pipe(
       catchError(error => {
         this.logger.logError('Error Updating Location', error);
         throw error;
       })
     );
   }
+  
 }

@@ -41,6 +41,55 @@ router.post('/add-location', authenticateToken, async (req, res) => {
   }
 });
 
+router.put('/update-location/:locationId', authenticateToken, async (req, res) => {
+  const { locationId } = req.params;
+  // console.log('Update in progress - locationId', locationId);
+
+  if (!req.body.locationData) {
+    return res.status(400).json({ error: 'locationData is required' });
+  }
+
+  try {
+    const locationData = JSON.parse(req.body.locationData);
+    const { locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail, isActive } = locationData;
+    
+    // console.log('Parsed location data:', { locationName, locationEmail, locationPhone, locationAddress, locationCity, locationState, locationZip, isActive });
+
+    let connection;
+    try {
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+      connection = await Promise.race([connectToDatabase(), timeout]);
+      // console.log('Database connection established');
+
+      const locationQuery = `
+        UPDATE admin.location
+        SET locationName = ?, locationEmail = ?, locationPhone = ?, locationAddress = ?, locationCity = ?, locationState = ?, locationZip = ?, isActive = ?, updatedBy = "API Location Update"
+        WHERE locationId = ?;
+      `;
+      await connection.query(locationQuery, [locationName, locationEmail, locationPhone, locationAddress, locationCity, locationState, locationZip, isActive, locationId]);
+      // console.log('Location updated:', { locationName, locationEmail, locationPhone, locationAddress, locationCity, locationState, locationZip, isActive, locationId });
+
+      res.json({ message: 'Location updated successfully' });
+    } catch (error) {
+      console.error('Error updating location:', error);
+      res.status(500).json({ error: 'Error updating location: ' + error.message });
+    } finally {
+      if (connection) {
+        connection.release();
+        console.log('Database connection released');
+      } else {
+        console.warn('Connection not established.');
+      }
+    }
+  } catch (error) {
+    console.error('Invalid JSON:', error);
+    res.status(400).json({ error: 'Invalid JSON: ' + error.message });
+  }
+});
+
+
+
+
 router.get('/get-locations', authenticateToken, async (req, res) => {
   let connection;
   try {
@@ -135,5 +184,7 @@ router.get('/get-inactive-locations', authenticateToken, async (req, res) => {
     }
   }
 });
+
+
 
 module.exports = router;

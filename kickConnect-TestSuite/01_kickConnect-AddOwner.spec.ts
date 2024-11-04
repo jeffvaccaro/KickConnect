@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { SharedData } from '../kickConnect-TestSuite/interfaces/ISharedData'; // Ensure this path matches your folder structure
+import { SharedData } from './interfaces/ISharedData'; // Ensure this path matches your folder structure
 
 const { loginSuperUser } = require('./helper');
 
@@ -9,9 +9,24 @@ test.describe.serial('Account Test Suite', () => {
   test('Add OwnerTest Account', async ({ page }) => {
     await loginSuperUser(page);
 
+    
+    const rowCount = await page.$$eval('#accountsTable tr', rows => 
+      rows.filter(row => row.textContent?.includes('OwnerAccount')).length
+    );
+    let nameTest;
+    console.log('rowCount: ', rowCount);
+    if(rowCount == 0){
+      nameTest = 'OwnerAccount';
+    }else{
+      nameTest = 'OwnerAccount-Test - ' + rowCount;
+    }
+    
+    //console.log('nameTest',nameTest);   
+    
+
     await page.getByRole('button', { name: ' Add' }).click();
     await page.locator('#mat-mdc-form-field-label-6').getByText('Account Name').click();
-    await page.getByLabel('Account Name').fill('OwnerAccount-Test');
+    await page.getByLabel('Account Name').fill(nameTest);
     await page.getByLabel('Account Name').press('Tab');
     await page.getByLabel('User Name').fill('OwnerName-Test');
     await page.getByLabel('User Name').press('Tab');
@@ -31,9 +46,11 @@ test.describe.serial('Account Test Suite', () => {
     await page.getByLabel('Owner').press('Tab');
     await page.getByRole('button', { name: 'Create Account' }).click();
 
+
+
     // Capture data to use in the next test
     sharedData = {
-      name: 'OwnerAccount-Test',
+      name: nameTest,
       phone: '9995551212',
       email: 'ownerTest@ownertest.com',
       address: 'OwnerTestAddressInfo',
