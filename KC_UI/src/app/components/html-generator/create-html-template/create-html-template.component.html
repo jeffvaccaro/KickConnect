@@ -1,0 +1,21 @@
+  <form [formGroup]="menuForm" (ngSubmit)="onSubmit()">
+    <div formArrayName="menuItems">
+      <div *ngFor="let item of menuItems.controls; let i = index">
+        <div [formGroupName]="i">
+          <input formControlName="name" placeholder="Menu Item Name">
+          <input formControlName="href" placeholder="Href (e.g., #about)">
+          <button type="button" (click)="removeMenuItem(i)">Remove</button>
+        </div>
+      </div>
+    </div>
+    <button type="button" (click)="addMenuItem()">Add Menu Item</button>
+    <button type="submit">Generate HTML</button>
+  </form>
+  
+  <!-- HTML Preview -->
+  <div *ngIf="iframeSrc">
+    <h3>Generated HTML Preview:</h3>
+    <pre>{{ generatedHtml }}</pre>
+    <iframe [src]="iframeSrc" style="width:100%; height:300px; border:1px solid #ccc;"></iframe>
+  </div>
+  

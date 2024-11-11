@@ -124,7 +124,7 @@ router.put('/update-role', authenticateToken, async (req, res) => {
   }
 });
 
-router.put('/update-role-order', async (req, res) => {
+router.put('/update-role-order', authenticateToken, async (req, res) => {
   const { roleId } = req.query;
   const { roleOrderId } = req.body;
   let connection;
@@ -156,5 +156,32 @@ router.put('/update-role-order', async (req, res) => {
     }
   }
 });
+
+router.post('/delete-role/:roleid'), authenticateToken, async(req, res)=>{
+  const { roleId } = req.query;
+  let connection;
+  try {
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+    connection = await Promise.race([connectToDatabase(), timeout]);
+    try {
+      const roleDeleteQuery = `
+        DELETE FROM role
+        WHERE roleId = ?;
+      `;
+      const [userResult] = await connection.query(roleDeleteQuery, [roleName, roleDescription, roleId]);
+      res.status(200).json({ message: 'Role DELETED successfully' });
+    } catch (err) {
+      res.status(500).json({ error: 'error executing role query' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error deleting Role' });
+  } finally {
+    if (connection) {
+      connection.release();
+    } else {
+      console.error('delete-role: Connection not established.');
+    }
+  }
+}
 
 module.exports = router;

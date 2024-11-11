@@ -36,6 +36,8 @@ import { EditProfileComponent } from './components/custom/profiles/edit-profile/
 import { AccountListComponent } from './components/custom/accounts/account-list/account-list.component';
 import { AddNewAccountComponent } from './components/custom/accounts/add-new-account/add-new-account.component';
 
+import { CreateHtmlTemplateComponent } from './components/html-generator/create-html-template/create-html-template.component';
+
 
 export const routes: Routes = [
   { path: 'authentication/register', component: RegisterComponent },
@@ -102,6 +104,9 @@ export const routes: Routes = [
   { path: 'app-edit-profile/:profileId', component: EditProfileComponent, canActivate: [AuthGuard] },
   { path: 'app-add-new-account', component: AddNewAccountComponent, canActivate: [AuthGuard] },
   { path: 'app-account-list', component: AccountListComponent, canActivate: [AuthGuard] },
+  
+  { path: 'app-create-html-template', component: CreateHtmlTemplateComponent },
+  
   { path: 'error', component: InternalErrorComponent },
   { path: 'error-500', component: InternalErrorComponent },
   { path: '**', component: NotFoundComponent }

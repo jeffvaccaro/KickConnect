@@ -41,14 +41,14 @@ router.post('/add-event/', authenticateToken, async (req, res) => {
       costToAttend,
       isActive
     } = req.body;
-    
+
     // Ensure default values
-    isReservation = isReservation ?? false;
-    reservationCount = reservationCount ?? 0;
-    isCostToAttend = isCostToAttend ?? false;
-    costToAttend = costToAttend === '' ? 0 : costToAttend; // Handle empty string case
-    isActive = isActive ?? true;
-    
+    isReservation = isReservation === '' ? 0 : isReservation ? 1 : 0;
+    reservationCount = reservationCount === '' ? 0 : parseInt(reservationCount, 10);
+    isCostToAttend = isCostToAttend === '' ? 0 : isCostToAttend ? 1 : 0;
+    costToAttend = costToAttend === '' ? 0 : parseFloat(costToAttend);
+    isActive = isActive === '' ? 1 : isActive ? 1 : 0;
+
     const query = 'INSERT INTO event (accountId, eventName, eventDescription, isReservation, reservationCount, isCostToAttend, costToAttend, isActive, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
     const params = [accountId, eventName, eventDescription, isReservation, reservationCount, isCostToAttend, costToAttend, isActive, 'API event Insert'];
 
@@ -60,6 +60,7 @@ router.post('/add-event/', authenticateToken, async (req, res) => {
     if (connection) connection.release();
   }
 });
+
 
 router.get('/get-event-list/:accountId', authenticateToken, async (req, res) => {
   let connection;
