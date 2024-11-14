@@ -11,16 +11,16 @@ test.describe.serial('Event Test Suite', () => {
     await page.getByRole('link', { name: 'Events' }).click();
     await page.getByRole('button', { name: ' Add' }).click();
     await page.getByLabel('Event Name').click();
-    await page.getByLabel('Event Name').fill('Fitness');
+    await page.getByLabel('Event Name').fill('Test Event');
     await page.getByLabel('Event Name').press('Tab');
-    await page.getByLabel('Event Description').fill('Get your sweat on!');
+    await page.getByLabel('Event Description').fill('Test Event Description');
     await page.getByRole('button', { name: 'Add Event' }).click();
 
 
     // Capture data to use in the next test
     sharedEventData = {
-      name: 'Fitness',
-      description: 'Get your sweat on!'
+      name: 'Test Event',
+      description: 'Test Event Description'
     };
 
     await page.getByRole('link', { name: ' Logout' }).click();
