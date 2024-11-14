@@ -177,7 +177,7 @@ export class AddEditDialogComponent implements OnInit {
     // Correctly parse selectedDate to avoid timezone issues
     const selectedDate = data?.selectedDate ? new Date(`${data.selectedDate}T00:00:00`) : new Date();
     
-    // console.log("Initialize form:", data);
+     console.log("Initialize form:", data);
 
     this.eventForm = this.fb.group({
       existingEventValue: [{ value: data?.existingEventValue || 'newEvent', disabled: !!data?.existingEventValue }, Validators.required],

@@ -1,10 +1,11 @@
 import { expect } from "@playwright/test";
 import { SharedData } from "./interfaces/ISharedData";
+import { SharedEventData } from "./interfaces/iSharedEventData";
 
 async function loginSuperUser(page) {
   await page.goto('http://localhost:4200/authentication');
   await page.getByLabel('Enter email address').click();
-  await page.getByLabel('Enter email address').fill('superuser@superuser.com');
+  await page.getByLabel('Enter email address').fill('jeff.vaccaro+superuser@gmail.com');
   await page.getByLabel('Enter your password').click();
   await page.getByLabel('Enter your password').fill('SuperUser1204');
   await page.getByRole('button', { name: 'Log In' }).click();
@@ -45,7 +46,7 @@ async function loginOwnerUser(page) {
 
 export async function validateUserInTable(page, sharedData: SharedData, tableName: string, userName: string) {
   // Navigate to the account list page
-  await page.goto(`http://localhost:4200/${tableName}`);
+  // await page.goto(`http://localhost:4200/${tableName}`);
 
   // Debug Render Time
   console.log('Page loaded, checking for table...');
@@ -120,7 +121,60 @@ export async function validateLocationsInTable(page, sharedData: SharedData, tab
   }
 }
 
+export async function validateEventInTable(page, sharedEventData: SharedEventData, tableName: string, eventName: string) {
+
+  // Debug Render Time
+  console.log('Page loaded, checking for table...');
+
+  // Wait for table to load with extended timeout and check visibility
+  await page.
+  waitForSelector('#eventTable', { timeout: 20000, state: 'visible' });
+  console.log('Table is visible, proceeding with validation...');
+
+  // Extract table rows
+  const rows = await page.$$eval('#eventTable tr', rows => {
+    return rows.map(row => {
+      const nameElement = row.querySelector('td[id^="name"]') as HTMLElement;
+      const descriptionElement = row.querySelector('td[id^="description"]') as HTMLElement;
 
 
+      const name = nameElement ? nameElement.innerText : null;
+      const description = descriptionElement ? descriptionElement.innerText : null;
 
-module.exports = { loginSuperUser, loginOwnerUser, validateUserInTable, validateLocationsInTable };
+
+      return { name, description};
+    });
+  });
+
+  console.log('Extracted rows:', rows);
+
+  // Validate newly added user data using shared data
+  const newEvent = rows.find(row => row.name === eventName);
+  console.log('New event data:', newEvent);
+
+  if (newEvent) {
+    expect(newEvent.description).toBe(sharedEventData.description);
+  } else {
+    throw new Error(`New account "${sharedEventData.name}" not found in the list.`);
+  }
+}
+
+export async function addEvent(page) {
+
+  await page.getByRole('link', { name: 'Events' }).click();
+  await page.waitForTimeout(1000); // 1 second wait    
+  await page.getByRole('button', { name: ' Add' }).click();
+  await page.waitForTimeout(1000); // 1 second wait    
+  await page.getByLabel('Event Name').click();
+  await page.waitForTimeout(1000); // 1 second wait    
+  await page.getByLabel('Event Name').fill('Fitness');
+  await page.waitForTimeout(1000); // 1 second wait    
+  await page.getByLabel('Event Name').press('Tab');
+  await page.waitForTimeout(1000); // 1 second wait    
+  await page.getByLabel('Event Description').fill('Get your sweat on!');
+  await page.waitForTimeout(1000); // 1 second wait    
+  await page.getByRole('button', { name: 'Add Event' }).click();
+
+}
+
+module.exports = { loginSuperUser, loginOwnerUser, validateUserInTable, validateLocationsInTable, validateEventInTable, addEvent };
