@@ -46,7 +46,7 @@
                     <mat-form-field appearance="fill">
                         <i class="ri-list-check"></i>
                         <mat-label>Role</mat-label>
-                        <mat-select formControlName="roleControl" multiple>
+                        <mat-select formControlName="roleControl" multiple (selectionChange)="onRoleChange($event)">
                             <mat-option *ngFor="let role of roleArr; trackBy: trackByRoleId" [value]="role.roleId">
                               {{ role.roleName }}
                             </mat-option>

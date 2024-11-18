@@ -80,6 +80,12 @@ export class UserService {
     return this.http.get<any>(url, { params });
   }
 
+  getSuperUserAllUsers(): Observable<any> {
+    const url = `${this.apiUrl}/get-all-users`;
+    return this.http.get<any>(url);
+  }
+  
+
   getUsersByStatus(accountId: number, status: string): Observable<any> {
     const url = `${this.apiUrl}/get-filtered-users`;
     const params = new HttpParams()
@@ -97,8 +103,13 @@ export class UserService {
     return this.http.put(`${this.apiUrl}/update-user-password/${accountCode}/${userId}/${accountId}`, { userData });
   }
 
-
   addUser(formData: FormData) {
     return this.http.post(`${this.apiUrl}/add-user`, formData);
+  }
+
+  sendUserResetLink(userId: string, accountcode: string): Observable<any> {
+    const url = `${this.apiUrl}/send-user-reset-link`;
+    const params = new HttpParams().set('userId', userId.toString()).set('accountCode', accountcode.toString());
+    return this.http.get<any>(url, { params });
   }
 }

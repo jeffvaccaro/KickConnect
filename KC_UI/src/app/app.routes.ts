@@ -36,7 +36,12 @@ import { EditProfileComponent } from './components/custom/profiles/edit-profile/
 import { AccountListComponent } from './components/custom/accounts/account-list/account-list.component';
 import { AddNewAccountComponent } from './components/custom/accounts/add-new-account/add-new-account.component';
 
+import { AddNewSkillComponent } from './components/custom/skills/add-new-skill/add-new-skill.component';
+import { EditSkillComponent } from './components/custom/skills/edit-skill/edit-skill.component';
+import { SkillListComponent } from './components/custom/skills/skill-list/skill-list.component';
+
 import { CreateHtmlTemplateComponent } from './components/html-generator/create-html-template/create-html-template.component';
+import { SkillsAutocompleteComponent } from './components/custom/user/skills-autocomplete/skills-autocomplete.component';
 
 
 export const routes: Routes = [
@@ -101,10 +106,16 @@ export const routes: Routes = [
   { path: 'app-add-edit-dialog', component: AddEditDialogComponent, canActivate: [AuthGuard] },
   { path: 'app-profile-list', component: ProfileListComponent, canActivate: [AuthGuard] },
   { path: 'app-add-new-profile', component: AddNewProfileComponent, canActivate: [AuthGuard] },
-  { path: 'app-edit-profile/:profileId', component: EditProfileComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-profile/:userId', component: EditProfileComponent, canActivate: [AuthGuard] },
   { path: 'app-add-new-account', component: AddNewAccountComponent, canActivate: [AuthGuard] },
   { path: 'app-account-list', component: AccountListComponent, canActivate: [AuthGuard] },
+
+  { path: 'app-add-new-skill', component: AddNewSkillComponent, canActivate: [AuthGuard]},
+  { path: 'app-edit-skill/:skillId', component: EditSkillComponent, canActivate: [AuthGuard]},
+  { path: 'app-skill-list', component: SkillListComponent, canActivate: [AuthGuard]},
   
+{path: 'app-skills-autocomplete', component: SkillsAutocompleteComponent},
+
   { path: 'app-create-html-template', component: CreateHtmlTemplateComponent },
   
   { path: 'error', component: InternalErrorComponent },

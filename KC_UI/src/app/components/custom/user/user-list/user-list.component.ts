@@ -23,8 +23,9 @@ export class UserListComponent implements OnInit, AfterViewInit {
   private userArr: any[] = [];
   accountCode: string;
   accountId: number;
-  displayedColumns: string[] = ['name','roleName','phone','action'];
+  displayedColumns: string[] = ['name', 'roleName','phone','action'];
   dataSource = new MatTableDataSource(this.userArr);
+  roleName: string[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -46,7 +47,18 @@ export class UserListComponent implements OnInit, AfterViewInit {
       this.cdr.detectChanges;
     })
 
-    this.getUsers(this.accountCode);
+    this.userService.getRoleName().subscribe(roleName => {
+      this.roleName.push(roleName);
+      this.cdr.detectChanges();
+    });  
+
+    if(this.hasRoles(['Super Admin'])){
+      this.displayedColumns.splice(1, 0, 'accountName'); // Add 'accountName' after 'name'
+      this.getSuperUserAllUsers();
+    }else{
+      this.getUsers(this.accountCode);
+    }
+    
   }
 
   ngAfterViewInit() {
@@ -56,8 +68,22 @@ export class UserListComponent implements OnInit, AfterViewInit {
   active = true;
   inactive = true;
 
+  getSuperUserAllUsers(): void {
+    this.userService.getSuperUserAllUsers().subscribe({
+      next: response => {
+        this.userArr = response;
+        this.dataSource.data = this.userArr; // Update the dataSource here
+        console.log(this.userArr);
+      },
+      error: error => {
+        console.error('Error fetching users:', error);
+        // Handle error here (e.g., show error message)
+      }
+    });    
+  }
+
   getUsers(accountCode: string): void {
-    // console.log('AccountCode:',accountCode);
+    //console.log('AccountCode:',accountCode);
     this.userService.getAllUsers(accountCode).subscribe({
       next: response => {
         this.userArr = response;
@@ -110,7 +136,35 @@ export class UserListComponent implements OnInit, AfterViewInit {
   }
   filterLocations(){
     this.router.navigate(['/app-user-list'], { queryParams: { status: 'InActive' } });
+  }
 
+  hasRoles(roles: string[]): boolean {
+    return roles.some(role => this.roleName.includes(role));
+  }
+
+  viewProfile(userId: number){
+    this.router.navigate(['/app-edit-profile',userId]);
+  }
+
+  resetPassword(userId: number, accountCode: string) {
+    if (!userId || !accountCode) {
+      console.error('Invalid parameters:', { userId, accountCode });
+      return;
+    }
+  
+    //console.log('Sending reset link for user:', userId, 'with account code:', accountCode);
+  
+    this.userService.sendUserResetLink(userId.toString(), accountCode).subscribe({
+      next: (response) => {
+        // console.log('Reset link sent successfully:', response);
+      },
+      error: (error) => {
+        console.error('Error sending reset link:', error);
+      },
+      complete: () => {
+        console.log('Request completed.');
+      }
+    });
   }
 }
 

@@ -14,6 +14,7 @@ const eventRouter = require('./event.js');
 const zipcodeRouter = require('./zipcode.cjs');
 const scheduleRouter = require('./schedule.js');
 const accountRouter = require('./account.js');
+const skillRouter = require('./skill.js');
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
@@ -60,7 +61,8 @@ const routers = [
   { path: '/event', router: eventRouter },
   { path: '/common', router: zipcodeRouter },
   { path: '/schedule', router: scheduleRouter },
-  { path: '/account', router: accountRouter }
+  { path: '/account', router: accountRouter },
+  { path: '/skill', router:skillRouter }
 ];
 
 routers.forEach(({ path, router }) => {

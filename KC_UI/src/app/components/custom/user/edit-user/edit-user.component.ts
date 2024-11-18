@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -15,6 +15,9 @@ import { CommonService } from '../../../../services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
 
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ProfileModalComponent } from '../profile-modal/profile-modal.component';
+
 interface Role {
   roleId: number;
   roleName: string;
@@ -27,7 +30,7 @@ interface Role {
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatDialogModule
   ],
   templateUrl: './edit-user.component.html',
   styleUrls: ['./edit-user.component.scss']
@@ -35,10 +38,15 @@ interface Role {
 export class EditUserComponent implements OnInit {
   form: FormGroup;
   userId: number;
-  roleArr: Role[] = []; // Define the type of roleArr
+  roleArr: Role[] = []; 
+  skillsArr: any[] = []; 
+  skillsControl: FormControl;
+  
+  isInstructorRoleSelected: boolean = true;
 
   constructor(private fb: FormBuilder, private userService: UserService, private roleService: RoleService, 
-              private commonService: CommonService, private route: ActivatedRoute, private router: Router) {}
+              private commonService: CommonService, private route: ActivatedRoute, private router: Router,
+              private dialog: MatDialog) {}
 
   ngOnInit(): void {
     // Get the userId from the route parameters
@@ -57,11 +65,15 @@ export class EditUserComponent implements OnInit {
       cityControl: [''],
       stateControl: [''],
       zipControl: [''],
-      isActiveControl: [true]
+      isActiveControl: [true],
+      profileDescriptionControl: [''], 
+      profileURLControl: [''], 
+      profileSkillsControl: this.skillsControl
     });
 
     this.form.get('cityControl')!.disable();
     this.form.get('stateControl')!.disable();
+    
   }
 
   loadUserData(userId: number): void {
@@ -92,9 +104,10 @@ export class EditUserComponent implements OnInit {
         this.roleService.getRoles().subscribe({
           next: roleResponse => {
             this.roleArr = roleResponse;
+            console.log(this.roleArr);
             // Ensure the roleControl value is still correct after loading roles
             this.form.get('roleControl')!.setValue(rolesArray);
-            console.log('userResponse.roles', rolesArray);
+            //console.log('userResponse.roles', rolesArray);
           },
           error: error => {
             console.error('Error fetching role data:', error);
@@ -106,10 +119,7 @@ export class EditUserComponent implements OnInit {
         // Handle error here (e.g., show error message)
       }
     });
-  }
-  
-  
-  
+  } 
   
   onSubmit(event: Event): void {
     event.preventDefault(); // Prevent the default form submission
@@ -129,7 +139,10 @@ export class EditUserComponent implements OnInit {
       email: this.form.value.emailControl,
       isActive: this.form.value.isActiveControl ? 0 : 1,
       roleId: this.form.value.roleControl,
-      resetPassword: false
+      resetPassword: false,
+      profileDescription: this.form.value.profileDescriptionControl,
+      profileURL: this.form.value.profileURLControl,
+      profileSkills: this.form.value.profileSkillsControl
     };
   
     const formData: FormData = new FormData();
@@ -200,4 +213,56 @@ export class EditUserComponent implements OnInit {
     };
     reader.readAsDataURL(file);
   }
+
+  onRoleChange(event: any): void {
+    console.log('onRoleChange', event);
+    console.log('onRoleChange', this.roleArr);
+
+    let isInstructor = false;
+
+    // Check if event.value is an array
+    if (Array.isArray(event.value)) {
+        // Iterate through each selected roleId
+        event.value.forEach((roleId: number) => {
+            const selectedRole = this.roleArr.find(x => x.roleId == roleId);
+            if (selectedRole && selectedRole.roleName === 'Instructor') {
+                isInstructor = true;
+            }
+        });
+    } else {
+        // Handle single roleId
+        const selectedRole = this.roleArr.find(x => x.roleId == event.value);
+        if (selectedRole && selectedRole.roleName === 'Instructor') {
+            isInstructor = true;
+        }
+    }
+
+    if (isInstructor) {
+        console.log('Passed: Opening Instructor Modal');
+        this.openInstructorModal();
+    } else {
+        console.log('No Instructor role found');
+    }
+  }
+
+
+ 
+  openInstructorModal(): void {
+    const dialogRef = this.dialog.open(ProfileModalComponent, {
+      width: '800px',
+      data: {}
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.form.patchValue({
+          profileDescriptionControl: result.profileDescription,
+          profileURLControl: result.profileURL,
+          skillsControl: result.skills
+        });
+      }
+    });
+  }
+  
+  
 }

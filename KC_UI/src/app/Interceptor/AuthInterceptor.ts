@@ -26,7 +26,7 @@ export class AuthInterceptor implements HttpInterceptor {
         if (error.status === 401) {
           // Avoid looping if already on authentication route
           if (this.router.url !== '/authentication/register') {
-            this.snackBar.open('Session expired. Please log in again.', 'OK', { duration: 3000 });
+            this.snackBar.open('Credentials Incorrect or Session Expired. Please log in again.', 'OK', { duration: 3000 });
             setTimeout(() => {
               this.router.navigate(['/authentication']);
             }, 3000); // Delay navigation to allow snackBar display

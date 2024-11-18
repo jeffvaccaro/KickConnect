@@ -9,6 +9,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../../../services/user.service';
 
 @Component({
   selector: 'app-account-list',
@@ -19,11 +20,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class AccountListComponent implements OnInit, AfterViewInit {
   private accountArr: any[] = [];
-  displayedColumns: string[] = ['accountName', 'accountPhone', 'accountEmail', 'accountAddress', 'accountCity', 'accountState', 'accountZip'];
+  //displayedColumns: string[] = ['accountName', 'accountPhone', 'accountEmail', 'accountAddress', 'accountCity', 'accountState', 'accountZip'];
+  displayedColumns: string[] = ['accountName', 'accountPhone', 'accountEmail', 'accountAddress'];
   dataSource = new MatTableDataSource(this.accountArr);
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
-  constructor(private accountService: AccountService, private router: Router, private route: ActivatedRoute){
+  constructor(private accountService: AccountService, private userService: UserService, private router: Router, private route: ActivatedRoute){
 
   }
   ngOnInit(): void {
@@ -82,6 +84,11 @@ export class AccountListComponent implements OnInit, AfterViewInit {
   resetDataSource(): void {
     //console.log('this.accountArr',this.accountArr);
     this.dataSource.data = this.accountArr;
+  }
+
+  resetPassword(userId: number, accountCode: string){
+    console.log(userId, accountCode);
+    //this.userService.sendUserResetLink(userId.ToString(), accountCode);
   }
   
 }

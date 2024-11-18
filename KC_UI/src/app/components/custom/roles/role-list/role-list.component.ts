@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -30,7 +30,7 @@ export class RoleListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private roleService: RoleService, private snackBarService: SnackbarService, private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
+  constructor(private roleService: RoleService, private snackBarService: SnackbarService, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
 

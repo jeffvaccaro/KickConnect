@@ -1,0 +1,67 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "API Start",
+      "type": "shell",
+      "command": "cd C:\\Users\\Jeff\\source\\KickConnect; cd kc_api\\api; node server",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new"
+      },
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "UI START",
+      "type": "shell",
+      "command": "cd C:\\Users\\Jeff\\source\\KickConnect; cd kc_ui; ng serve",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new"
+      },
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "PlayWright CODEGEN",
+      "type": "shell",
+      "command": "npx playwright codegen",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "PlayWright TEST w/Log",
+      "type": "shell",
+      "command": "set PWDEBUG=1; npx playwright test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "BLOG Start",
+      "type": "shell",
+      "command": "bundle exec jekyll serve",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -111,7 +111,7 @@ router.put('/update-role', authenticateToken, async (req, res) => {
       const [userResult] = await connection.query(roleUpdateQuery, [roleName, roleDescription, roleId]);
       res.status(200).json({ message: 'Role updated successfully' });
     } catch (err) {
-      res.status(500).json({ error: 'rror executing role query' });
+      res.status(500).json({ error: 'Error executing role query' });
     }
   } catch (error) {
     res.status(500).json({ error: 'Error updating Role' });

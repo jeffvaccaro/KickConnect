@@ -71,7 +71,7 @@
                                     Accounts
                                 </a>
                             </li>
-                            <li class="sidemenu-item" *ngIf="hasRoles(['Owner', 'Admin'])" #option>
+                            <li class="sidemenu-item" *ngIf="hasRoles(['Super Admin', 'Owner', 'Admin'])" #option>
                                 <a routerLink="/app-user-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">                                
                                     Users
                                 </a>
@@ -82,11 +82,6 @@
                                 </a>                                
                             </li>
                             <li class="sidemenu-item" *ngIf="hasRoles(['Owner', 'Admin'])" #option>
-                                <a routerLink="/app-role-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
-                                    Roles
-                                </a>    
-                            </li>
-                            <li class="sidemenu-item" *ngIf="hasRoles(['Owner', 'Admin'])" #option>
                                 <a routerLink="/app-event-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
                                     Events
                                 </a>                                    
@@ -95,6 +90,16 @@
                                 <a routerLink="/app-scheduler" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
                                     Scheduler
                                 </a>                                    
+                            </li>
+                            <li class="sidemenu-item" *ngIf="hasRoles(['Owner', 'Admin'])" #option>
+                                <a routerLink="/app-role-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Roles
+                                </a>    
+                            </li>
+                            <li class="sidemenu-item" *ngIf="hasRoles(['Owner', 'Admin'])" #option>
+                                <a routerLink="/app-skill-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Skills
+                                </a>    
                             </li>
                             <li class="sidemenu-item" *ngIf="hasRoles(['Owner', 'Admin'])" #option>
                                 <a routerLink="/app-profile-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">

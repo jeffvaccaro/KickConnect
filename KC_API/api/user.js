@@ -16,6 +16,32 @@ const authenticateToken = require('./middleware/authenticateToken.cjs');
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
+router.get('/get-all-users', authenticateToken, async (req, res) => {
+  let connection;
+  try {
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+    connection = await Promise.race([connectToDatabase(), timeout]);
+
+    const query = `
+      SELECT a.accountName, a.accountCode, u.*, r.roleName AS roleNames
+      FROM admin.account a
+      INNER JOIN admin.user u ON a.accountId = u.accountId
+      INNER JOIN admin.userroles ur ON u.userId = ur.userId
+      INNER JOIN admin.role r ON ur.roleId = r.roleId`;
+    const [results] = await connection.query(query);
+    res.json(results);
+  } catch (err) {
+    console.error('Error executing query:', err);
+    res.status(500).json({ error: 'Error executing query' });
+  } finally {
+    if (connection) {
+      connection.release();
+    } else {
+      console.warn('get-all-users: Connection not established.');
+    }
+  }
+});
+
 router.get('/get-users-by-account-code', authenticateToken, async (req, res) => {
   const accountCode = req.query.accountcode; // Get the account code from the query parameters
   let connection;
@@ -24,7 +50,7 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
     connection = await Promise.race([connectToDatabase(), timeout]);
 
     const query = `
-      SELECT user.*, role.roleName
+      SELECT a.accountName, u.*, r.roleName  AS roleNames
       FROM admin.account a
       INNER JOIN admin.user u ON a.accountId = u.accountId
       INNER JOIN admin.userroles ur ON u.userId = ur.userId
@@ -65,8 +91,10 @@ router.get('/get-users', authenticateToken, async (req, res) => {
   	    SELECT 
           u.*, 
           GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, 
-          GROUP_CONCAT(r.roleId SEPARATOR ',') as roleId
+          GROUP_CONCAT(r.roleId SEPARATOR ',') as roleId,
+          a.accountCode
         FROM admin.user u
+        JOIN admin.account a ON u.accountId = a.accountId
         JOIN admin.userroles ur ON u.userId = ur.userId
         JOIN admin.role r ON ur.roleId = r.roleId
         WHERE u.accountId = ?
@@ -103,10 +131,15 @@ router.get('/get-user-by-id', authenticateToken, async (req, res) => {
     SELECT 
       u.*, 
       GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, 
-      GROUP_CONCAT(r.roleId SEPARATOR ',') as roleId
+      GROUP_CONCAT(r.roleId SEPARATOR ',') as roleId,
+      MAX(p.profileId) AS profileId, 
+      MAX(p.description) AS profileDescription, 
+      MAX(p.skills) as profileSkills, 
+      MAX(p.url) as profileURL
     FROM admin.user u
     JOIN admin.userroles ur ON u.userId = ur.userId
     JOIN admin.role r ON ur.roleId = r.roleId
+    LEFT JOIN admin.profile p on u.userId = p.userId
     WHERE u.userId = ?
     AND ur.roleId != 1 
     GROUP BY u.userId
@@ -125,6 +158,63 @@ router.get('/get-user-by-id', authenticateToken, async (req, res) => {
     }
   }
 });
+
+
+
+router.get('/send-user-reset-link', authenticateToken, async (req, res) => {
+  // console.log('/send-user-reset-link', req.query);
+  let connection;
+  try {
+    console.log('express method called');
+    const { userId, accountCode } = req.query;
+
+    // console.log('userId', userId);
+    // console.log('accountcode', accountCode);
+
+
+    if (!userId || !accountCode) {
+      return res.status(400).json({ error: 'Missing required parameters' });
+    }
+
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+    
+    console.log('Attempting to establish database connection...');
+    connection = await Promise.race([connectToDatabase(), timeout]);
+    console.log('Database connection established:', connection);
+    
+    if (!connection) {
+      return res.status(500).json({ error: 'Failed to establish a connection' });
+    }
+
+    const query = `
+    SELECT u.email, u.name, u.userId, u.accountId
+    FROM admin.user u
+    WHERE u.userId = ?`;
+    
+    console.log('Executing query:', query, 'with parameters:', [userId]);
+
+    const [userResults] = await connection.query(query, [userId]);
+
+    if (userResults.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    await sendEmail(userResults[0].email, userResults[0].name, userResults[0].userId, userResults[0].accountId, accountCode);
+    res.status(200).json({ message: 'Reset link sent successfully' });
+
+  } catch (err) {
+    console.error('Error executing query:', err);
+    res.status(500).json({ error: 'Error executing query' });
+  } finally {
+    if (connection) {
+      connection.release();
+    } else {
+      console.warn('send-user-reset-link: Connection not established.');
+    }
+  }
+});
+
+
 
 router.get('/get-filtered-users', authenticateToken, async (req, res) => {
   let { accountId, status } = req.query;
@@ -229,8 +319,8 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
     // Send email only after all roles are inserted
     await sendEmail(email, name, userId, accountId, accountcode);
 
-    // Insert into profile table if roleId is Instructor (4)
-    if (roleId.includes(4)) {
+    // Insert into profile table if roleId is Instructor (5)
+    if (roleId.includes(5)) {
       const profileQuery = `INSERT INTO admin.profile (userId, description, skills, URL) VALUES (?, ?, ?, ?)`;
       await connection.query(profileQuery, [userId, '', '', '']);
       console.log('Profile created for Instructor user:', userId);
@@ -249,7 +339,6 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
     }
   }
 });
-
 
 router.put('/update-user/:userId', authenticateToken, upload.single('photo'), async (req, res) => {
   const { userId } = req.params; // Use req.params instead of req.query
