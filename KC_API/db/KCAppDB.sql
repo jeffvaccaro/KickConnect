@@ -1,7 +1,9 @@
 -- EXAMPLE 
 -- cd  c:\Program Files\MySQL\MySQL Server 8.0\bin
 -- mysqldump -u root -p --databases admin common > c:\\KCAppDB.sql
-
+--
+-- Date Generated: 11/22/2024
+--
 -- MySQL dump 10.13  Distrib 8.0.39, for Win64 (x86_64)
 --
 -- Host: localhost    Database: admin
@@ -156,7 +158,7 @@ CREATE TABLE `profile` (
   PRIMARY KEY (`profileId`),
   KEY `userFK_idx` (`userId`),
   CONSTRAINT `userFK` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -165,6 +167,7 @@ CREATE TABLE `profile` (
 
 LOCK TABLES `profile` WRITE;
 /*!40000 ALTER TABLE `profile` DISABLE KEYS */;
+INSERT INTO `profile` VALUES (1,4,'','',''),(2,4,'','','');
 /*!40000 ALTER TABLE `profile` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -264,6 +267,31 @@ INSERT INTO `schedulemain` VALUES (1,2,1,1,'17:30:00','18:00:00','2024-11-11 00:
 UNLOCK TABLES;
 
 --
+-- Table structure for table `skill`
+--
+
+DROP TABLE IF EXISTS `skill`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `skill` (
+  `skillId` int NOT NULL AUTO_INCREMENT,
+  `skillName` varchar(250) NOT NULL,
+  `skillDescription` varchar(1000) NOT NULL,
+  PRIMARY KEY (`skillId`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `skill`
+--
+
+LOCK TABLES `skill` WRITE;
+/*!40000 ALTER TABLE `skill` DISABLE KEYS */;
+INSERT INTO `skill` VALUES (1,'KMW Instructor Certification','Krav Maga Worldwide (KMW) Instructor Certification'),(2,'AKMF Instructor Certification','American Krav Maga Federation (AKMF) Instructor Certification'),(3,'KMIC Certification','Tactica Krav Maga Institute (KMIC) Certification'),(4,'UFAF Krav Maga Instructor Certification','United Fighting Arts Federation (UFAF) Krav Maga Instructor Certification'),(5,'IKMF','International Krav Maga Federation (IKMF) Instructor Certification');
+/*!40000 ALTER TABLE `skill` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -292,7 +320,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`userId`),
   KEY `accountFK_idx` (`accountId`),
   CONSTRAINT `accountFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -301,7 +329,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'SuperUserAccount','jeff.vaccaro+superuser@gmail.com','7208191204','','2352 S. Winona Ct','Denver','CO',80219,'$2a$10$D7Ft.ZAJRvZbM6m1ZIw4HOX7hQF9qQhwPaaBp1q.KtDpYo2/KJEdO',NULL,1,1,'2024-10-30 04:17:15','API Register Insert of OWNER','2024-10-30 04:17:15',NULL),(2,2,'Owner Account','jeff.vaccaro+owner@gmail.com','7205551212','','Owner Address','New York','NY',10001,'$2a$10$BuzdW6r6S/M8UaUlpi5Pgu8dcHhfXsYW4NiUgW8rf5ErjnNRQE1Fq',NULL,1,1,'2024-11-14 07:20:25','API Register Insert of OWNER','2024-11-14 07:20:25',NULL),(3,2,'Admin User','jeff.vaccaro+admin@gmail.com','7205551212',NULL,'Admin User Address','New York','NY',10001,'$2a$10$sNg3PaC.dOsl0xDx6YWDU.w4dwMM3Z8xBSeko/FNG6Ak4IYaAp5R2',NULL,1,1,'2024-11-14 07:21:33','API User Insert','2024-11-14 07:21:33',NULL);
+INSERT INTO `user` VALUES (1,1,'SuperUserAccount','jeff.vaccaro+superuser@gmail.com','7208191204','','2352 S. Winona Ct','Denver','CO',80219,'$2a$10$D7Ft.ZAJRvZbM6m1ZIw4HOX7hQF9qQhwPaaBp1q.KtDpYo2/KJEdO',NULL,1,1,'2024-10-30 04:17:15','API Register Insert of OWNER','2024-10-30 04:17:15',NULL),(2,2,'Owner Account','jeff.vaccaro+owner@gmail.com','7205551212','','Owner Address','New York','NY',10001,'$2a$10$33Xt0DIlOew6juXclzYcSuuMjMcvGgSHquyvWYPrR3CqYVGZjje6O',NULL,1,1,'2024-11-14 07:20:25','API Register Insert of OWNER','2024-11-17 12:43:46','API Password Update'),(3,2,'Admin User','jeff.vaccaro+admin@gmail.com','7205551212',NULL,'Admin User Address','New York','NY',10001,'$2a$10$sNg3PaC.dOsl0xDx6YWDU.w4dwMM3Z8xBSeko/FNG6Ak4IYaAp5R2',NULL,1,1,'2024-11-14 07:21:33','API User Insert','2024-11-14 07:21:33',NULL),(4,2,'Coach #1','jeff.vaccaro+instructor@gmail.com','7205551212',NULL,'Instructor Address','New York','NY',10001,'$2a$10$zYRg5cnqpumtF83VeQox.O.XW7eLkGhoj9QRQDnk4wg2Cu9BQkkCy',NULL,1,0,'2024-11-17 13:14:32','API User Insert','2024-11-17 19:21:55','API User Update');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -328,7 +356,7 @@ CREATE TABLE `userroles` (
 
 LOCK TABLES `userroles` WRITE;
 /*!40000 ALTER TABLE `userroles` DISABLE KEYS */;
-INSERT INTO `userroles` VALUES (1,1),(2,2),(3,3);
+INSERT INTO `userroles` VALUES (1,1),(2,2),(3,3),(4,4),(4,5);
 /*!40000 ALTER TABLE `userroles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -451,4 +479,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-14  7:41:03
+-- Dump completed on 2024-11-22 18:24:19
