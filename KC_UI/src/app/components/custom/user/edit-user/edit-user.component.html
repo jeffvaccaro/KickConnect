@@ -20,7 +20,7 @@
                     <div *ngIf="imageSrc" class="image-preview">
                         <img [src]="imageSrc" alt="Image Preview" style="max-width: 200px; max-height: 200px;">
                     </div>
-                    <img *ngIf="!imageSrc" src="img/user/user15.jpg" class="rounded-circle image-preview" width="110" alt="user">
+                    <img *ngIf="!imageSrc" src="public/img/user/user15.jpg" class="rounded-circle image-preview" width="110" alt="user">
                     <div class="kickConnect-form-group" style="padding-left:15px;">
                         
                         <input type="file" class="input-control" (change)="onFileSelected($event)">
@@ -29,7 +29,7 @@
             </div>      
         </div>
         <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="col-lg-4 col-md-4 col-sm-4">
                 <div class="kickConnect-form-group">
                     <label class="d-block mb-12 fw-semibold gray-color">Name</label>
                     <mat-form-field appearance="fill">
@@ -54,9 +54,18 @@
                     </mat-form-field>
                 </div>
             </div>
+            <div class="col-lg-2 col-md-2 col-sm-2" >
+                <div class="kickConnect-form-group" *ngIf="isInstructorCheck()">
+                    <label class="d-block mb-12 fw-semibold gray-color">Update Profile</label>
+                    <button mat-flat-button class="kickConnect fw-semibold" type="button" (click)="openInstructorModal()">
+                        <mat-icon>perm_identity</mat-icon>Profile
+                      </button>
+                      
+                </div>
+            </div>
         </div>
         <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="col-lg-4 col-md-4 col-sm-4">
                 <div class="kickConnect-form-group">
                     <label class="d-block mb-12 fw-semibold gray-color">Email Address <span>*</span></label>
                     <mat-form-field appearance="fill">
@@ -86,7 +95,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="col-lg-4 col-md-4 col-sm-4">
                 <div class="kickConnect-form-group">
                     <label class="d-block mb-12 fw-semibold gray-color">Address</label>
                     <mat-form-field appearance="fill">

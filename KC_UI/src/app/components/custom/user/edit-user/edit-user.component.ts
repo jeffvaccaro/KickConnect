@@ -17,6 +17,7 @@ import { catchError, of, tap } from 'rxjs';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProfileModalComponent } from '../profile-modal/profile-modal.component';
+import { RolesEnum } from '../../../../enums/roles';
 
 interface Role {
   roleId: number;
@@ -38,6 +39,7 @@ interface Role {
 export class EditUserComponent implements OnInit {
   form: FormGroup;
   userId: number;
+  userRolesArr: any[] = [];
   roleArr: Role[] = []; 
   skillsArr: any[] = []; 
   skillsControl: FormControl;
@@ -79,7 +81,7 @@ export class EditUserComponent implements OnInit {
   loadUserData(userId: number): void {
     this.userService.getUser(userId).subscribe({
       next: userResponse => {
-        console.log('user', userResponse);
+        //console.log('user', userResponse);
         this.form.patchValue({
           nameControl: userResponse.name,
           emailControl: userResponse.email,
@@ -93,20 +95,20 @@ export class EditUserComponent implements OnInit {
   
         // Set the imageSrc to the photoURL
         this.imageSrc = userResponse.photoURL;
-  
+        // console.log('userResponse:', userResponse.roleId);
         // Convert roleId string to an array
-        const rolesArray = userResponse.roleId.split(',').map(Number);
+        this.userRolesArr = userResponse.roleId.split(',').map(Number);
   
         // Patch the roleControl with the user's roles
-        this.form.get('roleControl')!.setValue(rolesArray);
+        this.form.get('roleControl')!.setValue(this.userRolesArr);
   
         // Load roles after user data is patched
         this.roleService.getRoles().subscribe({
           next: roleResponse => {
             this.roleArr = roleResponse;
-            console.log(this.roleArr);
+            //console.log(this.roleArr);
             // Ensure the roleControl value is still correct after loading roles
-            this.form.get('roleControl')!.setValue(rolesArray);
+            this.form.get('roleControl')!.setValue(this.userRolesArr);
             //console.log('userResponse.roles', rolesArray);
           },
           error: error => {
@@ -214,9 +216,14 @@ export class EditUserComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
+  isInstructorCheck(){
+  // console.log(this.userRolesArr.includes(RolesEnum.Instructor));
+   return this.userRolesArr.includes(RolesEnum.Instructor);
+  }
+
   onRoleChange(event: any): void {
-    console.log('onRoleChange', event);
-    console.log('onRoleChange', this.roleArr);
+    // console.log('onRoleChange', event);
+    // console.log('onRoleChange', this.roleArr);
 
     let isInstructor = false;
 
@@ -225,20 +232,20 @@ export class EditUserComponent implements OnInit {
         // Iterate through each selected roleId
         event.value.forEach((roleId: number) => {
             const selectedRole = this.roleArr.find(x => x.roleId == roleId);
-            if (selectedRole && selectedRole.roleName === 'Instructor') {
+            if (selectedRole && selectedRole.roleId === RolesEnum.Instructor) {
                 isInstructor = true;
             }
         });
     } else {
         // Handle single roleId
         const selectedRole = this.roleArr.find(x => x.roleId == event.value);
-        if (selectedRole && selectedRole.roleName === 'Instructor') {
+        if (selectedRole && selectedRole.roleId === RolesEnum.Instructor) {
             isInstructor = true;
         }
     }
 
     if (isInstructor) {
-        console.log('Passed: Opening Instructor Modal');
+        //console.log('Passed: Opening Instructor Modal');
         this.openInstructorModal();
     } else {
         console.log('No Instructor role found');

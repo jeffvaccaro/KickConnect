@@ -130,8 +130,8 @@ router.get('/get-user-by-id', authenticateToken, async (req, res) => {
     const query = `
     SELECT 
       u.*, 
-      GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, 
-      GROUP_CONCAT(r.roleId SEPARATOR ',') as roleId,
+      GROUP_CONCAT(DISTINCT r.roleName SEPARATOR ', ') AS roleNames, 
+      GROUP_CONCAT(DISTINCT r.roleId SEPARATOR ',') as roleId,
       MAX(p.profileId) AS profileId, 
       MAX(p.description) AS profileDescription, 
       MAX(p.skills) as profileSkills, 
