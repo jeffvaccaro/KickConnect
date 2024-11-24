@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { SkillsAutocompleteComponent } from '../skills-autocomplete/skills-autocomplete.component';
+import { UserService } from '../../../../services/user.service';
 
 @Component({
   selector: 'app-profile-modal',
@@ -30,13 +31,19 @@ export class ProfileModalComponent {
   constructor(
     public dialogRef: MatDialogRef<ProfileModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder
+    private fb: FormBuilder, private userService : UserService
   ) {
+    console.log(this.data.userId);
     this.profileForm = this.fb.group({
       profileDescription: ['', Validators.required],
       profileURL: ['', Validators.required],
       profileSkills: ['']
     });
+  }
+
+  onSkillsChanged(skills: string[]): void { 
+    console.log(skills);
+    this.profileForm.patchValue({ skills });
   }
 
   onCancel(): void {
@@ -45,6 +52,8 @@ export class ProfileModalComponent {
 
   onSave(): void {
     if (this.profileForm.valid) {
+      console.log('userService call');
+      this.userService.updateProfile(this.data.userId,this.profileForm.value)
       this.dialogRef.close(this.profileForm.value);
     }
   }

@@ -131,7 +131,7 @@ button {
         top: 50%;
     }
     &:hover {
-        background-color: var(--aareRiverColor);
+        //background-color: var(--aareRiverColor);
         color: var(--whiteColor);
     }
 }
@@ -1172,7 +1172,7 @@ button {
                     }
                     &:hover {
                         color: var(--whiteColor);
-                        background-color: var(--aareRiverColor);
+                        //background-color: var(--aareRiverColor);
                     }
                 }
             }
@@ -1446,7 +1446,7 @@ button {
                 }
                 &:hover {
                     color: var(--whiteColor);
-                    background-color: var(--aareRiverColor);
+                    //background-color: var(--aareRiverColor);
                 }
             }
         }
@@ -1836,142 +1836,145 @@ quill-editor {
 
 // Create Dialog Box
 .create-dialog-box {
+    max-height: 600px;  /* Adjust this value as needed */
+    overflow-y: auto;   /* Enable vertical scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    position: relative; /* Ensure position relative for sticky positioning */
+    max-width: 100%;    /* Ensure it doesn't exceed the viewport width */
+  
     .title {
-        background: #F7F8F7;
-        padding: 25px;
-
-        .close-btn {
-            transition: var(--transition);
-            font-size: 18px !important;
-            cursor: pointer;
-            line-height: 1;
-
-            &:hover {
-                color: var(--heraBlueColor);
-            }
+      background: #F7F8F7;
+      padding: 25px;
+  
+      .close-btn {
+        transition: var(--transition);
+        font-size: 18px !important;
+        cursor: pointer;
+        line-height: 1;
+  
+        &:hover {
+          color: var(--heraBlueColor);
         }
+      }
     }
+  
     form {
-        padding: 25px;
-
-        .form-group {
-            margin-bottom: 25px;
-
-            label {
-                color: var(--blackColor);
-                margin-bottom: 10px;
-            }
-            .input-control {
-                outline: 0;
-                width: 100%;
-                height: 55px;
-                display: block;
-                box-shadow: unset;
-                border-radius: 10px;
-                color: var(--blackColor);
-                font-size: var(--fontSize);
-                border: 1px solid #B1B5C3;
-                transition: var(--transition);
-                padding: {
-                    left: 20px;
-                    right: 20px;
-                };
-                &::placeholder {
-                    color: #A9A9C8;
-                    transition: var(--transition);
-                }
-                &:focus {
-                    border-color: var(--heraBlueColor);
-    
-                    &::placeholder {
-                        color: transparent;
-                    }
-                }
-                &[type="file"] {
-                    line-height: 55px;   
-                }
-            }
-            .input-folder-name {
-                outline: 0;
-                width: 100%;
-                height: 55px;
-                display: block;
-                box-shadow: unset;
-                border-radius: 10px;
-                color: var(--blackColor);
-                font-size: var(--fontSize);
-                border: 1px solid #B1B5C3;
-                transition: var(--transition);
-                padding: {
-                    left: 20px;
-                    right: 20px;
-                };
-                &::placeholder {
-                    color: #A9A9C8;
-                    transition: var(--transition);
-                }
-                &:focus {
-                    border-color: var(--heraBlueColor);
-    
-                    &::placeholder {
-                        color: transparent;
-                    }
-                }
-            }
+      padding: 25px;
+  
+      .form-group {
+        margin-bottom: 25px;
+  
+        label {
+          color: var(--blackColor);
+          margin-bottom: 10px;
         }
-        button {
-            //background-color: var(--heraBlueColor);
+  
+        .input-control,
+        .input-folder-name {
+          outline: 0;
+          width: 100%;
+          height: 55px;
+          display: block;
+          box-shadow: unset;
+          border-radius: 10px;
+          color: var(--blackColor);
+          font-size: var(--fontSize);
+          border: 1px solid #B1B5C3;
+          transition: var(--transition);
+          padding: {
+            left: 20px;
+            right: 20px;
+          };
+          
+          &::placeholder {
+            color: #A9A9C8;
             transition: var(--transition);
-            padding: 15px 28px 15px 50px;
-            color: var(--whiteColor);
-            display: inline-block;
-            position: relative;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 0;
-            font: {
-                weight: 600;
-                size: 14px !important;
-            };
-            i {
-                top: 50%;
-                left: 25px;
-                line-height: 1;
-                font-size: 18px;
-                position: absolute;
-                transform: translateY(-50%);
+          }
+          
+          &:focus {
+            border-color: var(--heraBlueColor);
+  
+            &::placeholder {
+              color: transparent;
             }
-            &:hover {
-                color: var(--whiteColor);
-                background-color: var(--aareRiverColor);
-            }
-            &.gray {
-                background-color: #EDEFF5;
-                color: var(--blackColor);
-                margin-right: 15px;
-
-                &:hover {
-                    background-color: #EDEFF5;
-                    color: var(--blackColor);
-                }
-            }
-            &.warn {
-                background-color:  var(--warnColor);
-                color: var(--blackColor);
-                margin-right: 15px;
-
-                &:hover {
-                    color: var(--whiteColor);
-                }
-            }            
+          }
+  
+          &[type="file"] {
+            line-height: 55px;
+          }
         }
-    }
-    iframe {
-        height: 338px;
-        width: 100%;
+      }
+  
+      button {
+        transition: var(--transition);
+        padding: 15px 28px 15px 50px;
+        color: var(--whiteColor);
+        display: inline-block;
+        position: relative;
+        border-radius: 8px;
+        cursor: pointer;
         border: 0;
+        font: {
+          weight: 600;
+          size: 14px !important;
+        };
+  
+        i {
+          top: 50%;
+          left: 25px;
+          line-height: 1;
+          font-size: 18px;
+          position: absolute;
+          transform: translateY(-50%);
+        }
+  
+        &:hover {
+          color: var(--whiteColor);
+          //background-color: var(--aareRiverColor);
+        }
+  
+        &.gray {
+          background-color: #EDEFF5;
+          color: var(--blackColor);
+          margin-right: 15px;
+  
+          &:hover {
+            background-color: #EDEFF5;
+            color: var(--blackColor);
+          }
+        }
+  
+        &.warn {
+          background-color: var(--warnColor);
+          color: var(--blackColor);
+          margin-right: 15px;
+  
+          &:hover {
+            color: var(--whiteColor);
+          }
+        }
+      }
     }
-}
+  
+    .sticky-buttons {
+      position: sticky;
+      bottom: 0;
+      background: #fff; /* Optional: background color to match modal */
+      padding: 10px;    /* Optional: padding for better appearance */
+      z-index: 100;     /* Ensure it stays on top of other elements */
+      border-top: 1px solid rgba(0, 0, 0, 0.1); /* Faint line */
+      width: 100%;      /* Ensure it spans the width of the container */
+      box-sizing: border-box; /* Include padding and border in the element's total width */
+    }
+  
+    iframe {
+      height: 338px;
+      width: 100%;
+      border: 0;
+    }
+  }
+  
+   
 
 // Calendar CSS
 .fc {
@@ -2092,7 +2095,7 @@ quill-editor {
             }
             &:hover {
                 background-color: transparent;
-                color: var(--aareRiverColor);
+                //color: var(--aareRiverColor);
             }
         }
     }

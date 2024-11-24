@@ -127,7 +127,7 @@ export class EditUserComponent implements OnInit {
     event.preventDefault(); // Prevent the default form submission
     this.form.get('cityControl')!.enable();
     this.form.get('stateControl')!.enable();
-    console.log('user form info', this.form.value); // Log the form values
+    //console.log('user form info', this.form.value); // Log the form values
   
     const accountId = localStorage.getItem('accountId'); // Retrieve accountId from local storage
     let userData = {
@@ -256,8 +256,8 @@ export class EditUserComponent implements OnInit {
  
   openInstructorModal(): void {
     const dialogRef = this.dialog.open(ProfileModalComponent, {
-      width: '800px',
-      data: {}
+      width: '85%',
+      data: {userId: this.userId}
     });
   
     dialogRef.afterClosed().subscribe(result => {

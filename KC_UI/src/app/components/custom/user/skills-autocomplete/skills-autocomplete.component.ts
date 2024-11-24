@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, inject, computed, Output, EventEmitter } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,10 +19,12 @@ import { NgFor } from '@angular/common';
   styleUrls: ['./skills-autocomplete.component.scss']
 })
 export class SkillsAutocompleteComponent implements OnInit {
+  @Output() skillCollection = new EventEmitter<string[]>();
+
   skillsArr: any[] = [];
   currentSkillControl = new FormControl('');
   skillsControl = new FormControl<string[]>([]);
-
+    
   constructor(private skillService: SkillService, private snackBarService: SnackbarService) { }
 
   ngOnInit(): void {
@@ -55,20 +57,24 @@ export class SkillsAutocompleteComponent implements OnInit {
     const currentSkills = this.skillsControl.value || [];
 
     if (value && !currentSkills.includes(value)) {
-      this.skillsControl.setValue([...currentSkills, value]);
+        this.skillsControl.setValue([...(currentSkills || []), value]);
+        this.skillCollection.emit(this.skillsControl.value ?? []);
     }
 
-    if (event.input) {
-      event.input.value = '';
+    // Clear the input value using the MatChipInput instance
+    if (event.chipInput) {
+        event.chipInput.clear();
     }
 
     this.currentSkillControl.setValue('');
   }
 
+
   remove(skill: string): void {
     const currentSkills = this.skillsControl.value || [];
 
     this.skillsControl.setValue(currentSkills.filter(s => s !== skill));
+    this.skillCollection.emit(this.skillsControl.value ?? []);
     this.announcer.announce(`Removed ${skill}`);
   }
 
@@ -77,10 +83,12 @@ export class SkillsAutocompleteComponent implements OnInit {
     const value = event.option.viewValue;
 
     if (!currentSkills.includes(value)) {
-      this.skillsControl.setValue([...currentSkills, value]);
+        this.skillsControl.setValue([...currentSkills, value]);
+        this.skillCollection.emit(this.skillsControl.value ?? []);
     }
 
     this.currentSkillControl.setValue('');
     event.option.deselect();
   }
+
 }

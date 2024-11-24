@@ -12,6 +12,7 @@ const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const { sendEmail } = require('./middleware/emailService.js');
 const { connectToDatabase } = require('./db');
 const authenticateToken = require('./middleware/authenticateToken.cjs');
+const { RoleEnum } = require('./enum/roleEnum');
 
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
@@ -214,8 +215,6 @@ router.get('/send-user-reset-link', authenticateToken, async (req, res) => {
   }
 });
 
-
-
 router.get('/get-filtered-users', authenticateToken, async (req, res) => {
   let { accountId, status } = req.query;
   let isActive;
@@ -320,7 +319,7 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
     await sendEmail(email, name, userId, accountId, accountcode);
 
     // Insert into profile table if roleId is Instructor (5)
-    if (roleId.includes(5)) {
+    if (roleId.includes(RoleEnum.Instructor)) {
       const profileQuery = `INSERT INTO admin.profile (userId, description, skills, URL) VALUES (?, ?, ?, ?)`;
       await connection.query(profileQuery, [userId, '', '', '']);
       console.log('Profile created for Instructor user:', userId);
@@ -347,16 +346,16 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
   const userData = JSON.parse(req.body.userData);
   const { name, email, phone, phone2, address, city, state, zip, isActive, resetPassword } = userData;
   let { roleId } = userData; // Extract roleId separately to handle conversion
-  console.log('Parsed user data:', { name, email, phone, phone2, address, city, state, zip, isActive, resetPassword, roleId }); // Log the parsed user data
+  //console.log('Parsed user data:', { name, email, phone, phone2, address, city, state, zip, isActive, resetPassword, roleId }); // Log the parsed user data
 
   // Convert roleId from string to array if needed
   if (typeof roleId === 'string') {
     roleId = roleId.split(',').map(Number);
   }
-  console.log('Converted roleId to array:', roleId); // Log the converted roleId
+  //console.log('Converted roleId to array:', roleId); // Log the converted roleId
 
   const photoURL = req.file ? `/uploads/${req.file.filename}` : req.body.photoURL;
-  console.log('Photo URL:', photoURL); // Log the photo URL
+  // console.log('Photo URL:', photoURL); // Log the photo URL
 
   if (!Array.isArray(roleId)) {
     console.error('roleId is not an array:', roleId); // Log the error
@@ -397,8 +396,8 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
     await Promise.all(userRolePromises);
     console.log('New user roles inserted:', { userId, roleId });
 
-    // Insert into profile table if roleId is Instructor (4)
-    if (roleId.includes(4)) {
+    // Insert into profile table if roleId is Instructor (5)
+    if (roleId.includes(5)) {
       const profileQuery = `
         INSERT INTO admin.profile (userId, description, skills, URL)
         VALUES (?, ?, ?, ?);
@@ -446,6 +445,36 @@ router.put('/deactivate-user', authenticateToken, async (req, res) => {
       }
 });
 
+router.put('/update-profile/:userId', authenticateToken, async (req, res) => {
+  const { userId } = req.params; 
+  const profileData = JSON.parse(req.body.profileData);
+  console.log(profileData);
+  // let connection;
+  // try {
+  //       const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+  //       connection = await Promise.race([connectToDatabase(), timeout]);
+
+  //       const profileQuery = `
+  //       UPDATE admin.profile 
+  //       SET description = ?, 
+  //           skills = ?, 
+  //           URL = ?;`;
+
+  //       const [userResult] = await connection.query(userQuery, [userId]);
+  //       res.json({ message: 'User deactivated' });
+  //     } catch (error) {
+  //         res.status(500).json({ error: 'Error deactivating user' }); // Send a JSON error response
+  //     } finally {
+  //       if (connection) {
+  //         connection.release();
+  //       } else {
+  //         console.warn('deactivate-user: Connection not established.');
+  //       };
+  //     }
+
+
+});
+
 router.put('/update-user-password/:accountCode/:userId/:accountId', async (req, res) => {
   const { userId, accountCode, accountId } = req.params;
   const { userData } = req.body;  // Make sure userData is correctly nested
@@ -456,7 +485,7 @@ router.put('/update-user-password/:accountCode/:userId/:accountId', async (req, 
 
   const password = userData.password;
 
-  console.log('Parsed userData:', { accountCode, accountId, userId, password });
+  // console.log('Parsed userData:', { accountCode, accountId, userId, password });
 
   let connection;
   try {

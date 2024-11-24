@@ -11,6 +11,7 @@ export class UserService {
   private accountCodeSubject = new BehaviorSubject<string>('');
   private accountIdSubject = new BehaviorSubject<string>('');
   private userNameSubject = new BehaviorSubject<string>('');
+  private userIdSubject = new BehaviorSubject<string>('');
   private roleNameSubject = new BehaviorSubject<string>('');
 
   private apiUrl = `${environment.apiUrl}/user`;
@@ -19,11 +20,13 @@ export class UserService {
     const storedAccountCode = localStorage.getItem('accountCode') || '';
     const storedAccountId = localStorage.getItem('accountId') || '';
     const storedUserName = localStorage.getItem('userName') || '';
+    const storedUserId = localStorage.getItem('userId') || '';
     const storedRoleName = localStorage.getItem('role') || '';
     // console.log('Stored role:', storedRoleName);
     this.accountCodeSubject = new BehaviorSubject<string>(storedAccountCode);
     this.accountIdSubject = new BehaviorSubject<string>(storedAccountId);
     this.userNameSubject = new BehaviorSubject<string>(storedUserName);
+    this.userIdSubject = new BehaviorSubject<string>(storedUserId);
     this.roleNameSubject = new BehaviorSubject<string>(storedRoleName);
   }
   
@@ -33,8 +36,17 @@ export class UserService {
     this.userNameSubject.next(userNameValue);
   }
 
+  setUserId(userIdValue: string): void {
+    localStorage.setItem('userId', userIdValue);
+    this.userIdSubject.next(userIdValue);
+  }
+
   getUserName() {
     return this.userNameSubject.asObservable();
+  }
+
+  getUserId() {
+    return this.userIdSubject.asObservable();
   }
 
   setAccountCode(accountCodeValue: string): void {
@@ -96,6 +108,11 @@ export class UserService {
   
   updateUser(userId: number, formData: FormData) {
     return this.http.put(`${this.apiUrl}/update-user/${userId}`, formData);
+  }
+
+  updateProfile(userId: number, formData: FormData) {
+    console.log('formData', formData);
+    return this.http.put(`${this.apiUrl}/update-profile/${userId}`, formData);
   }
   
   updateUserPassword(accountCode: string, userId: number, accountId: number, userData: any) {

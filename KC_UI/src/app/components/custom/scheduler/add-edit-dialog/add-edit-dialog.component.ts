@@ -22,6 +22,8 @@ import { IEvent } from '../../../../interfaces/event';
 import { ILocations } from '../../../../interfaces/locations';
 import { IReservationCount } from '../../../../interfaces/reservation-count';
 import { catchError, forkJoin, Observable, of } from 'rxjs';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatIconModule } from '@angular/material/icon';
 import { isReactive } from '@angular/core/primitives/signals';
 import { CustomFormValidationService } from '../../../../services/custom-form-validation.service';
 
@@ -40,7 +42,9 @@ import { CustomFormValidationService } from '../../../../services/custom-form-va
     MatFormFieldModule,
     MatNativeDateModule,
     MatDatepickerModule,
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
+    MatSlideToggleModule,
+    MatIconModule
   ],
   providers: [
     { provide: DateAdapter, useClass: NativeDateAdapter },

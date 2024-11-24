@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../../services/common.service';
@@ -23,7 +24,8 @@ import { SchedulerService } from '../../../../services/scheduler.service';
   standalone: true,
   imports: [
     CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
+    MatSlideToggleModule
   ],
   templateUrl: './add-new-event.component.html',
   styleUrl: './add-new-event.component.scss'
