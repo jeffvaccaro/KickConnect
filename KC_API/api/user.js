@@ -355,7 +355,7 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
   //console.log('Converted roleId to array:', roleId); // Log the converted roleId
 
   const photoURL = req.file ? `/uploads/${req.file.filename}` : req.body.photoURL;
-  // console.log('Photo URL:', photoURL); // Log the photo URL
+  console.log('Photo URL:', photoURL); // Log the photo URL
 
   if (!Array.isArray(roleId)) {
     console.error('roleId is not an array:', roleId); // Log the error
@@ -445,35 +445,47 @@ router.put('/deactivate-user', authenticateToken, async (req, res) => {
       }
 });
 
-router.put('/update-profile/:userId', authenticateToken, async (req, res) => {
-  const { userId } = req.params; 
-  const profileData = JSON.parse(req.body.profileData);
-  console.log(profileData);
-  // let connection;
-  // try {
-  //       const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
-  //       connection = await Promise.race([connectToDatabase(), timeout]);
+router.put('/update-profile/:userId', authenticateToken, upload.none(), async (req, res) => {
+  const { userId } = req.params;
+  let connection;
+  try {
+    const profileData = JSON.parse(req.body.profileData);
+    console.log("METHOD CALLED", userId);
+    console.log("profileData", profileData);
 
-  //       const profileQuery = `
-  //       UPDATE admin.profile 
-  //       SET description = ?, 
-  //           skills = ?, 
-  //           URL = ?;`;
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
+    connection = await Promise.race([connectToDatabase(), timeout]);
 
-  //       const [userResult] = await connection.query(userQuery, [userId]);
-  //       res.json({ message: 'User deactivated' });
-  //     } catch (error) {
-  //         res.status(500).json({ error: 'Error deactivating user' }); // Send a JSON error response
-  //     } finally {
-  //       if (connection) {
-  //         connection.release();
-  //       } else {
-  //         console.warn('deactivate-user: Connection not established.');
-  //       };
-  //     }
+    const profileQuery = `
+    UPDATE admin.profile 
+    SET description = ?, 
+        skills = ?, 
+        URL = ?
+    WHERE userId = ?`;
 
+    // Convert skills array to a single string
+    const skillsString = profileData.profileSkills.join(', ');
 
+    // Log the SQL query being executed
+    const queryToExecute = connection.format(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
+    // console.log("Executing SQL Query:", queryToExecute);
+
+    const [profileResult] = await connection.query(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
+    // console.log("Query Result:", profileResult);  // Log the result of the query
+
+    res.json({ message: 'Profile updated successfully' });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ error: 'Error updating profile' }); // Send a JSON error response
+  } finally {
+    if (connection) {
+      connection.release();
+    } else {
+      console.warn('update-profile: Connection not established.');
+    }
+  }
 });
+
 
 router.put('/update-user-password/:accountCode/:userId/:accountId', async (req, res) => {
   const { userId, accountCode, accountId } = req.params;

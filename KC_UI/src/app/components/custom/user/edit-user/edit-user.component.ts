@@ -91,12 +91,13 @@ export class EditUserComponent implements OnInit {
           stateControl: userResponse.state,
           zipControl: userResponse.zip,
           isActiveControl: userResponse.isActive === 0,
+          profileDescriptionControl: userResponse.profileDescription, 
+          profileURLControl: userResponse.profileURL, 
+          profileSkillsControl: userResponse.profileSkills
         });
   
         // Set the imageSrc to the photoURL
         this.imageSrc = userResponse.photoURL;
-        // console.log('userResponse:', userResponse.roleId);
-        // Convert roleId string to an array
         this.userRolesArr = userResponse.roleId.split(',').map(Number);
   
         // Patch the roleControl with the user's roles
@@ -106,10 +107,8 @@ export class EditUserComponent implements OnInit {
         this.roleService.getRoles().subscribe({
           next: roleResponse => {
             this.roleArr = roleResponse;
-            //console.log(this.roleArr);
             // Ensure the roleControl value is still correct after loading roles
             this.form.get('roleControl')!.setValue(this.userRolesArr);
-            //console.log('userResponse.roles', rolesArray);
           },
           error: error => {
             console.error('Error fetching role data:', error);
@@ -157,7 +156,7 @@ export class EditUserComponent implements OnInit {
     // Call the updateLocation method and pass the form data
     this.userService.updateUser(this.userId, formData).pipe(
       tap((response: any) => {
-        console.log('User updated successfully:', response?.message);
+        //console.log('User updated successfully:', response?.message);
         this.router.navigate(['/']); // Navigate to location-list
       }),
       catchError(error => {
@@ -178,7 +177,7 @@ export class EditUserComponent implements OnInit {
       const zipCode = Number(input);
       this.commonService.getCityState(zipCode).subscribe({
         next: response => {
-          console.log('City/State Info:', response); // Log the response to verify the data structure
+          //console.log('City/State Info:', response); // Log the response to verify the data structure
           this.form.patchValue({
             cityControl: response.city,
             stateControl: response.state_code
@@ -257,7 +256,10 @@ export class EditUserComponent implements OnInit {
   openInstructorModal(): void {
     const dialogRef = this.dialog.open(ProfileModalComponent, {
       width: '85%',
-      data: {userId: this.userId}
+      data: {userId: this.userId, 
+        profileDescription: this.form.value.profileDescriptionControl, 
+        profileURL: this.form.value.profileURLControl, 
+        profileSkills: this.form.value.profileSkillsControl}
     });
   
     dialogRef.afterClosed().subscribe(result => {

@@ -1,6 +1,7 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,39 +12,43 @@ import { UserService } from '../../../../services/user.service';
 @Component({
   selector: 'app-profile-modal',
   standalone: true,
-  imports: [ReactiveFormsModule,
-            MatDialogModule, 
-            MatFormFieldModule, 
-            MatInputModule, 
-            MatButtonModule,
-            MatCard,
-            MatCardHeader,
-            MatCardContent,
-            SkillsAutocompleteComponent
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCard,
+    MatCardHeader,
+    MatCardContent,
+    SkillsAutocompleteComponent
   ],
   templateUrl: './profile-modal.component.html',
-  styleUrl: './profile-modal.component.scss'
+  styleUrls: ['./profile-modal.component.scss']
 })
 export class ProfileModalComponent {
   profileForm: FormGroup;
-  skillsArr: any[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<ProfileModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder, private userService : UserService
+    private fb: FormBuilder, private userService: UserService, private cdr: ChangeDetectorRef
   ) {
-    console.log(this.data.userId);
+    console.log(this.data);
+
     this.profileForm = this.fb.group({
-      profileDescription: ['', Validators.required],
-      profileURL: ['', Validators.required],
-      profileSkills: ['']
+      profileDescription: [this.data?.profileDescription || '', Validators.required],
+      profileURL: [this.data?.profileURL || '', Validators.required],
+      profileSkills: this.fb.array(this.data?.profileSkills ? this.data.profileSkills.split(', ').map((skill: any) => this.fb.control(skill)) : [])
     });
   }
 
   onSkillsChanged(skills: string[]): void { 
-    console.log(skills);
-    this.profileForm.patchValue({ skills });
+    const skillsArray = this.profileForm.get('profileSkills') as FormArray;
+    skillsArray.clear();
+    skills.forEach(skill => skillsArray.push(this.fb.control(skill)));
+    this.cdr.detectChanges();
   }
 
   onCancel(): void {
@@ -52,8 +57,21 @@ export class ProfileModalComponent {
 
   onSave(): void {
     if (this.profileForm.valid) {
-      console.log('userService call');
-      this.userService.updateProfile(this.data.userId,this.profileForm.value)
+      const formData: FormData = new FormData();
+      formData.append('profileData', JSON.stringify(this.profileForm.value));
+
+      this.userService.updateProfile(this.data.userId, formData).subscribe({
+        next: (response) => {
+          console.log('Response from server:', response);
+        },
+        error: (error) => {
+          console.error('Error:', error);
+        },
+        complete: () => {
+          console.log('Update profile request completed');
+        }
+      });
+
       this.dialogRef.close(this.profileForm.value);
     }
   }

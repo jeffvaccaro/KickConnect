@@ -109,11 +109,15 @@ export class UserService {
   updateUser(userId: number, formData: FormData) {
     return this.http.put(`${this.apiUrl}/update-user/${userId}`, formData);
   }
-
-  updateProfile(userId: number, formData: FormData) {
-    console.log('formData', formData);
-    return this.http.put(`${this.apiUrl}/update-profile/${userId}`, formData);
+  updateProfile(userId: number, profileData: any) {
+    console.log('Service Called', userId);
+    return this.http.put(`${this.apiUrl}/update-profile/${userId}`, profileData);
   }
+  
+  
+  
+ 
+  
   
   updateUserPassword(accountCode: string, userId: number, accountId: number, userData: any) {
     // Nest userData inside an object
