@@ -49,7 +49,7 @@
                             </button>
                             
                             <button mat-menu-item type="button" class="bg-transparent border-none position-relative" 
-                            (click)="viewProfile(element.userId)"  *ngIf="element.roleNames == 'Instructor'">
+                            (click)="viewProfile(element.userId)" *ngIf="element.roleNames.includes('Instructor')">
                             <i class="ri-profile-fill"></i> View Profile
                             </button>
 

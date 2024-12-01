@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, computed, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,6 +19,7 @@ import { NgFor } from '@angular/common';
   styleUrls: ['./skills-autocomplete.component.scss']
 })
 export class SkillsAutocompleteComponent implements OnInit {
+  @Input() initialSkills: string[] = []; // Add @Input for initial skills
   @Output() skillCollection = new EventEmitter<string[]>();
 
   skillsArr: any[] = [];
@@ -36,6 +37,9 @@ export class SkillsAutocompleteComponent implements OnInit {
         this.snackBarService.openSnackBar('Error fetching Skills:' + error.message, '', []);
       }
     });
+
+    // Initialize skillsControl with initial skills
+    this.skillsControl.setValue(this.initialSkills);
   }
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -69,7 +73,6 @@ export class SkillsAutocompleteComponent implements OnInit {
     this.currentSkillControl.setValue('');
   }
 
-
   remove(skill: string): void {
     const currentSkills = this.skillsControl.value || [];
 
@@ -90,5 +93,4 @@ export class SkillsAutocompleteComponent implements OnInit {
     this.currentSkillControl.setValue('');
     event.option.deselect();
   }
-
 }

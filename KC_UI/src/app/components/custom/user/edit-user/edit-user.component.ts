@@ -269,6 +269,8 @@ export class EditUserComponent implements OnInit {
           profileURLControl: result.profileURL,
           skillsControl: result.skills
         });
+        console.log('after close', this.form);
+        this.loadUserData(this.userId);
       }
     });
   }

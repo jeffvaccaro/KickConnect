@@ -5,11 +5,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { UserService } from '../../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IUser } from '../../../../interfaces/user';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
-  imports: [MatCardModule, MatDividerModule,  MatButtonModule],
+  imports: [CommonModule, MatCardModule, MatDividerModule,  MatButtonModule],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.scss'
 })
@@ -30,7 +31,7 @@ export class EditProfileComponent implements OnInit
     this.userService.getUser(this.userId).subscribe({
       next: response => {
         this.user = response;
-        console.log(this.user);
+        console.log('from userService',this.user);
       },
       error: error => {
         console.error('Error fetching users:', error);

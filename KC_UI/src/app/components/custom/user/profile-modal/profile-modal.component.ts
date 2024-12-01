@@ -35,21 +35,30 @@ export class ProfileModalComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder, private userService: UserService, private cdr: ChangeDetectorRef
   ) {
-    console.log(this.data);
+    //console.log(this.data,'profile data');
 
     this.profileForm = this.fb.group({
       profileDescription: [this.data?.profileDescription || '', Validators.required],
       profileURL: [this.data?.profileURL || '', Validators.required],
-      profileSkills: this.fb.array(this.data?.profileSkills ? this.data.profileSkills.split(', ').map((skill: any) => this.fb.control(skill)) : [])
+      profileSkills: this.fb.array([])
     });
+    this.onSkillsChanged(this.data?.profileSkills || []);
   }
 
-  onSkillsChanged(skills: string[]): void { 
+  onSkillsChanged(skills: string | string[]): void { 
     const skillsArray = this.profileForm.get('profileSkills') as FormArray;
     skillsArray.clear();
-    skills.forEach(skill => skillsArray.push(this.fb.control(skill)));
-    this.cdr.detectChanges();
+  
+    if (typeof skills === 'string') {
+      skills = skills.split(',').map(skill => skill.trim()); // Split the string into an array
+    }
+  
+    if (Array.isArray(skills)) {
+      skills.forEach(skill => skillsArray.push(this.fb.control(skill)));
+    }    
+    //console.log(this.profileForm,'profile form');
   }
+  
 
   onCancel(): void {
     this.dialogRef.close();

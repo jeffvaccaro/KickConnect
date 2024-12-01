@@ -3,4 +3,5 @@ export interface Role {
     roleName: string;
     roleDescription: string;
     roleOrderId: number;
+    disabled: false;
   }

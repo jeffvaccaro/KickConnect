@@ -52,15 +52,15 @@ export class AddNewUserComponent {
       this.form.get('cityControl')!.disable();
       this.form.get('stateControl')!.disable();
 
+      this.roleService.getRoles().subscribe({ 
+        next: roleResponse => { 
+          this.roleArr = roleResponse; 
+        }, 
+        error: error => { 
+          console.error('Error fetching role data:', error); 
+        } 
+      });
       
-    this.roleService.getRoles().subscribe({
-      next: roleResponse => {
-        this.roleArr = roleResponse;
-      },
-      error: error => {
-        console.error('Error fetching role data:', error);
-      }
-    });
   } 
 
   onSubmit(event: Event): void {

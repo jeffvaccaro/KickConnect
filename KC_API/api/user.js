@@ -12,7 +12,7 @@ const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const { sendEmail } = require('./middleware/emailService.js');
 const { connectToDatabase } = require('./db');
 const authenticateToken = require('./middleware/authenticateToken.cjs');
-const { RoleEnum } = require('./enum/roleEnum');
+const RoleEnum = require ('./enum/roleEnum.js');
 
 const env = process.env.NODE_ENV || 'development';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
@@ -24,11 +24,14 @@ router.get('/get-all-users', authenticateToken, async (req, res) => {
     connection = await Promise.race([connectToDatabase(), timeout]);
 
     const query = `
-      SELECT a.accountName, a.accountCode, u.*, r.roleName AS roleNames
+      SELECT  a.accountName, a.accountCode, u.*, GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, p.description, p.skills, p.url
       FROM admin.account a
       INNER JOIN admin.user u ON a.accountId = u.accountId
       INNER JOIN admin.userroles ur ON u.userId = ur.userId
-      INNER JOIN admin.role r ON ur.roleId = r.roleId`;
+      INNER JOIN admin.role r ON ur.roleId = r.roleId
+      LEFT JOIN admin.profile p ON u.userId = p.userId
+      GROUP BY a.accountName, a.accountCode, u.userId, p.description, p.skills, p.url`;
+      //console.log(query);
     const [results] = await connection.query(query);
     res.json(results);
   } catch (err) {
@@ -89,18 +92,15 @@ router.get('/get-users', authenticateToken, async (req, res) => {
         const accountId = accountResults[0].accountId;
 
         const query = `
-  	    SELECT 
-          u.*, 
-          GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, 
-          GROUP_CONCAT(r.roleId SEPARATOR ',') as roleId,
-          a.accountCode
-        FROM admin.user u
-        JOIN admin.account a ON u.accountId = a.accountId
-        JOIN admin.userroles ur ON u.userId = ur.userId
-        JOIN admin.role r ON ur.roleId = r.roleId
+        SELECT  a.accountName, a.accountCode, u.*, GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, p.description, p.skills, p.url
+        FROM admin.account a
+        INNER JOIN admin.user u ON a.accountId = u.accountId
+        INNER JOIN admin.userroles ur ON u.userId = ur.userId
+        INNER JOIN admin.role r ON ur.roleId = r.roleId
+        LEFT JOIN admin.profile p ON u.userId = p.userId
         WHERE u.accountId = ?
         AND ur.roleId != 1
-        GROUP BY u.userId
+        GROUP BY a.accountName, a.accountCode, u.userId, p.description, p.skills, p.url
       `;
 
         // Query the user table using the retrieved accountId
@@ -257,9 +257,12 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
 });
 
 router.post('/add-user', authenticateToken, upload.single('photo'), async (req, res) => {
+
   let { accountcode, name, email, phone, phone2, address, city, state, zip, password: originalPassword, roleId } = JSON.parse(req.body.userData);
 
-  //console.log('Parsed userData:', { accountcode, name, email, phone, phone2, address, city, state, zip, originalPassword, roleId });
+  console.log('Parsed userData:', { accountcode, name, email, phone, phone2, address, city, state, zip, originalPassword, roleId });
+  console.log('RoleEnum:', RoleEnum); // Debugging RoleEnum
+  console.log('RoleEnum.Instructor:', RoleEnum.Instructor); // Debugging RoleEnum.Instructor
 
   let connection;
   try {
@@ -269,7 +272,6 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
 
     let password = originalPassword || accountcode; // Set default password to accountcode if not provided
     const hashedPassword = await bcrypt.hash(password, 10);
-    //console.log('Hashed password:', hashedPassword); // Log the hashed password
 
     const accountQuery = 'SELECT accountId FROM admin.account WHERE accountcode = ?';
     const [accountResults] = await connection.query(accountQuery, [accountcode]);
@@ -307,6 +309,8 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
       return res.status(400).json({ error: 'roleId must be an array' });
     }
 
+    console.log('roleId includes:', roleId.includes(RoleEnum.Instructor)); // Debugging roleId includes
+
     const userRoleQuery = `INSERT INTO admin.userroles (userId, roleId) VALUES (?, ?)`;
     const userRolePromises = roleId.map((role) => {
       console.log('Inserting role:', role);
@@ -318,7 +322,7 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
     // Send email only after all roles are inserted
     await sendEmail(email, name, userId, accountId, accountcode);
 
-    // Insert into profile table if roleId is Instructor (5)
+    // Insert into profile table if roleId includes Instructor
     if (roleId.includes(RoleEnum.Instructor)) {
       const profileQuery = `INSERT INTO admin.profile (userId, description, skills, URL) VALUES (?, ?, ?, ?)`;
       await connection.query(profileQuery, [userId, '', '', '']);
