@@ -11,6 +11,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule, NativeDateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS, DateAdapter } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatIconModule } from '@angular/material/icon';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { UserService } from '../../../../services/user.service';
 import { EventService } from '../../../../services/event.service';
@@ -22,8 +24,6 @@ import { IEvent } from '../../../../interfaces/event';
 import { ILocations } from '../../../../interfaces/locations';
 import { IReservationCount } from '../../../../interfaces/reservation-count';
 import { catchError, forkJoin, Observable, of } from 'rxjs';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatIconModule } from '@angular/material/icon';
 import { isReactive } from '@angular/core/primitives/signals';
 import { CustomFormValidationService } from '../../../../services/custom-form-validation.service';
 
@@ -33,7 +33,7 @@ import { CustomFormValidationService } from '../../../../services/custom-form-va
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule, // Ensure this is imported
+    ReactiveFormsModule,
     MatButtonModule,
     MatInputModule,
     MatCheckboxModule,
@@ -99,7 +99,7 @@ export class AddEditDialogComponent implements OnInit {
   
     this.eventForm.get('existingEventValue')?.valueChanges.subscribe(value => {
       this.handleExistingEventValueChange.bind(this)(value);
-      console.log('existingEventValue changed:', value);
+      //console.log('existingEventValue changed:', value);
     });
     
     this.eventForm.get('selectedDate')?.valueChanges.subscribe(value => {

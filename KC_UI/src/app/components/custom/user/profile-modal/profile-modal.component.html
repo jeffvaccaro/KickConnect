@@ -38,7 +38,36 @@
         </div>
       </div>
     </div>
-    
+
+    <div class="row">
+      <div class="col-lg-12 col-md-12">
+        <div class="kickConnect-form-group">
+          <mat-form-field appearance="fill">
+            <i class="ri-bookmark-2-line"></i>
+            <mat-label>Primary Studio</mat-label>
+            <mat-select formControlName="primaryStudioControl" multiple>
+              <mat-option *ngFor="let location of locationArr; trackBy: trackByLocationId" [value]="location.locationId">
+                {{ location.locationName }}
+              </mat-option>
+            </mat-select>
+
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <i class="ri-list-check"></i>
+            <mat-label>Secondary Studio(s)</mat-label>
+              <mat-select formControlName="altStudioControl" multiple>
+                <mat-option *ngFor="let location of locationArr; trackBy: trackByLocationId" [value]="location.locationId" >
+                  {{ location.locationName }}
+                </mat-option>
+              </mat-select>
+          </mat-form-field>          
+        </div>
+      </div>
+    </div>
+
+
+
     <div class="sticky-buttons">
       <div mat-dialog-actions>
         <button mat-button (click)="onCancel()">Cancel</button>

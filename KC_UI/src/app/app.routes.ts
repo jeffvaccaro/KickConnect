@@ -19,6 +19,8 @@ import { StaffComponent } from './components/dashboard/staff/staff.component';
 import { LocationListComponent } from './components/custom/locations/location-list/location-list.component';
 import { AddNewLocationComponent } from './components/custom/locations/add-new-location/add-new-location.component';
 import { EditLocationComponent } from './components/custom/locations/edit-location/edit-location.component';
+import { AssignmentComponent } from './components/custom/locations/assignment/assignment.component';
+
 import { UserListComponent } from './components/custom/user/user-list/user-list.component';
 import { AddNewUserComponent } from './components/custom/user/add-new-user/add-new-user.component';
 import { EditUserComponent } from './components/custom/user/edit-user/edit-user.component';
@@ -93,6 +95,8 @@ export const routes: Routes = [
   { path: 'app-location-list', component: LocationListComponent, canActivate: [AuthGuard] },
   { path: 'app-add-new-location', component: AddNewLocationComponent, canActivate: [AuthGuard] },
   { path: 'app-edit-location/:locationId', component: EditLocationComponent, canActivate: [AuthGuard] },
+  { path: 'app-assignments/:locationId', component: AssignmentComponent, canActivate: [AuthGuard]},
+
   { path: 'app-user-list', component: UserListComponent, canActivate: [AuthGuard] },
   { path: 'app-add-new-user', component: AddNewUserComponent, canActivate: [AuthGuard] },
   { path: 'app-edit-user/:userId', component: EditUserComponent, canActivate: [AuthGuard] },

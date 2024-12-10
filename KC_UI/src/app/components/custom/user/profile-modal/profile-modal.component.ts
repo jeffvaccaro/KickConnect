@@ -8,6 +8,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { SkillsAutocompleteComponent } from '../skills-autocomplete/skills-autocomplete.component';
 import { UserService } from '../../../../services/user.service';
+import { MatOption } from '@angular/material/core';
+import { LocationService } from '../../../../services/location.service';
+import { ILocations } from '../../../../interfaces/locations';
 
 @Component({
   selector: 'app-profile-modal',
@@ -19,6 +22,7 @@ import { UserService } from '../../../../services/user.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatOption,
     MatCard,
     MatCardHeader,
     MatCardContent,
@@ -29,13 +33,24 @@ import { UserService } from '../../../../services/user.service';
 })
 export class ProfileModalComponent {
   profileForm: FormGroup;
+  locationArr: ILocations[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<ProfileModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder, private userService: UserService, private cdr: ChangeDetectorRef
+    private fb: FormBuilder, private userService: UserService, private locationService: LocationService,
+    private cdr: ChangeDetectorRef
   ) {
     //console.log(this.data,'profile data');
+    
+    this.locationService.getLocations("Active").subscribe({ 
+      next: locationResponse => { 
+        this.locationArr = locationResponse; 
+      }, 
+      error: error => { 
+        console.error('Error fetching location data:', error); 
+      } 
+    });
 
     this.profileForm = this.fb.group({
       profileDescription: [this.data?.profileDescription || '', Validators.required],
@@ -83,5 +98,9 @@ export class ProfileModalComponent {
 
       this.dialogRef.close(this.profileForm.value);
     }
+  }
+
+  trackByLocationId(index: number, location: ILocations): number {
+    return location.locationId;
   }
 }

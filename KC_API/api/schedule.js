@@ -170,6 +170,58 @@ router.get('/get-main-schedule', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/get-location-assignment-schedule/:locationId', authenticateToken, async (req, res) => {
+    let connection;
+    try {
+        connection = await connectWithTimeout();  
+        const { locationId } = req.params;
+        const query = `
+            SELECT 
+                e.eventId, 
+                e.eventName, 
+                e.eventDescription, 
+                e.isReservation,
+                e.reservationCount,
+                e.isCostToAttend,
+                e.costToAttend,
+                s.day, 
+                s.startTime, 
+                s.endTime, 
+                s.selectedDate, 
+                s.isRepeat, 
+                s.isActive, 
+                s.accountId, 
+                s.scheduleMainId, 
+                sl.locationId AS locationValues
+            FROM 
+                admin.schedulemain s
+            INNER JOIN  
+                admin.event e 
+                ON s.eventId = e.eventId 
+                AND e.isActive = true
+            INNER JOIN 
+                admin.scheduleLocation sl 
+                ON s.scheduleMainId = sl.scheduleMainId
+                AND sl.locationid = ?
+            WHERE 
+                (WEEK(s.selectedDate) = WEEK(CURDATE()) AND YEAR(s.selectedDate) = YEAR(CURDATE()) AND s.isRepeat = false)
+            OR 
+                s.isRepeat = true
+            GROUP BY 
+                e.eventId, e.eventName, e.eventDescription, 
+                s.day, s.startTime, s.endTime, s.selectedDate, 
+                s.isRepeat, s.isActive, s.accountId, s.scheduleMainId;
+        `;
+        const locationParam = [locationId];
+        const results = await executeQuery(connection, query, [locationParam]);
+        res.status(200).json(results);
+    } catch (error) {
+        handleError(res, error, 'Error fetching Schedule Values: ');
+    } finally {
+        if (connection) connection.release();
+    }
+  });
+
 // PUT Route
 router.put('/update-schedule/:scheduleMainId', authenticateToken, async (req, res) => {
   let connection;

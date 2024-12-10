@@ -80,8 +80,14 @@ export class LocationListComponent implements OnInit, AfterViewInit {
   editLocation(locationId: number){
     this.router.navigate(['/app-edit-location', locationId]);
   }
+
+  assignments(locationId: number){
+    this.router.navigate(['/app-assignments', locationId]);
+  }
+
   filterLocations(){
     //this.router.navigate(['/app-location-list'], { queryParams: { status: 'InActive' } });
-
   }
+
+
 }

@@ -97,7 +97,6 @@ export class UserService {
     return this.http.get<any>(url);
   }
   
-
   getUsersByStatus(accountId: number, status: string): Observable<any> {
     const url = `${this.apiUrl}/get-filtered-users`;
     const params = new HttpParams()
@@ -105,19 +104,26 @@ export class UserService {
       .set('status', status);
     return this.http.get<any>(url, { params });
   }
+
+  getUsersByRole(roleId: number): Observable<any>{
+    const url = `${this.apiUrl}/get-users-by-role`;
+    const params = new HttpParams()
+      .set('roleId', roleId.toString())
+    return this.http.get<any>(url, { params });
+  }
+
+  getUsersByLocationAndRole(roleId: number, locationId: number): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/get-users-by-location-role/${roleId}/${locationId}`);
+  }
   
   updateUser(userId: number, formData: FormData) {
     return this.http.put(`${this.apiUrl}/update-user/${userId}`, formData);
   }
+
   updateProfile(userId: number, profileData: any) {
     console.log('Service Called', userId);
     return this.http.put(`${this.apiUrl}/update-profile/${userId}`, profileData);
   }
-  
-  
-  
- 
-  
   
   updateUserPassword(accountCode: string, userId: number, accountId: number, userData: any) {
     // Nest userData inside an object

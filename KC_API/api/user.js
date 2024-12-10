@@ -245,6 +245,84 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/get-users-by-role/:roleId', authenticateToken, async (req, res) => {
+    let connection;
+    try {
+        const { roleId } = req.params;
+
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
+
+        const query = `
+            SELECT 	u.userId, u.name, u.email, u.phone, u.photoURL, u.isActive, 
+                    p.skills, p.description, p.url
+            FROM 	admin.user u 
+            INNER JOIN 
+                    admin.userroles ur 
+                ON 	u.userid = ur.userid 
+            LEFT JOIN 
+                    admin.profile p
+                ON	p.userid = u.userid
+            LEFT JOIN
+                    admin.profilelocations pl
+                ON	p.profileId = pl.profileId
+            WHERE 	ur.roleId = ?
+        `;
+
+        const [userResults] = await connection.query(query, [roleId]);
+        res.json(userResults.length ? userResults : []);
+    } catch (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Error executing query' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('get-users-by-role: Connection not established.');
+        }
+    }
+});
+
+router.get('/get-users-by-location-role/:locationId/:roleId', authenticateToken, async (req, res) => {
+    console.log('user.js','get-users-by-location-role');
+    let connection;
+    try {
+        const { locationId, roleId } = req.params;
+
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
+
+        const query = `
+            SELECT 	u.userId, u.name, u.email, u.phone, u.photoURL, u.isActive, 
+                    p.skills, p.description, p.url
+            FROM 	admin.user u 
+            INNER JOIN 
+                    admin.userroles ur 
+                ON 	u.userid = ur.userid 
+            LEFT JOIN 
+                    admin.profile p
+                ON	p.userid = u.userid
+            LEFT JOIN
+                    admin.profilelocation pl
+                ON	p.profileId = pl.profileId
+            WHERE 	ur.roleId = ? 
+            AND     pl.locationId = ?
+        `;
+
+        const [userResults] = await connection.query(query, [roleId, locationId]);
+        res.json(userResults.length ? userResults : []);
+    } catch (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Error executing query' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('get-users-by-location-role: Connection not established.');
+        }
+    }
+});
+
 // PUT Route
 router.put('/update-user/:userId', authenticateToken, upload.single('photo'), async (req, res) => {
   const { userId } = req.params;
@@ -311,7 +389,6 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
   }
 });
 
-// PUT Routes
 router.put('/deactivate-user', authenticateToken, async (req, res) => {
   const { userId } = req.query;
   let connection;
