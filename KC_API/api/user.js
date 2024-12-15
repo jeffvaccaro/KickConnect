@@ -131,11 +131,15 @@ router.get('/get-user-by-id', authenticateToken, async (req, res) => {
               MAX(p.profileId) AS profileId, 
               MAX(p.description) AS profileDescription, 
               MAX(p.skills) as profileSkills, 
-              MAX(p.url) as profileURL
+              MAX(p.url) as profileURL,
+              MAX(primaryLoc.locationId) as primaryLocation,
+              GROUP_CONCAT(DISTINCT altLoc.locationId SEPARATOR ',') as altLocations
           FROM admin.user u
           JOIN admin.userroles ur ON u.userId = ur.userId
           JOIN admin.role r ON ur.roleId = r.roleId
           LEFT JOIN admin.profile p on u.userId = p.userId
+          LEFT JOIN admin.profilelocation primaryLoc ON p.profileId = primaryLoc.profileId AND primaryLoc.isHome = 1
+          LEFT JOIN admin.profilelocation altLoc ON p.profileId = altLoc.profileId AND altLoc.isHome = 0
           WHERE u.userId = ?
           AND ur.roleId != 1 
           GROUP BY u.userId
@@ -284,7 +288,7 @@ router.get('/get-users-by-role/:roleId', authenticateToken, async (req, res) => 
 });
 
 router.get('/get-users-by-location-role/:locationId/:roleId', authenticateToken, async (req, res) => {
-    console.log('user.js','get-users-by-location-role');
+    // console.log('user.js','get-users-by-location-role');
     let connection;
     try {
         const { locationId, roleId } = req.params;
@@ -418,12 +422,13 @@ router.put('/update-profile/:userId', authenticateToken, upload.none(), async (r
   let connection;
   try {
       const profileData = JSON.parse(req.body.profileData);
-      console.log("METHOD CALLED", userId);
+      //console.log("METHOD CALLED", userId);
       console.log("profileData", profileData);
 
       const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
       connection = await Promise.race([connectToDatabase(), timeout]);
 
+      
       const profileQuery = `
           UPDATE admin.profile 
           SET description = ?, 
@@ -433,10 +438,42 @@ router.put('/update-profile/:userId', authenticateToken, upload.none(), async (r
 
       const skillsString = profileData.profileSkills.join(', ');
 
-      const queryToExecute = connection.format(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
-
+      const profileUpdateQuery = connection.format(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
       const [profileResult] = await connection.query(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
 
+      if (profileData.primaryStudio !== null) {
+        // Fetch profileId
+        const getProfileId = `SELECT p.profileId FROM admin.user u 
+                            INNER JOIN admin.profile p 
+                            ON u.userId = p.userId 
+                            WHERE u.userId = ?`;
+        const [rows] = await connection.query(getProfileId, [userId]);
+
+        // Ensure profileId is correctly extracted from the result
+        const profileId = rows[0]?.profileId;
+
+        if (!profileId) {
+        throw new Error('Profile ID not found for the provided user ID');
+        }
+
+        // Clear existing profile locations
+        const profileLocationClear = `DELETE FROM admin.profileLocation 
+                                    WHERE profileId = ?`;
+
+        await connection.query(profileLocationClear, [profileId]);
+
+        // Insert new profile locations
+        const profileLocationQuery = `INSERT INTO admin.profileLocation (profileId, locationId, isHome) VALUES (?, ?, 1)`;
+        await connection.query(profileLocationQuery, [profileId, profileData.primaryStudio]);
+  
+        const altLocationQuery = `INSERT INTO admin.profileLocation (profileId, locationId, isHome) VALUES (?, ?, 0)`;
+        const altLocPromises = profileData.altStudio.map((locationId) => {
+            return connection.query(altLocationQuery, [profileId, locationId]);
+        });
+        console.log('Profile created for Instructor user:', userId);
+    }
+
+      
       res.json({ message: 'Profile updated successfully' });
   } catch (error) {
       console.error('Error updating profile:', error);

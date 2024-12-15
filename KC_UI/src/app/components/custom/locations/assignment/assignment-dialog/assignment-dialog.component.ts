@@ -22,6 +22,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { DaysEnum } from '../../../../../enums/days';
 import { RolesEnum } from '../../../../../enums/roles';
+import { UserProfileObject } from '../../../../../objects/user-profile/user-profile';
 
 
 @Component({
@@ -51,6 +52,7 @@ export class AssignmentDialogComponent  implements OnInit {
   eventDay: string;
   eventTime: string;
   eventLength: string;
+  userProfileArr: UserProfileObject[];
 
   constructor(
     private fb: FormBuilder,
@@ -75,8 +77,6 @@ export class AssignmentDialogComponent  implements OnInit {
 
   initializeForm(){
 
-
-
     const today = new Date();
     const closestHour = today.getMinutes() >= 30 ? today.getHours() + 1 : today.getHours();
     const defaultTime = closestHour >= 12 ? `${closestHour - 12 === 0 ? 12 : closestHour - 12}:00 PM` : `${closestHour === 0 ? 12 : closestHour}:00 AM`;
@@ -86,15 +86,12 @@ export class AssignmentDialogComponent  implements OnInit {
   
     // Correctly parse selectedDate to avoid timezone issues
     const selectedDate = data?.selectedDate ? new Date(`${data.selectedDate}T00:00:00`) : new Date();
-    
-     console.log("Initialize form:", data);
+   
     this.locationName = data.locationName;
     this.eventName = data.eventName;
     this.eventDay = DaysEnum[data.day];
     this.eventTime = this.convertTo12Hour(data.selectedTime);
     this.eventLength = data.duration;
-
-
 
     this.assignmentForm = this.fb.group({
       eventId: [data?.existingEventId],
@@ -114,8 +111,6 @@ export class AssignmentDialogComponent  implements OnInit {
       costToAttend: [0, []],
     });
 
-
-
     this.userService.getUsersByLocationAndRole(RolesEnum.Instructor, data.locationValues).subscribe({
       next: response => {
           console.log('getusersbylocationandrole',response);
@@ -125,6 +120,10 @@ export class AssignmentDialogComponent  implements OnInit {
         // Handle error here (e.g., show error message)
       }
     });
+  }
+
+  trackByProfileId(index: number, userProfileObject: UserProfileObject): number {
+    return userProfileObject.profileId;
   }
 
   save() {

@@ -70,6 +70,8 @@ export class EditUserComponent implements OnInit {
       isActiveControl: [true],
       profileDescriptionControl: [''], 
       profileURLControl: [''], 
+      primaryLocationControl: [''],
+      alternateLocationControl: [''],
       profileSkillsControl: this.skillsControl
     });
 
@@ -93,7 +95,9 @@ export class EditUserComponent implements OnInit {
           isActiveControl: userResponse.isActive === 0,
           profileDescriptionControl: userResponse.profileDescription, 
           profileURLControl: userResponse.profileURL, 
-          profileSkillsControl: userResponse.profileSkills
+          profileSkillsControl: userResponse.profileSkills,
+          primaryLocationControl: userResponse.primaryLocation,
+          alternateLocationControl: userResponse.altLocations
         });
   
         // Set the imageSrc to the photoURL
@@ -114,6 +118,7 @@ export class EditUserComponent implements OnInit {
             console.error('Error fetching role data:', error);
           }
         });
+        console.log(userResponse,'userResponse');
       },
       error: error => {
         console.error('Error fetching user data:', error);
@@ -143,7 +148,9 @@ export class EditUserComponent implements OnInit {
       resetPassword: false,
       profileDescription: this.form.value.profileDescriptionControl,
       profileURL: this.form.value.profileURLControl,
-      profileSkills: this.form.value.profileSkillsControl
+      profileSkills: this.form.value.profileSkillsControl,
+      primaryLocation: this.form.value.primaryLocationControl,
+      altLocations: this.form.value.Response.alternateLocationControl
     };
   
     const formData: FormData = new FormData();
@@ -256,10 +263,13 @@ export class EditUserComponent implements OnInit {
   openInstructorModal(): void {
     const dialogRef = this.dialog.open(ProfileModalComponent, {
       width: '85%',
-      data: {userId: this.userId, 
+      data: {
+        userId: this.userId, 
         profileDescription: this.form.value.profileDescriptionControl, 
         profileURL: this.form.value.profileURLControl, 
-        profileSkills: this.form.value.profileSkillsControl}
+        profileSkills: this.form.value.profileSkillsControl,
+        primaryLoc: this.form.value.primaryLocationControl,
+        altLoc: this.form.value.alternateLocationControl}
     });
   
     dialogRef.afterClosed().subscribe(result => {
