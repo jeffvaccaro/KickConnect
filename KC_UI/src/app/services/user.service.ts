@@ -121,7 +121,7 @@ export class UserService {
   }
 
   updateProfile(userId: number, profileData: any) {
-    //console.log('Service Called', userId);
+    //onsole.log('Service Called', profileData);
     return this.http.put(`${this.apiUrl}/update-profile/${userId}`, profileData);
   }
   

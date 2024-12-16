@@ -421,27 +421,49 @@ router.put('/update-profile/:userId', authenticateToken, upload.none(), async (r
   const { userId } = req.params;
   let connection;
   try {
-      const profileData = JSON.parse(req.body.profileData);
-      //console.log("METHOD CALLED", userId);
-      console.log("profileData", profileData);
+        const profileData = JSON.parse(req.body.profileData);
+        //console.log("METHOD CALLED", profileData);
+        console.log("profileData", profileData);
 
-      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
-      connection = await Promise.race([connectToDatabase(), timeout]);
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
 
+        // Filter for new skills 
+        const newSkillsToAdd = profileData.profileSkills.filter(skill => 
+            typeof skill.skillId === 'string' && skill.skillId.startsWith('new-')
+        );
       
-      const profileQuery = `
-          UPDATE admin.profile 
-          SET description = ?, 
-              skills = ?, 
-              URL = ?
-          WHERE userId = ?`;
+        //console.log('newSkillsToAdd:', newSkillsToAdd);
 
-      const skillsString = profileData.profileSkills.join(', ');
+        if (newSkillsToAdd.length > 0) {
+            const newSkillInsertQuery = `
+                INSERT INTO admin.skill(skillName,skillDescription) 
+                VALUES (?,'')`;
+            newSkillsToAdd.forEach(async (skill) => {
+            try {
+                const skillInsertQuery = connection.format(newSkillInsertQuery, [skill.skillName]);
+                const [skillInsertResult] = await connection.query(skillInsertQuery);
+                console.log(`Successfully added new skill: ${skill.skillName}`);
+            } catch (error) {
+                console.error('Error inserting new skill:', error);
+            }
+            });
+        }      
 
-      const profileUpdateQuery = connection.format(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
-      const [profileResult] = await connection.query(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
+        const profileQuery = `
+            UPDATE admin.profile 
+            SET description = ?, 
+                skills = ?, 
+                URL = ?
+            WHERE userId = ?`;
 
-      if (profileData.primaryStudio !== null) {
+        const skillsString = profileData.profileSkills.map(skill => skill.skillName).join(', ');
+        //console.log('skillString:', skillsString);
+
+        const profileUpdateQuery = connection.format(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
+        const [profileResult] = await connection.query(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
+
+        if (profileData.primaryStudio !== null) {
         // Fetch profileId
         const getProfileId = `SELECT p.profileId FROM admin.user u 
                             INNER JOIN admin.profile p 
@@ -465,26 +487,24 @@ router.put('/update-profile/:userId', authenticateToken, upload.none(), async (r
         // Insert new profile locations
         const profileLocationQuery = `INSERT INTO admin.profileLocation (profileId, locationId, isHome) VALUES (?, ?, 1)`;
         await connection.query(profileLocationQuery, [profileId, profileData.primaryStudio]);
-  
+
         const altLocationQuery = `INSERT INTO admin.profileLocation (profileId, locationId, isHome) VALUES (?, ?, 0)`;
         const altLocPromises = profileData.altStudio.map((locationId) => {
             return connection.query(altLocationQuery, [profileId, locationId]);
         });
-        console.log('Profile created for Instructor user:', userId);
+        //console.log('Profile created for Instructor user:', userId);
+    }        
+        res.json({ message: 'Profile updated successfully' });
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ error: 'Error updating profile' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('update-profile: Connection not established.');
+        }
     }
-
-      
-      res.json({ message: 'Profile updated successfully' });
-  } catch (error) {
-      console.error('Error updating profile:', error);
-      res.status(500).json({ error: 'Error updating profile' });
-  } finally {
-      if (connection) {
-          connection.release();
-      } else {
-          console.warn('update-profile: Connection not established.');
-      }
-  }
 });
 
 router.put('/update-user-password/:accountCode/:userId/:accountId', async (req, res) => {

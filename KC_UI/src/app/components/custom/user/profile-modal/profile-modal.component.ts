@@ -103,6 +103,7 @@ export class ProfileModalComponent {
   }
 
   onSkillsChanged(skills: string | string[]): void {
+
     const skillsArray = this.profileForm.get('profileSkills') as FormArray;
     skillsArray.clear();
 
