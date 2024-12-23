@@ -287,7 +287,7 @@ router.get('/get-users-by-role/:roleId', authenticateToken, async (req, res) => 
     }
 });
 
-router.get('/get-users-by-location-role/:locationId/:roleId', authenticateToken, async (req, res) => {
+router.get('/get-users-by-location-role/:roleId/:locationId', authenticateToken, async (req, res) => {
     // console.log('user.js','get-users-by-location-role');
     let connection;
     try {
@@ -312,8 +312,12 @@ router.get('/get-users-by-location-role/:locationId/:roleId', authenticateToken,
             WHERE 	ur.roleId = ? 
             AND     pl.locationId = ?
         `;
+        
+        const formattedQuery = mysql.format(query,[roleId, locationId]);
+        //console.log(formattedQuery);
 
         const [userResults] = await connection.query(query, [roleId, locationId]);
+        
         res.json(userResults.length ? userResults : []);
     } catch (err) {
         console.error('Error executing query:', err);
@@ -634,5 +638,36 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
       }
   }
 });
+
+router.post('/insert-profile-assignment/:scheduleLocationId/:primaryProfileId/:altProfileId', authenticateToken, async (req, res) => {
+    const { scheduleLocationId, primaryProfileId, altProfileId } = req.params;
+    console.log('scheduleLocationId', scheduleLocationId);
+    
+    // Convert 'NULL' string to actual null value
+    const altProfileIdValue = altProfileId === 'null' || altProfileId === 'NULL' ? null : altProfileId;
+
+    let connection;
+    try {
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
+
+        const profileInsertQuery = `INSERT INTO admin.scheduleProfile (scheduleLocationId, profileId, altProfileId) VALUES (?, ?, ?)`;
+  
+        const [profileResult] = await connection.query(profileInsertQuery, [scheduleLocationId, primaryProfileId, altProfileIdValue]);
+        res.json({ message: 'Profile Assigned' });
+  
+    } catch (error) {
+        console.error('Error assigning profile to event:', error);
+        res.status(500).json({ error: 'Error assigning profile to event' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('insert-profile-assignment: Connection not established.');
+        }
+    }
+});
+
+
 
 module.exports = router;

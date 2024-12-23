@@ -79,7 +79,7 @@ export class SchedulerComponent implements AfterViewInit {
         ...args.e.data,
         duration: (args.newEnd.getTime() - args.newStart.getTime()) / (60 * 1000)
     };
-
+    
       updatedEvent.duration = (args.newEnd.getTime() - args.newStart.getTime()) / (60 * 1000); // Calculate duration in minutes
       this.openAddEventDialog('300ms', '100ms', false, updatedEvent);
     }
@@ -113,8 +113,8 @@ export class SchedulerComponent implements AfterViewInit {
       this.customDPEvents = this.scheduleList.map(schedule => this.mapScheduleToEvent(schedule));
       this.updateCalendar();
       // console.log('loadEvents: scheduleList:', this.scheduleList);
-    });
-    
+    });  
+     
   }
   
   mapScheduleToEvent(schedule: ISchedule): ICustomDayPilotEventData {
@@ -145,8 +145,9 @@ export class SchedulerComponent implements AfterViewInit {
       isActive: schedule.isActive,
       isReservation: schedule.isReservation,
       isCostToAttend: schedule.isCostToAttend,
-      startTime: this.formatTime(schedule.startTime), // Add this property
-      endTime: this.formatTime(schedule.endTime) // Add this property
+      startTime: this.formatTime(schedule.startTime),
+      endTime: this.formatTime(schedule.endTime),
+      profileId: schedule.profileId
     };
   }
   
@@ -393,7 +394,8 @@ function createEventDataManager() {
         duration: result.duration,
         startTime: startDate.toString('HH:mm:ss'), // Add this property
         endTime: endDate.toString('HH:mm:ss'), // Add this property
-        locationValues: result.locationValues
+        locationValues: result.locationValues,
+        profileId: result.profileId
       };
     },
     updateEvent(existingEvent: ICustomDayPilotEventData, result: any, startDate: DayPilot.Date, endDate: DayPilot.Date): ICustomDayPilotEventData {

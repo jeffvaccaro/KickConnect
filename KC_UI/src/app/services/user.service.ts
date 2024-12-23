@@ -121,7 +121,7 @@ export class UserService {
   }
 
   updateProfile(userId: number, profileData: any) {
-    //onsole.log('Service Called', profileData);
+    //console.log('Service Called', profileData);
     return this.http.put(`${this.apiUrl}/update-profile/${userId}`, profileData);
   }
   
@@ -134,6 +134,28 @@ export class UserService {
     return this.http.post(`${this.apiUrl}/add-user`, formData);
   }
 
+  insertProfileAssignment(scheduleLocationId: number, primaryProfileId: number, altProfileId?: number) {
+
+    const altProfileIdValue = altProfileId !== undefined && altProfileId !== null ? altProfileId : 'null';
+    const url = `${this.apiUrl}/insert-profile-assignment/${scheduleLocationId}/${primaryProfileId}/${altProfileIdValue}`;
+    console.log('Constructed URL:', url);
+    
+    const request = this.http.post(url, {});
+  
+    request.subscribe({
+      next: response => {
+        console.log('Post request successful:', response);
+      },
+      error: error => {
+        console.error('Post request failed:', error);
+      }
+    });
+  
+    return request;
+  }
+  
+  
+  
   sendUserResetLink(userId: string, accountcode: string): Observable<any> {
     const url = `${this.apiUrl}/send-user-reset-link`;
     const params = new HttpParams().set('userId', userId.toString()).set('accountCode', accountcode.toString());

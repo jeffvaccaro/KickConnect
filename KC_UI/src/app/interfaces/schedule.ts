@@ -2,6 +2,7 @@
 export interface ISchedule {
     accountId: number,
     scheduleMainId: number,
+    scheduleLocationId: number,
     eventId: number,
     eventName: string,
     eventDescription: string,
@@ -17,5 +18,6 @@ export interface ISchedule {
     isRepeat: boolean,
     isActive: boolean,
     isReservation: boolean,
-    isCostToAttend: boolean
+    isCostToAttend: boolean,
+    profileId: number
 }

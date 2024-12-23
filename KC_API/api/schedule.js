@@ -192,7 +192,9 @@ router.get('/get-location-assignment-schedule/:locationId', authenticateToken, a
                 s.isActive, 
                 s.accountId, 
                 s.scheduleMainId, 
-                sl.locationId AS locationValues
+                sl.scheduleLocationId,
+                sl.locationId AS locationValues,
+                sp.profileId
             FROM 
                 admin.schedulemain s
             INNER JOIN  
@@ -203,6 +205,9 @@ router.get('/get-location-assignment-schedule/:locationId', authenticateToken, a
                 admin.scheduleLocation sl 
                 ON s.scheduleMainId = sl.scheduleMainId
                 AND sl.locationid = ?
+            LEFT JOIN
+                admin.scheduleProfile sp
+                ON sl.scheduleLocationId = sp.scheduleLocationId
             WHERE 
                 (WEEK(s.selectedDate) = WEEK(CURDATE()) AND YEAR(s.selectedDate) = YEAR(CURDATE()) AND s.isRepeat = false)
             OR 
@@ -210,7 +215,7 @@ router.get('/get-location-assignment-schedule/:locationId', authenticateToken, a
             GROUP BY 
                 e.eventId, e.eventName, e.eventDescription, 
                 s.day, s.startTime, s.endTime, s.selectedDate, 
-                s.isRepeat, s.isActive, s.accountId, s.scheduleMainId;
+                s.isRepeat, s.isActive, s.accountId, s.scheduleMainId, sl.scheduleLocationId, sp.profileId;
         `;
         const locationParam = [locationId];
         const results = await executeQuery(connection, query, [locationParam]);

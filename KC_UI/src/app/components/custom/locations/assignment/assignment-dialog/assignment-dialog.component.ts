@@ -24,7 +24,6 @@ import { DaysEnum } from '../../../../../enums/days';
 import { RolesEnum } from '../../../../../enums/roles';
 import { UserProfileObject } from '../../../../../objects/user-profile/user-profile';
 
-
 @Component({
   selector: 'app-assignment-dialog',
   standalone: true,
@@ -43,16 +42,18 @@ import { UserProfileObject } from '../../../../../objects/user-profile/user-prof
     MatIconModule
   ],
   templateUrl: './assignment-dialog.component.html',
-  styleUrl: './assignment-dialog.component.scss'
+  styleUrls: ['./assignment-dialog.component.scss']
 })
-export class AssignmentDialogComponent  implements OnInit {
+export class AssignmentDialogComponent implements OnInit {
   assignmentForm: FormGroup;
   locationName: string;
   eventName: string;
   eventDay: string;
   eventTime: string;
   eventLength: string;
-  userProfileArr: UserProfileObject[];
+  userProfileArr: UserProfileObject[] = [];
+  scheduleLocationId: number;
+
 
   constructor(
     private fb: FormBuilder,
@@ -69,34 +70,32 @@ export class AssignmentDialogComponent  implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    //this.checkAuthorization();
     this.initializeForm();
-    //this.customFormValidationService.setupConditionalValidators(this.eventForm);
-    //this.subscribeToFormChanges();
+    this.loadUserProfiles(); // Separate the user profiles loading logic
   }
 
-  initializeForm(){
-
+  initializeForm() {
     const today = new Date();
     const closestHour = today.getMinutes() >= 30 ? today.getHours() + 1 : today.getHours();
     const defaultTime = closestHour >= 12 ? `${closestHour - 12 === 0 ? 12 : closestHour - 12}:00 PM` : `${closestHour === 0 ? 12 : closestHour}:00 AM`;
-  
+
     const data = this.data;
     const isReadOnly = data?.existingEventValue !== 'newEvent' && !!data?.existingEventValue;
-  
-    // Correctly parse selectedDate to avoid timezone issues
+
     const selectedDate = data?.selectedDate ? new Date(`${data.selectedDate}T00:00:00`) : new Date();
-   
+
     this.locationName = data.locationName;
     this.eventName = data.eventName;
     this.eventDay = DaysEnum[data.day];
     this.eventTime = this.convertTo12Hour(data.selectedTime);
     this.eventLength = data.duration;
+    this.scheduleLocationId = data.scheduleLocationId;
 
     this.assignmentForm = this.fb.group({
       eventId: [data?.existingEventId],
       eventName: [{ value: data?.eventName, disabled: false }],
-      eventDescription: [{value: data?.existingEventDescription, disabled: false}],
+      eventDescription: [{ value: data?.existingEventDescription, disabled: false }],
+      
       locationValues: [data?.locationValues !== undefined ? Number(data.locationValues) : -99, []],
       locationName: [data?.locationName],
       selectedDate: [selectedDate],
@@ -109,44 +108,48 @@ export class AssignmentDialogComponent  implements OnInit {
       isCostToAttend: [data?.isCostToAttend ?? false, []],
       reservationCount: [0, []],
       costToAttend: [0, []],
+      primaryProfile: [data?.primaryProfile ?? ''],
+      alternateProfile: [data?.alternateProfile ?? '']
     });
 
-    this.userService.getUsersByLocationAndRole(RolesEnum.Instructor, data.locationValues).subscribe({
+    // Log the initial state of the form
+    //console.log('Initial Assignment Form:', this.assignmentForm.value);
+  }
+
+  loadUserProfiles() {
+    this.userService.getUsersByLocationAndRole(RolesEnum.Instructor, this.data.locationValues).subscribe({
       next: response => {
-          console.log('getusersbylocationandrole',response);
-        },      
+        this.userProfileArr = response;
+        // Manually trigger change detection to update the view
+        this.cdr.detectChanges();
+        // Log the response and current state of the form controls
+        //console.log('Fetched User Profiles:', this.userProfileArr);
+        //console.log('Updated Assignment Form:', this.assignmentForm.value);
+      },
       error: error => {
         console.error('Error fetching location data:', error);
-        // Handle error here (e.g., show error message)
       }
     });
   }
 
-  trackByProfileId(index: number, userProfileObject: UserProfileObject): number {
-    return userProfileObject.profileId;
+  trackByUserId(index: number, userProfileObject: UserProfileObject): number {
+    return userProfileObject.userId;
   }
 
   save() {
-    //
+    this.userService.insertProfileAssignment(this.scheduleLocationId,
+      this.assignmentForm.value.primaryProfile, this.assignmentForm.value.alternateProfile != '' ? this.assignmentForm.value.alternateProfile : 'NULL');
+    this.close();
   }
+
   close() {
     this.dialogRef.close();
   }
 
-
-  convertTo12Hour(timeValue: string) {
-    // Split the input string into hours and minutes
+  convertTo12Hour(timeValue: string): string {
     const [hour, minute] = timeValue.split(':').map(Number);
-
-    // Determine AM or PM
     const ampm = hour >= 12 ? 'PM' : 'AM';
-
-    // Convert 24-hour time to 12-hour time
     const hour12 = hour % 12 || 12;
-
-    // Return formatted time string
     return `${hour12}:${minute.toString().padStart(2, '0')} ${ampm}`;
-}
-
-
+  }
 }

@@ -51,6 +51,7 @@ export class AssignmentComponent implements AfterViewInit {
         ...args.e.data,
         accountId: args.e.data.accountId,
         scheduleMainId: args.e.data.scheduleMainId,
+        scheduleLocationId: args.e.data.scheduleLocationId,
         existingEventId: args.e.data.existingEventId,
         existingEventValue: args.e.data.existingEventValue,
         existingEventName: args.e.data.existingEventName || 'defaultName',
@@ -73,24 +74,6 @@ export class AssignmentComponent implements AfterViewInit {
     
       this.openAddEventDialog('300ms', '100ms', false, eventData);
     }
-    // onEventMoved: (args) => {
-    //   const updatedEvent = {
-    //     ...args.e.data,
-    //     start: new DayPilot.Date(args.newStart), // Ensure start is a Date object
-    //     end: new DayPilot.Date(args.newEnd) // Ensure end is a Date object
-    // };
-    //   this.openAddEventDialog('300ms', '100ms', false, updatedEvent);
-    // },
-    // onEventResized: (args) => {
-    //   const updatedEvent = {
-    //     ...args.e.data,
-    //     duration: (args.newEnd.getTime() - args.newStart.getTime()) / (60 * 1000)
-    // };
-
-    //   updatedEvent.duration = (args.newEnd.getTime() - args.newStart.getTime()) / (60 * 1000); // Calculate duration in minutes
-    //   this.openAddEventDialog('300ms', '100ms', false, updatedEvent);
-    // }
-    
   };
   
   constructor(public dialog: MatDialog, private ds: DataService, private schedulerService: SchedulerService, private locationService: LocationService,
@@ -119,10 +102,9 @@ export class AssignmentComponent implements AfterViewInit {
   loadEvents(locationId: number): void {
     this.schedulerService.getSchedulesWithAssignmentsByLocation(locationId).subscribe((data: ISchedule[]) => {
       this.scheduleList = data;
-      //console.log('scheduleList',this.scheduleList);
+      //console.log('loadEvents',data);
       this.customDPEvents = this.scheduleList.map(schedule => this.mapScheduleToEvent(schedule));
       this.updateCalendar();
-      // console.log('loadEvents: scheduleList:', this.scheduleList);
     });
 
     this.locationService.getLocationsById(locationId).subscribe({
@@ -144,6 +126,7 @@ export class AssignmentComponent implements AfterViewInit {
     return {
       accountId: schedule.accountId,
       scheduleMainId: schedule.scheduleMainId,
+      scheduleLocationId: schedule.scheduleLocationId,
       id: schedule.eventId,
       text: schedule.eventName,
       start: `${formattedDate}T${this.formatTime(schedule.startTime)}`,
@@ -164,15 +147,26 @@ export class AssignmentComponent implements AfterViewInit {
       isActive: schedule.isActive,
       isReservation: schedule.isReservation,
       isCostToAttend: schedule.isCostToAttend,
-      startTime: this.formatTime(schedule.startTime), // Add this property
-      endTime: this.formatTime(schedule.endTime) // Add this property
+      startTime: this.formatTime(schedule.startTime),
+      endTime: this.formatTime(schedule.endTime),
+      profileId: schedule.profileId
     };
   }
   
   
   updateCalendar(): void {
     if (this.calendar && this.calendar.control) {
+      // Iterate over this.customDPEvents to set the color based on profileId
+      this.customDPEvents.forEach(event => {
+        if (event.profileId) {
+          event.backColor = "#0000FF"; // Blue color if profileId is not null
+        } else {
+          event.backColor = "#FFC0CB"; // Pink color if profileId is null
+        }
+      });
+  
       this.calendar.control.events.list = this.customDPEvents;
+      // console.log(this.calendar.control.events.list);
       this.calendar.control.update();
     }
   }
@@ -201,28 +195,33 @@ export class AssignmentComponent implements AfterViewInit {
   }
 
   openAddEventDialog(enterAnimationDuration: string, exitAnimationDuration: string, isNew: boolean, event?: any): void {
-     console.log("openAddEventDialog");
-     const eventDataManager = createEventDataManager();
-     const dialogRef = this.dialog.open(AssignmentDialogComponent, {
+    const eventDataManager = createEventDataManager();
+    const dialogRef = this.dialog.open(AssignmentDialogComponent, {
       width: '600px',
       enterAnimationDuration,
       exitAnimationDuration,
       data: this.createEventData(isNew, event)
-     });
+    });
   
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.handleEventDialogClose(event, result, eventDataManager);
-    //   } else {
-    //     this.loadEvents();
-    //   }
-    // });
+    // Capture when the dialog closes
+    dialogRef.afterClosed().subscribe(result => {
+      this.loadEvents(this.locationId);
+    });
   }
+  
+  // Example method to handle the dialog close
+  handleDialogClose(result: any): void {
+    // Your logic here, e.g., updating the event list, calling a service, etc.
+    console.log('Handling dialog close with result:', result);
+    this.loadEvents(this.locationId); // Example action: reload events after dialog closes
+  }
+  
   
   createEventData(isNew: boolean, event?: any): any {
     return event ? {
       accountId: event.accountId,
       scheduleMainId: event.scheduleMainId,
+      scheduleLocationId: event.scheduleLocationId,
       eventName: event.text || '',
       day: event.day,
       selectedDate: event.start.toString('yyyy-MM-dd') || '',
@@ -244,31 +243,6 @@ export class AssignmentComponent implements AfterViewInit {
     } : {};
   }
 
-  // handleEventDialogClose(event: any, result: any, eventDataManager: any): void {
-  //   //console.log('onClose', result);
-  //   const startDate = this.createDayPilotDate(result.selectedDate, result.selectedTime);
-  //   const endDate = new DayPilot.Date(new Date(startDate.getTime() + result.duration * 60 * 1000));
-  
-  //   result.costToAttend = result.costToAttend === '' ? 0 : result.costToAttend;
-  
-  //   const standardDate = new Date(startDate.toString());
-  //   result.day = new Date(startDate.toString()).getDay(); // Correctly capture the day of the week (0-6)
-  
-  //   result.selectedDate = startDate.toString('yyyy-MM-dd');
-  //   result.startTime = startDate.toString('HH:mm:ss');
-  //   result.endTime = endDate.toString('HH:mm:ss');
-
-  //   if (event) {
-  //     const eventIndex = this.customDPEvents.findIndex(evt => evt.scheduleMainId === event.scheduleMainId);
-  //     if (eventIndex !== -1) {
-  //       result.existingEventDescription = event.existingEventDescription;
-  //       const updatedEvent = eventDataManager.updateEvent(event, result, startDate, endDate);
-  //       this.updateBackendAndUI(event, updatedEvent, eventIndex);
-  //     }
-  //   } else {
-  //     this.addNewEvent(result, startDate, endDate, eventDataManager);
-  //   }
-  // }
   
   createDayPilotDate(selectedDate: string, selectedTime: string): DayPilot.Date {
     
@@ -317,58 +291,7 @@ export class AssignmentComponent implements AfterViewInit {
     });
   }
   
-  // addNewEvent(result: any, startDate: DayPilot.Date, endDate: DayPilot.Date, eventDataManager: any): void {
-  //   const eDataItem = eventDataManager.createEvent(result, startDate, endDate);
   
-  //   if (eDataItem.existingEventValue === "newEvent") {
-  //     const eventObj: IEvent = {
-  //       eventId: 0,
-  //       eventName: result.eventName,
-  //       eventDescription: result.eventDescription,
-  //       isReservation: result.isReservation,
-  //       reservationCount: result.reservationCount,
-  //       isCostToAttend: result.isCostToAttend,
-  //       costToAttend: result.costToAttend,
-  //       isActive: true,
-  //       createdBy: '',
-  //       accountId: result.accountId
-  //     };
-  
-  //     this.eventService.addEvent(eventObj).subscribe({
-  //       next: (eventId) => {
-  //         const modifiedResult = { ...result, eventId };
-  //         // console.log('modifiedResult:', modifiedResult);
-  //         this.schedulerService.addScheduleEvent(modifiedResult).subscribe({
-  //           next: (scheduleMainId) => {
-  //             eDataItem.existingEventDescription = result.eventDescription;
-  //             this.customDPEvents.push({ ...eDataItem, scheduleMainId });
-  //             this.calendar.control.update();
-  //             this.loadEvents(this.locationId)
-  //           },
-  //           error: (error) => console.error('Error occurred while adding schedule event:', error)
-  //         });
-  //       },
-  //       error: (error) => console.error('Error occurred while adding event:', error)
-  //     });
-  //   } else {
-
-  //     result.eventId = result.existingEventValue;
-  //     const modifiedResult = { ...result };
-  //     this.schedulerService.addScheduleEvent(modifiedResult).subscribe({
-  //       next: (scheduleMainId) => {
-  //         eDataItem.existingEventId = modifiedResult.existingEventId;
-  //         eDataItem.existingEventValue = modifiedResult.existingEventId;
-  //         eDataItem.existingEventName = modifiedResult.eventName || modifiedResult.existingEventName;
-  //         eDataItem.text = modifiedResult.eventName || modifiedResult.existingEventName;
-  //         eDataItem.existingEventDescription = modifiedResult.existingEventDescription;
-  //         this.customDPEvents.push({ ...eDataItem, scheduleMainId });
-  //         this.calendar.control.update();
-  //         this.loadEvents(this.locationId)
-  //       },
-  //       error: (error) => console.error('Error occurred while adding schedule event:', error)
-  //     });
-  //   }
-  // }
 }  
 
 function createEventData() {
@@ -415,7 +338,8 @@ function createEventDataManager() {
         duration: result.duration,
         startTime: startDate.toString('HH:mm:ss'), // Add this property
         endTime: endDate.toString('HH:mm:ss'), // Add this property
-        locationValues: result.locationValues
+        locationValues: result.locationValues,
+        profileId: result.profileId
       };
     },
     updateEvent(existingEvent: ICustomDayPilotEventData, result: any, startDate: DayPilot.Date, endDate: DayPilot.Date): ICustomDayPilotEventData {
