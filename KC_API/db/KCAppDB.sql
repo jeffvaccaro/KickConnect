@@ -167,7 +167,7 @@ CREATE TABLE `profile` (
 
 LOCK TABLES `profile` WRITE;
 /*!40000 ALTER TABLE `profile` DISABLE KEYS */;
-INSERT INTO `profile` VALUES (1,4,'test profile desc','UFAF Krav Maga Instructor Certification, BJJ, ju-jit-su','www.coach1.com'),(4,5,'','',''),(5,8,'','','');
+INSERT INTO `profile` VALUES (1,4,'test profile desc','bjj, Ju-Jit-Su Master','www.coach1.com'),(4,5,'test desc','AKMF Instructor Certification, IKMF, KMIC Certification, bjj, KMW Instructor Certification, UFAF Krav Maga Instructor Certification, Ju-Jit-Su Master','coach2.com'),(5,8,'','','');
 /*!40000 ALTER TABLE `profile` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,7 +184,7 @@ CREATE TABLE `profilelocation` (
   `locationId` int NOT NULL,
   `isHome` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`profileLocationId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,7 +193,7 @@ CREATE TABLE `profilelocation` (
 
 LOCK TABLES `profilelocation` WRITE;
 /*!40000 ALTER TABLE `profilelocation` DISABLE KEYS */;
-INSERT INTO `profilelocation` VALUES (1,1,1,1),(2,1,2,0),(3,1,3,0);
+INSERT INTO `profilelocation` VALUES (26,4,2,1),(27,1,1,1),(28,1,2,0),(29,1,3,0);
 /*!40000 ALTER TABLE `profilelocation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -311,7 +311,7 @@ CREATE TABLE `scheduleprofile` (
   CONSTRAINT `fkAltProfile` FOREIGN KEY (`altProfileId`) REFERENCES `profile` (`profileId`),
   CONSTRAINT `fkProfile` FOREIGN KEY (`profileId`) REFERENCES `profile` (`profileId`),
   CONSTRAINT `fkScheduleLocation` FOREIGN KEY (`scheduleLocationId`) REFERENCES `schedulelocation` (`scheduleLocationId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -320,6 +320,7 @@ CREATE TABLE `scheduleprofile` (
 
 LOCK TABLES `scheduleprofile` WRITE;
 /*!40000 ALTER TABLE `scheduleprofile` DISABLE KEYS */;
+INSERT INTO `scheduleprofile` VALUES (2,72,4,NULL),(3,24,4,NULL),(4,24,4,NULL),(5,102,4,NULL),(6,102,4,NULL),(7,63,4,NULL),(8,63,4,NULL),(9,87,4,NULL),(10,87,4,NULL),(11,108,4,NULL),(12,108,4,NULL),(13,105,4,NULL),(14,105,4,NULL);
 /*!40000 ALTER TABLE `scheduleprofile` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -335,7 +336,7 @@ CREATE TABLE `skill` (
   `skillName` varchar(250) NOT NULL,
   `skillDescription` varchar(1000) NOT NULL,
   PRIMARY KEY (`skillId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -344,7 +345,7 @@ CREATE TABLE `skill` (
 
 LOCK TABLES `skill` WRITE;
 /*!40000 ALTER TABLE `skill` DISABLE KEYS */;
-INSERT INTO `skill` VALUES (1,'KMW Instructor Certification','Krav Maga Worldwide (KMW) Instructor Certification'),(2,'AKMF Instructor Certification','American Krav Maga Federation (AKMF) Instructor Certification'),(3,'KMIC Certification','Tactica Krav Maga Institute (KMIC) Certification'),(4,'UFAF Krav Maga Instructor Certification','United Fighting Arts Federation (UFAF) Krav Maga Instructor Certification'),(5,'IKMF','International Krav Maga Federation (IKMF) Instructor Certification');
+INSERT INTO `skill` VALUES (1,'KMW Instructor Certification','Krav Maga Worldwide (KMW) Instructor Certification'),(2,'AKMF Instructor Certification','American Krav Maga Federation (AKMF) Instructor Certification'),(3,'KMIC Certification','Tactica Krav Maga Institute (KMIC) Certification'),(4,'UFAF Krav Maga Instructor Certification','United Fighting Arts Federation (UFAF) Krav Maga Instructor Certification'),(5,'IKMF','International Krav Maga Federation (IKMF) Instructor Certification'),(36,'bjj',''),(37,'Ju-Jit-Su Master','');
 /*!40000 ALTER TABLE `skill` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -536,4 +537,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-14 19:50:08
+-- Dump completed on 2024-12-26 13:19:16
