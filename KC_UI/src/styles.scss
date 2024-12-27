@@ -3,9 +3,9 @@
     --fontFamily: 'Open Sans', sans-serif;
     --headingFontFamily: 'Raleway', sans-serif;
 
-    --heraBlueColor: #000000;
-    --aareRiverColor: #FFD700;
-    --warnColor: #b02a37;
+    --mainColor: #000000;
+    --secondaryColor: #FFD700;
+    --tertiaryColor: #b02a37;
 
 
     --blackColor: #000000;
@@ -69,7 +69,7 @@ a {
 
     &:hover {
         text-decoration: none;
-        color: var(--heraBlueColor);
+        color: var(--mainColor);
     }
 }
 .d-table {
@@ -120,7 +120,7 @@ button {
     color: var(--whiteColor);
     padding: 11px 31px 11px 15px;
     transition: var(--transition);
-    background-color: var(--heraBlueColor);
+    background-color: var(--mainColor);
 
     i {
         transform: translateY(-50%);
@@ -131,7 +131,7 @@ button {
         top: 50%;
     }
     &:hover {
-        //background-color: var(--aareRiverColor);
+        //background-color: var(--secondaryColor);
         color: var(--whiteColor);
     }
 }
@@ -177,7 +177,7 @@ button {
                 x: hidden;
             };
             .menu-header {
-                background-color: var(--heraBlueColor);
+                background-color: var(--mainColor);
                 border-radius: 5px 5px 0 0;
                 padding: 15px;
 
@@ -283,7 +283,7 @@ button {
                         font-size: 14px;
                     }
                     &:hover {
-                        color: var(--heraBlueColor);
+                        color: var(--mainColor);
                     }
                 }
                 .d-flex {
@@ -302,7 +302,7 @@ button {
                 a {
                     font-size: 14px;
                     padding-right: 18px;
-                    color: var(--heraBlueColor);
+                    color: var(--mainColor);
 
                     i {
                         top: 50%;
@@ -449,7 +449,7 @@ button {
                     }
                     &:hover {
                         .mdc-list-item__primary-text {
-                            color: var(--heraBlueColor);
+                            color: var(--mainColor);
                         }
                     }
                 }
@@ -539,7 +539,7 @@ button {
                 transition: var(--transition);
                 
                 &:hover {
-                    color: var(--heraBlueColor);
+                    color: var(--mainColor);
                 }
                 .mdc-button__ripple, .mat-mdc-button-persistent-ripple, .mat-ripple {
                     display: none;
@@ -610,7 +610,7 @@ button {
                     position: absolute;
                     font-size: 22px !important;
                     transform: translateY(-50%);
-                    color: var(--heraBlueColor);
+                    color: var(--mainColor);
                     background-color: transparent;
                     transition: var(--transition);
         
@@ -682,14 +682,14 @@ button {
                                         border-radius: 10px;
                                     }
                                     &:hover {
-                                        color: var(--heraBlueColor);
+                                        color: var(--mainColor);
                                     }
                                 }
                                 .badge {
                                     font-size: 14px;
                                     border-radius: 4px;
                                     padding: 4px 13px 5px;
-                                    color: var(--heraBlueColor);
+                                    color: var(--mainColor);
                                     background: rgba(117, 127, 239, 0.1);
 
                                     &.delivered {
@@ -818,7 +818,7 @@ button {
                         .mdc-data-table__header-row {
                             .mdc-data-table__header-cell {
                                 &:first-child {
-                                    color: var(--heraBlueColor);
+                                    color: var(--mainColor);
                                 }
                             }
                         }
@@ -838,7 +838,7 @@ button {
                                     right: 25px;
                                 };
                                 &:first-child {
-                                    color: var(--heraBlueColor);
+                                    color: var(--mainColor);
                                 }
                             }
                         }
@@ -853,7 +853,7 @@ button {
                                         color: var(--paragraphColor);
 
                                         &:hover {
-                                            color: var(--heraBlueColor);
+                                            color: var(--mainColor);
                                         }
                                     }
                                     .mdc-checkbox {
@@ -870,7 +870,7 @@ button {
                                             font-size: 17px;
                                             position: absolute;
                                             transform: translateY(-50%);
-                                            color: var(--heraBlueColor);
+                                            color: var(--mainColor);
                                         }
                                     }
                                     .user-info {
@@ -915,7 +915,7 @@ button {
                     .mdc-data-table__header-row {
                         .mdc-data-table__header-cell {
                             &:first-child {
-                                color: var(--heraBlueColor);
+                                color: var(--mainColor);
                             }
                         }
                     }
@@ -960,7 +960,7 @@ button {
                         .mdc-data-table__header-row {
                             .mdc-data-table__header-cell {
                                 &:first-child {
-                                    color: var(--heraBlueColor);
+                                    color: var(--mainColor);
                                 }
                             }
                         }
@@ -1063,7 +1063,7 @@ button {
                                             margin-right: 0;
                                         }
                                         &.mdc-tab--active {
-                                            background-color: var(--heraBlueColor);
+                                            background-color: var(--mainColor);
                                             color: var(--whiteColor);
         
                                             .mdc-tab__text-label {
@@ -1102,7 +1102,7 @@ button {
                 .mdc-text-field--focused {
                     &:not(.mdc-text-field--disabled) {
                         .mdc-floating-label {
-                            color: var(--heraBlueColor) !important;
+                            color: var(--mainColor) !important;
                         }
                     }
                 }
@@ -1160,7 +1160,7 @@ button {
                     color: var(--whiteColor);
                     min-width: unset !important;
                     padding: 17px 50px !important;
-                    background-color: var(--heraBlueColor);
+                    background-color: var(--mainColor);
                     font: {
                         family: var(--headingFontFamily) !important;
                         weight: 600 !important;
@@ -1172,7 +1172,7 @@ button {
                     }
                     &:hover {
                         color: var(--whiteColor);
-                        //background-color: var(--aareRiverColor);
+                        //background-color: var(--secondaryColor);
                     }
                 }
             }
@@ -1231,7 +1231,7 @@ button {
             display: none;
         }
         &.bg-main-color {
-            background-color: var(--heraBlueColor) !important;
+            background-color: var(--mainColor) !important;
         }
         &.enrolled-created-box {
             .mat-mdc-tab-group {
@@ -1268,7 +1268,7 @@ button {
                                         margin-right: 0;
                                     }
                                     &.mdc-tab--active {
-                                        background-color: var(--heraBlueColor);
+                                        background-color: var(--mainColor);
                                         color: var(--whiteColor);
 
                                         .mdc-tab__text-label {
@@ -1333,7 +1333,7 @@ button {
                                                 .badge {
                                                     border-radius: 4px;
                                                     padding: 4px 20px 5px;
-                                                    color: var(--heraBlueColor);
+                                                    color: var(--mainColor);
                                                     background: rgba(117, 127, 239, 0.1);
                     
                                                     &.failed {
@@ -1375,7 +1375,7 @@ button {
                 .mdc-text-field--focused {
                     &:not(.mdc-text-field--disabled) {
                         .mdc-floating-label {
-                            color: var(--heraBlueColor) !important;
+                            color: var(--mainColor) !important;
                         }
                     }
                 }
@@ -1434,7 +1434,7 @@ button {
                 color: var(--whiteColor);
                 min-width: unset !important;
                 padding: 17px 50px !important;
-                background-color: var(--heraBlueColor);
+                background-color: var(--mainColor);
                 font: {
                     family: var(--headingFontFamily) !important;
                     weight: 600 !important;
@@ -1446,7 +1446,7 @@ button {
                 }
                 &:hover {
                     color: var(--whiteColor);
-                    //background-color: var(--aareRiverColor);
+                    //background-color: var(--secondaryColor);
                 }
             }
         }
@@ -1513,7 +1513,7 @@ button {
                             };
                             i {
                                 transform: translateY(-50%);
-                                color: var(--heraBlueColor);
+                                color: var(--mainColor);
                                 position: absolute;
                                 font-size: 20px;
                                 top: 50%;
@@ -1766,10 +1766,10 @@ quill-editor {
         }
     }
     .ql-snow.ql-toolbar button:hover, .ql-snow .ql-toolbar button:hover, .ql-snow.ql-toolbar button:focus, .ql-snow .ql-toolbar button:focus, .ql-snow.ql-toolbar button.ql-active, .ql-snow .ql-toolbar button.ql-active, .ql-snow.ql-toolbar .ql-picker-label:hover, .ql-snow .ql-toolbar .ql-picker-label:hover, .ql-snow.ql-toolbar .ql-picker-label.ql-active, .ql-snow .ql-toolbar .ql-picker-label.ql-active, .ql-snow.ql-toolbar .ql-picker-item:hover, .ql-snow .ql-toolbar .ql-picker-item:hover, .ql-snow.ql-toolbar .ql-picker-item.ql-selected, .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
-        color: var(--heraBlueColor);
+        color: var(--mainColor);
     }
     .ql-snow.ql-toolbar button:hover .ql-stroke, .ql-snow .ql-toolbar button:hover .ql-stroke, .ql-snow.ql-toolbar button:focus .ql-stroke, .ql-snow .ql-toolbar button:focus .ql-stroke, .ql-snow.ql-toolbar button.ql-active .ql-stroke, .ql-snow .ql-toolbar button.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow.ql-toolbar button:hover .ql-stroke-miter, .ql-snow .ql-toolbar button:hover .ql-stroke-miter, .ql-snow.ql-toolbar button:focus .ql-stroke-miter, .ql-snow .ql-toolbar button:focus .ql-stroke-miter, .ql-snow.ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
-        stroke: var(--heraBlueColor);
+        stroke: var(--mainColor);
     }
 }
 
@@ -1805,7 +1805,7 @@ quill-editor {
                 color: var(--paragraphColor);
 
                 &:hover {
-                    color: var(--heraBlueColor);
+                    color: var(--mainColor);
                 }
             }
             &:first-child {
@@ -1853,7 +1853,7 @@ quill-editor {
         line-height: 1;
   
         &:hover {
-          color: var(--heraBlueColor);
+          color: var(--mainColor);
         }
       }
     }
@@ -1892,7 +1892,7 @@ quill-editor {
           }
           
           &:focus {
-            border-color: var(--heraBlueColor);
+            border-color: var(--mainColor);
   
             &::placeholder {
               color: transparent;
@@ -1930,7 +1930,7 @@ quill-editor {
   
         &:hover {
           color: var(--whiteColor);
-          //background-color: var(--aareRiverColor);
+          //background-color: var(--secondaryColor);
         }
   
         &.gray {
@@ -1945,7 +1945,7 @@ quill-editor {
         }
   
         &.warn {
-          background-color: var(--warnColor);
+          background-color: var(--tertiaryColor);
           color: var(--blackColor);
           margin-right: 15px;
   
@@ -2010,7 +2010,7 @@ quill-editor {
         .fc-event-time, .fc-event-title {
             padding: 0 15px;
             white-space: normal;
-            color: var(--heraBlueColor);
+            color: var(--mainColor);
             font: {
                 size: 15px;
                 weight: 600;
@@ -2084,7 +2084,7 @@ quill-editor {
             font-size: 28px;
             border-radius: 0;
             position: absolute;
-            color: var(--heraBlueColor);
+            color: var(--mainColor);
             transform: translateY(-50%);
             transition: var(--transition);
             background-color: transparent;
@@ -2095,7 +2095,7 @@ quill-editor {
             }
             &:hover {
                 background-color: transparent;
-                //color: var(--aareRiverColor);
+                //color: var(--secondaryColor);
             }
         }
     }
@@ -2113,7 +2113,7 @@ quill-editor {
             }
             &:hover, &.active {
                 span {
-                    background-color: var(--heraBlueColor);
+                    background-color: var(--mainColor);
                 }
             }
         }
@@ -2143,7 +2143,7 @@ quill-editor {
         color: var(--whiteColor);
 
         &:hover {
-            color: var(--heraBlueColor);
+            color: var(--mainColor);
         }
     }
 
@@ -2177,7 +2177,7 @@ quill-editor {
                     color: #828690;
                     
                     &:hover {
-                        color: var(--heraBlueColor);
+                        color: var(--mainColor);
                     }
                 }
                 .sub-title {
@@ -2231,7 +2231,7 @@ quill-editor {
                                         color: #828690;
                                         
                                         &:hover {
-                                            color: var(--heraBlueColor);
+                                            color: var(--mainColor);
                                         }
                                     }
                                     .mat-mdc-checkbox {
@@ -2259,7 +2259,7 @@ quill-editor {
                             .mdc-data-table__header-row {
                                 .mdc-data-table__header-cell {
                                     &:first-child {
-                                        color: var(--heraBlueColor);
+                                        color: var(--mainColor);
                                     }
                                 }
                             }
@@ -2270,7 +2270,7 @@ quill-editor {
                             .mdc-data-table__header-row {
                                 .mdc-data-table__header-cell {
                                     &:first-child {
-                                        color: var(--heraBlueColor);
+                                        color: var(--mainColor);
                                     }
                                 }
                             }
@@ -2281,7 +2281,7 @@ quill-editor {
                                             color: #828690;
 
                                             &:hover {
-                                                color: var(--heraBlueColor);
+                                                color: var(--mainColor);
                                             }
                                         }
                                         .user-info {
@@ -2296,7 +2296,7 @@ quill-editor {
                         .mdc-data-table__header-row {
                             .mdc-data-table__header-cell {
                                 &:first-child {
-                                    color: var(--heraBlueColor);
+                                    color: var(--mainColor);
                                 }
                             }
                         }
@@ -2315,7 +2315,7 @@ quill-editor {
                             .mdc-data-table__header-row {
                                 .mdc-data-table__header-cell {
                                     &:first-child {
-                                        color: var(--heraBlueColor);
+                                        color: var(--mainColor);
                                     }
                                 }
                             }
@@ -2344,7 +2344,7 @@ quill-editor {
                                                 color: var(--whiteColor);
                                             }
                                             &.mdc-tab--active {
-                                                background-color: var(--heraBlueColor);
+                                                background-color: var(--mainColor);
                                                 color: var(--whiteColor);
             
                                                 .mdc-tab__text-label {
@@ -2362,7 +2362,7 @@ quill-editor {
                     .mdc-text-field--focused {
                         &:not(.mdc-text-field--disabled) {
                             .mdc-floating-label {
-                                color: var(--heraBlueColor) !important;
+                                color: var(--mainColor) !important;
                             }
                         }
                     }
@@ -2445,7 +2445,7 @@ quill-editor {
                                             color: var(--whiteColor);
                                         }
                                         &.mdc-tab--active {
-                                            background-color: var(--heraBlueColor);
+                                            background-color: var(--mainColor);
                                             color: var(--whiteColor);
 
                                             .mdc-tab__text-label {
@@ -2499,7 +2499,7 @@ quill-editor {
             }
         }
         &.bg-main-color {
-            background-color: var(--heraBlueColor) !important;
+            background-color: var(--mainColor) !important;
         }
     }
 
@@ -2514,7 +2514,7 @@ quill-editor {
                     color: #bdbdbd;
 
                     &:hover {
-                        color: var(--heraBlueColor);
+                        color: var(--mainColor);
                     }
                 }
             }
@@ -2530,7 +2530,7 @@ quill-editor {
                 }
                 &:hover, &.active {
                     span {
-                        background-color: var(--heraBlueColor);
+                        background-color: var(--mainColor);
                     }
                 }
             }
@@ -2734,7 +2734,7 @@ quill-editor {
                         color: var(--whiteColor);
                         
                         &:hover {
-                            color: var(--heraBlueColor);
+                            color: var(--mainColor);
                         }
                     }
                 }
@@ -2790,7 +2790,7 @@ quill-editor {
                         }
                         &:hover {
                             .mdc-list-item__primary-text {
-                                color: var(--heraBlueColor);
+                                color: var(--mainColor);
                             }
                         }
                     }
@@ -2808,7 +2808,7 @@ quill-editor {
                 color: var(--whiteColor);
     
                 &:hover {
-                    color: var(--heraBlueColor);
+                    color: var(--mainColor);
                 }
             }
         }
@@ -2825,7 +2825,7 @@ quill-editor {
                         color: var(--whiteColor);
                     }
                     &:focus {
-                        border-color: var(--heraBlueColor);
+                        border-color: var(--mainColor);
         
                         &::placeholder {
                             color: transparent;
@@ -2840,7 +2840,7 @@ quill-editor {
                         color: var(--whiteColor);
                     }
                     &:focus {
-                        border-color: var(--heraBlueColor);
+                        border-color: var(--mainColor);
         
                         &::placeholder {
                             color: transparent;

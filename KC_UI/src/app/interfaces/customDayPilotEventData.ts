@@ -22,5 +22,6 @@ export interface ICustomDayPilotEventData extends DayPilot.EventData {
     reservationCount: number,
     isCostToAttend: boolean,    
     costToAttend: number,
-    profileId: number
+    profileId: number,
+    altProfileId: number    
 }

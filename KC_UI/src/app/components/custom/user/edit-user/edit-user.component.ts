@@ -150,7 +150,7 @@ export class EditUserComponent implements OnInit {
       profileURL: this.form.value.profileURLControl,
       profileSkills: this.form.value.profileSkillsControl,
       primaryLocation: this.form.value.primaryLocationControl,
-      altLocations: this.form.value.Response.alternateLocationControl
+      altLocations: this.form.value.alternateLocationControl
     };
   
     const formData: FormData = new FormData();

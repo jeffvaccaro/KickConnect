@@ -14,7 +14,7 @@
     .mdc-text-field--focused {
         &:not(.mdc-text-field--disabled) {
             .mdc-floating-label {
-                color: var(--heraBlueColor) !important;
+                color: var(--mainColor) !important;
             }
         }
     }
@@ -175,8 +175,8 @@
         .mat-calendar-body-today {
             &:not(.mat-calendar-body-selected) {
                 &:not(.mat-calendar-body-comparison-identical) {
-                    background-color: var(--heraBlueColor) !important;
-                    border-color: var(--heraBlueColor) !important;
+                    background-color: var(--mainColor) !important;
+                    border-color: var(--mainColor) !important;
                     color: var(--whiteColor) !important;
                 }
             }
@@ -214,7 +214,7 @@
         position: absolute;
         font-size: 22px !important;
         transform: translateY(-50%);
-        color: var(--heraBlueColor);
+        color: var(--mainColor);
         background-color: transparent;
         transition: var(--transition);
 
@@ -225,7 +225,7 @@
             margin-top: 0;
             border-radius: 50%;
             color: var(--whiteColor);
-            background-color: var(--heraBlueColor);
+            background-color: var(--mainColor);
 
             i {
                 left: 0;
@@ -236,7 +236,7 @@
             }
             &:hover {
                 color: var(--whiteColor);
-                background-color: var(--aareRiverColor);
+                background-color: var(--secondaryColor);
             }
         }
         &.mdc-button {
@@ -262,7 +262,7 @@
 
         .mat-step-icon {
             background-color: #f3f3ff;
-            color: var(--heraBlueColor);
+            color: var(--mainColor);
             margin-right: 0;
             height: 45px;
             width: 45px;
@@ -289,7 +289,7 @@
             background-color: transparent;
         }
         .mat-step-icon-selected, .mat-step-icon-state-done, .mat-step-icon-state-edit {
-            background-color: var(--heraBlueColor);
+            background-color: var(--mainColor);
             color: var(--whiteColor);
         }
     }
@@ -312,7 +312,7 @@
         }
         .mat-step-icon {
             background-color: #f3f3ff;
-            color: var(--heraBlueColor);
+            color: var(--mainColor);
             height: 45px;
             width: 45px;
             font: {
@@ -321,7 +321,7 @@
             };
         }
         .mat-step-icon-selected, .mat-step-icon-state-done, .mat-step-icon-state-edit {
-            background-color: var(--heraBlueColor);
+            background-color: var(--mainColor);
             color: var(--whiteColor);
         }
         .mat-stepper-vertical-line {
@@ -417,7 +417,7 @@
         }
         button {
             &.bg-color {
-                background-color: var(--heraBlueColor) !important;
+                background-color: var(--mainColor) !important;
             }
         }
     }

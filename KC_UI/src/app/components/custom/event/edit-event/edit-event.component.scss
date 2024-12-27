@@ -1,5 +1,5 @@
 button {
-    background-color: var(--heraBlueColor);
+    background-color: var(--mainColor);
     transition: var(--transition);
     padding: 15px 28px 15px 50px;
     color: var(--whiteColor);
@@ -24,7 +24,7 @@ button {
 
     &:hover {
         color: var(--whiteColor);
-        //background-color: var(--aareRiverColor);
+        //background-color: var(--secondaryColor);
     }
     &.gray {
         background-color: #EDEFF5 !important;
@@ -37,7 +37,7 @@ button {
         }
     }
     &.warn {
-        background-color:  var(--warnColor) !important;
+        background-color:  var(--tertiaryColor) !important;
         color: var(--blackColor);
         margin-right: 15px;
 

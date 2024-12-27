@@ -39,13 +39,9 @@ export class AssignmentComponent implements AfterViewInit {
     viewType: 'Week',
     eventMoveHandling: "Disabled",
     eventResizeHandling: "Disabled",
-    onTimeRangeSelected: args => {
-      // Override default behavior by not calling any default function
-      // Do nothing here to prevent the default add event dialog
-    },
-    onEventClick: (args) => {
+    onTimeRangeSelected: args => {},
+    onEventClick: args => {
       const updatedEvent = args.e.data;
-      //console.log('args', args.e.data);
       const eventIndex = this.customDPEvents.findIndex(event => event.id === updatedEvent.id);
       const eventData = {
         ...args.e.data,
@@ -58,7 +54,7 @@ export class AssignmentComponent implements AfterViewInit {
         eventDescription: args.e.data.eventDescription || '',
         eventName: args.e.data.text || '',
         selectedDate: args.e.data.start.toString('yyyy-MM-dd'),
-        day: new Date(args.e.data.start).getDay(), // Use getDay to get the day of the week (0-6)
+        day: new Date(args.e.data.start).getDay(),
         selectedTime: args.e.data.start.toString('HH:mm'),
         duration: (args.e.data.end.getTime() - args.e.data.start.getTime()) / (60 * 1000),
         locationValues: args.e.data.locationValues !== undefined ? args.e.data.locationValues : -99,
@@ -70,10 +66,8 @@ export class AssignmentComponent implements AfterViewInit {
         isReservation: args.e.data.isReservation,
         isCostToAttend: args.e.data.isCostToAttend,
       };
-       console.log('eventData onClick:', eventData);
-    
       this.openAddEventDialog('300ms', '100ms', false, eventData);
-    }
+    },
   };
   
   constructor(public dialog: MatDialog, private ds: DataService, private schedulerService: SchedulerService, private locationService: LocationService,
@@ -122,7 +116,7 @@ export class AssignmentComponent implements AfterViewInit {
     const eventDate = new Date();
     eventDate.setDate(eventDate.getDate() - eventDate.getDay() + schedule.day);
     const formattedDate = this.formatDate(eventDate.toISOString());
-    
+    //console.log(schedule,'schedule');
     return {
       accountId: schedule.accountId,
       scheduleMainId: schedule.scheduleMainId,
@@ -149,27 +143,29 @@ export class AssignmentComponent implements AfterViewInit {
       isCostToAttend: schedule.isCostToAttend,
       startTime: this.formatTime(schedule.startTime),
       endTime: this.formatTime(schedule.endTime),
-      profileId: schedule.profileId
+      profileId: schedule.profileId,
+      altProfileId: schedule.altProfileId
     };
   }
   
   
   updateCalendar(): void {
     if (this.calendar && this.calendar.control) {
-      // Iterate over this.customDPEvents to set the color based on profileId
       this.customDPEvents.forEach(event => {
         if (event.profileId) {
-          event.backColor = "#0000FF"; // Blue color if profileId is not null
+          event.barColor = "#000000";
         } else {
-          event.backColor = "#FFC0CB"; // Pink color if profileId is null
+          // Assign CSS class if profileId is null
+
+          event.barColor = "#b02a37";
         }
       });
-  
+
       this.calendar.control.events.list = this.customDPEvents;
-      // console.log(this.calendar.control.events.list);
       this.calendar.control.update();
     }
   }
+  
   
   
   formatDate(date: string): string {
@@ -196,6 +192,7 @@ export class AssignmentComponent implements AfterViewInit {
 
   openAddEventDialog(enterAnimationDuration: string, exitAnimationDuration: string, isNew: boolean, event?: any): void {
     const eventDataManager = createEventDataManager();
+    console.log(event,'data');
     const dialogRef = this.dialog.open(AssignmentDialogComponent, {
       width: '600px',
       enterAnimationDuration,
@@ -239,6 +236,8 @@ export class AssignmentComponent implements AfterViewInit {
       reservationCount: event.reservationCount,
       isCostToAttend: event.isCostToAttend,
       costToAttend: event.costToAttend,
+      primaryProfile: event.profileId,
+      alternateProfile: event.altProfileId,
       isNew
     } : {};
   }
@@ -339,7 +338,8 @@ function createEventDataManager() {
         startTime: startDate.toString('HH:mm:ss'), // Add this property
         endTime: endDate.toString('HH:mm:ss'), // Add this property
         locationValues: result.locationValues,
-        profileId: result.profileId
+        profileId: result.profileId,
+        altProfileId: result.altProfileId
       };
     },
     updateEvent(existingEvent: ICustomDayPilotEventData, result: any, startDate: DayPilot.Date, endDate: DayPilot.Date): ICustomDayPilotEventData {
@@ -365,7 +365,9 @@ function createEventDataManager() {
         duration: result.duration,
         startTime: startDate.toString('HH:mm:ss'),
         endTime: endDate.toString('HH:mm:ss'),
-        locationValues: result.locationValues
+        locationValues: result.locationValues,
+        profileId: result.profileId,
+        altProfileId: result.altProfileId
       };
     }
   };

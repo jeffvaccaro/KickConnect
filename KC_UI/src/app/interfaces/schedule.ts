@@ -19,5 +19,6 @@ export interface ISchedule {
     isActive: boolean,
     isReservation: boolean,
     isCostToAttend: boolean,
-    profileId: number
+    profileId: number,
+    altProfileId: number
 }

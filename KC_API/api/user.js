@@ -639,7 +639,7 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
   }
 });
 
-router.post('/insert-profile-assignment/:scheduleLocationId/:primaryProfileId/:altProfileId', authenticateToken, async (req, res) => {
+router.post('/upsert-profile-assignment/:scheduleLocationId/:primaryProfileId/:altProfileId', authenticateToken, async (req, res) => {
     const { scheduleLocationId, primaryProfileId, altProfileId } = req.params;
     console.log('scheduleLocationId', scheduleLocationId);
     
@@ -651,11 +651,22 @@ router.post('/insert-profile-assignment/:scheduleLocationId/:primaryProfileId/:a
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
         connection = await Promise.race([connectToDatabase(), timeout]);
 
-        const profileInsertQuery = `INSERT INTO admin.scheduleProfile (scheduleLocationId, profileId, altProfileId) VALUES (?, ?, ?)`;
-  
-        const [profileResult] = await connection.query(profileInsertQuery, [scheduleLocationId, primaryProfileId, altProfileIdValue]);
-        res.json({ message: 'Profile Assigned' });
-  
+        // Check if a record with the given scheduleLocationId exists
+        const selectQuery = `SELECT * FROM admin.scheduleProfile WHERE scheduleLocationId = ?`;
+        const [existingRecords] = await connection.query(selectQuery, [scheduleLocationId]);
+
+        if (existingRecords.length > 0) {
+            // Record exists, perform an update
+            const updateQuery = `UPDATE admin.scheduleProfile SET profileId = ?, altProfileId = ? WHERE scheduleLocationId = ?`;
+            await connection.query(updateQuery, [primaryProfileId, altProfileIdValue, scheduleLocationId]);
+            res.json({ message: 'Profile Assignment Updated' });
+        } else {
+            // Record does not exist, perform an insert
+            const insertQuery = `INSERT INTO admin.scheduleProfile (scheduleLocationId, profileId, altProfileId) VALUES (?, ?, ?)`;
+            await connection.query(insertQuery, [scheduleLocationId, primaryProfileId, altProfileIdValue]);
+            res.json({ message: 'Profile Assignment Inserted' });
+        }
+
     } catch (error) {
         console.error('Error assigning profile to event:', error);
         res.status(500).json({ error: 'Error assigning profile to event' });
@@ -663,11 +674,9 @@ router.post('/insert-profile-assignment/:scheduleLocationId/:primaryProfileId/:a
         if (connection) {
             connection.release();
         } else {
-            console.warn('insert-profile-assignment: Connection not established.');
+            console.warn('upsert-profile-assignment: Connection not established.');
         }
     }
 });
-
-
 
 module.exports = router;

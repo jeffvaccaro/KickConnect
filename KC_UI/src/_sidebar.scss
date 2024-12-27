@@ -195,7 +195,7 @@
                         color: #00b69b;
                     }
                     &.three {
-                        color: var(--heraBlueColor);
+                        color: var(--mainColor);
                         background: rgba(117, 127, 239, 0.1);
                     }
                 }
@@ -254,7 +254,7 @@
                                 background-color: #adadb9;
                             }
                             &:hover, &.active {
-                                background-color: var(--heraBlueColor);
+                                background-color: var(--mainColor);
                                 color: var(--whiteColor);
 
                                 .badge {
@@ -269,7 +269,7 @@
                                 padding: 4px 8px;
                                 margin-left: 2px;
                                 border-radius: 2px;
-                                color: var(--heraBlueColor);
+                                color: var(--mainColor);
                                 transition: var(--transition);
                                 background: rgba(117, 127, 239, 0.1);
                             }
@@ -306,7 +306,7 @@
                         }
                     }
                     &:hover {
-                        background-color: var(--heraBlueColor) !important;
+                        background-color: var(--mainColor) !important;
                         color: var(--whiteColor);
 
                         .mat-content {
@@ -737,7 +737,7 @@
                                     background-color: #5c5c5c;
                                 }
                                 &:hover, &.active {
-                                    background-color: var(--heraBlueColor);
+                                    background-color: var(--mainColor);
                                     color: var(--whiteColor);
     
                                     &::after {
@@ -757,7 +757,7 @@
                             }
                         }
                         &:hover {
-                            background-color: var(--heraBlueColor) !important;
+                            background-color: var(--mainColor) !important;
                             color: var(--whiteColor);
     
                             .mat-content {
@@ -866,7 +866,7 @@
                                     background-color: #5c5c5c;
                                 }
                                 &:hover, &.active {
-                                    background-color: var(--heraBlueColor);
+                                    background-color: var(--mainColor);
                                     color: var(--whiteColor);
     
                                     &::after {
@@ -886,7 +886,7 @@
                             }
                         }
                         &:hover {
-                            background-color: var(--heraBlueColor) !important;
+                            background-color: var(--mainColor) !important;
                             color: var(--whiteColor);
     
                             .mat-content {

@@ -194,7 +194,8 @@ router.get('/get-location-assignment-schedule/:locationId', authenticateToken, a
                 s.scheduleMainId, 
                 sl.scheduleLocationId,
                 sl.locationId AS locationValues,
-                sp.profileId
+                sp.profileId,
+                sp.altProfileId
             FROM 
                 admin.schedulemain s
             INNER JOIN  
@@ -215,7 +216,7 @@ router.get('/get-location-assignment-schedule/:locationId', authenticateToken, a
             GROUP BY 
                 e.eventId, e.eventName, e.eventDescription, 
                 s.day, s.startTime, s.endTime, s.selectedDate, 
-                s.isRepeat, s.isActive, s.accountId, s.scheduleMainId, sl.scheduleLocationId, sp.profileId;
+                s.isRepeat, s.isActive, s.accountId, s.scheduleMainId, sl.scheduleLocationId, sp.profileId, sp.altProfileId;
         `;
         const locationParam = [locationId];
         const results = await executeQuery(connection, query, [locationParam]);

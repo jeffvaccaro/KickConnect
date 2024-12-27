@@ -44,7 +44,7 @@
             &.active {
                 &::before {
                     left: 31px;
-                    background-color: var(--heraBlueColor) !important;
+                    background-color: var(--mainColor) !important;
                 }
             }
         }
@@ -96,7 +96,7 @@
                 }
                 &.active {
                     &::before {
-                        background-color: var(--heraBlueColor);
+                        background-color: var(--mainColor);
                     }
                 }
             }

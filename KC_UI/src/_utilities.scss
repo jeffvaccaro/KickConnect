@@ -77,7 +77,7 @@
     background-color: var(--whiteColor) !important;
 }
 .bg-main-color {
-    background-color: var(--heraBlueColor) !important;
+    background-color: var(--mainColor) !important;
 }
 .bg-transparent {
     background-color: transparent !important;
@@ -407,7 +407,7 @@
     background-color: #F7F8F7 !important;
 }
 .main-color {
-    color: var(--heraBlueColor) !important;
+    color: var(--mainColor) !important;
 }
 .bg-light-gray {
     background-color: #F7FAFF !important;
@@ -492,7 +492,7 @@
 }
 .main-hover-color {
     &:hover {
-        color: var(--heraBlueColor) !important;
+        color: var(--mainColor) !important;
     }
 }
 .w-35 {
@@ -543,7 +543,7 @@
 .bg-main-hover-color {
     &:hover {
         color: var(--whiteColor) !important;
-        background-color: var(--heraBlueColor) !important;
+        background-color: var(--mainColor) !important;
     }
 }
 .h-auto {

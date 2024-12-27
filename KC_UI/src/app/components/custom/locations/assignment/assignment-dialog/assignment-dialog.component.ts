@@ -90,6 +90,7 @@ export class AssignmentDialogComponent implements OnInit {
     this.eventTime = this.convertTo12Hour(data.selectedTime);
     this.eventLength = data.duration;
     this.scheduleLocationId = data.scheduleLocationId;
+    console.log(this.data);
 
     this.assignmentForm = this.fb.group({
       eventId: [data?.existingEventId],
@@ -137,8 +138,8 @@ export class AssignmentDialogComponent implements OnInit {
   }
 
   save() {
-    this.userService.insertProfileAssignment(this.scheduleLocationId,
-      this.assignmentForm.value.primaryProfile, this.assignmentForm.value.alternateProfile != '' ? this.assignmentForm.value.alternateProfile : 'NULL');
+    this.userService.insertProfileAssignment(this.scheduleLocationId,  this.assignmentForm.value.primaryProfile, 
+                                             this.assignmentForm.value.alternateProfile != '' ? this.assignmentForm.value.alternateProfile : 'NULL');
     this.close();
   }
 

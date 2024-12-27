@@ -147,7 +147,8 @@ export class SchedulerComponent implements AfterViewInit {
       isCostToAttend: schedule.isCostToAttend,
       startTime: this.formatTime(schedule.startTime),
       endTime: this.formatTime(schedule.endTime),
-      profileId: schedule.profileId
+      profileId: schedule.profileId,
+      altProfileId: schedule.altProfileId
     };
   }
   
@@ -395,7 +396,8 @@ function createEventDataManager() {
         startTime: startDate.toString('HH:mm:ss'), // Add this property
         endTime: endDate.toString('HH:mm:ss'), // Add this property
         locationValues: result.locationValues,
-        profileId: result.profileId
+        profileId: result.profileId,
+        altProfileId: result.altProfileId
       };
     },
     updateEvent(existingEvent: ICustomDayPilotEventData, result: any, startDate: DayPilot.Date, endDate: DayPilot.Date): ICustomDayPilotEventData {

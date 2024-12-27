@@ -103,36 +103,36 @@ html {
     --mat-datepicker-calendar-container-background-color: var(--whiteColor);
     --mat-datepicker-calendar-container-elevation-shadow: 0px 4px 45px 0px rgba(0, 0, 0, .1);
     --mat-datepicker-calendar-container-shape: 10px;
-    --mat-datepicker-calendar-date-today-outline-color: var(--heraBlueColor);
-    --mat-datepicker-calendar-date-selected-state-background-color: var(--heraBlueColor);
-    --mat-datepicker-calendar-date-today-selected-state-outline-color: var(--heraBlueColor);
+    --mat-datepicker-calendar-date-today-outline-color: var(--mainColor);
+    --mat-datepicker-calendar-date-selected-state-background-color: var(--mainColor);
+    --mat-datepicker-calendar-date-today-selected-state-outline-color: var(--mainColor);
     --mat-stepper-container-color: transparent;
     --mat-autocomplete-background-color: var(--whiteColor);
     --mdc-filled-text-field-container-color: #f5f5f5;
-    --mdc-filled-text-field-caret-color: var(--heraBlueColor);
-    --mdc-filled-text-field-focus-active-indicator-color: var(--heraBlueColor);
-    --mdc-filled-text-field-focus-label-text-color: var(--heraBlueColor);
+    --mdc-filled-text-field-caret-color: var(--mainColor);
+    --mdc-filled-text-field-focus-active-indicator-color: var(--mainColor);
+    --mdc-filled-text-field-focus-label-text-color: var(--mainColor);
     --mat-form-field-hover-state-layer-opacity: 0.04;
     --mat-standard-button-toggle-divider-color: #e0e0e0;
     --mdc-fab-container-shape: 50%;
     --mdc-fab-small-container-shape: 50%;
     --mdc-outlined-button-outline-color: rgba(0, 0, 0, .12);
-    --mdc-protected-button-label-text-color: var(--heraBlueColor);
+    --mdc-protected-button-label-text-color: var(--mainColor);
     --mdc-text-button-label-text-color: var(--blackColor);
     --mdc-outlined-button-label-text-color: var(--blackColor);
     --mdc-chip-outline-color: #e0e0e0;
     --mdc-chip-selected-label-text-color: var(--blackColor);
     --mdc-chip-with-icon-selected-icon-color: var(--blackColor);
-    --mat-text-button-state-layer-color: var(--heraBlueColor);
+    --mat-text-button-state-layer-color: var(--mainColor);
     --mat-expansion-container-background-color: var(--whiteColor);
-    --mdc-slider-label-container-color: var(--heraBlueColor);
-    --mat-select-focused-arrow-color: var(--heraBlueColor);
-    --mat-form-field-focus-select-arrow-color: var(--heraBlueColor);
+    --mdc-slider-label-container-color: var(--mainColor);
+    --mat-select-focused-arrow-color: var(--mainColor);
+    --mat-form-field-focus-select-arrow-color: var(--mainColor);
 }
 
 // Mat Progressbar
 .mat-mdc-progress-bar {
-    --mdc-linear-progress-active-indicator-color: var(--heraBlueColor);
+    --mdc-linear-progress-active-indicator-color: var(--mainColor);
 
     .mdc-linear-progress__buffer-bar {
         background: #f7faff !important;
@@ -145,7 +145,7 @@ html {
     }
 }
 .mat-mdc-progress-spinner {
-    --mdc-circular-progress-active-indicator-color: var(--heraBlueColor);
+    --mdc-circular-progress-active-indicator-color: var(--mainColor);
 }
 
 // Mat Button
@@ -162,10 +162,10 @@ html {
         weight: 500 !important;
     };
     &.kickConnect {
-        --mat-mdc-button-persistent-ripple-color: var(--heraBlueColor);
+        --mat-mdc-button-persistent-ripple-color: var(--mainColor);
 
         &.mat-unthemed {
-            --mdc-text-button-label-text-color: var(--heraBlueColor);
+            --mdc-text-button-label-text-color: var(--mainColor);
         }
     }
     &.fw-bold {
@@ -196,13 +196,13 @@ html {
 .mat-mdc-outlined-button {
     &.kickConnect {
         &.mat-unthemed {
-            --mdc-outlined-button-label-text-color: var(--heraBlueColor);
+            --mdc-outlined-button-label-text-color: var(--mainColor);
         }
     }
 }
 .mat-mdc-raised-button {
     &.kickConnect {
-        --mdc-protected-button-container-color: var(--heraBlueColor);
+        --mdc-protected-button-container-color: var(--mainColor);
 
         &.mat-unthemed {
             --mdc-protected-button-label-text-color: var(--whiteColor);
@@ -231,7 +231,7 @@ html {
 .mat-mdc-unelevated-button {
     &.kickConnect {
         &.mat-unthemed {
-            --mdc-filled-button-container-color: var(--heraBlueColor);
+            --mdc-filled-button-container-color: var(--mainColor);
             --mdc-filled-button-label-text-color: var(--whiteColor);
         }
     }
@@ -249,7 +249,7 @@ html {
 }
 .mat-mdc-icon-button {
     &.kickConnect {
-        --mdc-icon-button-icon-color: var(--heraBlueColor);
+        --mdc-icon-button-icon-color: var(--mainColor);
     }
     &.mat-primary {
         --mat-icon-color: #000;
@@ -263,12 +263,12 @@ html {
 }
 .mat-mdc-fab, .mat-mdc-mini-fab {
     &.kickConnect {
-        --mdc-fab-container-color: var(--heraBlueColor);
+        --mdc-fab-container-color: var(--mainColor);
         --mdc-fab-icon-color: var(--whiteColor);
         --mat-mdc-fab-color: var(--whiteColor);
         --mat-icon-color: var(--whiteColor);
         --mat-fab-foreground-color: var(--whiteColor);
-        --mdc-fab-small-container-color: var(--heraBlueColor);
+        --mdc-fab-small-container-color: var(--mainColor);
     }
     &.mat-primary {
         --mat-fab-foreground-color: var(--whiteColor);
@@ -299,8 +299,8 @@ html {
 
         &.kickConnect {
             --mat-icon-color: var(--whiteColor);
-            --mdc-fab-container-color: var(--heraBlueColor);
-            --mdc-fab-small-container-color: var(--heraBlueColor);
+            --mdc-fab-container-color: var(--mainColor);
+            --mdc-fab-small-container-color: var(--mainColor);
         }
         &.gray {
             --mdc-fab-container-color: #EDEFF5;
@@ -330,21 +330,21 @@ a {
 .mat-mdc-list-option, .mat-mdc-list-option {
     &.mat-accent {
         .mdc-list-item__start, .mdc-list-item__end {
-            --mdc-radio-selected-focus-icon-color: var(--heraBlueColor);
-            --mdc-radio-selected-hover-icon-color: var(--heraBlueColor);
-            --mdc-radio-selected-icon-color: var(--heraBlueColor);
-            --mdc-radio-selected-pressed-icon-color: var(--heraBlueColor);
-            --mat-mdc-radio-checked-ripple-color: var(--heraBlueColor);
-            --mdc-checkbox-selected-focus-icon-color: var(--heraBlueColor);
-            --mdc-checkbox-selected-hover-icon-color: var(--heraBlueColor);
-            --mdc-checkbox-selected-icon-color: var(--heraBlueColor);
-            --mdc-checkbox-selected-pressed-icon-color: var(--heraBlueColor);
+            --mdc-radio-selected-focus-icon-color: var(--mainColor);
+            --mdc-radio-selected-hover-icon-color: var(--mainColor);
+            --mdc-radio-selected-icon-color: var(--mainColor);
+            --mdc-radio-selected-pressed-icon-color: var(--mainColor);
+            --mat-mdc-radio-checked-ripple-color: var(--mainColor);
+            --mdc-checkbox-selected-focus-icon-color: var(--mainColor);
+            --mdc-checkbox-selected-hover-icon-color: var(--mainColor);
+            --mdc-checkbox-selected-icon-color: var(--mainColor);
+            --mdc-checkbox-selected-pressed-icon-color: var(--mainColor);
         }
     }
 }
 .mdc-list-item--selected, .mdc-list-item--activated {
     .mdc-list-item__primary-text {
-        color: var(--heraBlueColor);
+        color: var(--mainColor);
     }
 }
 
@@ -352,14 +352,14 @@ a {
 .mdc-text-field--focused {
     &:not(.mdc-text-field--disabled) {
         .mdc-floating-label {
-            color: var(--heraBlueColor);
+            color: var(--mainColor);
         }
     }
 }
 .mdc-text-field--filled {
     .mdc-line-ripple {
         &::after {
-            border-bottom-color: var(--heraBlueColor);
+            border-bottom-color: var(--mainColor);
         }
     }
 }
@@ -381,7 +381,7 @@ a {
         &.mdc-list-item--selected {
             &:not(.mdc-list-item--disabled) {
                 .mdc-list-item__primary-text {
-                    color: var(--heraBlueColor);
+                    color: var(--mainColor);
                 }
             }
         }
@@ -389,11 +389,11 @@ a {
     .mat-pseudo-checkbox-checked, .mat-pseudo-checkbox-indeterminate {
         &.mat-pseudo-checkbox-minimal {
             &::after {
-                color: var(--heraBlueColor);
+                color: var(--mainColor);
             }
         }
         &.mat-pseudo-checkbox-full {
-            background: var(--heraBlueColor);
+            background: var(--mainColor);
         }
     }
 }
@@ -456,7 +456,7 @@ a {
     background-color: var(--alert-bg);
     border: var(--alert-border);
     border-radius: var(--alert-border-radius);
-    --kickConnect-text: var(--heraBlueColor);
+    --kickConnect-text: var(--mainColor);
     --primary-text: #0a58ca;
     --secondary-text: #6c757d;
     --success-text: #146c43;
@@ -483,7 +483,7 @@ a {
     --danger-border-subtle: #f1aeb5;
     --light-border-subtle: #e9ecef;
     --dark-border-subtle: #adb5bd;
-    --kickConnect-text: var(--heraBlueColor);
+    --kickConnect-text: var(--mainColor);
     --primary-text: #0a58ca;
     --secondary-text: #6c757d;
     --success-text: #146c43;
@@ -710,7 +710,7 @@ a {
             content: '';
             border-radius: 50%;
             position: absolute;
-            background: var(--heraBlueColor);
+            background: var(--mainColor);
             border: 2px solid var(--whiteColor);
         }
         &.off {
@@ -726,7 +726,7 @@ a {
 
 // Badge
 .mat-badge {
-    --mat-badge-background-color: var(--heraBlueColor);
+    --mat-badge-background-color: var(--mainColor);
 }
 .badge {
     --badge-padding-x: 12px;
@@ -748,7 +748,7 @@ a {
 }
 .text-bg-kickConnect {
     color: #fff!important;
-    background-color: var(--heraBlueColor) !important;
+    background-color: var(--mainColor) !important;
 }
 .text-bg-primary {
     color: #fff!important;
@@ -783,8 +783,8 @@ a {
     background-color: RGBA(33,37,41,var(--bg-opacity,1))!important;
 }
 .text-outline-kickConnect {
-    color: var(--heraBlueColor) !important;
-    border: 1px solid var(--heraBlueColor) !important;
+    color: var(--mainColor) !important;
+    border: 1px solid var(--mainColor) !important;
 }
 .text-outline-primary {
     color: RGBA(13,110,253,var(--bg-opacity,1))!important;
@@ -819,7 +819,7 @@ a {
     border: 1px solid RGBA(33,37,41,var(--bg-opacity,1))!important;
 }
 .text-soft-kickConnect {
-    color: var(--heraBlueColor) !important;
+    color: var(--mainColor) !important;
     background-color: rgba(117, 127, 239, 0.1) !important;
 }
 .text-soft-primary {
@@ -858,13 +858,13 @@ a {
 // Mat Checkbox
 .mat-mdc-checkbox {
     &.mat-accent {
-        --mdc-checkbox-selected-focus-icon-color: var(--heraBlueColor);
-        --mdc-checkbox-selected-hover-icon-color: var(--heraBlueColor);
-        --mdc-checkbox-selected-icon-color: var(--heraBlueColor);
-        --mdc-checkbox-selected-pressed-icon-color: var(--heraBlueColor);
+        --mdc-checkbox-selected-focus-icon-color: var(--mainColor);
+        --mdc-checkbox-selected-hover-icon-color: var(--mainColor);
+        --mdc-checkbox-selected-icon-color: var(--mainColor);
+        --mdc-checkbox-selected-pressed-icon-color: var(--mainColor);
 
         .mdc-checkbox--selected ~ .mdc-checkbox__ripple {
-            background: var(--heraBlueColor);
+            background: var(--mainColor);
         }
         &.primary {
             --mdc-checkbox-selected-focus-icon-color: #0a58ca;
@@ -952,11 +952,11 @@ a {
 // Mat Radio
 .mat-mdc-radio-button {
     &.mat-accent {
-        --mdc-radio-selected-focus-icon-color: var(--heraBlueColor);
-        --mdc-radio-selected-hover-icon-color: var(--heraBlueColor);
-        --mdc-radio-selected-icon-color: var(--heraBlueColor);
-        --mdc-radio-selected-pressed-icon-color: var(--heraBlueColor);
-        --mat-mdc-radio-checked-ripple-color: var(--heraBlueColor);
+        --mdc-radio-selected-focus-icon-color: var(--mainColor);
+        --mdc-radio-selected-hover-icon-color: var(--mainColor);
+        --mdc-radio-selected-icon-color: var(--mainColor);
+        --mdc-radio-selected-pressed-icon-color: var(--mainColor);
+        --mat-mdc-radio-checked-ripple-color: var(--mainColor);
 
         &.primary {
             --mdc-radio-selected-focus-icon-color: #0a58ca;
@@ -1022,8 +1022,8 @@ a {
     &.mat-primary {
         &.mat-mdc-chip-selected, &.mat-mdc-chip-highlighted {
             &.kickConnect {
-                --mdc-chip-elevated-container-color: var(--heraBlueColor);
-                --mdc-chip-elevated-disabled-container-color: var(--heraBlueColor);
+                --mdc-chip-elevated-container-color: var(--mainColor);
+                --mdc-chip-elevated-disabled-container-color: var(--mainColor);
             }
         }
     }
@@ -1046,20 +1046,20 @@ a {
     --pagination-focus-bg: var(--secondary-bg);
     --pagination-focus-box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     --pagination-active-color: #fff;
-    --pagination-active-bg: var(--heraBlueColor);
-    --pagination-active-border-color: var(--heraBlueColor);
+    --pagination-active-bg: var(--mainColor);
+    --pagination-active-border-color: var(--mainColor);
     --pagination-disabled-color: var(--secondary-color);
     --pagination-disabled-bg: var(--secondary-bg);
     --pagination-disabled-border-color: var(--border-color);
     display: flex;
     padding-left: 0;
     list-style: none;
-    --link-color: var(--heraBlueColor);
+    --link-color: var(--mainColor);
     --body-bg: #fff;
     --border-width: 1px;
     --border-color: #dee2e6;
     --border-radius: 0.375rem;
-    --link-hover-color: var(--heraBlueColor);
+    --link-hover-color: var(--mainColor);
     --tertiary-bg: #f8f9fa;
 }
 .page-link {
@@ -1110,13 +1110,13 @@ a {
 // Mat Slide Toggle
 .mat-mdc-slide-toggle {
     &.mat-accent {
-        --mdc-switch-selected-focus-state-layer-color: var(--heraBlueColor);
-        --mdc-switch-selected-handle-color: var(--heraBlueColor);
-        --mdc-switch-selected-hover-state-layer-color: var(--heraBlueColor);
-        --mdc-switch-selected-pressed-state-layer-color: var(--heraBlueColor);
-        --mdc-switch-selected-focus-handle-color: var(--heraBlueColor);
-        --mdc-switch-selected-hover-handle-color: var(--heraBlueColor);
-        --mdc-switch-selected-pressed-handle-color: var(--heraBlueColor);
+        --mdc-switch-selected-focus-state-layer-color: var(--mainColor);
+        --mdc-switch-selected-handle-color: var(--mainColor);
+        --mdc-switch-selected-hover-state-layer-color: var(--mainColor);
+        --mdc-switch-selected-pressed-state-layer-color: var(--mainColor);
+        --mdc-switch-selected-focus-handle-color: var(--mainColor);
+        --mdc-switch-selected-hover-handle-color: var(--mainColor);
+        --mdc-switch-selected-pressed-handle-color: var(--mainColor);
         --mdc-switch-selected-focus-track-color: rgba(117, 127, 239, 0.1);
         --mdc-switch-selected-hover-track-color: rgba(117, 127, 239, 0.1);
         --mdc-switch-selected-pressed-track-color: rgba(117, 127, 239, 0.1);
@@ -1133,14 +1133,14 @@ a {
 // Mat Slider
 .mat-mdc-slider {
     &.mat-primary {
-        --mdc-slider-handle-color: var(--heraBlueColor);
-        --mdc-slider-focus-handle-color: var(--heraBlueColor);
-        --mdc-slider-hover-handle-color: var(--heraBlueColor);
-        --mdc-slider-active-track-color: var(--heraBlueColor);
-        --mdc-slider-inactive-track-color: var(--heraBlueColor);
+        --mdc-slider-handle-color: var(--mainColor);
+        --mdc-slider-focus-handle-color: var(--mainColor);
+        --mdc-slider-hover-handle-color: var(--mainColor);
+        --mdc-slider-active-track-color: var(--mainColor);
+        --mdc-slider-inactive-track-color: var(--mainColor);
         --mdc-slider-with-tick-marks-active-container-color: #fff;
-        --mdc-slider-with-tick-marks-inactive-container-color: var(--heraBlueColor);
-        --mat-mdc-slider-ripple-color: var(--heraBlueColor);
+        --mdc-slider-with-tick-marks-inactive-container-color: var(--mainColor);
+        --mat-mdc-slider-ripple-color: var(--mainColor);
         --mat-mdc-slider-hover-ripple-color: rgba(63, 81, 181, 0.05);
         --mat-mdc-slider-focus-ripple-color: rgba(63, 81, 181, 0.2);
     }
@@ -1149,7 +1149,7 @@ a {
 // Mat Toolbar
 .mat-toolbar {
     &.mat-primary {
-        background: var(--heraBlueColor);
+        background: var(--mainColor);
         color: white;
     }
 }
@@ -1159,11 +1159,11 @@ a {
     &:not(.mat-mdc-tab-disabled) {
         &.mdc-tab--active {
             .mdc-tab__text-label {
-                color: var(--heraBlueColor);
+                color: var(--mainColor);
             }
         }
         .mdc-tab-indicator__content--underline {
-            border-color: var(--heraBlueColor);
+            border-color: var(--mainColor);
         }
     }
 }
@@ -1171,7 +1171,7 @@ a {
 // Mat Stepper
 .mat-step-header {
     .mat-step-icon-selected, .mat-step-icon-state-done, .mat-step-icon-state-edit {
-        background-color: var(--heraBlueColor);
+        background-color: var(--mainColor);
     }
 }
 
@@ -1194,7 +1194,7 @@ a {
     background-color: var(--breadcrumb-bg);
     border-radius: var(--breadcrumb-border-radius);
     --secondary-color: rgba(33, 37, 41, 0.75);
-    --link-color: var(--heraBlueColor);
+    --link-color: var(--mainColor);
 }
 .t-breadcrumb-item {
     &.active {
@@ -1310,7 +1310,7 @@ blockquote {
             border-radius: 5px;
 
             .date {
-                background: var(--heraBlueColor);
+                background: var(--mainColor);
                 color: var(--whiteColor);
                 margin: 0 0 0 -25px;
                 text-align: center;
@@ -1370,7 +1370,7 @@ blockquote {
                 border-radius: 50%;
                 background: #E7EBF5;
                 transform: translateY(-50%);
-                color: var(--heraBlueColor);
+                color: var(--mainColor);
 
                 i {
                     left: 0;
@@ -1425,7 +1425,7 @@ blockquote {
                 margin-top: 1px;
                 position: absolute;
                 transform: translateY(-50%);
-                color: var(--heraBlueColor);
+                color: var(--mainColor);
 
                 &.close {
                     i {
@@ -1507,7 +1507,7 @@ blockquote {
                 border-radius: 50%;
                 background: #E7EBF5;
                 transform: translateY(-50%);
-                color: var(--heraBlueColor);
+                color: var(--mainColor);
                 font: {
                     family: flaticon_tagus;
                     size: 14px;
@@ -1587,7 +1587,7 @@ blockquote {
                 content: "\f105";
                 position: absolute;
                 transform: translateY(-50%);
-                color: var(--heraBlueColor);
+                color: var(--mainColor);
                 font: {
                     family: flaticon_tagus;
                     size: 22px;
@@ -1747,10 +1747,10 @@ blockquote {
 // Mat Timepicker
 [_nghost-ng-c2055447140] {
     --primary-font-family: var(--fontFamily) !important;
-    --button-color: var(--heraBlueColor) !important;
-    --dial-background-color: var(--heraBlueColor) !important;
-    --dial-editable-active-color: var(--heraBlueColor) !important;
-    --clock-hand-color: var(--heraBlueColor) !important;
+    --button-color: var(--mainColor) !important;
+    --dial-background-color: var(--mainColor) !important;
+    --dial-editable-active-color: var(--mainColor) !important;
+    --clock-hand-color: var(--mainColor) !important;
 }
 
 // Dark Mode CSS
@@ -1784,7 +1784,7 @@ blockquote {
     // Mat Button
     .mdc-button {
         &.kickConnect {
-            --mat-mdc-button-persistent-ripple-color: var(--heraBlueColor);
+            --mat-mdc-button-persistent-ripple-color: var(--mainColor);
 
             &.mat-unthemed {
                 --mdc-text-button-label-text-color: var(--whiteColor);
@@ -1809,7 +1809,7 @@ blockquote {
         }
         &.kickConnect {
             &.mat-unthemed {
-                --mdc-outlined-button-label-text-color: var(--heraBlueColor);
+                --mdc-outlined-button-label-text-color: var(--mainColor);
             }
         }
         &[disabled][disabled] {
@@ -1825,7 +1825,7 @@ blockquote {
             --mdc-protected-button-label-text-color: var(--whiteColor);
         }
         &.kickConnect {
-            --mdc-protected-button-container-color: var(--heraBlueColor);
+            --mdc-protected-button-container-color: var(--mainColor);
 
             &.mat-unthemed {
                 --mdc-protected-button-label-text-color: var(--whiteColor);
@@ -1855,7 +1855,7 @@ blockquote {
         }
         &.kickConnect {
             &.mat-unthemed {
-                --mdc-filled-button-container-color: var(--heraBlueColor);
+                --mdc-filled-button-container-color: var(--mainColor);
                 --mdc-filled-button-label-text-color: var(--whiteColor);
             }
         }
@@ -1880,7 +1880,7 @@ blockquote {
     }
     .mat-mdc-icon-button {
         &.kickConnect {
-            --mdc-icon-button-icon-color: var(--heraBlueColor);
+            --mdc-icon-button-icon-color: var(--mainColor);
         }
         &[disabled][disabled] {
             --mdc-icon-button-icon-color: rgba(255, 255, 255, 0.38);
@@ -1899,7 +1899,7 @@ blockquote {
     }
     .mat-mdc-fab, .mat-mdc-mini-fab {
         &.kickConnect {
-            --mdc-fab-container-color: var(--heraBlueColor);
+            --mdc-fab-container-color: var(--mainColor);
             --mdc-fab-icon-color: var(--whiteColor);
             --mat-mdc-fab-color: var(--whiteColor);
         }

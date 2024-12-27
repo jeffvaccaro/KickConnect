@@ -137,8 +137,7 @@ export class UserService {
   insertProfileAssignment(scheduleLocationId: number, primaryProfileId: number, altProfileId?: number) {
 
     const altProfileIdValue = altProfileId !== undefined && altProfileId !== null ? altProfileId : 'null';
-    const url = `${this.apiUrl}/insert-profile-assignment/${scheduleLocationId}/${primaryProfileId}/${altProfileIdValue}`;
-    console.log('Constructed URL:', url);
+    const url = `${this.apiUrl}/upsert-profile-assignment/${scheduleLocationId}/${primaryProfileId}/${altProfileIdValue}`;
     
     const request = this.http.post(url, {});
   
