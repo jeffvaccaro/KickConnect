@@ -1,4 +1,12 @@
   <form [formGroup]="menuForm" (ngSubmit)="onSubmit()">
+    
+    <div>
+      <label>Section 1:</label><br/>
+      <input type="file" class="input-control"><br/>
+      <input type="text" placeholder="Center Text"><br/>
+    </div>
+    
+    <button type="button" (click)="addMenuItem()">Add Menu Item</button>
     <div formArrayName="menuItems">
       <div *ngFor="let item of menuItems.controls; let i = index">
         <div [formGroupName]="i">
@@ -8,7 +16,6 @@
         </div>
       </div>
     </div>
-    <button type="button" (click)="addMenuItem()">Add Menu Item</button>
     <button type="submit">Generate HTML</button>
   </form>
   

@@ -42,7 +42,7 @@ export class CreateHtmlTemplateComponent implements OnInit {
   }
 
   generateHtml(menuItems: { name: string, href: string }[]): string {
-    const html = `
+    const htmlstart = `
     <!DOCTYPE html>
     <!--[if lt IE 9 ]><html class="no-js oldie" lang="en"> <![endif]-->
     <!--[if IE 9 ]><html class="no-js oldie ie9" lang="en"> <![endif]-->
@@ -85,7 +85,8 @@ export class CreateHtmlTemplateComponent implements OnInit {
         <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
 
-    </head>
+    </head>`;
+    const bodymenustart = `
     <body>
       <header id="header" class="row">
         <div class="header-logo">
@@ -94,20 +95,21 @@ export class CreateHtmlTemplateComponent implements OnInit {
         <nav id="header-nav-wrap">
           <ul class="header-main-nav">`;
 
-    const header = menuItems.map(item => `
+    const menus = menuItems.map(item => `
             <li><a class="smoothscroll" href="${item.href}" title="${item.name}">${item.name}</a></li>`).join('\n');
 
-    const footer = `
+    const bodymenuend = `
           </ul>
           <a href="#" title="sign-up" class="button button-primary cta">Sign Up</a>
         </nav>
         <a class="header-menu-toggle" href="#"><span>Menu</span></a>
-      </header>
-      <script src="js/main.js"></script>
+      </header>`;
+
+    const htmlend = `<script src="js/main.js"></script>
     </body>
     </html>`;
 
-    return html + header + footer;
+    return htmlstart + bodymenustart + menus + bodymenuend + htmlend;
   }
 
   updateIframeSrc(): void { 
