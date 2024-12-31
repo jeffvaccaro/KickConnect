@@ -1,28 +1,99 @@
-  <form [formGroup]="menuForm" (ngSubmit)="onSubmit()">
-    
-    <div>
-      <label>Section 1:</label><br/>
-      <input type="file" class="input-control"><br/>
-      <input type="text" placeholder="Center Text"><br/>
-    </div>
-    
-    <button type="button" (click)="addMenuItem()">Add Menu Item</button>
-    <div formArrayName="menuItems">
-      <div *ngFor="let item of menuItems.controls; let i = index">
-        <div [formGroupName]="i">
-          <input formControlName="name" placeholder="Menu Item Name">
-          <input formControlName="href" placeholder="Href (e.g., #about)">
-          <button type="button" (click)="removeMenuItem(i)">Remove</button>
+<div class="row">
+  <div class="col-xxl-6">
+    <mat-card-content>
+      <mat-stepper orientation="horizontal">
+        <mat-step>
+          <ng-template matStepLabel>Section 1</ng-template>
+
+          <mat-stepper orientation="vertical">
+              <mat-step>
+                  <ng-template matStepLabel>Section 1: Columns</ng-template>
+                  <ng-template matStepContent>
+                      <p>How many columns are in this section?</p>
+                      <mat-button-toggle-group name="section1Columns" aria-label="How many columns to display" (change)="section1Col($event)">
+                        <mat-button-toggle value="1">One</mat-button-toggle>
+                        <mat-button-toggle value="2">Two</mat-button-toggle>
+                        <mat-button-toggle value="3">Three</mat-button-toggle>
+                      </mat-button-toggle-group><br/><br/>
+                      <button mat-flat-button color="primary" class="me-15" matStepperPrevious>Back</button>
+                      <button mat-flat-button color="primary" matStepperNext>Next</button>
+                  </ng-template>
+              </mat-step>
+
+              <mat-step>
+                <ng-template matStepLabel>Section 1: Background Image</ng-template>
+                <ng-template matStepContent>
+                  <p>Add Background Image?</p>
+                  <input type="file" (change)="onFileSelected($event)"><br/><br/>
+                  <p><button mat-flat-button color="primary" matStepperNext>Next</button></p>
+                </ng-template>
+              </mat-step>
+
+              <mat-step>
+                  <ng-template matStepLabel>Section 1: Text</ng-template>
+                  <ng-template matStepContent>
+                      <p>Column 1: Header Text</p>
+                      <input type="text" id="txtHeaderCol1" text=""><br/><br/>
+                      <p>Column 1: Text</p>
+                      <textarea cols="5" rows="3" id="txtarea1"></textarea><br/><br/>
+                      <p>Column 2: Header Text</p>
+                      <input type="text" id="txtHeaderCol2" text=""><br/><br/>
+                      <p>Column 2: Text</p>
+                      <textarea cols="5" rows="3" id="txtarea2"></textarea><br/><br/>
+
+                      <button mat-flat-button color="primary" class="me-15" matStepperPrevious>Back</button>
+                      <button mat-flat-button color="primary" matStepperNext>Next</button>
+                  </ng-template>
+              </mat-step>
+              <mat-step>
+                  <ng-template matStepLabel>Step 3</ng-template>
+                  <p>This content was rendered eagerly</p>
+                  <button mat-flat-button color="primary" matStepperPrevious>Back</button>
+              </mat-step>
+          </mat-stepper>
+        </mat-step>
+        <mat-step>
+          <ng-template matStepLabel>Section 2</ng-template>
+        </mat-step>
+        <mat-step>
+          <ng-template matStepLabel>Section 3</ng-template>
+        </mat-step>        
+        <mat-step>
+          <ng-template matStepLabel>Section 4</ng-template>
+        </mat-step>                
+        <mat-step>
+          <ng-template matStepLabel>Section 5</ng-template>
+        </mat-step>                        
+      </mat-stepper>          
+    </mat-card-content> 
+
+
+    <form [formGroup]="menuForm" (ngSubmit)="onSubmit()">
+      <div formArrayName="menuItems">
+        <div *ngFor="let item of menuItems.controls; let i = index">
+          <div [formGroupName]="i">
+            <input formControlName="name" placeholder="Menu Item Name">
+            <input formControlName="href" placeholder="Href (e.g., #about)">
+            <button type="button" (click)="removeMenuItem(i)">Remove</button>
+          </div>
         </div>
       </div>
-    </div>
-    <button type="submit">Generate HTML</button>
-  </form>
-  
-  <!-- HTML Preview -->
-  <div *ngIf="iframeSrc">
-    <h3>Generated HTML Preview:</h3>
-    <pre>{{ generatedHtml }}</pre>
-    <iframe [src]="iframeSrc" style="width:100%; height:300px; border:1px solid #ccc;"></iframe>
+      <button type="button" (click)="addMenuItem()">Add Menu Item</button>
+      <button type="submit">Generate HTML</button>
+    </form>
+
   </div>
-  
+  <div class="col-xl-6" *ngIf="iframeSrc" style="overflow-y:auto; overflow-x:auto; height:400px;">
+      <h3>Generated HTML Preview:</h3>
+      <pre>{{ generatedHtml }}</pre>
+  </div>
+</div>
+
+
+
+<div class="row">
+  <div class="col-xl-12" *ngIf="iframeSrc"> 
+    <h3>Generated HTML Preview:</h3>
+    <iframe [src]="iframeSrc" style="width:100%; height:800px; border:1px solid #ccc;"></iframe>
+  </div>
+</div>

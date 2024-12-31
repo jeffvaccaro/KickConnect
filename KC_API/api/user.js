@@ -569,7 +569,7 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
   try {
       const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
       connection = await Promise.race([connectToDatabase(), timeout]);
-      console.log('Request body:', req.body);
+      // console.log('Request body:', req.body);
 
       let password = originalPassword || accountcode;
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -607,7 +607,7 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
           return res.status(400).json({ error: 'roleId must be an array' });
       }
 
-      console.log('roleId includes:', roleId.includes(RoleEnum.Instructor));
+      // console.log('roleId includes:', roleId.includes(RoleEnum.Instructor));
 
       const userRoleQuery = `INSERT INTO admin.userroles (userId, roleId) VALUES (?, ?)`;
       const userRolePromises = roleId.map((role) => {
