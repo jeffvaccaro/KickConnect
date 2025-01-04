@@ -483,16 +483,16 @@ router.put('/update-profile/:userId', authenticateToken, upload.none(), async (r
         }
 
         // Clear existing profile locations
-        const profileLocationClear = `DELETE FROM admin.profileLocation 
+        const profileLocationClear = `DELETE FROM admin.profilelocation 
                                     WHERE profileId = ?`;
 
         await connection.query(profileLocationClear, [profileId]);
 
         // Insert new profile locations
-        const profileLocationQuery = `INSERT INTO admin.profileLocation (profileId, locationId, isHome) VALUES (?, ?, 1)`;
+        const profileLocationQuery = `INSERT INTO admin.profilelocation (profileId, locationId, isHome) VALUES (?, ?, 1)`;
         await connection.query(profileLocationQuery, [profileId, profileData.primaryStudio]);
 
-        const altLocationQuery = `INSERT INTO admin.profileLocation (profileId, locationId, isHome) VALUES (?, ?, 0)`;
+        const altLocationQuery = `INSERT INTO admin.profilelocation (profileId, locationId, isHome) VALUES (?, ?, 0)`;
         const altLocPromises = profileData.altStudio.map((locationId) => {
             return connection.query(altLocationQuery, [profileId, locationId]);
         });
@@ -652,17 +652,17 @@ router.post('/upsert-profile-assignment/:scheduleLocationId/:primaryProfileId/:a
         connection = await Promise.race([connectToDatabase(), timeout]);
 
         // Check if a record with the given scheduleLocationId exists
-        const selectQuery = `SELECT * FROM admin.scheduleProfile WHERE scheduleLocationId = ?`;
+        const selectQuery = `SELECT * FROM admin.scheduleprofile WHERE scheduleLocationId = ?`;
         const [existingRecords] = await connection.query(selectQuery, [scheduleLocationId]);
 
         if (existingRecords.length > 0) {
             // Record exists, perform an update
-            const updateQuery = `UPDATE admin.scheduleProfile SET profileId = ?, altProfileId = ? WHERE scheduleLocationId = ?`;
+            const updateQuery = `UPDATE admin.scheduleprofile SET profileId = ?, altProfileId = ? WHERE scheduleLocationId = ?`;
             await connection.query(updateQuery, [primaryProfileId, altProfileIdValue, scheduleLocationId]);
             res.json({ message: 'Profile Assignment Updated' });
         } else {
             // Record does not exist, perform an insert
-            const insertQuery = `INSERT INTO admin.scheduleProfile (scheduleLocationId, profileId, altProfileId) VALUES (?, ?, ?)`;
+            const insertQuery = `INSERT INTO admin.scheduleprofile (scheduleLocationId, profileId, altProfileId) VALUES (?, ?, ?)`;
             await connection.query(insertQuery, [scheduleLocationId, primaryProfileId, altProfileIdValue]);
             res.json({ message: 'Profile Assignment Inserted' });
         }

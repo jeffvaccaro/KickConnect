@@ -25,7 +25,8 @@ const port = process.env.PORT || 3000;
 
 const allowedOrigins = [
   'http://localhost:4200',
-  'http://kickconnect-env-1.eba-bsj8msyj.us-east-1.elasticbeanstalk.com'
+  'http://kickconnect-env-1.eba-bsj8msyj.us-east-1.elasticbeanstalk.com',
+  'http://kickconnect.net'
 ];
 
 const corsOptions = {

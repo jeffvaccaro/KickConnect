@@ -149,7 +149,7 @@ router.get('/get-main-schedule', authenticateToken, async (req, res) => {
               ON s.eventId = e.eventId 
               AND e.isActive = true
           LEFT JOIN 
-              admin.scheduleLocation sl 
+              admin.schedulelocation sl 
               ON s.scheduleMainId = sl.scheduleMainId
           WHERE 
               (WEEK(s.selectedDate) = WEEK(CURDATE()) AND YEAR(s.selectedDate) = YEAR(CURDATE()) AND s.isRepeat = false)
@@ -203,11 +203,11 @@ router.get('/get-location-assignment-schedule/:locationId', authenticateToken, a
                 ON s.eventId = e.eventId 
                 AND e.isActive = true
             INNER JOIN 
-                admin.scheduleLocation sl 
+                admin.schedulelocation sl 
                 ON s.scheduleMainId = sl.scheduleMainId
                 AND sl.locationid = ?
             LEFT JOIN
-                admin.scheduleProfile sp
+                admin.scheduleprofile sp
                 ON sl.scheduleLocationId = sp.scheduleLocationId
             WHERE 
                 (WEEK(s.selectedDate) = WEEK(CURDATE()) AND YEAR(s.selectedDate) = YEAR(CURDATE()) AND s.isRepeat = false)
