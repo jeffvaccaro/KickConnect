@@ -11,67 +11,6 @@
             </div>
         </div>
         <ul class="header-right-side d-flex align-items-center mt-0 mb-0">
-
-            <li>
-                <button mat-icon-button [matMenuTriggerFor]="emailMenu" class="btn p-0 border-none rounded-circle position-relative">
-                    <i class="ri-mail-fill"></i>
-                </button>
-                <mat-menu class="menu-dropdown" #emailMenu="matMenu" xPosition="before">
-                    <div class="menu-header d-flex align-items-center justify-content-space-between">
-                        <h5 class="m-0">Emails</h5>
-                        <button type="button" class="bg-transparent p-0 border-none">Mark all as read</button>
-                    </div>
-                    <ul class="menu-body">
-                        <li class="position-relative">
-                            <div class="d-flex align-items-center">
-                                <img src="assets/img/user/user1.jpg" class="rounded-circle" alt="user">
-                                <div class="title">
-                                    <h6>Invoices have been paid</h6>
-                                    <span><i class="flaticon-timer"></i> 14 mins ago</span>
-                                </div>
-                            </div>
-                            <a routerLink="/email/read" class="link-btn"></a>
-                            <button class="close-btn bg-transparent border-none p-0"><i class="flaticon-close"></i></button>
-                        </li>
-                        <li class="position-relative">
-                            <div class="d-flex align-items-center">
-                                <img src="assets/img/user/user2.jpg" class="rounded-circle" alt="user">
-                                <div class="title">
-                                    <h6>Allow users to like products</h6>
-                                    <span><i class="flaticon-timer"></i> 30 mins ago</span>
-                                </div>
-                            </div>
-                            <a routerLink="/email/read" class="link-btn"></a>
-                            <button class="close-btn bg-transparent border-none p-0"><i class="flaticon-close"></i></button>
-                        </li>
-                        <li class="position-relative">
-                            <div class="d-flex align-items-center">
-                                <img src="assets/img/user/user4.jpg" class="rounded-circle" alt="user">
-                                <div class="title">
-                                    <h6>Your leave is approved</h6>
-                                    <span><i class="flaticon-timer"></i> 2 hours ago</span>
-                                </div>
-                            </div>
-                            <a routerLink="/email/read" class="link-btn"></a>
-                            <button class="close-btn bg-transparent border-none p-0"><i class="flaticon-close"></i></button>
-                        </li>
-                        <li class="position-relative">
-                            <div class="d-flex align-items-center">
-                                <img src="assets/img/user/user5.jpg" class="rounded-circle" alt="user">
-                                <div class="title">
-                                    <h6>Live visits on our site</h6>
-                                    <span><i class="flaticon-timer"></i> 5 hours ago</span>
-                                </div>
-                            </div>
-                            <a routerLink="/email/read" class="link-btn"></a>
-                            <button class="close-btn bg-transparent border-none p-0"><i class="flaticon-close"></i></button>
-                        </li>
-                    </ul>
-                    <div class="menu-footer">
-                        <a routerLink="/email" class="fw-medium position-relative">View All <i class="flaticon-chevron"></i></a>
-                    </div>
-                </mat-menu>
-            </li>
             <li>
                 <button mat-icon-button [matMenuTriggerFor]="notificationMenu" class="btn p-0 border-none rounded-circle position-relative notification-btn">
                     <i class="ri-notification-3-fill"></i>
@@ -79,21 +18,21 @@
                 <mat-menu class="menu-dropdown" #notificationMenu="matMenu" xPosition="before">
                     <div class="menu-header d-flex align-items-center justify-content-space-between">
                         <h5 class="m-0">Notifications</h5>
-                        <button type="button" class="bg-transparent p-0 border-none">Mark all as read</button>
+                        <!-- <button type="button" class="bg-transparent p-0 border-none">Mark all as read</button> -->
                     </div>
                     <ul class="menu-body">
                         <li class="position-relative">
                             <div class="d-flex">
                                 <i class="flaticon-file-1 icon"></i>
                                 <div class="title">
-                                    <h6>8 Invoices have been paid</h6>
-                                    <span><i class="flaticon-timer"></i> 14 mins ago</span>
+                                    <h6>Coming Soon!</h6>
+                                    <span><i class="flaticon-timer"></i>2025</span>
                                 </div>
                             </div>
                             <a routerLink="/notifications" class="link-btn"></a>
                             <button class="close-btn bg-transparent border-none p-0"><i class="flaticon-close"></i></button>
                         </li>
-                        <li class="position-relative">
+                        <!-- <li class="position-relative">
                             <div class="d-flex align-items-center">
                                 <i class="flaticon-pdf-file icon"></i>
                                 <div class="title">
@@ -114,11 +53,11 @@
                             </div>
                             <a routerLink="/notifications" class="link-btn"></a>
                             <button class="close-btn bg-transparent border-none p-0"><i class="flaticon-close"></i></button>
-                        </li>
+                        </li> -->
                     </ul>
-                    <div class="menu-footer">
+                    <!-- <div class="menu-footer">
                         <a routerLink="/notifications" class="fw-medium position-relative">View All <i class="flaticon-chevron"></i></a>
-                    </div>
+                    </div> -->
                 </mat-menu>
             </li>
             <li class="d-none d-lg-block">

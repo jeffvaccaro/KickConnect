@@ -64,8 +64,8 @@ const routers = [
   { path: '/common', router: zipcodeRouter },
   { path: '/schedule', router: scheduleRouter },
   { path: '/account', router: accountRouter },
-  { path: '/skill', router:skillRouter },
-  { path: '/htmlGen', router:htmlGenRouter }
+  { path: '/skill', router: skillRouter },
+  { path: '/htmlGen', router: htmlGenRouter }
 ];
 
 routers.forEach(({ path, router }) => {
@@ -77,19 +77,16 @@ routers.forEach(({ path, router }) => {
 });
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
-
-
-const distPath = path.join(__dirname, 'dist', 'kickConnect', 'browser'); // Correct path
+const distPath = path.join(__dirname, 'dist', 'kickConnect', 'browser');
 
 // Serve static files from the dist/your-app-name/browser directory
 app.use(express.static(distPath));
 
 app.get('/*', (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
+  res.sendFile(path.join(distPath, 'index.html'));
 });
-
-
 
 app.get('/current-datetime', (req, res) => {
   const currentDateTime = new Date();

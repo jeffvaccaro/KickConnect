@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatCardModule } from '@angular/material/card';
@@ -7,11 +7,24 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { HtmlGeneratorService } from '../../../services/html-generator.service';
+import { MatFormFieldModule } from '@angular/material/form-field'; // Corrected import
+import { MatInputModule } from '@angular/material/input'; // Added this import
+
 
 @Component({
   selector: 'app-create-html-template',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatStepperModule, MatButtonToggleModule, MatIconModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatStepperModule,
+    MatButtonToggleModule,
+    MatIconModule,
+    MatFormFieldModule, // Corrected import
+    MatInputModule, // Added this import
+    FormsModule
+  ],
   templateUrl: './create-html-template.component.html',
   styleUrls: ['./create-html-template.component.scss']
 })
@@ -23,10 +36,21 @@ export class CreateHtmlTemplateComponent implements OnInit {
   bgImgURL: string;
   colBlock: string;
   colBlockHTML: string;
+  col1: boolean;
+  col1HeaderText: string;
+  col1TextBlock: string;
+  col2: boolean;
+  col2HeaderText: string;
+  col2TextBlock: string;
+  col3: boolean;
+  col3HeaderText: string;
+  col3TextBlock: string;
 
   constructor(private fb: FormBuilder, private htmlGeneratorService: HtmlGeneratorService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void { 
+    this.col1HeaderText = 'Column 1';
+    this.col1TextBlock = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.';
     this.menuForm = this.fb.group({ menuItems: this.fb.array([]) });
     this.addMenuItem(); // Add a default item for illustration
     this.updateIframeSrc();
@@ -85,56 +109,73 @@ export class CreateHtmlTemplateComponent implements OnInit {
     this.updateIframeSrc();
   }
 
+  updateColBlockHTML():void {
+    if(this.col3){
+      const event = { value: 3 } as MatButtonToggleChange
+      this.section1Col(event);
+    }else if (this.col2){
+      const event = { value:2 } as MatButtonToggleChange
+      this.section1Col(event);
+    }else{
+      const event = { value: 1 } as MatButtonToggleChange
+      this.section1Col(event);
+    }
+   
+  }
+
   section1Col(event: MatButtonToggleChange): void { 
     this.colBlock = 'features-list block-1-' + event.value; 
       if(event.value == 1){
         this.colBlockHTML = `
           <div class="bgrid feature">	
               <div class="service-content">	
-                <h3 style="color:white;">Column 1</h3>
-                  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore 
-                  veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
+                <h3 style="color:white;">${this.col1HeaderText}</h3>
+                  <p>${this.col1TextBlock}</p>
               </div> 	         	 
           </div>`;
+        this.col1 = true;
+        this.col2 = false;
+        this.col3 = false;
       }else if(event.value == 2){
         this.colBlockHTML = `
           <div class="bgrid feature">	
               <div class="service-content">	
-                <h3 style="color:white;">Column 1</h3>
-                  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore 
-                  veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
+                <h3 style="color:white;">${this.col1HeaderText}</h3>
+                  <p>${this.col1TextBlock}</p>
               </div> 	         	 
           </div>        
           <div class="bgrid feature">	
               <div class="service-content">	
-                  <h3 style="color:white;">Column 2</h3>
-                  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore 
-                  veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
-              </div>	                          
+                <h3 style="color:white;">${this.col2HeaderText}</h3>
+                  <p>${this.col2TextBlock}</p>
+              </div> 	         	 
           </div>`;
+          this.col1 = true;
+          this.col2 = true;
+          this.col3 = false;
       }else if (event.value == 3){
         this.colBlockHTML = `
           <div class="bgrid feature">	
               <div class="service-content">	
-                <h3 style="color:white;">Column 1</h3>
-                  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore 
-                  veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
+                <h3 style="color:white;">${this.col1HeaderText}</h3>
+                  <p>${this.col1TextBlock}</p>
               </div> 	         	 
           </div>        
           <div class="bgrid feature">	
               <div class="service-content">	
-                  <h3 style="color:white;">Column 2</h3>
-                  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore 
-                  veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>
-              </div>	                          
+                <h3 style="color:white;">${this.col2HeaderText}</h3>
+                  <p>${this.col2TextBlock}</p>
+              </div> 	         	 
           </div>        
-          <div class="bgrid feature">
-              <div class="service-content">
-                  <h3 style="color:white;">Column 2</h3>
-                  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore 
-                  veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p> 
-              </div> 	            	               
+          <div class="bgrid feature">	
+              <div class="service-content">	
+                <h3 style="color:white;">${this.col3HeaderText}</h3>
+                  <p>${this.col3TextBlock}</p>
+              </div> 	         	 
           </div>`;
+          this.col1 = true;
+          this.col2 = true;
+          this.col3 = true;
       }
       this.updateIframeSrc();
   }
@@ -142,46 +183,27 @@ export class CreateHtmlTemplateComponent implements OnInit {
   generateHtml(menuItems: { name: string, href: string }[]): string {
     const htmlHeader = `
     <!DOCTYPE html>
-    <!--[if lt IE 9 ]><html class="no-js oldie" lang="en"> <![endif]-->
-    <!--[if IE 9 ]><html class="no-js oldie ie9" lang="en"> <![endif]-->
-    <!--[if (gte IE 9)|!(IE)]><!-->
     <html class="no-js" lang="en">
-    <!--<![endif]-->
     <head>
-        <!--- basic page needs
-      ================================================== -->
-        <meta charset="utf-8">
-        <title>kickConnect-HTML-TEMPLATE-1</title>
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <!-- mobile specific metas
-      ================================================== -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <!-- Base URL --> 
-        <base href="http://localhost:4200/HTML-TEMPLATE-1/">
-        <!-- CSS
-      ================================================== -->
-        <link rel="stylesheet" href="/public/htmlgencode/css/base.css">
-        <link rel="stylesheet" href="/public/htmlgencode/css/vendor.css">
-        <link rel="stylesheet" href="/public/htmlgencode/css/main.css">
-        <!-- Load jQuery from CDN --> 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-       
-        <!-- script
-      ================================================== -->
-        <script src="/public/htmlgencode/js/modernizr.js"></script>
-        <script src="/public/htmlgencode/js/pace.min.js"></script>
-        <!-- favicons
-      ================================================== -->
-        <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
+      <meta charset="utf-8">
+      <title>kickConnect-HTML-TEMPLATE-1</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <base href="http://localhost:4200/HTML-TEMPLATE-1/">
+      <link rel="stylesheet" href="/public/htmlgencode/css/base.css">
+      <link rel="stylesheet" href="/public/htmlgencode/css/vendor.css">
+      <link rel="stylesheet" href="/public/htmlgencode/css/main.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="/public/htmlgencode/js/modernizr.js"></script>
+      <script src="/public/htmlgencode/js/pace.min.js"></script>
+      <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
+      <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
     </head>
+   
     <body>`;
     const htmlStartHeader = ` 
       <header id="header" class="row">
         <div class="header-logo">
-          <a href="index.html"><img src="assets/img/kickConnect_logo2_white_50.png"></a>
+          <a href="index.html"><img src="../../../../assets/img/kickConnect_logo2_white_50.png"></a>
         </div>
         <nav id="header-nav-wrap">
           <ul class="header-main-nav">`;

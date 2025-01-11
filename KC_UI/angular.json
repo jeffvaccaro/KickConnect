@@ -26,11 +26,10 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/HTML-TEMPLATE-1",
               {
-                "glob": "testhtml.html",
-                "input": "src",
-                "output": "/"
+                "glob": "**/*",
+                "input": "src/HTML-TEMPLATE-1",
+                "output": "/public/htmlgencode"
               }
             ],
             "styles": [
@@ -39,7 +38,7 @@
               "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
               "node_modules/remixicon/fonts/remixicon.css",
               "src/styles.scss",
-              "node_modules/material-design-icons-iconfont/dist/material-design-icons.css" // Added this line
+              "node_modules/material-design-icons-iconfont/dist/material-design-icons.css"
             ],
             "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"],
             "server": "src/main.server.ts",
