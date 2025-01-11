@@ -80,8 +80,8 @@ export class SidebarComponent implements OnInit {
     }
 
     calculateAvailableOptions(): void {
-      console.log(this.options);
+      //console.log(this.options);
       this.availableOptions = this.options.length;
-      console.log('Available options:', this.availableOptions);
+      //console.log('Available options:', this.availableOptions);
     }
 }

@@ -20,7 +20,7 @@
                     <div *ngIf="imageSrc" class="image-preview">
                         <img [src]="imageSrc" alt="Image Preview" style="max-width: 200px; max-height: 200px;">
                     </div>
-                    <img *ngIf="!imageSrc" src="public/img/user/user15.jpg" class="rounded-circle image-preview" width="110" alt="user">
+                    <img *ngIf="!imageSrc" src="assets/img/user/user15.jpg" class="rounded-circle image-preview" width="110" alt="user">
                     <div class="kickConnect-form-group" style="padding-left:15px;">
                         
                         <input type="file" class="input-control" (change)="onFileSelected($event)">

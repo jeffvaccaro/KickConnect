@@ -181,7 +181,7 @@ export class CreateHtmlTemplateComponent implements OnInit {
     const htmlStartHeader = ` 
       <header id="header" class="row">
         <div class="header-logo">
-          <a href="index.html"><img src="/public/img/kickConnect_logo2_white_50.png"></a>
+          <a href="index.html"><img src="assets/img/kickConnect_logo2_white_50.png"></a>
         </div>
         <nav id="header-nav-wrap">
           <ul class="header-main-nav">`;
