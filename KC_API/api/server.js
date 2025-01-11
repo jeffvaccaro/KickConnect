@@ -76,14 +76,20 @@ routers.forEach(({ path, router }) => {
   }
 });
 
-app.use('/uploads', express.static('uploads'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use(express.json());
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+
+const distPath = path.join(__dirname, 'dist', 'kickConnect', 'browser'); // Correct path
+
+// Serve static files from the dist/your-app-name/browser directory
+app.use(express.static(distPath));
+
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
 });
+
+
 
 app.get('/current-datetime', (req, res) => {
   const currentDateTime = new Date();
