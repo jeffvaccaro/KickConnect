@@ -62,12 +62,17 @@ export class CreateHtmlTemplateComponent implements OnInit {
 
   addMenuItem(): void { 
     this.menuItems.push(this.fb.group({ name: [''], href: [''] })); 
+    //this.updateIframeSrc();
   } 
   
   removeMenuItem(index: number): void { 
     this.menuItems.removeAt(index); 
   } 
   
+  addToHTML(): void {
+    this.updateIframeSrc();
+  }
+
   onSubmit(): void { 
     this.updateIframeSrc();
   }
@@ -127,52 +132,59 @@ export class CreateHtmlTemplateComponent implements OnInit {
     this.colBlock = 'features-list block-1-' + event.value; 
       if(event.value == 1){
         this.colBlockHTML = `
-          <div class="bgrid feature">	
-              <div class="service-content">	
-                <h3 style="color:white;">${this.col1HeaderText}</h3>
-                  <p>${this.col1TextBlock}</p>
-              </div> 	         	 
-          </div>`;
+        <div class="bgrid feature" style="width:85%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">  
+          <div class="service-content">  
+            <h3 style="color:white;">${this.col1HeaderText}</h3>
+              <p>${this.col1TextBlock}</p>
+          </div>                   
+        </div>`;
+      
         this.col1 = true;
         this.col2 = false;
         this.col3 = false;
       }else if(event.value == 2){
         this.colBlockHTML = `
-          <div class="bgrid feature">	
-              <div class="service-content">	
-                <h3 style="color:white;">${this.col1HeaderText}</h3>
-                  <p>${this.col1TextBlock}</p>
-              </div> 	         	 
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+          <div class="bgrid feature block-1-2" style="flex: 1; max-width: 45%; margin: 0 10px;">  
+            <div class="service-content">  
+              <h3 style="color:white;">${this.col1HeaderText}</h3>
+              <p>${this.col1TextBlock}</p>
+            </div>                   
           </div>        
-          <div class="bgrid feature">	
-              <div class="service-content">	
-                <h3 style="color:white;">${this.col2HeaderText}</h3>
-                  <p>${this.col2TextBlock}</p>
-              </div> 	         	 
-          </div>`;
+          <div class="bgrid feature block-1-2" style="flex: 1; max-width: 45%; margin: 0 10px;">  
+            <div class="service-content">  
+              <h3 style="color:white;">${this.col2HeaderText}</h3>
+              <p>${this.col2TextBlock}</p>
+            </div>                   
+          </div>
+        </div>`;
+      
           this.col1 = true;
           this.col2 = true;
           this.col3 = false;
       }else if (event.value == 3){
         this.colBlockHTML = `
-          <div class="bgrid feature">	
-              <div class="service-content">	
-                <h3 style="color:white;">${this.col1HeaderText}</h3>
-                  <p>${this.col1TextBlock}</p>
-              </div> 	         	 
-          </div>        
-          <div class="bgrid feature">	
-              <div class="service-content">	
-                <h3 style="color:white;">${this.col2HeaderText}</h3>
-                  <p>${this.col2TextBlock}</p>
-              </div> 	         	 
-          </div>        
-          <div class="bgrid feature">	
-              <div class="service-content">	
-                <h3 style="color:white;">${this.col3HeaderText}</h3>
-                  <p>${this.col3TextBlock}</p>
-              </div> 	         	 
-          </div>`;
+  <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+    <div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px;">  
+      <div class="service-content">  
+        <h3 style="color:white;">${this.col1HeaderText}</h3>
+        <p>${this.col1TextBlock}</p>
+      </div>                   
+    </div>        
+    <div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px;">  
+      <div class="service-content">  
+        <h3 style="color:white;">${this.col2HeaderText}</h3>
+        <p>${this.col2TextBlock}</p>
+      </div>                   
+    </div>
+    <div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px;">  
+      <div class="service-content">  
+        <h3 style="color:white;">${this.col3HeaderText}</h3>
+        <p>${this.col3TextBlock}</p>
+      </div>                   
+    </div>
+  </div>`;
+
           this.col1 = true;
           this.col2 = true;
           this.col3 = true;
