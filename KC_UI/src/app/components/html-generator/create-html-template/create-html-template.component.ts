@@ -7,9 +7,11 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { HtmlGeneratorService } from '../../../services/html-generator.service';
-import { MatFormFieldModule } from '@angular/material/form-field'; // Corrected import
-import { MatInputModule } from '@angular/material/input'; // Added this import
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTabsModule } from '@angular/material/tabs';
+import { HtmlGeneratedTypes } from '../../../enums/html-generated-types';
 
 @Component({
   selector: 'app-create-html-template',
@@ -23,7 +25,9 @@ import { MatInputModule } from '@angular/material/input'; // Added this import
     MatIconModule,
     MatFormFieldModule, // Corrected import
     MatInputModule, // Added this import
-    FormsModule
+    FormsModule,
+    MatSlideToggleModule,
+    MatTabsModule
   ],
   templateUrl: './create-html-template.component.html',
   styleUrls: ['./create-html-template.component.scss']
@@ -34,6 +38,7 @@ export class CreateHtmlTemplateComponent implements OnInit {
   iframeSrc: SafeResourceUrl;
   section1backgroundImg: string;
   bgImgURL: string;
+  colImgURL: string;
   colBlock: string;
   colBlockHTML: string;
   col1: boolean;
@@ -45,12 +50,26 @@ export class CreateHtmlTemplateComponent implements OnInit {
   col3: boolean;
   col3HeaderText: string;
   col3TextBlock: string;
+  isDarkText: boolean = false;
+  columnColor: string;
+  currentSection: number = 1;
+  columnCount: number = 1;
+  column3TabValue: string;
+  tabIndex: number = 1;
 
   constructor(private fb: FormBuilder, private htmlGeneratorService: HtmlGeneratorService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void { 
+    this.columnColor = 'white';
     this.col1HeaderText = 'Column 1';
     this.col1TextBlock = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.';
+    this.col2HeaderText = 'Column 2';
+    this.col2TextBlock = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.';
+    this.col3HeaderText = 'Column 3';
+    this.col3TextBlock = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.';
+    this.currentSection = 1;
+    this.columnCount = 1;
+
     this.menuForm = this.fb.group({ menuItems: this.fb.array([]) });
     this.addMenuItem(); // Add a default item for illustration
     this.updateIframeSrc();
@@ -73,11 +92,11 @@ export class CreateHtmlTemplateComponent implements OnInit {
     this.updateIframeSrc();
   }
 
-  onSubmit(): void { 
-    this.updateIframeSrc();
-  }
+  // onSubmit(): void { 
+  //   this.updateIframeSrc();
+  // }
 
-  onFileSelected(event: Event): void {
+  onImageUpload(event: Event, section: number, type: string, colNum: number = 0): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
@@ -85,10 +104,16 @@ export class CreateHtmlTemplateComponent implements OnInit {
       // Call the service to upload the image
       this.htmlGeneratorService.uploadBGImage(file).subscribe(
         response => {
-          console.log('Upload successful:', response);
-          const imageUrl = response.url; // Assume the server returns the URL of the uploaded image
-          this.bgImgURL = response.url;
-          this.setBackground(imageUrl);
+          const imageUrl = response.url;
+          switch(type){
+            case "background":
+              this.bgImgURL = response.url;
+              this.setBackground(imageUrl);
+              break;
+            case "columns":
+              this.colImgURL = response.url;
+              break;
+          }
         },
         error => {
           console.error('Error uploading image:', error);
@@ -117,25 +142,78 @@ export class CreateHtmlTemplateComponent implements OnInit {
   updateColBlockHTML():void {
     if(this.col3){
       const event = { value: 3 } as MatButtonToggleChange
-      this.section1Col(event);
+      this.section1Columns(event);
     }else if (this.col2){
       const event = { value:2 } as MatButtonToggleChange
-      this.section1Col(event);
+      this.section1Columns(event);
     }else{
       const event = { value: 1 } as MatButtonToggleChange
-      this.section1Col(event);
+      this.section1Columns(event);
     }
    
   }
+  switchColor(event: MatSlideToggleChange): void{
+    this.isDarkText = event.checked;
+    if(event.checked == true){
+      this.columnColor = 'black';
+    }else{
+      this.columnColor = 'white';
+    }
+    this.updateColBlockHTML();
+  }
 
-  section1Col(event: MatButtonToggleChange): void { 
+  onCol3TabChanged(event: number){
+    switch(event){
+      case 1:
+        this.tabIndex = HtmlGeneratedTypes.Text;
+        break;
+      case 2:
+        this.tabIndex = HtmlGeneratedTypes.Image;
+        break;
+      case 3:
+        this.tabIndex = HtmlGeneratedTypes.Video;
+        break;
+    }    
+  }
+
+  generateContentForColumn(type: string, header: string, text: string, content: string = ''): string {
+    if (type === 'text') {
+      return `
+        <div class="service-content">
+          <h3 style="color:${this.columnColor};">${header}</h3>
+          <p style="color:${this.columnColor};">${text}</p>
+        </div>
+      `;
+    } else if (type === 'image') {
+      return `
+        <div class="service-content">
+          <img src="${content}" alt="Description" style="max-width: 100%;">
+        </div>
+      `;
+    } else if (type === 'video') {
+      return `
+        <div class="service-content">
+          <video controls style="max-width: 100%;">
+            <source src="${content}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      `;
+    }
+    return '';
+  }
+  
+
+  section1Columns(event: MatButtonToggleChange): void { 
+    this.columnCount = event.value;
+
     this.colBlock = 'features-list block-1-' + event.value; 
       if(event.value == 1){
         this.colBlockHTML = `
         <div class="bgrid feature" style="width:85%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">  
           <div class="service-content">  
-            <h3 style="color:white;">${this.col1HeaderText}</h3>
-              <p>${this.col1TextBlock}</p>
+            <h3 style="color:${this.columnColor};">${this.col1HeaderText}</h3>
+              <p style="color:${this.columnColor};">${this.col1TextBlock}</p>
           </div>                   
         </div>`;
       
@@ -147,14 +225,14 @@ export class CreateHtmlTemplateComponent implements OnInit {
         <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
           <div class="bgrid feature block-1-2" style="flex: 1; max-width: 45%; margin: 0 10px;">  
             <div class="service-content">  
-              <h3 style="color:white;">${this.col1HeaderText}</h3>
-              <p>${this.col1TextBlock}</p>
+              <h3 style="color:${this.columnColor};">${this.col1HeaderText}</h3>
+              <p style="color:${this.columnColor};">${this.col1TextBlock}</p>
             </div>                   
           </div>        
           <div class="bgrid feature block-1-2" style="flex: 1; max-width: 45%; margin: 0 10px;">  
             <div class="service-content">  
-              <h3 style="color:white;">${this.col2HeaderText}</h3>
-              <p>${this.col2TextBlock}</p>
+              <h3 style="color:${this.columnColor};">${this.col2HeaderText}</h3>
+              <p style="color:${this.columnColor};">${this.col2TextBlock}</p>
             </div>                   
           </div>
         </div>`;
@@ -164,26 +242,26 @@ export class CreateHtmlTemplateComponent implements OnInit {
           this.col3 = false;
       }else if (event.value == 3){
         this.colBlockHTML = `
-  <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-    <div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px;">  
-      <div class="service-content">  
-        <h3 style="color:white;">${this.col1HeaderText}</h3>
-        <p>${this.col1TextBlock}</p>
-      </div>                   
-    </div>        
-    <div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px;">  
-      <div class="service-content">  
-        <h3 style="color:white;">${this.col2HeaderText}</h3>
-        <p>${this.col2TextBlock}</p>
-      </div>                   
-    </div>
-    <div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px;">  
-      <div class="service-content">  
-        <h3 style="color:white;">${this.col3HeaderText}</h3>
-        <p>${this.col3TextBlock}</p>
-      </div>                   
-    </div>
-  </div>`;
+          <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+            <div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px;">  
+              <div class="service-content">  
+                <h3 style="color:${this.columnColor};">${this.col1HeaderText}</h3>
+                <p style="color:${this.columnColor};">${this.col1TextBlock}</p>
+              </div>                   
+            </div>        
+            <div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px;">  
+              <div class="service-content">  
+                <h3 style="color:${this.columnColor};">${this.col2HeaderText}</h3>
+                <p style="color:${this.columnColor};">${this.col2TextBlock}</p>
+              </div>                   
+            </div>
+            <div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px;">  
+              <div class="service-content">  
+                <h3 style="color:${this.columnColor};">${this.col3HeaderText}</h3>
+                <p style="color:${this.columnColor};">${this.col3TextBlock}</p>
+              </div>                   
+            </div>
+          </div>`;
 
           this.col1 = true;
           this.col2 = true;
