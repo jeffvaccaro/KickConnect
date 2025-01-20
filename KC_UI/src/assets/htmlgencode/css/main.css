@@ -2859,3 +2859,12 @@ footer ul a:visited {
 
 
 /*# sourceMappingURL=main.css.map */
+
+.service-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  border:1px solid white;
+}
+

@@ -2859,3 +2859,33 @@ footer ul a:visited {
 
 
 /*# sourceMappingURL=main.css.map */
+.service-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex: 1;
+  max-height: 85vh;
+  /* border:1px solid red; */
+}
+
+.service-content h3 {
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+  flex: 0 0 auto; /* Prevents the header from flexing */
+}
+
+.service-content p {
+  flex: 1;
+  margin: 0;
+}
+
+.service-content img {
+  max-height: 85vh;
+  object-fit: cover;
+  width: 100%;
+}
+
+
+

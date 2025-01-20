@@ -50,43 +50,50 @@
                     </mat-form-field>
                 
                     <mat-form-field appearance="fill" class="full-width" *ngIf="col2">
-                      <mat-card-content>
-                        <mat-tab-group>
-                            <mat-tab label="First"><br> Content 1</mat-tab>
-                            <mat-tab label="Second"><br> Content 2</mat-tab>
-                            <mat-tab label="Third"><br> Content 3</mat-tab>
+                      <mat-card-content class="full-width" *ngIf="col3">                                            
+                        <mat-tab-group (selectedIndexChange)="onColTabChanged($event)">
+                          <mat-tab label="Text"><br>
+                            <mat-form-field appearance="fill">
+                              <mat-label>Column 2: Header Text</mat-label>
+                              <input matInput type="text" id="txtHeaderCol2" [(ngModel)]="col2HeaderText" (ngModelChange)="updateColBlockHTML()">
+                            </mat-form-field>
+                        
+                            <mat-form-field appearance="fill" class="full-width" *ngIf="col2">
+                              <mat-label>Column 2: Text</mat-label>
+                              <textarea matInput id="txtarea3" rows="5" [(ngModel)]="col2TextBlock" (ngModelChange)="updateColBlockHTML()"></textarea>
+                            </mat-form-field>
+                          </mat-tab>
+                          <mat-tab label="Image"><br>
+                            <p>Add Column Image?</p>
+                            <input type="file" (change)="onImageUpload($event, 1, 'columns', 2)"><br/><br/>
+                          </mat-tab>
+                          <mat-tab label="Video"><br> Video</mat-tab>
                         </mat-tab-group>
-                    </mat-card-content>
+                      </mat-card-content>
+  
                       <mat-label>Column 2: Text</mat-label>
                       <textarea matInput id="txtarea2" rows="5" [(ngModel)]="col2TextBlock" (ngModelChange)="updateColBlockHTML()"></textarea>
                     </mat-form-field>
 
-                    <mat-card-content class="full-width" *ngIf="col3">
-                                            
-                      <mat-tab-group (selectedIndexChange)="onCol3TabChanged($event)">
+                    <mat-card-content class="full-width" *ngIf="col3">                                            
+                      <mat-tab-group (selectedIndexChange)="onColTabChanged($event)">
                         <mat-tab label="Text"><br>
-                          <mat-form-field appearance="fill" >
+                          <mat-form-field appearance="fill">
                             <mat-label>Column 3: Header Text</mat-label>
                             <input matInput type="text" id="txtHeaderCol3" [(ngModel)]="col3HeaderText" (ngModelChange)="updateColBlockHTML()">
                           </mat-form-field>
-                    
+                      
                           <mat-form-field appearance="fill" class="full-width" *ngIf="col3">
                             <mat-label>Column 3: Text</mat-label>
                             <textarea matInput id="txtarea3" rows="5" [(ngModel)]="col3TextBlock" (ngModelChange)="updateColBlockHTML()"></textarea>
-                          </mat-form-field>                        
+                          </mat-form-field>
                         </mat-tab>
                         <mat-tab label="Image"><br>
-
-                            <p>Add Column Image?</p>
-                            <input type="file" (change)="onImageUpload($event,1,'columns',3)"><br/><br/>
-                  
-                        
+                          <p>Add Column Image?</p>
+                          <input type="file" (change)="onImageUpload($event, 1, 'columns', 3)"><br/><br/>
                         </mat-tab>
                         <mat-tab label="Video"><br> Video</mat-tab>
-                    </mat-tab-group>
-
-
-                
+                      </mat-tab-group>
                       <div class="button-group">
                         <button mat-flat-button color="primary" matStepperPrevious>Back</button>
                         <button mat-flat-button color="primary" matStepperNext>Next</button>
@@ -99,7 +106,7 @@
               <mat-step>
                 <ng-template matStepLabel>Section 1: Menu</ng-template>
                 <ng-template matStepContent>
-                  <form [formGroup]="menuForm">
+                  <form [formGroup]="menuForm" (submit)="addToHTML()">
                     <div formArrayName="menuItems">
                       <div *ngFor="let item of menuItems.controls; let i = index">
                         <div class="form-group" [formGroupName]="i">
@@ -107,16 +114,7 @@
                             <mat-label>Menu Item Name</mat-label>
                             <input matInput type="text" id="txtMenuItemName" formControlName="name">
                           </mat-form-field>
-
-                          <mat-form-field appearance="fill" class="full-width" >
-                            <mat-label>Href (e.g., #about)</mat-label>
-                            <input matInput type="text" id="txtMenuMetaData" formControlName="href">
-                          </mat-form-field>
-
-
-
-                          <button type="button" (click)="addToHTML()">Add Menu</button>
-                          <!-- <button type="button" (click)="removeMenuItem(i)">Remove</button> -->
+                          <button type="submit">Add Menu</button>
                         </div>
                       </div>
                     </div>
