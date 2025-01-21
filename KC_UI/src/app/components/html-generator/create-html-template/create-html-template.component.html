@@ -60,7 +60,7 @@
                         
                             <mat-form-field appearance="fill" class="full-width" *ngIf="col2">
                               <mat-label>Column 2: Text</mat-label>
-                              <textarea matInput id="txtarea3" rows="5" [(ngModel)]="col2TextBlock" (ngModelChange)="updateColBlockHTML()"></textarea>
+                              <textarea matInput id="txtarea2" rows="5" [(ngModel)]="col2TextBlock" (ngModelChange)="updateColBlockHTML()"></textarea>
                             </mat-form-field>
                           </mat-tab>
                           <mat-tab label="Image"><br>
@@ -71,8 +71,8 @@
                         </mat-tab-group>
                       </mat-card-content>
   
-                      <mat-label>Column 2: Text</mat-label>
-                      <textarea matInput id="txtarea2" rows="5" [(ngModel)]="col2TextBlock" (ngModelChange)="updateColBlockHTML()"></textarea>
+                      <!-- <mat-label>Column 2: Text</mat-label>
+                      <textarea matInput id="txtarea2" rows="5" [(ngModel)]="col2TextBlock" (ngModelChange)="updateColBlockHTML()"></textarea> -->
                     </mat-form-field>
 
                     <mat-card-content class="full-width" *ngIf="col3">                                            
