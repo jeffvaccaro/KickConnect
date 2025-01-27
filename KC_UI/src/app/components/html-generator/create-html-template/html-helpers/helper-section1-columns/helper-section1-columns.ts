@@ -34,93 +34,84 @@ export function generateContentForColumn(
   return '';
 }
 
-export function section1Columns(
+export async function updateHeaderText(
   event: MatButtonToggleChange, 
   columnColor: string, 
-  col1HeaderText: string, 
-  col1TextBlock: string, 
-  col2HeaderText: string, 
-  col2TextBlock: string, 
-  col3HeaderText: string, 
-  col3TextBlock: string,
-  col2Image: string,
-  col3Image: string
-): { 
-  colBlockHTML: string; 
-  col1: boolean; 
-  col2: boolean; 
-  col3: boolean;
-  colBlock: string;
-} {
-  let columnCount = event.value;
-  let colBlock = 'features-list block-1-' + event.value; 
-  let colBlockHTML = '';
-  let col1 = false;
-  let col2 = false;
-  let col3 = false;
+  columns: { headerText: string, textBlock: string, image: string }[]):Promise<{ 
+    colBlockHTML: string; 
+    col1: boolean; 
+    col2: boolean; 
+    col3: boolean;
+    colBlock: string;}>
+  {
+    let colBlock = 'features-list block-1-' + event.value; 
+    let colBlockHTML = '';
+    let col1 = false;
+    let col2 = false;
+    let col3 = false;
 
-  if (event.value == 1) {
-    colBlockHTML = `
-    <div class="bgrid feature" style="width:85%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-      ${generateContentForColumn('text', col1HeaderText, col1TextBlock, '', columnColor)}
-    </div>`;
-    col1 = true;
-  } else if (event.value == 2) {
-    colBlockHTML = `
-    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-      <div class="bgrid feature block-1-2" style="flex: 1; max-width: 45%; margin: 0 10px; height: 85vh;">
-        ${generateContentForColumn('text', col1HeaderText, col1TextBlock, '', columnColor)}
+    if (event.value == 1) {
+      colBlockHTML = `
+      <div class="bgrid feature" style="width:85%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+        ${generateContentForColumn('text', columns[0].headerText, columns[0].textBlock, '', columnColor)}
       </div>`;
-      if(col2Image == "" || col2Image == undefined){
-        colBlockHTML +=
-        `<div class="bgrid feature block-1-2" style="flex: 1; max-width: 45%; margin: 0 10px; height: 85vh;">
-        ${generateContentForColumn('text', col2HeaderText, col2TextBlock, '', columnColor)}
+      col1 = true;
+    } else if (event.value == 2) {
+      colBlockHTML = `
+      <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+        <div class="bgrid feature block-1-2" style="flex: 1; max-width: 48%; margin: 0 10px; height: 85vh;">
+          ${generateContentForColumn('text', columns[0].headerText, columns[0].textBlock, '', columnColor)}
         </div>`;
-      }else{
-        colBlockHTML +=
-        `<div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px; height: 85vh;">
-        ${generateContentForColumn('image', col2HeaderText, col2Image, '', columnColor)}
-        </div>`;
-      }
-    colBlockHTML += `</div>`;
+        if(columns[1].image === "" || columns[1].image === undefined){
+          colBlockHTML +=
+          `<div class="bgrid feature block-1-2" style="flex: 1; max-width: 48%; margin: 0 10px; height: 85vh;">
+          ${generateContentForColumn('text', columns[1].headerText, columns[1].textBlock, '', columnColor)}
+          </div>`;
+        } else {
+          colBlockHTML +=
+          `<div class="bgrid feature block-1-3" style="flex: 1; max-width: 48%; margin: 0 10px; height: 85vh;">
+          ${generateContentForColumn('image', columns[1].headerText, columns[1].image, '', columnColor)}
+          </div>`;
+        }
+      colBlockHTML += `</div>`;
 
-    col1 = true;
-    col2 = true;
-  } else if (event.value == 3) {
+      col1 = true;
+      col2 = true;
+    } else if (event.value == 3) {
+      colBlockHTML = `
+      <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+        <div class="bgrid feature block-1-3" style="flex: 1; max-width: 32%; margin: 0 10px; height: 85vh;">
+          ${generateContentForColumn('text', columns[0].headerText, columns[0].textBlock, '', columnColor)}
+        </div>`;
+        if(columns[1].image === "" || columns[1].image === undefined){
+          colBlockHTML += 
+          `<div class="bgrid feature block-1-3" style="flex: 1; max-width: 32%; margin: 0 10px; height: 85vh;">
+            ${generateContentForColumn('text', columns[1].headerText, columns[1].textBlock, '', columnColor)}
+          </div>`;
+        } else {
+          colBlockHTML += 
+          `<div class="bgrid feature block-1-3" style="flex: 1; max-width: 32%; margin: 0 10px; height: 85vh;">
+            ${generateContentForColumn('image', columns[1].headerText, columns[1].image, '', columnColor)}
+          </div>`;        
+        }
+        if(columns[2].image === "" || columns[2].image === undefined){
+          colBlockHTML += 
+          `<div class="bgrid feature block-1-3" style="flex: 1; max-width: 32%; margin: 0 10px; height: 85vh;">
+          ${generateContentForColumn('text', columns[2].headerText, columns[2].textBlock, '', columnColor)}
+          </div>`;
+        } else {
+          colBlockHTML +=
+          `<div class="bgrid feature block-1-3" style="flex: 1; max-width: 32%; margin: 0 10px; height: 85vh;">
+          ${generateContentForColumn('image', columns[2].headerText, columns[2].image, '', columnColor)}
+          </div>`;
+        }
+      colBlockHTML += `</div>`;
 
-    colBlockHTML = `
-    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-      <div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px; height: 85vh;">
-        ${generateContentForColumn('text', col1HeaderText, col1TextBlock, '', columnColor)}
-      </div>`;
-      if(col2Image == "" || col2Image == undefined){
-        colBlockHTML += 
-        `<div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px; height: 85vh;">
-          ${generateContentForColumn('text', col2HeaderText, col2TextBlock, '', columnColor)}
-        </div>`;
-      }else{
-        colBlockHTML += 
-        `<div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px; height: 85vh;">
-          ${generateContentForColumn('image', col2HeaderText, col2Image, '', columnColor)}
-        </div>`;        
-      }
-      if(col3Image == "" || col3Image == undefined){
-        colBlockHTML += 
-        `<div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px; height: 85vh;">
-        ${generateContentForColumn('text', col3HeaderText, col3TextBlock, '', columnColor)}
-        </div>`;
-      }else{
-        colBlockHTML +=
-        `<div class="bgrid feature block-1-3" style="flex: 1; max-width: 30%; margin: 0 10px; height: 85vh;">
-        ${generateContentForColumn('image', col3HeaderText, col3Image, '', columnColor)}
-        </div>`;
-      }
-    colBlockHTML += `</div>`;
-    
-    col1 = true;
-    col2 = true;
-    col3 = true;
+      col1 = true;
+      col2 = true;
+      col3 = true;
+    }
+
+    return { colBlockHTML, col1, col2, col3, colBlock };
   }
 
-  return { colBlockHTML, col1, col2, col3, colBlock };
-}
