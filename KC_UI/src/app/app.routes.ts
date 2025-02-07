@@ -47,8 +47,8 @@ import { SkillsAutocompleteComponent } from './components/custom/user/skills-aut
 
 
 export const routes: Routes = [
-  { path: 'authentication/register', component: RegisterComponent },
-  { path: 'authentication/reset-password', component: ResetPasswordComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   {
     path: 'authentication',
     component: AuthenticationComponent,
@@ -117,11 +117,8 @@ export const routes: Routes = [
   { path: 'app-add-new-skill', component: AddNewSkillComponent, canActivate: [AuthGuard]},
   { path: 'app-edit-skill/:skillId', component: EditSkillComponent, canActivate: [AuthGuard]},
   { path: 'app-skill-list', component: SkillListComponent, canActivate: [AuthGuard]},
-  
-{path: 'app-skills-autocomplete', component: SkillsAutocompleteComponent},
-
+  { path: 'app-skills-autocomplete', component: SkillsAutocompleteComponent},
   { path: 'app-create-html-template', component: CreateHtmlTemplateComponent },
-  
   { path: 'error', component: InternalErrorComponent },
   { path: 'error-500', component: InternalErrorComponent },
   { path: '**', component: NotFoundComponent }

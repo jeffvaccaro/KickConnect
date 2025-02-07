@@ -2,7 +2,7 @@
 -- cd  c:\Program Files\MySQL\MySQL Server 8.0\bin
 -- mysqldump -u root -p --databases admin common > c:\\KCAppDB.sql
 --
---  UPDATED ON 12/14/2024
+--  UPDATED ON 02/06/2025
 --
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
@@ -143,6 +143,151 @@ INSERT INTO `location` VALUES (1,2,'Location #1','Location#1 Address','New York'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `member`
+--
+
+DROP TABLE IF EXISTS `member`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `member` (
+  `memberId` int NOT NULL AUTO_INCREMENT,
+  `memberPlanId` int NOT NULL,
+  `homeLocationId` int NOT NULL,
+  `firstName` varchar(250) NOT NULL,
+  `lastName` varchar(250) NOT NULL,
+  `phone` varchar(25) DEFAULT NULL,
+  `email` varchar(250) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `contactName` varchar(250) NOT NULL,
+  `contactPhone` varchar(25) NOT NULL,
+  `signupDate` date NOT NULL,
+  `renewalDate` date DEFAULT NULL,
+  `isActive` tinyint NOT NULL DEFAULT '1',
+  PRIMARY KEY (`memberId`),
+  KEY `FKHomeLocation_idx` (`homeLocationId`),
+  CONSTRAINT `FKHomeLocation` FOREIGN KEY (`homeLocationId`) REFERENCES `location` (`locationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `member`
+--
+
+LOCK TABLES `member` WRITE;
+/*!40000 ALTER TABLE `member` DISABLE KEYS */;
+/*!40000 ALTER TABLE `member` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `memberaccounts`
+--
+
+DROP TABLE IF EXISTS `memberaccounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `memberaccounts` (
+  `memberAccountId` int NOT NULL AUTO_INCREMENT,
+  `memberId` int NOT NULL,
+  `accountId` int NOT NULL,
+  PRIMARY KEY (`memberAccountId`),
+  KEY `FKMember_idx` (`memberId`),
+  KEY `FKAccount_idx` (`accountId`),
+  CONSTRAINT `FKAccount` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`),
+  CONSTRAINT `FKMember` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `memberaccounts`
+--
+
+LOCK TABLES `memberaccounts` WRITE;
+/*!40000 ALTER TABLE `memberaccounts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `memberaccounts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `membershipattendance`
+--
+
+DROP TABLE IF EXISTS `membershipattendance`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `membershipattendance` (
+  `membershipAttendanceId` int NOT NULL AUTO_INCREMENT,
+  `memberId` int NOT NULL,
+  `locationId` int NOT NULL,
+  `eventId` int NOT NULL,
+  `attendanceDate` datetime NOT NULL,
+  PRIMARY KEY (`membershipAttendanceId`),
+  KEY `fkEventId_idx` (`eventId`),
+  KEY `fkLocationid_idx` (`locationId`),
+  KEY `fkMemberId_idx` (`memberId`),
+  CONSTRAINT `fkEventId` FOREIGN KEY (`eventId`) REFERENCES `event` (`eventId`),
+  CONSTRAINT `fkLocationid` FOREIGN KEY (`locationId`) REFERENCES `location` (`locationId`),
+  CONSTRAINT `fkMemberId` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `membershipattendance`
+--
+
+LOCK TABLES `membershipattendance` WRITE;
+/*!40000 ALTER TABLE `membershipattendance` DISABLE KEYS */;
+/*!40000 ALTER TABLE `membershipattendance` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `membershippaymenthistory`
+--
+
+DROP TABLE IF EXISTS `membershippaymenthistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `membershippaymenthistory` (
+  `membershipPaymentHistoryId` int NOT NULL AUTO_INCREMENT,
+  `customerId` int NOT NULL,
+  `paymentAmount` decimal(10,0) NOT NULL,
+  `paymentDate` datetime NOT NULL,
+  PRIMARY KEY (`membershipPaymentHistoryId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `membershippaymenthistory`
+--
+
+LOCK TABLES `membershippaymenthistory` WRITE;
+/*!40000 ALTER TABLE `membershippaymenthistory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `membershippaymenthistory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `membershipplan`
+--
+
+DROP TABLE IF EXISTS `membershipplan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `membershipplan` (
+  `planId` int NOT NULL AUTO_INCREMENT,
+  `planDescription` varchar(500) NOT NULL,
+  `planCost` double NOT NULL,
+  PRIMARY KEY (`planId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `membershipplan`
+--
+
+LOCK TABLES `membershipplan` WRITE;
+/*!40000 ALTER TABLE `membershipplan` DISABLE KEYS */;
+/*!40000 ALTER TABLE `membershipplan` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `profile`
 --
 
@@ -158,7 +303,7 @@ CREATE TABLE `profile` (
   PRIMARY KEY (`profileId`),
   KEY `userFK_idx` (`userId`),
   CONSTRAINT `userFK` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -167,7 +312,7 @@ CREATE TABLE `profile` (
 
 LOCK TABLES `profile` WRITE;
 /*!40000 ALTER TABLE `profile` DISABLE KEYS */;
-INSERT INTO `profile` VALUES (1,4,'test profile desc','bjj, Ju-Jit-Su Master','www.coach1.com'),(4,5,'test desc','AKMF Instructor Certification, IKMF, KMIC Certification, bjj, KMW Instructor Certification, UFAF Krav Maga Instructor Certification, Ju-Jit-Su Master','coach2.com'),(5,8,'','','');
+INSERT INTO `profile` VALUES (1,4,'test profile desc','bjj, Ju-Jit-Su Master','www.coach1.com'),(4,5,'test desc','AKMF Instructor Certification, IKMF, KMIC Certification, bjj, KMW Instructor Certification, UFAF Krav Maga Instructor Certification, Ju-Jit-Su Master','coach2.com'),(5,8,'','',''),(6,5,'','','');
 /*!40000 ALTER TABLE `profile` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,7 +329,7 @@ CREATE TABLE `profilelocation` (
   `locationId` int NOT NULL,
   `isHome` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`profileLocationId`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,7 +338,7 @@ CREATE TABLE `profilelocation` (
 
 LOCK TABLES `profilelocation` WRITE;
 /*!40000 ALTER TABLE `profilelocation` DISABLE KEYS */;
-INSERT INTO `profilelocation` VALUES (26,4,2,1),(27,1,1,1),(28,1,2,0),(29,1,3,0);
+INSERT INTO `profilelocation` VALUES (27,1,1,1),(28,1,2,0),(29,1,3,0),(30,4,2,1),(31,4,1,0);
 /*!40000 ALTER TABLE `profilelocation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -311,7 +456,7 @@ CREATE TABLE `scheduleprofile` (
   CONSTRAINT `fkAltProfile` FOREIGN KEY (`altProfileId`) REFERENCES `profile` (`profileId`),
   CONSTRAINT `fkProfile` FOREIGN KEY (`profileId`) REFERENCES `profile` (`profileId`),
   CONSTRAINT `fkScheduleLocation` FOREIGN KEY (`scheduleLocationId`) REFERENCES `schedulelocation` (`scheduleLocationId`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -320,7 +465,7 @@ CREATE TABLE `scheduleprofile` (
 
 LOCK TABLES `scheduleprofile` WRITE;
 /*!40000 ALTER TABLE `scheduleprofile` DISABLE KEYS */;
-INSERT INTO `scheduleprofile` VALUES (2,72,4,NULL),(3,24,4,NULL),(4,24,4,NULL),(5,102,4,NULL),(6,102,4,NULL),(7,63,4,NULL),(8,63,4,NULL),(9,87,4,NULL),(10,87,4,NULL),(11,108,4,NULL),(12,108,4,NULL),(13,105,4,NULL),(14,105,4,NULL);
+INSERT INTO `scheduleprofile` VALUES (1,22,4,5),(2,25,5,4),(3,103,4,NULL);
 /*!40000 ALTER TABLE `scheduleprofile` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -387,7 +532,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'SuperUserAccount','jeff.vaccaro+superuser@gmail.com','7208191204','','2352 S. Winona Ct','Denver','CO',80219,'$2a$10$D7Ft.ZAJRvZbM6m1ZIw4HOX7hQF9qQhwPaaBp1q.KtDpYo2/KJEdO',NULL,1,1,'2024-10-30 04:17:15','API Register Insert of OWNER','2024-10-30 04:17:15',NULL),(2,2,'Owner Account','jeff.vaccaro+owner@gmail.com','7205551212','','Owner Address','New York','NY',10001,'$2a$10$33Xt0DIlOew6juXclzYcSuuMjMcvGgSHquyvWYPrR3CqYVGZjje6O',NULL,1,1,'2024-11-14 07:20:25','API Register Insert of OWNER','2024-11-17 12:43:46','API Password Update'),(3,2,'Admin User','jeff.vaccaro+admin@gmail.com','7205551212',NULL,'Admin User Address','New York','NY',10001,'$2a$10$sNg3PaC.dOsl0xDx6YWDU.w4dwMM3Z8xBSeko/FNG6Ak4IYaAp5R2',NULL,1,1,'2024-11-14 07:21:33','API User Insert','2024-11-14 07:21:33',NULL),(4,2,'Coach #1','jeff.vaccaro+instructor@gmail.com','7205551212',NULL,'Instructor Address','New York','NY',10001,'$2a$10$zYRg5cnqpumtF83VeQox.O.XW7eLkGhoj9QRQDnk4wg2Cu9BQkkCy','/uploads/1732496508852-champ_barks.jpg',1,0,'2024-11-17 13:14:32','API User Insert','2024-11-24 18:01:48','API User Update'),(5,2,'Coach #2','coach2@coach2.com','7205551212',NULL,'coach2 address','New York','NY',10001,'$2a$10$5RNYN9xABy5ms0G0igqrdO26ktS1ckB1iP/EfFNcaHjBlGmAup1qG',NULL,1,0,'2024-12-01 10:59:04','API User Insert','2024-12-01 11:01:07','API User Update'),(6,2,'Coach #3','Coach3@coach3.com','7205551212',NULL,'Coach3 Address','New York','NY',10001,'$2a$10$vD2PVdiElcm.X19EoQamB.3zow9Ub52wcPwQTQDUo5bfoH5NryGr2',NULL,1,1,'2024-12-01 11:07:04','API User Insert','2024-12-01 11:07:04',NULL),(7,2,'Coach #4','jeff.vaccaro+coach4@gmail.com','7205551212',NULL,'Coach #4 Address','New York','NY',10001,'$2a$10$315/3EIdB7f/8zC2xFXd0.BSc.f4k/F8/sxdLgTDIphnCco5MhRfq',NULL,1,1,'2024-12-01 11:16:46','API User Insert','2024-12-01 11:16:46',NULL),(8,2,'Coach #5','jeff.vaccaro+coach5@gmail.com','7205551212',NULL,'Coach #5 Address','New York','NY',10001,'$2a$10$9eV.vOtY8QkB3NFb05gSl./Z6eQ8ynSuhYZNGEY.sWwDeQxPsdaT.',NULL,1,1,'2024-12-01 11:26:23','API User Insert','2024-12-01 11:26:23',NULL),(9,3,'OwnerAccount','ownerTest@ownertest.com','9995551212','','OwnerTestAddressInfo','New York','NY',10001,'$2a$10$n1cc870cWsHxEpRUqaI5u.bFVrlfnh6CI868vBcRZu.8kaeIbBf/2',NULL,1,1,'2024-12-13 11:33:15','API Register Insert of OWNER','2024-12-13 11:33:15',NULL),(10,3,'AdminTestUser-EDIT','admintest@admintest.com','9995551212',NULL,'adminTestUserAddress','New York','NY',10001,'$2a$10$7aLW2PXeKBHeaUiqBY3eI.7ai.PDq0DfJSn/Zzf.5phUIhtHOlcuK',NULL,0,0,'2024-12-13 11:33:21','API User Insert','2024-12-13 11:33:27','API User Update');
+INSERT INTO `user` VALUES (1,1,'SuperUserAccount','jeff.vaccaro+superuser@gmail.com','7208191204','','2352 S. Winona Ct','Denver','CO',80219,'$2a$10$D7Ft.ZAJRvZbM6m1ZIw4HOX7hQF9qQhwPaaBp1q.KtDpYo2/KJEdO',NULL,1,1,'2024-10-30 04:17:15','API Register Insert of OWNER','2024-10-30 04:17:15',NULL),(2,2,'Owner Account','jeff.vaccaro+owner@gmail.com','7205551212','','Owner Address','New York','NY',10001,'$2a$10$33Xt0DIlOew6juXclzYcSuuMjMcvGgSHquyvWYPrR3CqYVGZjje6O',NULL,1,1,'2024-11-14 07:20:25','API Register Insert of OWNER','2024-11-17 12:43:46','API Password Update'),(3,2,'Admin User','jeff.vaccaro+admin@gmail.com','7205551212',NULL,'Admin User Address','New York','NY',10001,'$2a$10$sNg3PaC.dOsl0xDx6YWDU.w4dwMM3Z8xBSeko/FNG6Ak4IYaAp5R2',NULL,1,1,'2024-11-14 07:21:33','API User Insert','2024-11-14 07:21:33',NULL),(4,2,'Coach #1','jeff.vaccaro+instructor@gmail.com','7205551212',NULL,'Instructor Address','New York','NY',10001,'$2a$10$zYRg5cnqpumtF83VeQox.O.XW7eLkGhoj9QRQDnk4wg2Cu9BQkkCy','/uploads/1732496508852-champ_barks.jpg',1,0,'2024-11-17 13:14:32','API User Insert','2024-11-24 18:01:48','API User Update'),(5,2,'Coach #2','coach2@coach2.com','7205551212',NULL,'coach2 address','New York','NY',10001,'$2a$10$5RNYN9xABy5ms0G0igqrdO26ktS1ckB1iP/EfFNcaHjBlGmAup1qG','/uploads/1735261270080-GitHub_Contributions_10062024.png',1,0,'2024-12-01 10:59:04','API User Insert','2024-12-26 18:01:10','API User Update'),(6,2,'Coach #3','Coach3@coach3.com','7205551212',NULL,'Coach3 Address','New York','NY',10001,'$2a$10$vD2PVdiElcm.X19EoQamB.3zow9Ub52wcPwQTQDUo5bfoH5NryGr2',NULL,1,1,'2024-12-01 11:07:04','API User Insert','2024-12-01 11:07:04',NULL),(7,2,'Coach #4','jeff.vaccaro+coach4@gmail.com','7205551212',NULL,'Coach #4 Address','New York','NY',10001,'$2a$10$315/3EIdB7f/8zC2xFXd0.BSc.f4k/F8/sxdLgTDIphnCco5MhRfq',NULL,1,1,'2024-12-01 11:16:46','API User Insert','2024-12-01 11:16:46',NULL),(8,2,'Coach #5','jeff.vaccaro+coach5@gmail.com','7205551212',NULL,'Coach #5 Address','New York','NY',10001,'$2a$10$9eV.vOtY8QkB3NFb05gSl./Z6eQ8ynSuhYZNGEY.sWwDeQxPsdaT.',NULL,1,1,'2024-12-01 11:26:23','API User Insert','2024-12-01 11:26:23',NULL),(9,3,'OwnerAccount','ownerTest@ownertest.com','9995551212','','OwnerTestAddressInfo','New York','NY',10001,'$2a$10$n1cc870cWsHxEpRUqaI5u.bFVrlfnh6CI868vBcRZu.8kaeIbBf/2',NULL,1,1,'2024-12-13 11:33:15','API Register Insert of OWNER','2024-12-13 11:33:15',NULL),(10,3,'AdminTestUser-EDIT','admintest@admintest.com','9995551212',NULL,'adminTestUserAddress','New York','NY',10001,'$2a$10$7aLW2PXeKBHeaUiqBY3eI.7ai.PDq0DfJSn/Zzf.5phUIhtHOlcuK',NULL,0,0,'2024-12-13 11:33:21','API User Insert','2024-12-13 11:33:27','API User Update');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -537,4 +682,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-26 13:19:16
+-- Dump completed on 2025-02-06 20:21:00

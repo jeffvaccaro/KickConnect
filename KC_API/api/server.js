@@ -16,6 +16,9 @@ const scheduleRouter = require('./schedule.js');
 const accountRouter = require('./account.js');
 const skillRouter = require('./skill.js');
 const htmlGenRouter = require('./html-generator.js');
+const memPlanRouter = require('./membership-plan.js');
+const membRouter = require('./membership.js');
+const memAttRouter = require('./membership-attendance.js');
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
@@ -57,6 +60,11 @@ app.use((err, req, res, next) => {
 const routers = [
   { path: '/auth', router: authRouter },
   { path: '/user', router: userRouter },
+
+  { path: '/membership', router: membRouter},
+  { path: '/membershipAttendance', router: memAttRouter},
+  { path: '/membershipPlan', router: memPlanRouter},
+
   { path: '/login', router: loginRouter },
   { path: '/location', router: locationRouter },
   { path: '/role', router: roleRouter },
@@ -66,6 +74,7 @@ const routers = [
   { path: '/account', router: accountRouter },
   { path: '/skill', router: skillRouter },
   { path: '/htmlGen', router: htmlGenRouter }
+
 ];
 
 routers.forEach(({ path, router }) => {

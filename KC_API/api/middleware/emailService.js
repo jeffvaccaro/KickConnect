@@ -27,7 +27,7 @@ if (isProduction) {
         },
         Body: {
           Text: {
-            Data: `Hello ${accountName},\n\nWelcome to KickConnect!  Your account has been created. Please reset your password using the following link: http://localhost:4200/authentication/reset-password?accountId=${accountId}&userId=${userId}&accountCode=${accountCode}\n\nBest regards,\nkickConnect`
+            Data: `Hello ${accountName},\n\nWelcome to KickConnect!  Your account has been created. Please reset your password using the following link: http://${process.env.DOMAIN}/reset-password?accountId=${accountId}&userId=${userId}&accountCode=${accountCode}\n\nBest regards,\nkickConnect`
           }
         }
       }
@@ -55,7 +55,7 @@ if (isProduction) {
       from: process.env.SMTP_EMAIL,
       to: accountEmail,
       subject: 'Welcome to KickConnect!',
-      text: `Hello ${accountName},\n\nWelcome to KickConnect!  Your account has been created. Please reset your password using the following link: http://localhost:4200/authentication/reset-password?accountId=${accountId}&userId=${userId}&accountCode=${accountCode}\n\nBest regards,\nkickConnect`
+      text: `Hello ${accountName},\n\nWelcome to KickConnect!  Your account has been created. Please reset your password using the following link: http://${process.env.DOMAIN}/reset-password?accountId=${accountId}&userId=${userId}&accountCode=${accountCode}\n\nBest regards,\nkickConnect`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
