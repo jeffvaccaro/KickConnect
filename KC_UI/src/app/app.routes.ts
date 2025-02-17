@@ -116,6 +116,11 @@ const mainRoutes: Routes = [
 export const routes: Routes = [
   {
     path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full' // Ensure redirection only happens for the exact empty path
+  },
+  {
+    path: '',
     component: AuthenticationComponent,
     children: authRoutes
   },
@@ -123,7 +128,8 @@ export const routes: Routes = [
     path: '',
     canActivate: [AuthGuard],
     children: mainRoutes
-  }
+  },
+  { path: '**', component: NotFoundComponent }
 ];
 
 @NgModule({
@@ -131,3 +137,4 @@ export const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
+
