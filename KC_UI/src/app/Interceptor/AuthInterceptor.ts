@@ -28,7 +28,7 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           // Avoid looping if already on authentication route
-          if (this.router.url !== '/authentication/register') {
+          if (this.router.url !== '/register') {
             this.snackBar.open('Credentials Incorrect or Session Expired. Please log in again.', 'OK', { duration: 3000 });
 
             return this.loginService.refreshToken().pipe(
@@ -43,7 +43,7 @@ export class AuthInterceptor implements HttpInterceptor {
               }),
               catchError(refreshError => {
                 setTimeout(() => {
-                  this.router.navigate(['/authentication']);
+                  this.router.navigate(['/login']);
                 }, 3000); // Delay navigation to allow snackBar display
                 return throwError(refreshError);
               })

@@ -30,6 +30,6 @@ export class LogoutComponent {
 
   logout() {
     localStorage.removeItem('lastModule'); // Clear the last module from localStorage
-    this.router.navigate(['/authentication']); // Redirect to login page
+    this.router.navigate(['/login']); // Redirect to login page
   }
 }

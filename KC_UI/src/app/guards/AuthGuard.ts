@@ -12,19 +12,20 @@ export class AuthGuard implements CanActivate {
     const isAuthenticated = this.authService.isAuthenticated();
     const currentPath = route.routeConfig?.path || '';
     const publicRoutes = ['register', 'reset-password'];
-
-
+  
     if (publicRoutes.includes(currentPath)) {
-      //console.log('Allowed public route:', currentPath);
+      console.log('Allowed public route:', currentPath);
       return true;
     }
-
+  
     if (isAuthenticated) {
+      console.log('AuthGuard - isAuthenticated:', isAuthenticated);
       return true;
     } else {
-      //console.log('AuthGuard: Redirecting to authentication');
+      console.log('AuthGuard: Redirecting to authentication');
       this.router.navigate(['logout']);
       return false;
     }
   }
+  
 }

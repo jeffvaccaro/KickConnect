@@ -73,8 +73,6 @@ export class LoginComponent {
         const { email, password } = this.loginForm.value;
         this.loginService.login(email, password).subscribe({
           next: response => {
-            // console.log('Role from response:', response.role); // Debugging
-    
             const token = response.token;
             const decodedToken: any = this.decodeToken(token);
             const expiration = decodedToken.exp * 1000; // Convert to milliseconds
@@ -83,10 +81,12 @@ export class LoginComponent {
             this.userService.setAccountId(response.accountId);
             this.userService.setUserName(response.name);
             this.userService.setRoleName(response.role);
-            // console.log('Set role name to:', response.role); // More debugging
     
-            // Navigate to the root path
-            this.router.navigate(['']);
+            // Log before navigation
+            console.log('Login successful, navigating to root path');
+            
+            // Navigate to the root path to trigger DynamicComponent
+            this.router.navigate(['/dashboard']);
           },
           error: error => {
             console.error('Login failed', error); // Handle login error
@@ -94,7 +94,6 @@ export class LoginComponent {
         });
       }
     }
-    
     
     private decodeToken(token: string): any {
       const base64Url = token.split('.')[1];
