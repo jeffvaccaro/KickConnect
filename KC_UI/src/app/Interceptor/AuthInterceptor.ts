@@ -1,22 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
-import { catchError, retry, delay } from 'rxjs/operators';
+import { catchError, retry, delay, switchMap } from 'rxjs/operators';
 import { ModalService } from '../services/modal.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LoginService } from '../services/loginService';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(
     private modalService: ModalService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private loginService: LoginService
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = localStorage.getItem('authToken');
     const cloned = token ? req.clone({ headers: req.headers.set('Authorization', `Bearer ${token}`) }) : req;
+
     return next.handle(cloned).pipe(
       retry({
         delay: (retryCount) => of(retryCount).pipe(delay(retryCount * 1000)), // Incremental delay
@@ -27,9 +30,24 @@ export class AuthInterceptor implements HttpInterceptor {
           // Avoid looping if already on authentication route
           if (this.router.url !== '/authentication/register') {
             this.snackBar.open('Credentials Incorrect or Session Expired. Please log in again.', 'OK', { duration: 3000 });
-            setTimeout(() => {
-              this.router.navigate(['/authentication']);
-            }, 3000); // Delay navigation to allow snackBar display
+
+            return this.loginService.refreshToken().pipe(
+              switchMap((newToken: string) => {
+                localStorage.setItem('authToken', newToken);
+                const newRequest = req.clone({
+                  setHeaders: {
+                    Authorization: `Bearer ${newToken}`
+                  }
+                });
+                return next.handle(newRequest);
+              }),
+              catchError(refreshError => {
+                setTimeout(() => {
+                  this.router.navigate(['/authentication']);
+                }, 3000); // Delay navigation to allow snackBar display
+                return throwError(refreshError);
+              })
+            );
           }
         } else if (error.status >= 500) {
           this.snackBar.open('Server error. Redirecting...', 'OK', { duration: 3000 });

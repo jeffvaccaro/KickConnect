@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const cors = require('cors');
+
 const dotenv = require('dotenv');
 const swaggerSetup = require('./swagger.cjs');
 const logger = require('./logger');
@@ -19,6 +19,7 @@ const htmlGenRouter = require('./html-generator.js');
 const memPlanRouter = require('./membership-plan.js');
 const membRouter = require('./membership.js');
 const memAttRouter = require('./membership-attendance.js');
+const cors = require('cors');
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
@@ -36,13 +37,17 @@ const corsOptions = {
   origin: function (origin, callback) {
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
+    } else if (origin && origin.startsWith('http://localhost')) {
+      callback(null, true);  // Allow all localhost origins
     } else {
       callback(new Error('Not allowed by CORS'));
     }
-  }
+  },
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
+
 app.use(bodyParser.json());
 
 if (typeof swaggerSetup === 'function') {
@@ -60,11 +65,9 @@ app.use((err, req, res, next) => {
 const routers = [
   { path: '/auth', router: authRouter },
   { path: '/user', router: userRouter },
-
-  { path: '/membership', router: membRouter},
-  { path: '/membershipAttendance', router: memAttRouter},
-  { path: '/membershipPlan', router: memPlanRouter},
-
+  { path: '/membership', router: membRouter },
+  { path: '/membershipAttendance', router: memAttRouter },
+  { path: '/membershipPlan', router: memPlanRouter },
   { path: '/login', router: loginRouter },
   { path: '/location', router: locationRouter },
   { path: '/role', router: roleRouter },
@@ -74,7 +77,6 @@ const routers = [
   { path: '/account', router: accountRouter },
   { path: '/skill', router: skillRouter },
   { path: '/htmlGen', router: htmlGenRouter }
-
 ];
 
 routers.forEach(({ path, router }) => {
@@ -84,6 +86,9 @@ routers.forEach(({ path, router }) => {
     console.error(`Router at path ${path} is not a function. Ensure it exports correctly.`);
   }
 });
+
+// Handle preflight requests for all routes
+app.options('*', cors(corsOptions));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
