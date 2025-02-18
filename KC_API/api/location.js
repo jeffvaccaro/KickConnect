@@ -56,7 +56,7 @@ router.get('/get-locations-by-acct-id/:acctId', authenticateToken, async (req, r
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
         connection = await Promise.race([connectToDatabase(), timeout]);
-        const [results] = await connection.query('SELECT * FROM location WHERE accountId = ?', [acctId]);
+        const [results] = await connection.query('SELECT * FROM location WHERE isActive = TRUE AND accountId = ?', [acctId]);
         res.status(200).json(results);
     } catch (error) {
         console.error('Error fetching locations:', error);

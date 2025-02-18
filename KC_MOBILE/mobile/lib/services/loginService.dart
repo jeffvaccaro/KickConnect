@@ -27,8 +27,17 @@ class LoginService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('name', data['name']);
         await prefs.setString('token', data['token']);
         await prefs.setString('refreshToken', data['refreshToken']);
+        await prefs.setString('accountCode', data['accountCode']);
+        await prefs.setInt('accountId', data['accountId']);
+        await prefs.setString('role', data['role']);
+        await prefs.setInt(
+          'expiry',
+          DateTime.now().millisecondsSinceEpoch + 3600000,
+        ); // Assuming the expiry is 1 hour from login
+
         Navigator.pushReplacementNamed(context, '/main');
       } else {
         ScaffoldMessenger.of(
@@ -57,42 +66,13 @@ class LoginService {
       final data = jsonDecode(response.body);
       final newToken = data['token'];
       await prefs.setString('token', newToken);
+      await prefs.setInt(
+        'expiry',
+        DateTime.now().millisecondsSinceEpoch + 3600000,
+      ); // Update the expiry time
       return newToken;
     } else {
       throw Exception('Failed to refresh token');
-    }
-  }
-
-  Future<void> fetchProtectedData() async {
-    final prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('token') ?? '';
-
-    var response = await http.get(
-      Uri.parse('$baseUrl/protected-route'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode == 401) {
-      // Token expired, try to refresh
-      token = await refreshToken();
-
-      // Retry the protected data request with the new token
-      response = await http.get(
-        Uri.parse('$baseUrl/protected-route'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-    }
-
-    if (response.statusCode == 200) {
-      print('Protected data: ${response.body}');
-    } else {
-      print('Failed to fetch protected data');
     }
   }
 }
