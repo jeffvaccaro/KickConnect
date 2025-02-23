@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/gestures.dart';
+import 'package:mobile/config.dart';
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+  };
+}
 
 class MainScreen extends StatefulWidget {
   final Map<String, dynamic> apiResponse;
@@ -41,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
     );
     final response = await http.get(
       Uri.parse(
-        'http://localhost:3000/location/get-locations-by-acct-id/$accountId',
+        '${Config.baseUrl}/location/get-locations-by-acct-id/$accountId',
       ),
       headers: {'Authorization': 'Bearer $token'},
     );
@@ -65,7 +75,7 @@ class _MainScreenState extends State<MainScreen> {
     );
     final response = await http.get(
       Uri.parse(
-        'http://localhost:3000/schedule/get-location-class-schedule/$locationId/$accountId',
+        '${Config.baseUrl}/schedule/get-location-class-schedule/$locationId/$accountId',
       ),
       headers: {'Authorization': 'Bearer $token'},
     );
@@ -158,45 +168,47 @@ class _MainScreenState extends State<MainScreen> {
             schedule.isNotEmpty
                 ? SizedBox(
                   height: 250,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    physics: AlwaysScrollableScrollPhysics(),
-                    itemCount: schedule.length,
-                    itemBuilder: (context, index) {
-                      final item = schedule[index];
-                      return Container(
-                        key: _cardKeys[index],
-                        // width: 200, // Remove or keep for fixed width
-                        margin: EdgeInsets.only(right: 10),
-                        child: Card(
-                          child: Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Class Name: ${item['eventName'] ?? 'No Class Name'}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                  child: ScrollConfiguration(
+                    behavior: MyCustomScrollBehavior(),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                      itemCount: schedule.length,
+                      itemBuilder: (context, index) {
+                        final item = schedule[index];
+                        return Container(
+                          key: _cardKeys[index],
+                          margin: EdgeInsets.only(right: 10),
+                          child: Card(
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Class Name: ${item['eventName'] ?? 'No Class Name'}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Class Description: ${item['eventDescription'] ?? 'No Description'}',
-                                ),
-                                SizedBox(height: 10),
-                                Text('Day: ${item['dayValue'] ?? ''}'),
-                                SizedBox(height: 10),
-                                Text('Time: ${item['startTime'] ?? ''}'),
-                                SizedBox(height: 10),
-                              ],
+                                  SizedBox(height: 10),
+                                  Text(
+                                    'Class Description: ${item['eventDescription'] ?? 'No Description'}',
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text('Day: ${item['dayValue'] ?? ''}'),
+                                  SizedBox(height: 10),
+                                  Text('Time: ${item['startTime'] ?? ''}'),
+                                  SizedBox(height: 10),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 )
                 : Text('No classes available.'),
@@ -205,4 +217,13 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      scrollBehavior: MyCustomScrollBehavior(),
+      home: MainScreen(apiResponse: {/* your apiResponse */}),
+    ),
+  );
 }
