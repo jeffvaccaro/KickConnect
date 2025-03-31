@@ -3,4 +3,9 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-/DEPLOY/
+/KickConnectCombined/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

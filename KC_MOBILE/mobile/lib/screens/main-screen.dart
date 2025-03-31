@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:mobile/config.dart';
+import 'attendance-screen.dart'; // Import the AttendanceScreen
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
   @override
@@ -212,6 +213,16 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 )
                 : Text('No classes available.'),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AttendanceScreen()),
+                );
+              },
+              child: Text('Scan QR Code'),
+            ),
           ],
         ),
       ),

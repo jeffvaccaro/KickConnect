@@ -4,6 +4,7 @@
   "description": "This application will have the support the features:\r  - multiple gym locations\r  - individule gym schedules\r  - admin portal\r  - public portal\r  - membership check-ins\r  - member app (iphone/android)",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "start-pm2": "pm2 start server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

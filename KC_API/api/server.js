@@ -1,10 +1,12 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-
 const dotenv = require('dotenv');
+const cors = require('cors');
+
 const swaggerSetup = require('./swagger.cjs');
 const logger = require('./logger');
+
 const authRouter = require('./account.js');
 const userRouter = require('./user.js');
 const loginRouter = require('./login.js');
@@ -19,26 +21,25 @@ const htmlGenRouter = require('./html-generator.js');
 const memPlanRouter = require('./membership-plan.js');
 const membRouter = require('./membership.js');
 const memAttRouter = require('./membership-attendance.js');
-const cors = require('cors');
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const env = process.env.NODE_ENV || 'development';
 const port = process.env.PORT || 3000;
+const isLocal = env === 'development';
 
 const allowedOrigins = [
   'http://localhost:4200',
-  'http://kickconnect-env-1.eba-bsj8msyj.us-east-1.elasticbeanstalk.com',
-  'http://kickconnect.net'
+  'http://env-KickConnect.eba-v2e258g4.us-east-1.elasticbeanstalk.com',
+  'https://env-KickConnect.eba-v2e258g4.us-east-1.elasticbeanstalk.com',
+  'https://kickconnect.net',
 ];
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin || (origin && origin.startsWith('http://localhost'))) {
       callback(null, true);
-    } else if (origin && origin.startsWith('http://localhost')) {
-      callback(null, true);  // Allow all localhost origins
     } else {
       callback(new Error('Not allowed by CORS'));
     }
@@ -47,7 +48,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 app.use(bodyParser.json());
 
 if (typeof swaggerSetup === 'function') {
@@ -76,7 +76,7 @@ const routers = [
   { path: '/schedule', router: scheduleRouter },
   { path: '/account', router: accountRouter },
   { path: '/skill', router: skillRouter },
-  { path: '/htmlGen', router: htmlGenRouter }
+  { path: '/htmlGen', router: htmlGenRouter },
 ];
 
 routers.forEach(({ path, router }) => {
@@ -87,24 +87,23 @@ routers.forEach(({ path, router }) => {
   }
 });
 
-// Handle preflight requests for all routes
 app.options('*', cors(corsOptions));
-
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
-const distPath = path.join(__dirname, 'dist', 'kickConnect', 'browser');
+// Determine the path based on the environment
+const distPath = isLocal
+  ? path.join(__dirname, 'dist', 'kickConnect', 'browser') // Local path
+  : path.join(__dirname, 'browser'); // Production path
 
-// Serve static files from the dist/your-app-name/browser directory
-app.use(express.static(distPath));
+app.use(express.static(distPath)); // Serve static files
 
 app.get('/*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.get('/current-datetime', (req, res) => {
-  const currentDateTime = new Date();
-  res.send(`Current Date and Time: ${currentDateTime}`);
+  res.send(`Current Date and Time: ${new Date()}`);
 });
 
 app.post('/api/logger', (req, res) => {
@@ -116,7 +115,15 @@ app.post('/api/logger', (req, res) => {
   res.status(200).json({ message: 'Log received' });
 });
 
-const serverHost = env === 'production' ? 'ElasticBeanStalk' : 'localhost';
+app.use((req, res, next) => {
+  if (req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect(['https://', req.get('Host'), req.url].join(''));
+  }
+  next();
+});
+
+const serverHost = isLocal ? 'localhost' : 'ElasticBeanStalk'; // Simplified host determination.
+
 app.listen(port, () => {
   console.log(`Server is running at http://${serverHost}:${port}`);
 });

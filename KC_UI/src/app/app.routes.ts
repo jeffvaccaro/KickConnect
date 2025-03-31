@@ -39,6 +39,7 @@ import { EditSkillComponent } from './components/custom/skills/edit-skill/edit-s
 import { SkillListComponent } from './components/custom/skills/skill-list/skill-list.component';
 import { CreateHtmlTemplateComponent } from './components/html-generator/create-html-template/create-html-template.component';
 import { SkillsAutocompleteComponent } from './components/custom/user/skills-autocomplete/skills-autocomplete.component';
+import { AttendanceDisplayComponent } from './components/custom/attendance-display/attendance-display.component';
 
 const authRoutes: Routes = [
   { path: 'register', component: RegisterComponent },
@@ -107,6 +108,7 @@ const mainRoutes: Routes = [
   { path: 'app-edit-skill/:skillId', component: EditSkillComponent, canActivate: [AuthGuard] },
   { path: 'app-skill-list', component: SkillListComponent, canActivate: [AuthGuard] },
   { path: 'app-skills-autocomplete', component: SkillsAutocompleteComponent },
+  { path: 'app-class-login', component: AttendanceDisplayComponent},
   { path: 'app-create-html-template', component: CreateHtmlTemplateComponent },
   { path: 'error', component: InternalErrorComponent },
   { path: 'error-500', component: InternalErrorComponent },
