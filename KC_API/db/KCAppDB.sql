@@ -2,13 +2,13 @@
 -- cd  c:\Program Files\MySQL\MySQL Server 8.0\bin
 -- mysqldump -u root -p --databases admin common > c:\\KCAppDB.sql
 --
---  UPDATED ON 02/06/2025
+--  UPDATED ON 04/04/2025
 --
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: localhost    Database: admin
 -- ------------------------------------------------------
--- Server version	8.0.40
+-- Server version	8.0.39
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -155,7 +155,7 @@ CREATE TABLE `member` (
   `homeLocationId` int NOT NULL,
   `firstName` varchar(250) NOT NULL,
   `lastName` varchar(250) NOT NULL,
-  `phone` varchar(25) DEFAULT NULL,
+  `phone` varchar(25) NOT NULL,
   `email` varchar(250) DEFAULT NULL,
   `birthday` date DEFAULT NULL,
   `contactName` varchar(250) NOT NULL,
@@ -601,6 +601,30 @@ INSERT INTO `cities_extended` VALUES ('Las Vegas','NV',89169,36.122458,-115.1414
 UNLOCK TABLES;
 
 --
+-- Table structure for table `days`
+--
+
+DROP TABLE IF EXISTS `days`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `days` (
+  `dayNumber` int NOT NULL AUTO_INCREMENT,
+  `dayValue` varchar(45) NOT NULL,
+  PRIMARY KEY (`dayNumber`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `days`
+--
+
+LOCK TABLES `days` WRITE;
+/*!40000 ALTER TABLE `days` DISABLE KEYS */;
+INSERT INTO `days` VALUES (1,'Monday'),(2,'Tuesday'),(3,'Wednesday'),(4,'Thursday'),(5,'Friday'),(6,'Saturday'),(7,'Sunday');
+/*!40000 ALTER TABLE `days` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `duration`
 --
 
@@ -682,4 +706,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-06 20:21:00
+-- Dump completed on 2025-04-04 21:05:41
