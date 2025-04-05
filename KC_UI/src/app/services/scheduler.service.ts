@@ -40,6 +40,11 @@ export class SchedulerService {
     .pipe(catchError(error => this.handleError<ISchedule[]>('getSchedules', error)));
   }
 
+  getNextClass(locationId: number){
+    return this.http.get<ISchedule[]>(`${this.apiUrl}/get-next-class/${locationId}`)
+    .pipe(catchError(error => this.handleError<ISchedule[]>('getSchedules', error)));  
+  }
+
   addScheduleEvent(eventData: any): Observable<any> {
     // console.log('addScheduleEvent', eventData);
     return this.http.post<any>(`${this.apiUrl}/add-schedule`, eventData)

@@ -46,7 +46,7 @@ export class LocationListComponent implements OnInit, AfterViewInit {
     this.locationService.getLocations(status).subscribe({
       next: response => {
         this.locationArr = response;
-        this.dataSource.data = this.locationArr; // Update the dataSource here
+        this.dataSource.data = this.locationArr; 
       },
       error: error => {
         console.error('Error fetching locations:', error);

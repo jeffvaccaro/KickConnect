@@ -1,3 +1,9 @@
-<script type="text/javascript" src="qrcode.js"></script>
-<p>attendance-display works!</p>
-<qrcode [qrdata]="'Your data string'" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+<div class="center-content">
+    <p *ngIf="classArr.length > 0">{{ classArr[0]?.eventName }}</p>
+    <qrcode 
+        [qrdata]="classArr[0]?.eventId?.toString() || ''" 
+        [width]="256" 
+        [errorCorrectionLevel]="'M'" 
+        [allowEmptyString]="true">
+    </qrcode>
+</div>

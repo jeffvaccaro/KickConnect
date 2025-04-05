@@ -228,6 +228,62 @@ router.get('/get-location-assignment-schedule/:locationId', authenticateToken, a
     }
   });
   
+
+router.get('/get-next-class/:locationId', authenticateToken, async (req, res) => {
+    let connection;
+    try {
+        connection = await connectWithTimeout();  
+        const { locationId } = req.params;
+        const query = `
+            SELECT 
+                e.eventId, 
+                e.eventName, 
+                e.eventDescription, 
+                d.dayValue, 
+                DATE_FORMAT(s.startTime, '%h:%i %p') AS startTime, 
+                DATE_FORMAT(s.endTime, '%h:%i %p') AS endTime
+            FROM 
+                admin.schedulemain s
+            INNER JOIN  
+                admin.event e 
+                ON s.eventId = e.eventId 
+                AND e.isActive = true
+            INNER JOIN
+                admin.account a
+                ON a.accountId = s.accountId
+                AND a.accountId = ?
+            INNER JOIN 
+                admin.schedulelocation sl 
+                ON s.scheduleMainId = sl.scheduleMainId
+                AND sl.locationid = 2
+            INNER JOIN
+                common.days d
+                ON d.dayNumber = s.day
+            LEFT JOIN
+                admin.scheduleprofile sp
+                ON sl.scheduleLocationId = sp.scheduleLocationId
+            WHERE 
+                (WEEK(s.selectedDate) = WEEK(CURDATE()) AND YEAR(s.selectedDate) = YEAR(CURDATE()) AND s.isRepeat = false)
+				OR 	s.isRepeat = true
+			AND d.dayValue = DAYNAME(DATE_ADD(CURDATE(), INTERVAL 1 DAY))
+            OR TIME(s.startTime) > TIME(CURTIME())
+            GROUP BY 
+                e.eventId, e.eventName, e.eventDescription, 
+                s.day, s.startTime, s.endTime, s.selectedDate, 
+                s.isRepeat, s.isActive, s.accountId, s.scheduleMainId, sl.scheduleLocationId, sp.profileId, sp.altProfileId
+            ORDER BY s.day
+            LIMIT 1;
+        `;
+        const locationParam = [locationId];
+        const results = await executeQuery(connection, query, [locationParam]);
+        res.status(200).json(results);
+        } catch (error) {
+        handleError(res, error, 'Error fetching Schedule Values: ');
+        } finally {
+        if (connection) connection.release();
+        }
+    });
+
   // Mobile Call
   router.get('/get-location-class-schedule/:locationId/:accountId', authenticateToken, async (req, res) => {
     let connection;
