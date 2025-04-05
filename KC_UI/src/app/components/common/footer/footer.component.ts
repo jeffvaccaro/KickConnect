@@ -27,4 +27,7 @@ export class FooterComponent {
         this.themeService.toggleCardBorderRadiusTheme();
     }
 
+    ngOnInit(): void {
+        // console.log('FooterComponent initialized');
+    }
 }

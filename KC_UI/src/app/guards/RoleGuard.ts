@@ -9,7 +9,6 @@ import { UserService } from '../services/user.service';
   providedIn: 'root'
 })
 export class RoleGuard implements CanActivate {
-
   constructor(private userService: UserService, private router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
@@ -18,7 +17,7 @@ export class RoleGuard implements CanActivate {
     return this.userService.getRoleName().pipe(
       map(userRole => {
         const hasRole = expectedRoles.includes(userRole);
-        console.log('Expected roles:', expectedRoles, 'User role:', userRole, 'Has role:', hasRole); // Add logging for debugging
+        console.log('Expected roles:', expectedRoles, 'User role:', userRole, 'Has role:', hasRole);
         if (!hasRole) {
           console.log('!hasRole');
           this.router.navigate(['not-authorized']);

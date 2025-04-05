@@ -17,4 +17,17 @@ export class HtmlGeneratorService {
 
     return this.http.post<any>(url, formData);
   }
+
+  convertToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  getFileAsBlob(filePath: string): Observable<Blob> {
+    return this.http.get(filePath, { responseType: 'blob' });
+  }
 }

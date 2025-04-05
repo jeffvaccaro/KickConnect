@@ -3,7 +3,7 @@ import { SharedData } from "./interfaces/ISharedData";
 import { SharedEventData } from "./interfaces/iSharedEventData";
 
 async function loginSuperUser(page) {
-  await page.goto('http://localhost:4200/authentication');
+  await page.goto('http://localhost:4200/login');
   await page.getByLabel('Enter email address').click();
   await page.getByLabel('Enter email address').fill('jeff.vaccaro+superuser@gmail.com');
   await page.getByLabel('Enter your password').click();
@@ -24,7 +24,7 @@ async function loginSuperUser(page) {
 }
 
 async function loginOwnerUser(page) {
-  await page.goto('http://localhost:4200/authentication');
+  await page.goto('http://localhost:4200/login');
   await page.getByLabel('Enter email address').click();
   await page.getByLabel('Enter email address').fill('ownerTest@ownertest.com');
   await page.getByLabel('Enter your password').click();

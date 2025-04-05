@@ -110,10 +110,15 @@
                                 <a routerLink="/app-create-html-template" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
                                     HTML Generator
                                 </a>                                    
-                            </li>                            
+                            </li>     
+                            <li class="sidemenu-item" #option>
+                                <a routerLink="/app-class-login" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    QR Code Login
+                                </a>                                    
+                            </li>                                                        
                         </ul>                                              
                     </mat-expansion-panel>
-                    <a routerLink="/authentication/logout" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                    <a routerLink="/logout" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                         <i class="flaticon-tools"></i>
                         <span class="title">Logout</span>
                     </a>

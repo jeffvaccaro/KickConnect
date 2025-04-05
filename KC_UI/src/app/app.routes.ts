@@ -10,17 +10,14 @@ import { LogoutComponent } from './components/authentication/logout/logout.compo
 import { ResetPasswordComponent } from './components/authentication/reset-password/reset-password.component';
 import { InternalErrorComponent } from './components/common/internal-error/internal-error.component';
 import { DynamicComponent } from './components/common/dynamic/dynamic.component';
-
 import { SuperAdminComponent } from './components/dashboard/super-admin/super-admin.component';
 import { OwnerComponent } from './components/dashboard/owner/owner.component';
 import { AdminComponent } from './components/dashboard/admin/admin.component';
 import { StaffComponent } from './components/dashboard/staff/staff.component';
-
 import { LocationListComponent } from './components/custom/locations/location-list/location-list.component';
 import { AddNewLocationComponent } from './components/custom/locations/add-new-location/add-new-location.component';
 import { EditLocationComponent } from './components/custom/locations/edit-location/edit-location.component';
 import { AssignmentComponent } from './components/custom/locations/assignment/assignment.component';
-
 import { UserListComponent } from './components/custom/user/user-list/user-list.component';
 import { AddNewUserComponent } from './components/custom/user/add-new-user/add-new-user.component';
 import { EditUserComponent } from './components/custom/user/edit-user/edit-user.component';
@@ -37,33 +34,28 @@ import { AddNewProfileComponent } from './components/custom/profiles/add-new-pro
 import { EditProfileComponent } from './components/custom/profiles/edit-profile/edit-profile.component';
 import { AccountListComponent } from './components/custom/accounts/account-list/account-list.component';
 import { AddNewAccountComponent } from './components/custom/accounts/add-new-account/add-new-account.component';
-
 import { AddNewSkillComponent } from './components/custom/skills/add-new-skill/add-new-skill.component';
 import { EditSkillComponent } from './components/custom/skills/edit-skill/edit-skill.component';
 import { SkillListComponent } from './components/custom/skills/skill-list/skill-list.component';
-
 import { CreateHtmlTemplateComponent } from './components/html-generator/create-html-template/create-html-template.component';
 import { StepperComponent } from './components/html-generator/create-html-template/html-template-step/stepper/stepper.component';
 import { SkillsAutocompleteComponent } from './components/custom/user/skills-autocomplete/skills-autocomplete.component';
+import { AttendanceDisplayComponent } from './components/custom/attendance-display/attendance-display.component';
 
+const authRoutes: Routes = [
+  { path: 'register', component: RegisterComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'logout', component: LogoutComponent },
+];
 
-export const routes: Routes = [
-  { path: 'authentication/register', component: RegisterComponent },
-  { path: 'authentication/reset-password', component: ResetPasswordComponent },
+const mainRoutes: Routes = [
   {
-    path: 'authentication',
-    component: AuthenticationComponent,
-    children: [
-      { path: '', component: LoginComponent },
-      { path: 'logout', component: LogoutComponent },
-    ]
-  },
-  {
-    path: '',
+    path: 'dashboard',
     component: DynamicComponent,
     canActivate: [AuthGuard, RoleGuard],
     data: { expectedRoles: ['Owner', 'Super Admin', 'Admin', 'Staff'] }
-  },
+  },  
   {
     path: 'owner',
     component: OwnerComponent,
@@ -97,7 +89,6 @@ export const routes: Routes = [
   { path: 'app-add-new-location', component: AddNewLocationComponent, canActivate: [AuthGuard] },
   { path: 'app-edit-location/:locationId', component: EditLocationComponent, canActivate: [AuthGuard] },
   { path: 'app-assignments/:locationId', component: AssignmentComponent, canActivate: [AuthGuard]},
-
   { path: 'app-user-list', component: UserListComponent, canActivate: [AuthGuard] },
   { path: 'app-add-new-user', component: AddNewUserComponent, canActivate: [AuthGuard] },
   { path: 'app-edit-user/:userId', component: EditUserComponent, canActivate: [AuthGuard] },
@@ -123,9 +114,29 @@ export const routes: Routes = [
 
   { path: 'app-create-html-template', component: CreateHtmlTemplateComponent },
   { path: 'app-stepper', component:StepperComponent},
+  { path: 'app-class-login', component:AttendanceDisplayComponent},
   
   { path: 'error', component: InternalErrorComponent },
   { path: 'error-500', component: InternalErrorComponent },
+  { path: '**', component: NotFoundComponent }
+];
+
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full' // Ensure redirection only happens for the exact empty path
+  },
+  {
+    path: '',
+    component: AuthenticationComponent,
+    children: authRoutes
+  },
+  {
+    path: '',
+    canActivate: [AuthGuard],
+    children: mainRoutes
+  },
   { path: '**', component: NotFoundComponent }
 ];
 
@@ -133,4 +144,5 @@ export const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
+

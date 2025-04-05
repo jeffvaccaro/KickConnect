@@ -40,6 +40,23 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('AppComponent initialized.');
+    // console.log('AppComponent initialized.');
   }
+  
+  isBlankPage(): boolean {
+    const url = this.router.url;
+    const result = url.includes('/error-500') || 
+           url.includes('/reset-password') || 
+           url.includes('/forgot-password') || 
+           url.includes('/login') || 
+           url.includes('/register') || 
+           url.includes('/signin-signup') || 
+           url.includes('/logout') || 
+           url.includes('/confirm-mail') || 
+           url.includes('/lock-screen') || 
+           url.includes('/coming-soon')
+    return result;
+           
+  }
+  
 }
