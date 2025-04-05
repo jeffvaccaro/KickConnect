@@ -43,6 +43,7 @@ import { EditSkillComponent } from './components/custom/skills/edit-skill/edit-s
 import { SkillListComponent } from './components/custom/skills/skill-list/skill-list.component';
 
 import { CreateHtmlTemplateComponent } from './components/html-generator/create-html-template/create-html-template.component';
+import { StepperComponent } from './components/html-generator/create-html-template/html-template-step/stepper/stepper.component';
 import { SkillsAutocompleteComponent } from './components/custom/user/skills-autocomplete/skills-autocomplete.component';
 
 
@@ -118,9 +119,10 @@ export const routes: Routes = [
   { path: 'app-edit-skill/:skillId', component: EditSkillComponent, canActivate: [AuthGuard]},
   { path: 'app-skill-list', component: SkillListComponent, canActivate: [AuthGuard]},
   
-{path: 'app-skills-autocomplete', component: SkillsAutocompleteComponent},
+  {path: 'app-skills-autocomplete', component: SkillsAutocompleteComponent},
 
   { path: 'app-create-html-template', component: CreateHtmlTemplateComponent },
+  { path: 'app-stepper', component:StepperComponent},
   
   { path: 'error', component: InternalErrorComponent },
   { path: 'error-500', component: InternalErrorComponent },

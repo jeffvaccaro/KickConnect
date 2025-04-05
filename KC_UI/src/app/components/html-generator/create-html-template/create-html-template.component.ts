@@ -14,7 +14,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { HtmlGeneratedTypes } from '../../../enums/html-generated-types';
 import { section1Columns } from './html-helpers/helper-section1-columns/helper-section1-columns';
 import { generateHtml } from './html-helpers/helper-generate-html';
-
+import { StepperComponent } from './html-template-step/stepper/stepper.component';
+import { HtmlTemplateStepComponent } from './html-template-step/html-template-step.component';
 
 @Component({
   selector: 'app-create-html-template',
@@ -26,200 +27,222 @@ import { generateHtml } from './html-helpers/helper-generate-html';
     MatStepperModule,
     MatButtonToggleModule,
     MatIconModule,
-    MatFormFieldModule, // Corrected import
-    MatInputModule, // Added this import
+    MatFormFieldModule,
+    MatInputModule, 
     FormsModule,
     MatSlideToggleModule,
-    MatTabsModule
+    MatTabsModule,
+    StepperComponent,
+    HtmlTemplateStepComponent
   ],
   templateUrl: './create-html-template.component.html',
   styleUrls: ['./create-html-template.component.scss']
 })
 export class CreateHtmlTemplateComponent implements OnInit {
-  menuForm: FormGroup; 
-  generatedHtml: string; 
+  steppersSection: any[];
   iframeSrc: SafeResourceUrl;
-  section1backgroundImg: string;
-  bgImgURL: string;
-  colImgURL: string;
-  colBlock: string;
-  colBlockHTML: string;
-  col1: boolean;
-  col1HeaderText: string;
-  col1TextBlock: string;
-  col2: boolean;
-  col2HeaderText: string;
-  col2TextBlock: string;
-  col3: boolean;
-  col3HeaderText: string;
-  col3TextBlock: string;
+  generatedHtml: string; 
+  // menuForm: FormGroup; 
 
-  col1Image: string;
-  col2Image: string;
-  col3Image: string;
+  
+  // section1backgroundImg: string;
+  // bgImgURL: string;
+  // colImgURL: string;
+  // colBlock: string;
+  // colBlockHTML: string;
+  // col1: boolean;
+  // col1HeaderText: string;
+  // col1TextBlock: string;
+  // col2: boolean;
+  // col2HeaderText: string;
+  // col2TextBlock: string;
+  // col3: boolean;
+  // col3HeaderText: string;
+  // col3TextBlock: string;
 
-  isDarkText: boolean = false;
-  columnColor: string;
-  currentSection: number = 1;
-  columnCount: number = 1;
-  column3TabValue: string;
-  tabIndex: number = 1;
+  // col1Image: string;
+  // col2Image: string;
+  // col3Image: string;
+
+  // isDarkText: boolean = false;
+  // columnColor: string;
+  // currentSection: number = 1;
+  // columnCount: number = 1;
+  // column3TabValue: string;
+  // tabIndex: number = 1;
+  // parentMessage = 'Hello from Parent Component!';
+
+
 
   constructor(private fb: FormBuilder, private htmlGeneratorService: HtmlGeneratorService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void { 
-    this.columnColor = 'white';
-    this.col1HeaderText = 'Column 1';
-    this.col1TextBlock = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.';
-    this.col2HeaderText = 'Column 2';
-    this.col2TextBlock = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.';
-    this.col3HeaderText = 'Column 3';
-    this.col3TextBlock = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.';
-    this.currentSection = 1;
-    this.columnCount = 1;
-
-    this.menuForm = this.fb.group({ menuItems: this.fb.array([]) });
-    this.addMenuItem(); // Add a default item for illustration
-    this.updateIframeSrc();
+    this.steppersSection = [
+      {sectionTitle: 'Section 1', columns: 3},
+      {sectionTitle: 'Section 2', columns: 3},
+      {sectionTitle: 'Section 3', columns: 3},
+      {sectionTitle: 'Section 4', columns: 4},
+      {sectionTitle: 'Section 5', columns: 5}
+    ];
   }
+    // this.columnColor = 'white';
+    // this.col1HeaderText = 'Column 1';
+    // this.col1TextBlock = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.';
+    // this.col2HeaderText = 'Column 2';
+    // this.col2TextBlock = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.';
+    // this.col3HeaderText = 'Column 3';
+    // this.col3TextBlock = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.';
+    // this.currentSection = 1;
+    // this.columnCount = 1;
 
-  get menuItems(): FormArray { 
-    return this.menuForm.get('menuItems') as FormArray; 
-  }
+    // this.menuForm = this.fb.group({ menuItems: this.fb.array([]) });
+    // this.addMenuItem(); 
+    // this.updateIframeSrc();
 
-  addMenuItem(): void { 
-    this.menuItems.push(this.fb.group({ name: [''], href: [''] })); 
-  } 
+
+    
+      
   
-  removeMenuItem(index: number): void { 
-    this.menuItems.removeAt(index); 
-  } 
+
+//   get menuItems(): FormArray { 
+//     return this.menuForm.get('menuItems') as FormArray; 
+//   }
+
+//   addMenuItem(): void { 
+//     this.menuItems.push(this.fb.group({ name: [''], href: [''] })); 
+//   } 
   
-  addToHTML(): void {
-    this.updateIframeSrc();
-  }
+//   removeMenuItem(index: number): void { 
+//     this.menuItems.removeAt(index); 
+//   } 
+  
+//   addToHTML(): void {
+//     this.updateIframeSrc();
+//   }
 
-onImageUpload(event: Event, section: number, type: string, colNum: number = 0): void {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files[0]) {
-    const file = input.files[0];
+// onImageUpload(event: Event, section: number, type: string, colNum: number = 0): void {
+//   const input = event.target as HTMLInputElement;
+//   if (input.files && input.files[0]) {
+//     const file = input.files[0];
 
-    // Call the service to upload the image
-    this.htmlGeneratorService.uploadBGImage(file).subscribe(
-      response => {
-        const imageUrl = response.url;
-        switch(type) {
-          case "background":
-            this.bgImgURL = response.url;
-            this.setBackground(this.bgImgURL, this.colBlock);
-            break;
-          case "columns":
-            this.colImgURL = response.url;
-            if (colNum === 3) {
-              this.col3Image = imageUrl; // Store the image URL for column 3
-              this.updateColBlockHTML(); // Call the update function for column 3
-            }else if(colNum === 2){
-              this.col2Image = imageUrl;
-              this.updateColBlockHTML();
-            }
-            break;
-          // Add more cases as needed for different columns or sections
-        }
-      },
-      error => {
-        console.error('Error uploading image:', error);
-        // Handle the error, e.g., show an error message
-      }
-    );
-  }
-}
+//     // Call the service to upload the image
+//     this.htmlGeneratorService.uploadBGImage(file).subscribe(
+//       response => {
+//         const imageUrl = response.url;
+//         switch(type) {
+//           case "background":
+//             this.bgImgURL = response.url;
+//             this.setBackground(this.bgImgURL, this.colBlock);
+//             break;
+//           case "columns":
+//             this.colImgURL = response.url;
+//             if (colNum === 3) {
+//               this.col3HeaderText = '';
+//               this.col3Image = imageUrl; // Store the image URL for column 3
+//               this.updateColBlockHTML(); // Call the update function for column 3
+//             }else if(colNum === 2){
+//               this.col2HeaderText = '';
+//               this.col2Image = imageUrl;
+//               this.updateColBlockHTML();
+//             }
+//             break;
+//           // Add more cases as needed for different columns or sections
+//         }
+//       },
+//       error => {
+//         console.error('Error uploading image:', error);
+//         // Handle the error, e.g., show an error message
+//       }
+//     );
+//   }
+// }
 
 
-  //Updates each columns Header/Text
-  section1Columns(event: MatButtonToggleChange): void { 
-    const result = section1Columns(
-      event, 
-      this.columnColor, 
-      this.col1HeaderText, 
-      this.col1TextBlock, 
-      this.col2HeaderText, 
-      this.col2TextBlock, 
-      this.col3HeaderText, 
-      this.col3TextBlock,
-      this.col2Image,
-      this.col3Image
-    ); 
-    this.colBlockHTML = result.colBlockHTML; 
-    this.col1 = result.col1; 
-    this.col2 = result.col2; 
-    this.col3 = result.col3; 
-    this.colBlock = result.colBlock;
+//   //Updates each columns Header/Text
+//   section1Columns(event: MatButtonToggleChange): void { 
+//     const result = section1Columns(
+//       event, 
+//       this.columnColor, 
+//       this.col1HeaderText, 
+//       this.col1TextBlock, 
+//       this.col2HeaderText, 
+//       this.col2TextBlock, 
+//       this.col3HeaderText, 
+//       this.col3TextBlock,
+//       this.col2Image,
+//       this.col3Image
+//     ); 
+//     this.colBlockHTML = result.colBlockHTML; 
+//     this.col1 = result.col1; 
+//     this.col2 = result.col2; 
+//     this.col3 = result.col3; 
+//     this.colBlock = result.colBlock;
 
-    console.log(result.colBlock);
-    this.updateIframeSrc(); 
-  }
+//     console.log(result.colBlock);
+//     this.updateIframeSrc(); 
+//   }
 
-  //Determines how many columns show in the section
-  updateColBlockHTML():void {
-    console.log('got here');
-    if(this.col3){
-      const event = { value: 3 } as MatButtonToggleChange
-      this.section1Columns(event);
-    }else if (this.col2){
-      const event = { value:2 } as MatButtonToggleChange
-      this.section1Columns(event);
-    }else{
-      const event = { value: 1 } as MatButtonToggleChange
-      this.section1Columns(event);
-    }
+//   //Determines how many columns show in the section
+//   updateColBlockHTML():void {
+//     console.log('got here');
+//     if(this.col3){
+//       const event = { value: 3 } as MatButtonToggleChange
+//       this.section1Columns(event);
+//     }else if (this.col2){
+//       const event = { value:2 } as MatButtonToggleChange
+//       this.section1Columns(event);
+//     }else{
+//       const event = { value: 1 } as MatButtonToggleChange
+//       this.section1Columns(event);
+//     }
    
-  }
-  switchColor(event: MatSlideToggleChange): void{
-    this.isDarkText = event.checked;
-    if(event.checked == true){
-      this.columnColor = 'black';
-    }else{
-      this.columnColor = 'white';
-    }
-    this.updateColBlockHTML();
-  }
+//   }
+//   switchColor(event: MatSlideToggleChange): void{
+//     this.isDarkText = event.checked;
+//     if(event.checked == true){
+//       this.columnColor = 'black';
+//     }else{
+//       this.columnColor = 'white';
+//     }
+//     this.updateColBlockHTML();
+//   }
 
-  onColTabChanged(event: number){
-    switch(event){
-      case 1:
-        this.tabIndex = HtmlGeneratedTypes.Text;
-        break;
-      case 2:
-        this.tabIndex = HtmlGeneratedTypes.Image;
-        break;
-      case 3:
-        this.tabIndex = HtmlGeneratedTypes.Video;
-        break;
-    }    
-  }
+//   onColTabChanged(event: number){
+//     switch(event){
+//       case 1:
+//         this.tabIndex = HtmlGeneratedTypes.Text;
+//         break;
+//       case 2:
+//         this.tabIndex = HtmlGeneratedTypes.Image;
+//         break;
+//       case 3:
+//         this.tabIndex = HtmlGeneratedTypes.Video;
+//         break;
+//     }    
+//   }
   
-  setBackground(img: string, styleBlock:String):void{
-    this.updateIframeSrc();
-  }
+//   setBackground(img: string, styleBlock:String):void{
+//     this.updateIframeSrc();
+//   }
 
-  generateHtml(menuItems: { 
-    name: string, href: string }[]): string { 
-      return generateHtml(menuItems, this.bgImgURL, this.colBlock, this.colBlockHTML); 
-    }
+//   generateHtml(menuItems: { 
+//     name: string, href: string }[]): string { 
+//       return generateHtml(menuItems, this.bgImgURL, this.colBlock, this.colBlockHTML); 
+//     }
 
 
-    updateIframeSrc(): void {     
-      this.menuItems.controls.forEach((control: AbstractControl, index: number) => {
-        (control as FormGroup).get('href')?.setValue(`#section${index + 1}`);
-      });
+//     updateIframeSrc(): void {     
+//       this.menuItems.controls.forEach((control: AbstractControl, index: number) => {
+//         (control as FormGroup).get('href')?.setValue(`#section${index + 1}`);
+//       });
     
-      const menuItems = this.menuForm.value.menuItems;    
-      this.generatedHtml = this.generateHtml(menuItems); 
+//       const menuItems = this.menuForm.value.menuItems;    
+//       this.generatedHtml = this.generateHtml(menuItems); 
     
-      if (this.generatedHtml) {
-        const blob = new Blob([this.generatedHtml], { type: 'text/html' });
-        this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
-      }
-    }
+//       if (this.generatedHtml) {
+//         const blob = new Blob([this.generatedHtml], { type: 'text/html' });
+//         this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+//       }
+//     }
     
 }
