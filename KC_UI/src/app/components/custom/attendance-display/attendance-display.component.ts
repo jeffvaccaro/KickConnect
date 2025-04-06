@@ -5,11 +5,10 @@ import { SchedulerService } from '../../../services/scheduler.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
-  selector: 'app-attendance-display',
-  standalone: true,
-  imports: [QRCodeModule, CommonModule],
-  templateUrl: './attendance-display.component.html',
-  styleUrl: './attendance-display.component.scss'
+    selector: 'app-attendance-display',
+    imports: [QRCodeModule, CommonModule],
+    templateUrl: './attendance-display.component.html',
+    styleUrl: './attendance-display.component.scss'
 })
 export class AttendanceDisplayComponent {
   public classArr: any[] = [];

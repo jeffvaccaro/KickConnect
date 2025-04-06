@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-customizer-settings',
-    standalone: true,
     imports: [NgClass, NgScrollbarModule, MatDividerModule, MatButtonModule, MatIconModule],
     templateUrl: './customizer-settings.component.html',
     styleUrls: ['./customizer-settings.component.scss']

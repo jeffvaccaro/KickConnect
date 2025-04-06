@@ -15,14 +15,13 @@ import { RoleService } from '../../../../services/role.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 
 @Component({
-  selector: 'app-add-new-role',
-  standalone: true,
-  imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
-  ],
-  templateUrl: './add-new-role.component.html',
-  styleUrl: './add-new-role.component.scss'
+    selector: 'app-add-new-role',
+    imports: [
+        CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+    ],
+    templateUrl: './add-new-role.component.html',
+    styleUrl: './add-new-role.component.scss'
 })
 export class AddNewRoleComponent implements OnInit {
   form: FormGroup;

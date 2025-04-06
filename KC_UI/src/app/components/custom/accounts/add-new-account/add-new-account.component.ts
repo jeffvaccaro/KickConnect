@@ -17,11 +17,10 @@ import { AccountService } from '../../../../services/account.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-add-new-account',
-  standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule,MatCardModule,MatCheckboxModule,MatFormFieldModule,MatIconModule,MatInputModule,MatMenuModule,MatSelectModule, CommonModule],
-  templateUrl: './add-new-account.component.html',
-  styleUrl: './add-new-account.component.scss'
+    selector: 'app-add-new-account',
+    imports: [ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, CommonModule],
+    templateUrl: './add-new-account.component.html',
+    styleUrl: './add-new-account.component.scss'
 })
 export class AddNewAccountComponent implements OnInit {
   form: FormGroup;

@@ -19,14 +19,13 @@ import { SchedulerService } from '../../../../services/scheduler.service';
 import { IReservationCount } from '../../../../interfaces/reservation-count';
 
 @Component({
-  selector: 'app-edit-event',
-  standalone: true,
-  imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
-  ],
-  templateUrl: './edit-event.component.html',
-  styleUrls: ['./edit-event.component.scss']
+    selector: 'app-edit-event',
+    imports: [
+        CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+    ],
+    templateUrl: './edit-event.component.html',
+    styleUrls: ['./edit-event.component.scss']
 })
 export class EditEventComponent implements OnInit {
   form: FormGroup;

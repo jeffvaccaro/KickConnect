@@ -3,14 +3,13 @@ import { LocationListComponent } from '../../custom/locations/location-list/loca
 import { UserListComponent } from '../../custom/user/user-list/user-list.component';
 
 @Component({
-  selector: 'app-owner',
-  standalone: true,
-  imports: [
-    LocationListComponent,
-    UserListComponent
-],
-  templateUrl: './owner.component.html',
-  styleUrl: './owner.component.scss'
+    selector: 'app-owner',
+    imports: [
+        LocationListComponent,
+        UserListComponent
+    ],
+    templateUrl: './owner.component.html',
+    styleUrl: './owner.component.scss'
 })
 export class OwnerComponent {
 

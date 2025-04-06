@@ -10,12 +10,12 @@ import { HtmlGeneratorService } from '../../../../services/html-generator.servic
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-html-template-step',
-  standalone: true,
-  imports: [MatStepperModule,MatButtonToggleModule,MatSlideToggleModule,MatFormFieldModule,MatCardModule,MatTabsModule,
-    FormsModule,ReactiveFormsModule
-  ],
-  templateUrl: './html-template-step.component.html'
+    selector: 'app-html-template-step',
+    standalone: true,
+    imports: [MatStepperModule, MatButtonToggleModule, MatSlideToggleModule, MatFormFieldModule, MatCardModule, MatTabsModule,
+        FormsModule, ReactiveFormsModule
+    ],
+    templateUrl: './html-template-step.component.html'
 })
 export class HtmlTemplateStepComponent implements OnInit {
   @Input() sectionTitle: string;

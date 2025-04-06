@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
@@ -14,11 +13,11 @@ import { EventService } from '../../../../services/event.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 
 @Component({
-  selector: 'app-event-list',
-  standalone: true,
-  imports: [RouterLink, MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule,MatTabsModule, NgIf],
-  templateUrl: './event-list.component.html',
-  styleUrl: './event-list.component.scss'
+    selector: 'app-event-list',
+    standalone: true,
+    imports: [MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule],
+    templateUrl: './event-list.component.html',
+    styleUrl: './event-list.component.scss'
 })
 export class EventListComponent implements OnInit, AfterViewInit {
   private eventArr: any[] = [];

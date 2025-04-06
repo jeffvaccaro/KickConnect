@@ -17,14 +17,13 @@ import { LocationListComponent } from '../location-list/location-list.component'
 import { SnackbarService } from '../../../../services/snackbar.service';
 
 @Component({
-  selector: 'app-add-new-location',
-  standalone: true,
-  imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
-  ],
-  templateUrl: './add-new-location.component.html',
-  styleUrls: ['./add-new-location.component.scss']
+    selector: 'app-add-new-location',
+    imports: [
+        CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+    ],
+    templateUrl: './add-new-location.component.html',
+    styleUrls: ['./add-new-location.component.scss']
 })
 export class AddNewLocationComponent implements OnInit {
   form: FormGroup;

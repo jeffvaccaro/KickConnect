@@ -12,11 +12,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../../services/user.service';
 
 @Component({
-  selector: 'app-account-list',
-  standalone: true,
-  imports: [MatButtonModule,MatCardModule,MatMenuModule,MatPaginatorModule,MatTableModule,MatCheckboxModule,MatTabsModule,MatTooltipModule],
-  templateUrl: './account-list.component.html',
-  styleUrl: './account-list.component.scss'
+    selector: 'app-account-list',
+    imports: [MatButtonModule, MatCardModule, MatMenuModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule, MatTooltipModule],
+    templateUrl: './account-list.component.html',
+    styleUrl: './account-list.component.scss'
 })
 export class AccountListComponent implements OnInit, AfterViewInit {
   private accountArr: any[] = [];

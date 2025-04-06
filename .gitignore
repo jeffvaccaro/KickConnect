@@ -3,7 +3,8 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-/KickConnectCombined/
+/Deploy/
+/kickConnect-TestSuite/
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

@@ -1,23 +1,21 @@
     import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
     import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
     import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-    import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-    import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+    import { ActivatedRoute, Router } from '@angular/router';
     import { MatCardModule } from '@angular/material/card';
     import { MatButtonModule } from '@angular/material/button';
     import { MatMenuModule } from '@angular/material/menu';
     import { MatCheckboxModule } from '@angular/material/checkbox';
-    import { NgIf } from '@angular/common';
     import { UserService } from '../../../../services/user.service';
     import { IProfile } from '../../../../interfaces/profile';
     
     @Component({
-        selector: 'app-profile-list',
-        standalone: true,
-        imports: [RouterLink, MatCardModule, MatButtonModule, MatMenuModule, MatTableModule, MatCheckboxModule, NgIf, MatPaginatorModule],
-        templateUrl: 'profile-list.component.html',
-        styleUrls: ['./profile-list.component.scss']
-    })
+    selector: 'app-profile-list',
+    standalone: true,
+    imports: [MatCardModule, MatButtonModule, MatMenuModule, MatTableModule, MatCheckboxModule, MatPaginatorModule],
+    templateUrl: 'profile-list.component.html',
+    styleUrls: ['./profile-list.component.scss']
+})
     export class ProfileListComponent {
         accountCode: string;
         userArr: any[] = [];

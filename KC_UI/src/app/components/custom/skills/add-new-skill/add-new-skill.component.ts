@@ -15,14 +15,13 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
-  selector: 'app-add-new-skill',
-  standalone: true,
-  imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
-  ],
-  templateUrl: './add-new-skill.component.html',
-  styleUrl: './add-new-skill.component.scss'
+    selector: 'app-add-new-skill',
+    imports: [
+        CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+    ],
+    templateUrl: './add-new-skill.component.html',
+    styleUrl: './add-new-skill.component.scss'
 })
 export class AddNewSkillComponent implements OnInit {
   form: FormGroup;

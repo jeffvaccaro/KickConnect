@@ -6,7 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { SkillsAutocompleteComponent } from '../skills-autocomplete/skills-autocomplete.component';
 import { UserService } from '../../../../services/user.service';
 import { MatOption } from '@angular/material/core';
@@ -14,9 +13,9 @@ import { LocationService } from '../../../../services/location.service';
 import { ILocations } from '../../../../interfaces/locations';
 
 @Component({
-  selector: 'app-profile-modal',
-  standalone: true,
-  imports: [
+    selector: 'app-profile-modal',
+    standalone: true,
+    imports: [
     CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
@@ -25,13 +24,10 @@ import { ILocations } from '../../../../interfaces/locations';
     MatButtonModule,
     MatSelectModule,
     MatOption,
-    MatCard,
-    MatCardHeader,
-    MatCardContent,
     SkillsAutocompleteComponent
-  ],
-  templateUrl: './profile-modal.component.html',
-  styleUrls: ['./profile-modal.component.scss']
+],
+    templateUrl: './profile-modal.component.html',
+    styleUrls: ['./profile-modal.component.scss']
 })
 export class ProfileModalComponent {
   profileForm: FormGroup;

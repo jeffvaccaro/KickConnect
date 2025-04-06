@@ -12,11 +12,11 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-skills-autocomplete',
-  standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatChipsModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule, MatIconModule, NgFor],
-  templateUrl: './skills-autocomplete.component.html',
-  styleUrls: ['./skills-autocomplete.component.scss']
+    selector: 'app-skills-autocomplete',
+    standalone: true,
+    imports: [MatFormFieldModule, MatInputModule, MatChipsModule, FormsModule, ReactiveFormsModule, MatAutocompleteModule, MatIconModule, NgFor],
+    templateUrl: './skills-autocomplete.component.html',
+    styleUrls: ['./skills-autocomplete.component.scss']
 })
 
 export class SkillsAutocompleteComponent implements OnInit {

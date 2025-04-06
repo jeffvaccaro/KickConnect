@@ -11,7 +11,6 @@ import { RoleService } from '../../../services/role.service';
 
 @Component({
     selector: 'app-sidebar',
-    standalone: true,
     imports: [RouterLink, NgClass, NgScrollbarModule, MatExpansionModule, RouterLinkActive, CommonModule],
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss']

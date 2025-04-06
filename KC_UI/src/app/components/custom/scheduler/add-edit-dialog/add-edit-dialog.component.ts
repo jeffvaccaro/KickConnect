@@ -28,28 +28,27 @@ import { isReactive } from '@angular/core/primitives/signals';
 import { CustomFormValidationService } from '../../../../services/custom-form-validation.service';
 
 @Component({
-  selector: 'app-add-edit-dialog',
-  templateUrl: './add-edit-dialog.component.html', // Reference the new HTML file
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatFormFieldModule,
-    MatNativeDateModule,
-    MatDatepickerModule,
-    NgxMaterialTimepickerModule,
-    MatSlideToggleModule,
-    MatIconModule
-  ],
-  providers: [
-    { provide: DateAdapter, useClass: NativeDateAdapter },
-    { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS }
-  ]
+    selector: 'app-add-edit-dialog',
+    templateUrl: './add-edit-dialog.component.html',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatInputModule,
+        MatCheckboxModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatFormFieldModule,
+        MatNativeDateModule,
+        MatDatepickerModule,
+        NgxMaterialTimepickerModule,
+        MatSlideToggleModule,
+        MatIconModule
+    ],
+    providers: [
+        { provide: DateAdapter, useClass: NativeDateAdapter },
+        { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS }
+    ]
 })
 export class AddEditDialogComponent implements OnInit {
   eventForm: FormGroup;

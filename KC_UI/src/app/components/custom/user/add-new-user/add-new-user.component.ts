@@ -19,14 +19,13 @@ import { Role } from '../../../../interfaces/role';
 
 
 @Component({
-  selector: 'app-add-new-user',
-  standalone: true,
-  imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
-  ],
-  templateUrl: './add-new-user.component.html',
-  styleUrl: './add-new-user.component.scss'
+    selector: 'app-add-new-user',
+    imports: [
+        CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+    ],
+    templateUrl: './add-new-user.component.html',
+    styleUrl: './add-new-user.component.scss'
 })
 export class AddNewUserComponent {
 

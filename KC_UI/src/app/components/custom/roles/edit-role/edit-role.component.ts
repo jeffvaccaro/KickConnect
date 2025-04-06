@@ -15,14 +15,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RoleService } from '../../../../services/role.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 @Component({
-  selector: 'app-edit-role',
-  standalone: true,
-  imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
-  ],
-  templateUrl: './edit-role.component.html',
-  styleUrl: './edit-role.component.scss'
+    selector: 'app-edit-role',
+    imports: [
+        CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+    ],
+    templateUrl: './edit-role.component.html',
+    styleUrl: './edit-role.component.scss'
 })
 export class EditRoleComponent implements OnInit {
   form: FormGroup;

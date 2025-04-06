@@ -25,24 +25,23 @@ import { RolesEnum } from '../../../../../enums/roles';
 import { UserProfileObject } from '../../../../../objects/user-profile/user-profile';
 
 @Component({
-  selector: 'app-assignment-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatFormFieldModule,
-    MatNativeDateModule,
-    MatDatepickerModule,
-    MatSlideToggleModule,
-    MatIconModule
-  ],
-  templateUrl: './assignment-dialog.component.html',
-  styleUrls: ['./assignment-dialog.component.scss']
+    selector: 'app-assignment-dialog',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatInputModule,
+        MatCheckboxModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatFormFieldModule,
+        MatNativeDateModule,
+        MatDatepickerModule,
+        MatSlideToggleModule,
+        MatIconModule
+    ],
+    templateUrl: './assignment-dialog.component.html',
+    styleUrls: ['./assignment-dialog.component.scss']
 })
 export class AssignmentDialogComponent implements OnInit {
   assignmentForm: FormGroup;

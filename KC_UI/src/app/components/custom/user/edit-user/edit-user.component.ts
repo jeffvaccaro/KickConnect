@@ -27,14 +27,13 @@ interface Role {
 }
 
 @Component({
-  selector: 'app-edit-user',
-  standalone: true,
-  imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatDialogModule
-  ],
-  templateUrl: './edit-user.component.html',
-  styleUrls: ['./edit-user.component.scss']
+    selector: 'app-edit-user',
+    imports: [
+        CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatDialogModule
+    ],
+    templateUrl: './edit-user.component.html',
+    styleUrls: ['./edit-user.component.scss']
 })
 export class EditUserComponent implements OnInit {
   form: FormGroup;

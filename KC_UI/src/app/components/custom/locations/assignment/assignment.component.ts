@@ -1,12 +1,10 @@
-import { Component, ViewChild, OnInit, AfterViewInit, AfterViewChecked, Inject } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { DayPilot, DayPilotCalendarComponent, DayPilotModule } from '@daypilot/daypilot-lite-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogRef,  MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
-import { RouterLink } from '@angular/router';
 import { DataService } from '../../../../services/data.service';
-import { AddEditDialogComponent } from '../../scheduler/add-edit-dialog/add-edit-dialog.component';
 import { ICustomDayPilotEventData } from '../../../../interfaces/customDayPilotEventData';
 import { EventService } from '../../../../services/event.service';
 import { SchedulerService } from '../../../../services/scheduler.service';
@@ -18,11 +16,11 @@ import { AssignmentDialogComponent } from './assignment-dialog/assignment-dialog
 import { ActivatedRoute } from '@angular/router'
 
 @Component({
-  selector: 'app-assignments',
-  standalone: true,
-  imports: [DayPilotModule, RouterLink, MatCardModule, MatButtonModule, MatMenuModule],
-  templateUrl: './assignment.component.html',
-  styleUrl: './assignment.component.scss'
+    selector: 'app-assignments',
+    standalone: true,
+    imports: [DayPilotModule, MatCardModule, MatButtonModule, MatMenuModule],
+    templateUrl: './assignment.component.html',
+    styleUrl: './assignment.component.scss'
 })
 export class AssignmentComponent implements AfterViewInit {
   @ViewChild('calendar') calendar!: DayPilotCalendarComponent;

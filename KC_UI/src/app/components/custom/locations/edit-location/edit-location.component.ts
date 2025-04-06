@@ -14,14 +14,13 @@ import { CommonService } from '../../../../services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-edit-location',
-  standalone: true,
-  imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
-  ],
-  templateUrl: './edit-location.component.html',
-  styleUrls: ['./edit-location.component.scss']
+    selector: 'app-edit-location',
+    imports: [
+        CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+    ],
+    templateUrl: './edit-location.component.html',
+    styleUrls: ['./edit-location.component.scss']
 })
 export class EditLocationComponent implements OnInit {
   form: FormGroup;
