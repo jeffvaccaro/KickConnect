@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { QRCodeModule } from 'angularx-qrcode';
+import { QRCodeComponent } from 'angularx-qrcode';
 import { SchedulerService } from '../../../services/scheduler.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
     selector: 'app-attendance-display',
-    imports: [QRCodeModule, CommonModule],
+    standalone: true,
+    imports: [CommonModule, QRCodeComponent],
     templateUrl: './attendance-display.component.html',
     styleUrl: './attendance-display.component.scss'
 })
