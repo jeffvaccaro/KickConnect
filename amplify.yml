@@ -1,21 +1,7 @@
 version: 1
-applications:
-  - frontend:
-      phases:
-        preBuild:
-          commands:
-            - nvm install 18.19.1
-            - nvm use 18.19.1
-            - npm ci --cache .npm --prefer-offline
-            - npm run clean
-        build:
-          commands:
-            - npm run build
-      artifacts:
-        baseDirectory: KC_UI/dist/kickConnect
-        files:
-          - "**/*"
-      cache:
-        paths:
-          - .npm/**/*
-      appRoot: KC_UI
+frontend:
+  appRoot: KC_UI
+  phases:
+    build:
+      commands:
+        - echo "Test build"
