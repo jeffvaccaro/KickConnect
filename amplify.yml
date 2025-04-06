@@ -14,7 +14,7 @@ applications:
       artifacts:
         baseDirectory: KC_UI/dist/kickConnect
         files:
-          - '**/*'
+          - "**/*"
       cache:
         paths:
           - .npm/**/*
