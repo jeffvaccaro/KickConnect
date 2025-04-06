@@ -23,9 +23,9 @@
             "ES2022",
             "dom"
         ],
-        "baseUrl": "./",
+        "baseUrl": "./src",
         "paths": {
-            "@app/*": ["src/app/*"]
+            "@app/*": ["app/*"]
         }
     },
     "angularCompilerOptions": {
