@@ -1,8 +1,0 @@
-version: 1
-applications:
-  - frontend:
-      appRoot: KC_UI
-      phases:
-        build:
-          commands:
-            - echo "Test build"
