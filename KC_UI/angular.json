@@ -18,8 +18,9 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/kickConnect",
+            "baseHref": "/",
             "index": "src/index.html",
-            "browser": "src/main.ts",
+            "main": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -28,7 +29,7 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "src/HTML-TEMPLATE-1",
+                "input": "/HTML-TEMPLATE-1",
                 "output": "/public/htmlgencode"
               }
             ],
@@ -40,10 +41,7 @@
               "src/styles.scss",
               "node_modules/material-design-icons-iconfont/dist/material-design-icons.css"
             ],
-            "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"],
-            "server": "src/main.server.ts",
-            "prerender": false,
-            "ssr": false
+            "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"]
           },
           "configurations": {
             "production": {
@@ -70,8 +68,7 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
-            }
+                         }
           },
           "defaultConfiguration": "production"
         },
