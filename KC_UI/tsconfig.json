@@ -1,7 +1,7 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
-      "outDir": "./dist/out-tsc",
+      "outDir": "./dist/kickConnect",
       "strict": true,
       "noImplicitOverride": true,
       "noPropertyAccessFromIndexSignature": true,
@@ -22,7 +22,11 @@
       "lib": [
         "ES2022",
         "dom"
-      ]
+      ],
+      "baseUrl": "./src",
+      "paths": {
+        "@app/*": ["app/*"]
+      }
     },
     "angularCompilerOptions": {
       "enableI18nLegacyMessageIdFormat": false,
