@@ -98,9 +98,9 @@ const distPath = isLocal
 
 app.use(express.static(distPath)); // Serve static files
 
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'));
-});
+// app.get('/*', (req, res) => {
+//   res.sendFile(path.join(distPath, 'index.html'));
+// });
 
 app.get('/current-datetime', (req, res) => {
   res.send(`Current Date and Time: ${new Date()}`);
