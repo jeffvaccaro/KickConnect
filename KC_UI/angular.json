@@ -21,6 +21,7 @@
             "baseHref": "/",
             "index": "src/index.html",
             "main": "src/main.ts",
+            "browser": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -41,7 +42,10 @@
               "src/styles.scss",
               "node_modules/material-design-icons-iconfont/dist/material-design-icons.css"
             ],
-            "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"]
+            "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"],
+            "server": "src/main.server.ts",
+            "prerender": false,
+            "ssr": false
           },
           "configurations": {
             "production": {
@@ -68,7 +72,8 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-                         }
+              "sourceMap": true
+            }
           },
           "defaultConfiguration": "production"
         },
