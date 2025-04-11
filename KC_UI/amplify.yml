@@ -1,6 +1,6 @@
 version: 1
 applications:
-  - appRoot: "KC_UI/src"
+  - appRoot: "KC_UI"
     frontend:
       phases:
         preBuild:
@@ -10,8 +10,8 @@ applications:
           - npm install
         build:
           commands:
-            - npm run build
             - ls -alh
+            - npm run build
       artifacts:
         baseDirectory: dist/kickConnect/browser
         files:
