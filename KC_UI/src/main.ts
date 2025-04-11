@@ -4,7 +4,8 @@ import { provideHttpClient, HTTP_INTERCEPTORS, withInterceptorsFromDi } from '@a
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app/app.component';
-import { authinterceptor } from '@app/interceptor/authinterceptor';
+import { authinterceptor } from './app/interceptor/authinterceptor';
+
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { routes } from './app/app.routes';
 import { LoggerService } from './app/services/logger.service';
