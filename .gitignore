@@ -4,6 +4,8 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /KickConnectCombined/
+Deploy/*
+Deploy.zip
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
