@@ -8,11 +8,10 @@ import { IUser } from '../../../../interfaces/user';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-edit-profile',
-  standalone: true,
-  imports: [CommonModule, MatCardModule, MatDividerModule,  MatButtonModule],
-  templateUrl: './edit-profile.component.html',
-  styleUrl: './edit-profile.component.scss'
+    selector: 'app-edit-profile',
+    imports: [CommonModule, MatCardModule, MatDividerModule, MatButtonModule],
+    templateUrl: './edit-profile.component.html',
+    styleUrl: './edit-profile.component.scss'
 })
 export class EditProfileComponent implements OnInit 
 {

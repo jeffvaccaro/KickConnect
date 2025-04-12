@@ -4,7 +4,6 @@ import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-internal-error',
-    standalone: true,
     imports: [RouterLink, MatButtonModule],
     templateUrl: './internal-error.component.html',
     styleUrls: ['./internal-error.component.scss']

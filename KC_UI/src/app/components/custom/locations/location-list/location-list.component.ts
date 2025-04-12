@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
@@ -7,16 +6,16 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { LocationService } from '../../../../services/location.service';
 
 @Component({
-  selector: 'app-location-list',
-  standalone: true,
-  imports: [RouterLink, MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule,MatTabsModule, NgIf],
-  templateUrl: './location-list.component.html',
-  styleUrl: './location-list.component.scss'
+    selector: 'app-location-list',
+    standalone: true,
+    imports: [MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule],
+    templateUrl: './location-list.component.html',
+    styleUrl: './location-list.component.scss'
 })
 export class LocationListComponent implements OnInit, AfterViewInit {
   private locationArr: any[] = [];

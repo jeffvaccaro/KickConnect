@@ -10,8 +10,7 @@ import { UserService } from '../../../services/user.service';
 
 @Component({
     selector: 'app-header',
-    standalone: true,
-    imports: [RouterLink, NgClass, MatMenuModule, MatIconModule, MatButtonModule, DatePipe, ],
+    imports: [RouterLink, NgClass, MatMenuModule, MatIconModule, MatButtonModule, DatePipe,],
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss']
 })

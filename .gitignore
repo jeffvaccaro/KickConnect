@@ -6,6 +6,7 @@ node_modules/
 /KickConnectCombined/
 Deploy/*
 Deploy.zip
+/kickConnect-TestSuite/
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

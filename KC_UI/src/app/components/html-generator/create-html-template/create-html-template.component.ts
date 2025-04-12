@@ -7,11 +7,8 @@ import { HtmlStepperComponent } from './html-steppers.component';
 import { HtmlGeneratorService } from '../../../services/html-generator.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
-import { HtmlGeneratedTypes } from '../../../enums/html-generated-types';
-import { StepperComponent } from './html-template-step/stepper/stepper.component';
-import { HtmlTemplateStepComponent } from './html-template-step/html-template-step.component';
 import { HttpClientModule } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -20,26 +17,24 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-create-html-template',
-  standalone: true,
-  imports: [
+    selector: 'app-create-html-template',
+    standalone: true,
+    imports: [
     CommonModule,
     MatCardModule,
     MatStepperModule,
     MatButtonToggleModule,
     MatIconModule,
     MatFormFieldModule,
-    MatInputModule, 
+    MatInputModule,
     FormsModule,
     MatSlideToggleModule,
     MatTabsModule,
-    StepperComponent,
-    HtmlTemplateStepComponent,
     HtmlStepperComponent,
     HttpClientModule // Include HttpClientModule
-  ],
-  templateUrl: './create-html-template.component.html',
-  styleUrls: ['./create-html-template.component.scss']
+],
+    templateUrl: './create-html-template.component.html',
+    styleUrls: ['./create-html-template.component.scss']
 })
 export class CreateHtmlTemplateComponent implements OnInit {
 

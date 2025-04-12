@@ -3,8 +3,9 @@ import { Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 
 @Component({
-  selector: 'app-dynamic',
-  template: '<p>Redirecting...</p>'
+    selector: 'app-dynamic',
+    template: '<p>Redirecting...</p>',
+    standalone: false
 })
 export class DynamicComponent implements OnInit {
   role: string;

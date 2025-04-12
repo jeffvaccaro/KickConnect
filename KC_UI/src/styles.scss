@@ -1,3 +1,18 @@
+// Quill
+@use '../node_modules/quill/dist/quill.snow.css';
+
+// Utilities CSS
+@use "./utilities";
+
+// UI Kit CSS
+@use "./ui-kit";
+
+// Form
+@use "./form";
+
+// Sidemenu CSS
+@use "./sidebar";
+
 /* You can add global styles to this file, and also import other style files */
 :root {
     --fontFamily: 'Open Sans', sans-serif;
@@ -136,17 +151,7 @@ button {
     }
 }
 
-// Quill
-@import '../node_modules/quill/dist/quill.snow.css';
 
-// Utilities CSS
-@import "./utilities";
-
-// UI Kit CSS
-@import "./ui-kit";
-
-// Form
-@import "./form";
 
 // Header CSS
 .header-area {
@@ -474,9 +479,6 @@ button {
         }
     }
 }
-
-// Sidemenu CSS
-@import "./sidebar";
 
 // Mat Card CSS
 .mat-mdc-card {

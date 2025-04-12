@@ -2,9 +2,8 @@ import { Component, ViewChild, OnInit, AfterViewInit, AfterViewChecked, Inject }
 import { DayPilot, DayPilotCalendarComponent, DayPilotModule } from '@daypilot/daypilot-lite-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogRef,  MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog} from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
-import { RouterLink } from '@angular/router';
 import { DataService } from '../../../services/data.service';
 import { AddEditDialogComponent } from './add-edit-dialog/add-edit-dialog.component';
 import { ICustomDayPilotEventData } from '../../../interfaces/customDayPilotEventData';
@@ -15,11 +14,11 @@ import { ISchedule } from '../../../interfaces/schedule';
 import { SnackbarService } from '../../../services/snackbar.service';
 
 @Component({
-  selector: 'app-scheduler',
-  standalone: true,
-  imports: [DayPilotModule,RouterLink, MatCardModule, MatButtonModule, MatMenuModule],
-  templateUrl: './scheduler.component.html',
-  styleUrl: './scheduler.component.scss'
+    selector: 'app-scheduler',
+    standalone: true,
+    imports: [DayPilotModule, MatCardModule, MatButtonModule, MatMenuModule],
+    templateUrl: './scheduler.component.html',
+    styleUrl: './scheduler.component.scss'
 })
 export class SchedulerComponent implements AfterViewInit {
   @ViewChild('calendar') calendar!: DayPilotCalendarComponent;

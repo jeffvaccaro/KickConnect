@@ -14,14 +14,13 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
-  selector: 'app-edit-skill',
-  standalone: true,
-  imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
-  ],
-  templateUrl: './edit-skill.component.html',
-  styleUrl: './edit-skill.component.scss'
+    selector: 'app-edit-skill',
+    imports: [
+        CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+    ],
+    templateUrl: './edit-skill.component.html',
+    styleUrl: './edit-skill.component.scss'
 })
 export class EditSkillComponent implements OnInit {
   form: FormGroup;

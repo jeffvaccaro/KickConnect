@@ -106,6 +106,16 @@ if (!isLocal) {
     next();
   });
 }
+// Determine the path based on the environment
+const distPath = isLocal
+  ? path.join(__dirname, 'dist', 'kickConnect', 'browser') // Local path
+  : path.join(__dirname, 'browser'); // Production path
+
+app.use(express.static(distPath)); // Serve static files
+
+// app.get('/*', (req, res) => {
+//   res.sendFile(path.join(distPath, 'index.html'));
+// });
 
 app.get('/current-datetime', (req, res) => {
   res.send(`Current Date and Time: ${new Date()}`);

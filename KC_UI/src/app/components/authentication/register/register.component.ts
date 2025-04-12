@@ -15,7 +15,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-register',
-    standalone: true,
     imports: [CommonModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, MatSelectModule],
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss']

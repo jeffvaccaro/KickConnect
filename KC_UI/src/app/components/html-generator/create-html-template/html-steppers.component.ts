@@ -16,12 +16,12 @@ import { generateSectionContent } from './html-helpers/helper-generate-html';
 import { HtmlGeneratorService } from '../../../services/html-generator.service';
 
 @Component({
-  selector: 'html-steppers',
-  templateUrl: './html-steppers.component.html',
-  standalone: true,
-  imports: [MatStepperModule, MatButtonToggleModule, MatSlideToggleModule, MatFormFieldModule, MatCardModule, MatTabsModule, MatInputModule, MatIconModule,
-            FormsModule, ReactiveFormsModule, CommonModule],
-  styleUrls: ['html-steppers.component.scss']
+    selector: 'html-steppers',
+    standalone: true,
+    templateUrl: './html-steppers.component.html',
+    imports: [MatStepperModule, MatButtonToggleModule, MatSlideToggleModule, MatFormFieldModule, MatCardModule, MatTabsModule, MatInputModule, MatIconModule,
+        FormsModule, ReactiveFormsModule, CommonModule],
+    styleUrls: ['html-steppers.component.scss']
 })
 export class HtmlStepperComponent implements OnInit {
   @Input() SectionHeader: string;

@@ -4,11 +4,10 @@ import { Router, RouterLink } from '@angular/router'; // Add Router to the impor
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-logout',
-  standalone: true,
-  imports: [RouterLink, MatButtonModule],
-  templateUrl: './logout.component.html',
-  styleUrls: ['./logout.component.scss']
+    selector: 'app-logout',
+    imports: [RouterLink, MatButtonModule],
+    templateUrl: './logout.component.html',
+    styleUrls: ['./logout.component.scss']
 })
 export class LogoutComponent {
   constructor(

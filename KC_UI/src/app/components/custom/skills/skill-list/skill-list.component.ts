@@ -2,9 +2,8 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { SnackbarService } from '../../../../services/snackbar.service';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SkillService } from '../../../../services/skill.service';
-import { NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -12,11 +11,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
-  selector: 'app-skill-list',
-  standalone: true,
-  imports: [RouterLink, MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule,MatTabsModule, NgIf],
-  templateUrl: './skill-list.component.html',
-  styleUrl: './skill-list.component.scss'
+    selector: 'app-skill-list',
+    standalone: true,
+    imports: [MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule],
+    templateUrl: './skill-list.component.html',
+    styleUrl: './skill-list.component.scss'
 })
 export class SkillListComponent implements OnInit, AfterViewInit {
   private skillsArr: any[] = [];

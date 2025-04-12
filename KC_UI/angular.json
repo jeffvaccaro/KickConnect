@@ -18,6 +18,7 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/kickConnect",
+            "baseHref": "/",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -28,7 +29,7 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "src/HTML-TEMPLATE-1",
+                "input": "/HTML-TEMPLATE-1",
                 "output": "/public/htmlgencode"
               }
             ],

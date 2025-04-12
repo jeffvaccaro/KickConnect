@@ -20,15 +20,14 @@ import { IReservationCount } from '../../../../interfaces/reservation-count';
 import { SchedulerService } from '../../../../services/scheduler.service';
 
 @Component({
-  selector: 'app-add-new-event',
-  standalone: true,
-  imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
-    MatSlideToggleModule
-  ],
-  templateUrl: './add-new-event.component.html',
-  styleUrl: './add-new-event.component.scss'
+    selector: 'app-add-new-event',
+    imports: [
+        CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
+        MatSlideToggleModule
+    ],
+    templateUrl: './add-new-event.component.html',
+    styleUrl: './add-new-event.component.scss'
 })
 export class AddNewEventComponent implements OnInit {
   form: FormGroup;
