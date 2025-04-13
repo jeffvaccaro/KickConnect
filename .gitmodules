@@ -1,0 +1,3 @@
+[submodule "KickConnect-UI"]
+	path = KickConnect-UI
+	url = https://github.com/jeffvaccaro/KickConnect-UI
