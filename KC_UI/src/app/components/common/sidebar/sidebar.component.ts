@@ -83,4 +83,21 @@ export class SidebarComponent implements OnInit {
       this.availableOptions = this.options.length;
       //console.log('Available options:', this.availableOptions);
     }
+
+    
+    getDashboardRoute(): string {
+      if (this.hasRoles(['Super Admin'])) {
+        return '/super-admin';
+      } else if (this.hasRoles(['Admin'])) {
+        return '/admin';        
+      } else if (this.hasRoles(['Owner'])) {
+        return '/owner';
+      } else if (this.hasRoles(['Instructor'])) {
+        return '/instructor';
+      } else if (this.hasRoles(['Staff'])) {
+        return '/staff';
+      }
+      return '/default-dashboard'; // fallback
+    }
+
 }

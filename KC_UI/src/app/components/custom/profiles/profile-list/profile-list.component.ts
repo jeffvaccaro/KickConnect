@@ -59,7 +59,7 @@
         }
 
         editUser(userId: number){
-            this.router.navigate(['/app-edit-user', userId]);
+            this.router.navigate(['/app-edit-staff', userId]);
         }
 
         viewProfile(userId: number){

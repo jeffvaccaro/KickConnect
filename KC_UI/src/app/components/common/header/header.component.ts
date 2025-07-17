@@ -69,7 +69,7 @@ export class HeaderComponent implements OnInit {
         this.toggleService.toggle();
     }
     profile(){
-        this.router.navigate(['app-edit-user', this.accountId]);
+        this.router.navigate(['app-edit-staff', this.accountId]);
     }
 
     // toggleTheme() {

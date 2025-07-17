@@ -18,9 +18,9 @@ import { LocationListComponent } from './components/custom/locations/location-li
 import { AddNewLocationComponent } from './components/custom/locations/add-new-location/add-new-location.component';
 import { EditLocationComponent } from './components/custom/locations/edit-location/edit-location.component';
 import { AssignmentComponent } from './components/custom/locations/assignment/assignment.component';
-import { UserListComponent } from './components/custom/user/user-list/user-list.component';
-import { AddNewUserComponent } from './components/custom/user/add-new-user/add-new-user.component';
-import { EditUserComponent } from './components/custom/user/edit-user/edit-user.component';
+import { StaffListComponent } from './components/custom/staff/staff-list/staff-list.component';
+import { AddNewStaffComponent } from './components/custom/staff/add-new-staff/add-new-staff.component';
+import { EditStaffComponent } from './components/custom/staff/edit-staff/edit-staff.component';
 import { RoleListComponent } from './components/custom/roles/role-list/role-list.component';
 import { AddNewRoleComponent } from './components/custom/roles/add-new-role/add-new-role.component';
 import { EditRoleComponent } from './components/custom/roles/edit-role/edit-role.component';
@@ -39,7 +39,7 @@ import { EditSkillComponent } from './components/custom/skills/edit-skill/edit-s
 import { SkillListComponent } from './components/custom/skills/skill-list/skill-list.component';
 import { CreateHtmlTemplateComponent } from './components/html-generator/create-html-template/create-html-template.component';
 import { StepperComponent } from './components/html-generator/create-html-template/html-template-step/stepper/stepper.component';
-import { SkillsAutocompleteComponent } from './components/custom/user/skills-autocomplete/skills-autocomplete.component';
+import { SkillsAutocompleteComponent } from './components/custom/staff/skills-autocomplete/skills-autocomplete.component';
 import { AttendanceDisplayComponent } from './components/custom/attendance-display/attendance-display.component';
 
 const authRoutes: Routes = [
@@ -89,9 +89,9 @@ const mainRoutes: Routes = [
   { path: 'app-add-new-location', component: AddNewLocationComponent, canActivate: [AuthGuard] },
   { path: 'app-edit-location/:locationId', component: EditLocationComponent, canActivate: [AuthGuard] },
   { path: 'app-assignments/:locationId', component: AssignmentComponent, canActivate: [AuthGuard]},
-  { path: 'app-user-list', component: UserListComponent, canActivate: [AuthGuard] },
-  { path: 'app-add-new-user', component: AddNewUserComponent, canActivate: [AuthGuard] },
-  { path: 'app-edit-user/:userId', component: EditUserComponent, canActivate: [AuthGuard] },
+  { path: 'app-staff-list', component: StaffListComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-new-user', component: AddNewStaffComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-staff/:userId', component: EditStaffComponent, canActivate: [AuthGuard] },
   { path: 'app-role-list', component: RoleListComponent, canActivate: [AuthGuard] },
   { path: 'app-add-new-role', component: AddNewRoleComponent, canActivate: [AuthGuard] },
   { path: 'app-edit-role/:roleId', component: EditRoleComponent, canActivate: [AuthGuard] },
