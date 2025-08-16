@@ -10,6 +10,24 @@
 
         <!-- Font Family -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
+        <style>
+          .cdk-overlay-container {
+            z-index: 500 !important;
+            width: 600px;
+          }
+          .timepicker-overlay, [class*="timepicker-overlay"], [class^="timepicker-overlay"] {
+            z-index: 9999 !important;
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+          }
+        </style>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 

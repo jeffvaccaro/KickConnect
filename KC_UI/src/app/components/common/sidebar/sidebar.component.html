@@ -11,80 +11,57 @@
             <span>kickConnect</span>
         </a>
     </div>
-    <div class="burger-menu" (click)="toggle()" [ngClass]="{'active': isToggled}">
+    <!-- <div class="burger-menu" (click)="toggle()" [ngClass]="{'active': isToggled}">
         <span class="top-bar"></span>
         <span class="middle-bar"></span>
         <span class="bottom-bar"></span>
-    </div>
+    </div> -->
     <ng-scrollbar visibility="hover" style="height: 100vh;">
         <div class="sidebar-inner">
             <div class="sidebar-menu">
                 <mat-accordion>
                     <span class="sub-title gray-color">MAIN</span>
-
-                    <a *ngIf="getDashboardRoute()" [routerLink]="getDashboardRoute()" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                        <i class="flaticon-to-do-list"></i>
-                        <span class="title">Home</span>
-                    </a>
-
-                    <span class="sub-title gray-color">OPERATIONS</span>
-
-                    <a *ngIf="hasRoles(['Super Admin'])" routerLink="/app-account-list" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                        <i class="flaticon-to-do-list"></i>
-                        <span class="title">Accounts</span>
-                    </a>
-
-                    <a *ngIf="hasRoles(['Owner', 'Admin'])" routerLink="/app-role-list" routerLinkActive="active" class="sidebar-menu-link" [routerLinkActiveOptions]="{exact: true}">
-                        Roles
-                    </a> 
-
-                    <a *ngIf="hasRoles(['Owner', 'Admin', 'Staff'])" routerLink="/app-location-list" routerLinkActive="active" class="sidebar-menu-link" [routerLinkActiveOptions]="{exact: true}">
-                        Locations
-                    </a>   
-
-                    <a *ngIf="hasRoles(['Owner', 'Admin'])" routerLink="/app-event-list" routerLinkActive="active" class="sidebar-menu-link" [routerLinkActiveOptions]="{exact: true}">
-                        Events
-                    </a>  
-
-                    <a *ngIf="hasRoles(['Owner', 'Admin'])" routerLink="/app-scheduler" routerLinkActive="active" class="sidebar-menu-link" [routerLinkActiveOptions]="{exact: true}">
-                        Scheduler
-                    </a>                     
-                    
-                    <a *ngIf="hasRoles(['Super Admin', 'Owner', 'Admin'])" routerLink="/app-staff-list" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">                                
-                       <i class="flaticon-to-do-list"></i>
-                        <span class="title">Staff</span>
-                    </a>
-
-                    <a *ngIf="hasRoles(['Owner', 'Admin'])" routerLink="/app-skill-list" routerLinkActive="active" class="sidebar-menu-link" [routerLinkActiveOptions]="{exact: true}">
-                        Skills
-                    </a>   
-                    
-                    <a *ngIf="hasRoles(['Owner', 'Admin'])" routerLink="/app-profile-list" routerLinkActive="active" class="sidebar-menu-link" [routerLinkActiveOptions]="{exact: true}">
-                        Profiles
-                    </a>     
-                    
-                    <a *ngIf="hasRoles(['Owner', 'Admin'])" routerLink="/app-create-html-template" routerLinkActive="active" class="sidebar-menu-link" [routerLinkActiveOptions]="{exact: true}">
-                        HTML Generator
-                    </a>     
-
-                    <a *ngIf="hasRoles(['Owner', 'Admin'])" routerLink="/app-class-login" routerLinkActive="active" class="sidebar-menu-link" [routerLinkActiveOptions]="{exact: true}">
-                        QR Code Login
-                    </a>       
-                    
-                    <span class="sub-title gray-color">MEMBERSHIP</span>  
-                    
-                    <a *ngIf="hasRoles(['Owner', 'Admin'])" routerLink="/app-class-login" routerLinkActive="active" class="sidebar-menu-link" [routerLinkActiveOptions]="{exact: true}">
-                        Member List
-                    </a>                       
-
-                    <a *ngIf="hasRoles(['Owner', 'Admin'])" routerLink="/app-class-login" routerLinkActive="active" class="sidebar-menu-link" [routerLinkActiveOptions]="{exact: true}">
-                        Member Profile                    </a>                       
-
-                    <!-- <mat-expansion-panel id="expansion-panel-support" (opened)="panelOpenState = true" (closed)="panelOpenState = true" [expanded]="true">
+                    <mat-expansion-panel id="expansion-panel-dashboard" (opened)="panelOpenState = true" (closed)="panelOpenState = true">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
-                                <i class="flaticon-layer"></i>
-                                <span class="title">Administration</span>
+                                <i class="ri-dashboard-3-line"></i>
+                                <span class="title">Dashboard</span>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <ul class="sidebar-sub-menu-Dashboard">
+                            <li class="sidemenu-item" *ngIf="hasRoles(['Super Admin'])">
+                                <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Super Admin
+                                </a>
+                            </li>
+                            <li class="sidemenu-item"  *ngIf="hasRoles(['Owner'])">
+                                <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Owner
+                                </a>
+                            </li>
+                            <li class="sidemenu-item" *ngIf="hasRoles(['Admin'])">
+                                <a routerLink="/analytics" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Admin
+                                </a>
+                            </li>
+                            <li class="sidemenu-item" *ngIf="hasRoles(['Instructor'])">
+                                <a routerLink="/project-management" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Instructor
+                                </a>       
+                            </li>
+                            <li class="sidemenu-item" *ngIf="hasRoles(['Staff'])">
+                                <a routerLink="/project-management" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                    Staff
+                                </a>
+                            </li>
+                        </ul>
+                    </mat-expansion-panel>
+                    <span class="sub-title gray-color">Support</span>
+                    <mat-expansion-panel id="expansion-panel-support" (opened)="panelOpenState = true" (closed)="panelOpenState = true" [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <i class="ri-user-settings-line"></i>
+                                <span class="title">Staff Admin</span>
                                 <span class="badge">{{ availableOptions }}</span>
                             </mat-panel-title>
                         </mat-expansion-panel-header>  
@@ -94,9 +71,9 @@
                                     Accounts
                                 </a>
                             </li>
-                            <li class="sidemenu-item" *ngIf="hasRoles(['Owner', 'Admin'])" #option>
-                                <a routerLink="/app-role-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
-                                    Roles
+                            <li class="sidemenu-item" *ngIf="hasRoles(['Super Admin', 'Owner', 'Admin'])" #option>
+                                <a routerLink="/app-account-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">                                
+                                    Accounts
                                 </a>    
                             </li>
                             <li class="sidemenu-item"  *ngIf="hasRoles(['Owner', 'Admin', 'Staff'])" #option>
@@ -114,7 +91,7 @@
                                     Scheduler
                                 </a>                                    
                             </li>
-
+                            
                             <li class="sidemenu-item" *ngIf="hasRoles(['Super Admin', 'Owner', 'Admin'])" #option>
                                 <a routerLink="/app-staff-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">                                
                                     Staff
@@ -141,11 +118,33 @@
                                 </a>                                    
                             </li>                                                        
                         </ul>                                              
-                    </mat-expansion-panel> -->
-                    <!-- <a routerLink="/logout" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                        <i class="flaticon-tools"></i>
-                        <span class="title">Logout</span>
-                    </a> -->
+                    </mat-expansion-panel>
+                    <mat-expansion-panel id="expansion-panel-support" (opened)="panelOpenState = true" (closed)="panelOpenState = true" [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <i class="ri-user-community-line"></i>
+                                <span class="title">Member Admin</span>
+                                <span class="badge">{{ availableOptions }}</span>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>  
+                        <ul id="sidebar-sub-menu-Administration" class="sidebar-sub-menu">
+                            <li class="sidemenu-item" #option>
+                                <a routerLink="/app-member-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">                                
+                                    Members
+                                </a>
+                            </li>
+                            <li class="sidemenu-item" #option>
+                                <a routerLink="/app-plan-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">                                
+                                    Plans
+                                </a>
+                            </li>       
+                            <li class="sidemenu-item" #option>
+                                <a routerLink="/app-document-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">                                
+                                    Documents
+                                </a>
+                            </li>                     
+                        </ul>                                              
+                    </mat-expansion-panel>
                 </mat-accordion>
             </div>
         </div>

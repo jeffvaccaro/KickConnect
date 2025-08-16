@@ -1843,6 +1843,7 @@ quill-editor {
     overflow-x: hidden; /* Prevent horizontal scrolling */
     position: relative; /* Ensure position relative for sticky positioning */
     max-width: 100%;    /* Ensure it doesn't exceed the viewport width */
+    z-index: 950;
   
     .title {
       background: #F7F8F7;
@@ -1949,6 +1950,16 @@ quill-editor {
         &.warn {
           background-color: var(--tertiaryColor);
           color: var(--blackColor);
+          margin-right: 15px;
+  
+          &:hover {
+            color: var(--whiteColor);
+          }
+        }
+
+        &.submit {
+          background-color: var(--mainColor);
+          color: var(--whiteColor);
           margin-right: 15px;
   
           &:hover {
@@ -5270,9 +5281,7 @@ quill-editor {
 
     /* Styling for the add-edit-dialog.component */
     
-    .timepicker-overlay {
-        z-index: 1050 !important; 
-    }
+
     .disabled {
         pointer-events: none;
         opacity: 0.5; /* Optional: makes the div look 'disabled' */
@@ -5344,9 +5353,6 @@ quill-editor {
         text-overflow: ellipsis;
         overflow: hidden;
       }
-      
-          
-            
-      
-      
+
+
 }

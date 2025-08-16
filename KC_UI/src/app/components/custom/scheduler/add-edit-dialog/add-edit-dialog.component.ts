@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -27,7 +27,7 @@ import { catchError, forkJoin, Observable, of } from 'rxjs';
 import { isReactive } from '@angular/core/primitives/signals';
 import { CustomFormValidationService } from '../../../../services/custom-form-validation.service';
 
-@Component({
+@Component({   
     selector: 'app-add-edit-dialog',
     templateUrl: './add-edit-dialog.component.html',
     imports: [
@@ -49,6 +49,7 @@ import { CustomFormValidationService } from '../../../../services/custom-form-va
         { provide: DateAdapter, useClass: NativeDateAdapter },
         { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS }
     ]
+
 })
 export class AddEditDialogComponent implements OnInit {
   eventForm: FormGroup;
@@ -259,10 +260,6 @@ export class AddEditDialogComponent implements OnInit {
       }, 100);
     } else {
       this.validateFormFields();
-      // console.log('Form is invalid', this.eventForm);
-      // Object.keys(this.eventForm.controls).forEach(field => {
-      //   console.log(`${field} errors:`, this.eventForm.get(field)?.errors);
-      // });
     }
   }
   
@@ -319,8 +316,6 @@ export class AddEditDialogComponent implements OnInit {
     this.eventForm.get('reservationCount')?.setValue(event.reservationCount);
     
     console.log('populateformForExistingEvent', event);
-
-
   }
   
   resetFormForNewEvent(): void {

@@ -188,7 +188,8 @@ export class SchedulerComponent implements AfterViewInit {
       width: '600px',
       enterAnimationDuration,
       exitAnimationDuration,
-      data: this.createEventData(isNew, event)
+      data: this.createEventData(isNew, event),
+      panelClass: 'custom-dialog-z'
     });
   
     dialogRef.afterClosed().subscribe(result => {

@@ -4,10 +4,11 @@
 >
     <div class="d-md-flex align-items-center justify-content-space-between">
         <div class="header-left-side d-flex align-items-center">
-            <div class="burger-menu" (click)="toggle()" [ngClass]="{'active': isToggled}">
-                <span class="top-bar"></span>
-                <span class="middle-bar"></span>
-                <span class="bottom-bar"></span>
+            <div (click)="toggle()" [ngClass]="{'active': isToggled}">
+              <i 
+                [ngClass]="isToggled ? 'ri-menu-unfold-line' : 'ri-menu-fold-line'"
+                style="font-size: 2rem; cursor: pointer;">
+            </i>
             </div>
         </div>
         <ul class="header-right-side d-flex align-items-center mt-0 mb-0">

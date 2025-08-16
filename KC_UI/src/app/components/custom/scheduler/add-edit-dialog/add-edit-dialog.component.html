@@ -132,16 +132,12 @@
             </mat-form-field>
           </div>
         </div>
-
-
       </div>
        
       <div class="row">
         <div class="col-lg-8 col-md-8">
           <div class="kickConnect-form-group mb-12" style="padding-top:25px; margin:25px;">
-            <!-- <mat-checkbox id="kc-select-isCostToAttend" formControlName="isCostToAttend" (change)="onCostToAttendChange($event)">Set Cost to Attend?</mat-checkbox> -->
             <mat-slide-toggle id="kc-slide-isCostToAttend" formControlName="isCostToAttend" (change)="onCostToAttendChange($event)">Set Cost to Attend?</mat-slide-toggle>
-         
           </div>
         </div>
         
@@ -164,9 +160,9 @@
 
      
       <div class="sticky-buttons">
-        <button type="button" id="kc-btn-delete-event" class="warn" (click)="deleteEvent($event)"><i class="ri-delete-bin-fill"></i>Delete Event</button>
+        <button type="button" id="kc-btn-delete-event" class="warn" (click)="deleteEvent($event)"><i class="ri-delete-bin-fill"></i>Delete</button>
         <button type="button" id="kc-btn-cancel" class="gray" (click)="close()"><i class="ri-close-fill"></i> Cancel</button>
-        <button type="submit" id="kc-btn-submit-event" ><i class="ri-add-fill"></i> Save Event</button>
+        <button type="submit" id="kc-btn-submit-event" class="submit"><i class="ri-add-fill"></i> Save</button>
       </div>
 
 
