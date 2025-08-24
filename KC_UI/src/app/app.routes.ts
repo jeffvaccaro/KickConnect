@@ -41,6 +41,10 @@ import { CreateHtmlTemplateComponent } from './components/html-generator/create-
 import { StepperComponent } from './components/html-generator/create-html-template/html-template-step/stepper/stepper.component';
 import { SkillsAutocompleteComponent } from './components/modules/staff/skills-autocomplete/skills-autocomplete.component';
 import { AttendanceDisplayComponent } from './components/modules/attendance-display/attendance-display.component';
+import { MemberAddComponent } from './components/modules/membership/member-add/member-add.component';
+import { MemberEditComponent } from './components/modules/membership/member-edit/member-edit.component';
+import { MemberListComponent } from './components/modules/membership/member-list/member-list.component';
+
 
 const authRoutes: Routes = [
   { path: 'register', component: RegisterComponent },
