@@ -15,9 +15,6 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../../services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Role } from '../../../../interfaces/role';
-
-
-
 @Component({
     selector: 'app-add-new-staff',
     imports: [
