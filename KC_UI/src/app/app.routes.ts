@@ -44,6 +44,9 @@ import { AttendanceDisplayComponent } from './components/modules/attendance-disp
 import { MemberAddComponent } from './components/modules/membership/member-add/member-add.component';
 import { MemberEditComponent } from './components/modules/membership/member-edit/member-edit.component';
 import { MemberListComponent } from './components/modules/membership/member-list/member-list.component';
+import { MembershipPlanAddComponent } from './components/modules/membership/membership-plan-add/membership-plan-add.component';
+import { MembershipPlanEditComponent } from './components/modules/membership/membership-plan-edit/membership-plan-edit.component';
+import { MembershipPlanListComponent } from './components/modules/membership/membership-plan-list/membership-plan-list.component';
 
 
 const authRoutes: Routes = [
@@ -89,37 +92,53 @@ const mainRoutes: Routes = [
     path: 'not-authorized',
     component: AuthenticationComponent
   },
+
   { path: 'app-location-list', component: LocationListComponent, canActivate: [AuthGuard] },
   { path: 'app-add-new-location', component: AddNewLocationComponent, canActivate: [AuthGuard] },
   { path: 'app-edit-location/:locationId', component: EditLocationComponent, canActivate: [AuthGuard] },
+
   { path: 'app-assignments/:locationId', component: AssignmentComponent, canActivate: [AuthGuard]},
+  
   { path: 'app-staff-list', component: StaffListComponent, canActivate: [AuthGuard] },
-  { path: 'app-add-new-user', component: AddNewStaffComponent, canActivate: [AuthGuard] },
   { path: 'app-edit-staff/:userId', component: EditStaffComponent, canActivate: [AuthGuard] },
-  { path: 'app-role-list', component: RoleListComponent, canActivate: [AuthGuard] },
-  { path: 'app-add-new-role', component: AddNewRoleComponent, canActivate: [AuthGuard] },
-  { path: 'app-edit-role/:roleId', component: EditRoleComponent, canActivate: [AuthGuard] },
-  { path: 'app-event-list', component: EventListComponent, canActivate: [AuthGuard] },
-  { path: 'app-add-new-event', component: AddNewEventComponent, canActivate: [AuthGuard] },
-  { path: 'app-edit-event/:eventId', component: EditEventComponent, canActivate: [AuthGuard] },
-  { path: 'app-scheduler', component: SchedulerComponent, canActivate: [AuthGuard] },
-  { path: 'app-add-edit-dialog', component: AddEditDialogComponent, canActivate: [AuthGuard] },
-  { path: 'app-profile-list', component: ProfileListComponent, canActivate: [AuthGuard] },
-  { path: 'app-add-new-profile', component: AddNewProfileComponent, canActivate: [AuthGuard] },
-  { path: 'app-edit-profile/:userId', component: EditProfileComponent, canActivate: [AuthGuard] },
+
   { path: 'app-add-new-account', component: AddNewAccountComponent, canActivate: [AuthGuard] },
   { path: 'app-account-list', component: AccountListComponent, canActivate: [AuthGuard] },
 
+  { path: 'app-add-new-user', component: AddNewStaffComponent, canActivate: [AuthGuard] },
+  
+  { path: 'app-role-list', component: RoleListComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-new-role', component: AddNewRoleComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-role/:roleId', component: EditRoleComponent, canActivate: [AuthGuard] },
+  
+  { path: 'app-event-list', component: EventListComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-new-event', component: AddNewEventComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-event/:eventId', component: EditEventComponent, canActivate: [AuthGuard] },
+  
+  { path: 'app-scheduler', component: SchedulerComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-edit-dialog', component: AddEditDialogComponent, canActivate: [AuthGuard] },
+  
+  { path: 'app-profile-list', component: ProfileListComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-new-profile', component: AddNewProfileComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-profile/:userId', component: EditProfileComponent, canActivate: [AuthGuard] },
+  
   { path: 'app-add-new-skill', component: AddNewSkillComponent, canActivate: [AuthGuard]},
   { path: 'app-edit-skill/:skillId', component: EditSkillComponent, canActivate: [AuthGuard]},
   { path: 'app-skill-list', component: SkillListComponent, canActivate: [AuthGuard]},
-  
   {path: 'app-skills-autocomplete', component: SkillsAutocompleteComponent},
 
   { path: 'app-create-html-template', component: CreateHtmlTemplateComponent },
   { path: 'app-stepper', component:StepperComponent},
   { path: 'app-class-login', component:AttendanceDisplayComponent},
-  
+
+  { path: 'app-add-member', component: MemberAddComponent, canActivate: [AuthGuard]},
+  { path: 'app-edit-member', component: MemberEditComponent, canActivate: [AuthGuard]},
+  { path: 'app-member-list', component: MemberListComponent, canActivate: [AuthGuard]},
+
+  { path: 'app-membership-plan-add', component: MembershipPlanAddComponent, canActivate: [AuthGuard] },
+  { path: 'app-membership-plan-edit/:planId', component: MembershipPlanEditComponent, canActivate: [AuthGuard] },
+  { path: 'app-membership-plan-list', component: MembershipPlanListComponent, canActivate: [AuthGuard] },
+
   { path: 'error', component: InternalErrorComponent },
   { path: 'error-500', component: InternalErrorComponent },
   { path: '**', component: NotFoundComponent }
