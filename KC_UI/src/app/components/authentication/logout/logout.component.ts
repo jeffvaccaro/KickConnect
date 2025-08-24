@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
+import { UiThemeSettingsService } from '../../ui-theme-settings/ui-theme-settings.service';
 import { Router, RouterLink } from '@angular/router'; // Add Router to the imports
 import { MatButtonModule } from '@angular/material/button';
 
@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class LogoutComponent {
   constructor(
-    public themeService: CustomizerSettingsService,
+    public themeService: UiThemeSettingsService,
     private router: Router
   ) {}
 
@@ -32,3 +32,4 @@ export class LogoutComponent {
     this.router.navigate(['/login']); // Redirect to login page
   }
 }
+

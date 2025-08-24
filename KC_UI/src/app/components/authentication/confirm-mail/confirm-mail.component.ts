@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
+import { UiThemeSettingsService } from '../../ui-theme-settings/ui-theme-settings.service';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class ConfirmMailComponent {
 
     constructor(
-        public themeService: CustomizerSettingsService
+        public themeService: UiThemeSettingsService
     ) {}
 
     toggleTheme() {

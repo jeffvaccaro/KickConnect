@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { UserService } from '../../../services/user.service';
 import { catchError, of, tap } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
+import { UiThemeSettingsService } from '../../ui-theme-settings/ui-theme-settings.service';
 
 
 @Component({
@@ -26,7 +26,7 @@ export class ResetPasswordComponent implements OnInit {
     accountId: string;
     accountCode: string;
 
-    constructor(public themeService: CustomizerSettingsService, private fb: FormBuilder, private route: ActivatedRoute, private userService: UserService, private router: Router) {}
+    constructor(public themeService: UiThemeSettingsService, private fb: FormBuilder, private route: ActivatedRoute, private userService: UserService, private router: Router) {}
 
     ngOnInit() {
         this.route.queryParams.subscribe(params => {
@@ -62,3 +62,4 @@ export class ResetPasswordComponent implements OnInit {
         }
     }
 }
+

@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { RouterOutlet, Router, Event, NavigationEnd } from '@angular/router';
-import { ToggleService } from './components/common/header/toggle.service';
-import { CustomizerSettingsService } from './components/customizer-settings/customizer-settings.service';
-import { SidebarComponent } from './components/common/sidebar/sidebar.component';
-import { HeaderComponent } from './components/common/header/header.component';
-import { FooterComponent } from './components/common/footer/footer.component';
-import { CustomizerSettingsComponent } from './components/customizer-settings/customizer-settings.component';
+import { ToggleService } from './components/ui-modules/header/toggle.service';
+import { UiThemeSettingsService } from './components/ui-theme-settings/ui-theme-settings.service';
+import { SidebarComponent } from './components/ui-modules/sidebar/sidebar.component';
+import { HeaderComponent } from './components/ui-modules/header/header.component';
+import { FooterComponent } from './components/ui-modules/footer/footer.component';
+import { UiThemeSettingsComponent } from './components/ui-theme-settings/ui-theme-settings.component';
 import { AuthService } from './services/authService';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, CustomizerSettingsComponent],
+    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, UiThemeSettingsComponent],
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
     public router: Router,
     private toggleService: ToggleService,
     private viewportScroller: ViewportScroller,
-    public themeService: CustomizerSettingsService,
+    public themeService: UiThemeSettingsService,
     private authService: AuthService
   ) {
     this.router.events.subscribe((event: Event) => {

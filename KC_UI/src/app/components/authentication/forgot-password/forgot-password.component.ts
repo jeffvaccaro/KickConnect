@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
+import { UiThemeSettingsService } from '../../ui-theme-settings/ui-theme-settings.service';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 export class ForgotPasswordComponent {
 
     constructor(
-        public themeService: CustomizerSettingsService
+        public themeService: UiThemeSettingsService
     ) {}
 
     toggleTheme() {

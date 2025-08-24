@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
+import { UiThemeSettingsService } from '../../ui-theme-settings/ui-theme-settings.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -36,7 +36,7 @@ export class LoginComponent {
     hide = true;
 
     constructor(
-        public themeService: CustomizerSettingsService,
+        public themeService: UiThemeSettingsService,
         private fb: FormBuilder, 
         private loginService: LoginService, 
         private authService: AuthService,  
@@ -103,3 +103,4 @@ export class LoginComponent {
       return JSON.parse(jsonPayload);
     }
   }
+

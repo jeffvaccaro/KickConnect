@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AccountListComponent } from '../../custom/accounts/account-list/account-list.component';
+import { AccountListComponent } from '../../modules/accounts/account-list/account-list.component';
 
 @Component({
     selector: 'app-super-admin',

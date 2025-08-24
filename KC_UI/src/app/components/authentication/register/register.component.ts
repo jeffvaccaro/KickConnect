@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
+import { UiThemeSettingsService } from '../../ui-theme-settings/ui-theme-settings.service';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,7 +26,7 @@ export class RegisterComponent {
     hide = true;
 
     constructor(
-        public themeService: CustomizerSettingsService, private fb: FormBuilder, private userService: UserService, private roleService: RoleService, 
+        public themeService: UiThemeSettingsService, private fb: FormBuilder, private userService: UserService, private roleService: RoleService, 
         private commonService: CommonService
     ) {}
 
