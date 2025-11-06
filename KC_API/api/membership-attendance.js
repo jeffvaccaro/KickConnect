@@ -12,6 +12,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // GET Routes
 router.get('/get-all-attendance', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Membership'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
@@ -30,6 +31,7 @@ router.get('/get-all-attendance', authenticateToken, async (req, res) => {
 });
 
 router.get('/get-attendance-by-id', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Membership'] */
     let connection;
     try {
         const { memberId } = req.query;
@@ -51,6 +53,7 @@ router.get('/get-attendance-by-id', authenticateToken, async (req, res) => {
 
 // POST Route
 router.post('/add-attendance', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Membership'] */
     const { memberId,locationId, eventId, attendanceDate } = req.body;
     let connection;
     try {

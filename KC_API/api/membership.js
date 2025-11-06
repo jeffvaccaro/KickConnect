@@ -12,6 +12,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // GET Routes
 router.get('/get-all-members', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Membership'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
@@ -30,6 +31,7 @@ router.get('/get-all-members', authenticateToken, async (req, res) => {
 });
 
 router.get('/get-member-by-id', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Membership'] */
     let connection;
     try {
         const { memberId } = req.query;
@@ -50,6 +52,7 @@ router.get('/get-member-by-id', authenticateToken, async (req, res) => {
 
 // PUT Route
 router.put('/update-member', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Membership'] */
     const { memberId } = req.query;
     const { memberPlanId, homeLocationId, firstName, lastName, phone, email, birthday, contactName, contactPhone, signupDate, renewalDate, isActive } = req.body;
     let connection;
@@ -87,6 +90,7 @@ router.put('/update-member', authenticateToken, async (req, res) => {
 
 // POST Route
 router.post('/add-member', async (req, res) => {
+    /* #swagger.tags = ['Membership'] */
     const { accountId, memberPlanId, homeLocationId, firstName, lastName, phone, email, birthday, contactName, contactPhone, signupDate, renewalDate, isActive } = req.body;
     let connection;
     try {

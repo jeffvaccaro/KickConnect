@@ -12,6 +12,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // GET Route
 router.get('/get-address-info-by-zip/:zip', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Common'] */
     const { zip } = req.params;
     let connection;
     try {

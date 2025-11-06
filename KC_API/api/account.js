@@ -12,6 +12,7 @@ dotenv.config({ path: path.resolve(__dirname, `../.env.${process.env.NODE_ENV ||
 
 // GET Route
 router.get('/get-accounts', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Account'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
@@ -32,6 +33,7 @@ router.get('/get-accounts', authenticateToken, async (req, res) => {
 
 // POST Route
 router.post('/add-account', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Account'] */
     const { accountName, accountPhone, accountEmail, accountAddress, accountCity, accountState, accountZip, isSuperAdmin, phone2, password, role = [] } = req.body;
     const isSuperAdminValue = isSuperAdmin || false;
 

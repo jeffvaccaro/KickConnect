@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../../services/common.service';
@@ -22,7 +23,8 @@ import { IReservationCount } from '../../../../interfaces/reservation-count';
     selector: 'app-edit-event',
     imports: [
         CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
+        MatSlideToggleModule
     ],
     templateUrl: './edit-event.component.html',
     styleUrls: ['./edit-event.component.scss']

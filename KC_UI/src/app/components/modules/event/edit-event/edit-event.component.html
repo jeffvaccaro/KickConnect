@@ -37,12 +37,12 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-2 col-md-2">
-            <div class="kickConnect-form-group" style="padding-top:15px;">
-              <mat-checkbox formControlName="isReservation" (change)="onReservationChange($event)">Set Reservation Count?</mat-checkbox>
+          <div class="col-lg-4 col-md-4">
+            <div class="kickConnect-form-group">
+              <mat-slide-toggle formControlName="isReservation" (change)="onReservationChange($event)">Set Reservation Count?</mat-slide-toggle>
             </div>
           </div>
-          <div class="col-lg-2 col-md-2">
+          <div class="col-lg-4 col-md-4">
             <div class="kickConnect-form-group" *ngIf="setReservation">
               <label class="d-block mb-12 fw-semibold gray-color">Reservation Count<span>*</span></label>
               <mat-form-field appearance="fill">
@@ -57,13 +57,13 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-2 col-md-2">
-            <div class="kickConnect-form-group" style="padding-top:15px;">
-              <mat-checkbox formControlName="isCostToAttend" (change)="onCostToAttendChange($event)">Set Cost to Attend?</mat-checkbox>
+          <div class="col-lg-4 col-md-4">
+            <div class="kickConnect-form-group">
+              <mat-slide-toggle formControlName="isCostToAttend" (change)="onCostToAttendChange($event)">Set Cost Attend?</mat-slide-toggle>
             </div>
           </div>
           
-          <div class="col-lg-2 col-md-2">
+          <div class="col-lg-4 col-md-4">
             <div class="kickConnect-form-group" *ngIf="setCostToAttend">
               <label class="d-block mb-12 fw-semibold gray-color">Cost to Attend<span>*</span></label>
               <mat-form-field appearance="fill">
@@ -77,11 +77,13 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-4">
-            <button  mat-flat-button  id="kc-btn-delete-event" class="kickConnect fw-semibold warn" (click)="deleteEvent($event)"><i class="ri-delete-bin-fill"></i>Delete Event</button>
-            <button  mat-flat-button  (click)="cancel($event)" class="kickConnect fw-semibold gray"><i class="ri-close-fill"></i>Cancel</button>
-            <button  mat-flat-button  type="submit" [disabled]="form.invalid" class="kickConnect fw-semibold black"><i class="ri-add-fill"></i>Update Event</button> &nbsp;
-        </div>
+
+          <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top:15px;">
+              <button  mat-flat-button  id="kc-btn-delete-event" class="kickConnect fw-semibold warn" (click)="deleteEvent($event)"><i class="ri-delete-bin-fill"></i>Delete Event</button>
+              <button  mat-flat-button  (click)="cancel($event)" class="kickConnect fw-semibold gray"><i class="ri-close-fill"></i>Cancel</button>
+              <button  mat-flat-button  type="submit" [disabled]="form.invalid" class="kickConnect fw-semibold black"><i class="ri-add-fill"></i>Update Event</button> &nbsp;
+          </div>
+
       </form>
     </mat-card-content>
   </mat-card>

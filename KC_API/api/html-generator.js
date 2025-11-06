@@ -10,6 +10,7 @@ const authenticateToken = require('./middleware/authenticateToken.cjs');
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 router.post('/upload-bgImage', authenticateToken, upload.single('photo'), async (req, res) => {
+  /* #swagger.tags = ['HTML Generator'] */
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });

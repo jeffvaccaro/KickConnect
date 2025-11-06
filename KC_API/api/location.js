@@ -12,6 +12,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // GET Routes
 router.get('/get-locations', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Location'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
@@ -31,6 +32,7 @@ router.get('/get-locations', authenticateToken, async (req, res) => {
 });
 
 router.get('/get-locations-by-id/:locationId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Location'] */
     const { locationId } = req.params;
     let connection;
     try {
@@ -51,6 +53,7 @@ router.get('/get-locations-by-id/:locationId', authenticateToken, async (req, re
 });
 
 router.get('/get-locations-by-acct-id/:acctId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Location'] */
     const { acctId } = req.params;
     let connection;
     try {
@@ -71,6 +74,7 @@ router.get('/get-locations-by-acct-id/:acctId', authenticateToken, async (req, r
 });
 
 router.get('/get-active-locations', authenticateToken, async (req, res, next) => {
+    /* #swagger.tags = ['Location'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
@@ -89,6 +93,7 @@ router.get('/get-active-locations', authenticateToken, async (req, res, next) =>
 });
 
 router.get('/get-inactive-locations', authenticateToken, async (req, res, next) => {
+    /* #swagger.tags = ['Location'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000)); // 10 seconds timeout
@@ -108,6 +113,7 @@ router.get('/get-inactive-locations', authenticateToken, async (req, res, next) 
 
 // PUT Route
 router.put('/update-location/:locationId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Location'] */
     const { locationId } = req.params;
 
     if (!req.body.locationData) {
@@ -151,6 +157,7 @@ router.put('/update-location/:locationId', authenticateToken, async (req, res) =
 
 // POST Route
 router.post('/add-location', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Location'] */
     let { accountId, locationName, locationAddress, locationCity, locationState, locationZip, locationPhone, locationEmail } = req.body;
     locationName = locationName.trim();
     locationAddress = locationAddress.trim();

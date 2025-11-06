@@ -9,11 +9,13 @@ const { connectToDatabase } = require('./db');
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 router.get('/test-cors', (req, res) => {
+  /* #swagger.tags = ['Login'] */
   res.json({ message: 'CORS is working!' });
 });
 
 
 router.post('/user-login', async (req, res) => {
+  /* #swagger.tags = ['Login'] */
   console.log('JWT_SECRET', process.env.JWT_SECRET);
   console.log('JWT_REFRESH_SECRET', process.env.JWT_REFRESH_SECRET);
   
@@ -65,6 +67,7 @@ router.post('/user-login', async (req, res) => {
 
 
 router.post('/refresh-token', async (req, res) => {
+  /* #swagger.tags = ['Login'] */
   const { refreshToken } = req.body;
   if (!refreshToken) {
     return res.status(401).send('Refresh token required');
@@ -84,6 +87,7 @@ router.post('/refresh-token', async (req, res) => {
 
 // New endpoint to get Bearer token for API
 router.post('/get-token', async (req, res) => {
+  /* #swagger.tags = ['Login'] */
   const { email, password } = req.body;
   let connection;
 

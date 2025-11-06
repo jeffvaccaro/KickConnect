@@ -26,6 +26,7 @@ const handleError = (res, error, message) => {
 
 // GET Routes
 router.get('/get-event-list/:accountId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Event'] */
     let connection;
     try {
         connection = await connectWithTimeout();
@@ -41,6 +42,7 @@ router.get('/get-event-list/:accountId', authenticateToken, async (req, res) => 
 });
 
 router.get('/get-active-event-list/:accountId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Event'] */
     let connection;
     try {
         connection = await connectWithTimeout();
@@ -55,6 +57,7 @@ router.get('/get-active-event-list/:accountId', authenticateToken, async (req, r
 });
 
 router.get('/get-event-by-id/:accountId/:eventId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Event'] */
     let connection;
     try {
         connection = await connectWithTimeout();
@@ -73,6 +76,7 @@ router.get('/get-event-by-id/:accountId/:eventId', authenticateToken, async (req
 
 // PUT Route
 router.put('/update-event/:eventId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Event'] */
     let connection;
     try {
         connection = await connectWithTimeout();
@@ -114,6 +118,7 @@ router.put('/update-event/:eventId', authenticateToken, async (req, res) => {
 
 // POST Route
 router.post('/add-event/', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Event'] */
     let connection;
     try {
         connection = await connectWithTimeout();
@@ -148,6 +153,7 @@ router.post('/add-event/', authenticateToken, async (req, res) => {
 
 // DELETE Route
 router.delete('/deactivate-event/:accountId/:eventId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Event'] */
     const { accountId, eventId } = req.params;
     let connection;
     try {

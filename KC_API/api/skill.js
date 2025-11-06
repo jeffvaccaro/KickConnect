@@ -12,6 +12,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // GET Routes
 router.get('/get-all-skills', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Skill'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
@@ -30,6 +31,7 @@ router.get('/get-all-skills', authenticateToken, async (req, res) => {
 });
 
 router.get('/get-skill-by-id', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Skill'] */
     let connection;
     try {
         const { skillId } = req.query;
@@ -50,6 +52,7 @@ router.get('/get-skill-by-id', authenticateToken, async (req, res) => {
 
 // PUT Route
 router.put('/update-skill', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Skill'] */
     const { skillId } = req.query;
     const { skillName, skillDescription } = req.body;
     let connection;
@@ -76,6 +79,7 @@ router.put('/update-skill', authenticateToken, async (req, res) => {
 
 // POST Route
 router.post('/add-skill', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Skill'] */
     const { skillName, skillDescription } = req.body;
     let connection;
     try {
@@ -100,6 +104,7 @@ router.post('/add-skill', authenticateToken, async (req, res) => {
 
 // DELETE Route
 router.delete('/delete-skill/:skillId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Skill'] */
     const { skillId } = req.params;
     let connection;
     try {

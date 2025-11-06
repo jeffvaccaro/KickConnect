@@ -91,7 +91,8 @@ const deleteScheduleAllLocations = async (connection, scheduleMainId) => {
 
 // GET Routes
 router.get('/get-durations', authenticateToken, async (req, res) => {
-  let connection;
+    /* #swagger.tags = ['Schedule'] */
+    let connection;
   try {
       connection = await connectWithTimeout();
       const results = await executeQuery(connection, 'SELECT durationValue, durationText FROM common.duration', []);
@@ -104,7 +105,8 @@ router.get('/get-durations', authenticateToken, async (req, res) => {
 });
 
 router.get('/get-reservationCounts', authenticateToken, async (req, res) => {
-  let connection;
+    /* #swagger.tags = ['Schedule'] */
+    let connection;
   try {
       connection = await connectWithTimeout();
       const results = await executeQuery(connection, 'SELECT reservationCountId, reservationCountValue FROM common.reservationcounts', []);
@@ -117,7 +119,8 @@ router.get('/get-reservationCounts', authenticateToken, async (req, res) => {
 });
 
 router.get('/get-main-schedule', authenticateToken, async (req, res) => {
-  let connection;
+    /* #swagger.tags = ['Schedule'] */
+    let connection;
   try {
       connection = await connectWithTimeout();
 
@@ -170,7 +173,8 @@ router.get('/get-main-schedule', authenticateToken, async (req, res) => {
   }
 });
 
-router.get('/get-location-assignment-schedule/:locationId', authenticateToken, async (req, res) => {
+    router.get('/get-location-assignment-schedule/:locationId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Schedule'] */
     let connection;
     try {
         connection = await connectWithTimeout();  
@@ -230,6 +234,7 @@ router.get('/get-location-assignment-schedule/:locationId', authenticateToken, a
   
 
 router.get('/get-next-class/:locationId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Schedule'] */
     let connection;
     try {
         connection = await connectWithTimeout();  
@@ -285,7 +290,8 @@ router.get('/get-next-class/:locationId', authenticateToken, async (req, res) =>
     });
 
   // Mobile Call
-  router.get('/get-location-class-schedule/:locationId/:accountId', authenticateToken, async (req, res) => {
+router.get('/get-location-class-schedule/:locationId/:accountId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Schedule'] */
     let connection;
     try {
         connection = await connectWithTimeout();  
@@ -341,7 +347,8 @@ router.get('/get-next-class/:locationId', authenticateToken, async (req, res) =>
 
 // PUT Route
 router.put('/update-schedule/:scheduleMainId', authenticateToken, async (req, res) => {
-  let connection;
+    /* #swagger.tags = ['Schedule'] */
+    let connection;
   try {
       connection = await connectWithTimeout();
       const { scheduleMainId } = req.params;
@@ -378,7 +385,8 @@ router.put('/update-schedule/:scheduleMainId', authenticateToken, async (req, re
 
 // POST Route
 router.post('/add-schedule', authenticateToken, async (req, res) => {
-  let connection;
+    /* #swagger.tags = ['Schedule'] */
+    let connection;
   try {
       connection = await connectWithTimeout();
       const result = req.body;
@@ -447,33 +455,34 @@ router.post('/add-schedule', authenticateToken, async (req, res) => {
 
 // DELETE Route
 router.delete('/delete-schedule-event/:scheduleMainId', authenticateToken, async (req, res) => {
-  let connection;
-  try {
-      connection = await connectWithTimeout();
-      const { scheduleMainId } = req.params;
+    /* #swagger.tags = ['Schedule'] */
+    let connection;
+    try {
+        connection = await connectWithTimeout();
+        const { scheduleMainId } = req.params;
 
-      // Delete from schedulelocation
-      const deleteLocationQuery = `DELETE FROM admin.schedulelocation WHERE scheduleMainId = ?;`;
-      const deleteLocationResult = await executeQuery(connection, deleteLocationQuery, [scheduleMainId]);
+        // Delete from schedulelocation
+        const deleteLocationQuery = `DELETE FROM admin.schedulelocation WHERE scheduleMainId = ?;`;
+        const deleteLocationResult = await executeQuery(connection, deleteLocationQuery, [scheduleMainId]);
 
-      if (deleteLocationResult.affectedRows === 0) {
-          return res.status(404).json({ message: 'Event not found' });
-      }
+        if (deleteLocationResult.affectedRows === 0) {
+            return res.status(404).json({ message: 'Event not found' });
+        }
 
-      // Delete from scheduleMain
-      const deleteMainQuery = `DELETE FROM admin.scheduleMain WHERE scheduleMainId = ?;`;
-      const deleteMainResult = await executeQuery(connection, deleteMainQuery, [scheduleMainId]);
+        // Delete from scheduleMain
+        const deleteMainQuery = `DELETE FROM admin.scheduleMain WHERE scheduleMainId = ?;`;
+        const deleteMainResult = await executeQuery(connection, deleteMainQuery, [scheduleMainId]);
 
-      if (deleteMainResult.affectedRows === 0) {
-          return res.status(404).json({ message: 'Schedule not found' });
-      }
+        if (deleteMainResult.affectedRows === 0) {
+            return res.status(404).json({ message: 'Schedule not found' });
+        }
 
-      res.status(204).json({ message: 'Event and Schedule deactivated' });
-  } catch (error) {
-      handleError(res, error, 'Error deactivating event: ');
-  } finally {
-      if (connection) connection.release();
-  }
+        res.status(204).json({ message: 'Event and Schedule deactivated' });
+    } catch (error) {
+        handleError(res, error, 'Error deactivating event: ');
+    } finally {
+        if (connection) connection.release();
+    }
 });
 
 module.exports = router;

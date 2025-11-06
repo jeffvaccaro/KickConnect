@@ -12,6 +12,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // GET Routes
 router.get('/get-all-roles', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Role'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
@@ -30,6 +31,7 @@ router.get('/get-all-roles', authenticateToken, async (req, res) => {
 });
 
 router.get('/get-roles', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Role'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
@@ -48,6 +50,7 @@ router.get('/get-roles', authenticateToken, async (req, res) => {
 });
 
 router.get('/get-role-by-id', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Role'] */
     let connection;
     try {
         const { roleId } = req.query;
@@ -68,6 +71,7 @@ router.get('/get-role-by-id', authenticateToken, async (req, res) => {
 
 // PUT Routes
 router.put('/update-role', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Role'] */
     const { roleId } = req.query;
     const { roleName, roleDescription } = req.body;
     let connection;
@@ -93,6 +97,7 @@ router.put('/update-role', authenticateToken, async (req, res) => {
 });
 
 router.put('/update-role-order', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Role'] */
     const { roleId } = req.query;
     const { roleOrderId } = req.body;
     let connection;
@@ -127,6 +132,7 @@ router.put('/update-role-order', authenticateToken, async (req, res) => {
 
 // POST Routes
 router.post('/add-role', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Role'] */
     const { roleName, roleDescription } = req.body;
     let connection;
     try {
@@ -152,6 +158,7 @@ router.post('/add-role', authenticateToken, async (req, res) => {
 
 // DELETE Route
 router.delete('/delete-role/:roleId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Role'] */
     const { roleId } = req.params;
     let connection;
     try {

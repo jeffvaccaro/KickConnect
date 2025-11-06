@@ -39,32 +39,44 @@ export class AssignmentComponent implements AfterViewInit {
     eventResizeHandling: "Disabled",
     onTimeRangeSelected: args => {},
     onEventClick: args => {
-      const updatedEvent = args.e.data;
+      const eventData = args.e.data as any;
+      // Normalize start and end to JavaScript Date objects (DayPilot may provide strings)
+      const startRaw = eventData.start;
+      const endRaw = eventData.end;
+      const startDate = startRaw instanceof Date ? startRaw : new Date(startRaw);
+      const endDate = endRaw instanceof Date ? endRaw : new Date(endRaw);
+
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const selectedDate = this.formatDate(startDate.toISOString());
+      const selectedTime = `${pad(startDate.getHours())}:${pad(startDate.getMinutes())}`;
+      const duration = (endDate.getTime() - startDate.getTime()) / (60 * 1000);
+
+      const updatedEvent = eventData;
       const eventIndex = this.customDPEvents.findIndex(event => event.id === updatedEvent.id);
-      const eventData = {
-        ...args.e.data,
-        accountId: args.e.data.accountId,
-        scheduleMainId: args.e.data.scheduleMainId,
-        scheduleLocationId: args.e.data.scheduleLocationId,
-        existingEventId: args.e.data.existingEventId,
-        existingEventValue: args.e.data.existingEventValue,
-        existingEventName: args.e.data.existingEventName || 'defaultName',
-        eventDescription: args.e.data.eventDescription || '',
-        eventName: args.e.data.text || '',
-        selectedDate: args.e.data.start.toString('yyyy-MM-dd'),
-        day: new Date(args.e.data.start).getDay(),
-        selectedTime: args.e.data.start.toString('HH:mm'),
-        duration: (args.e.data.end.getTime() - args.e.data.start.getTime()) / (60 * 1000),
-        locationValues: args.e.data.locationValues !== undefined ? args.e.data.locationValues : -99,
+      const dialogEventData = {
+        ...eventData,
+        accountId: eventData.accountId,
+        scheduleMainId: eventData.scheduleMainId,
+        scheduleLocationId: eventData.scheduleLocationId,
+        existingEventId: eventData.existingEventId,
+        existingEventValue: eventData.existingEventValue,
+        existingEventName: eventData.existingEventName || 'defaultName',
+        eventDescription: eventData.eventDescription || '',
+        eventName: eventData.text || '',
+        selectedDate,
+        day: startDate.getDay(),
+        selectedTime,
+        duration,
+        locationValues: eventData.locationValues !== undefined ? eventData.locationValues : -99,
         locationName: this.locationName,
-        reservationCount: args.e.data.reservationCount,
-        costToAttend: args.e.data.costToAttend,
-        isRepeat: args.e.data.isRepeat || false,
-        isActive: args.e.data.isActive || false,
-        isReservation: args.e.data.isReservation,
-        isCostToAttend: args.e.data.isCostToAttend,
+        reservationCount: eventData.reservationCount,
+        costToAttend: eventData.costToAttend,
+        isRepeat: eventData.isRepeat || false,
+        isActive: eventData.isActive || false,
+        isReservation: eventData.isReservation,
+        isCostToAttend: eventData.isCostToAttend,
       };
-      this.openAddEventDialog('300ms', '100ms', false, eventData);
+      this.openAddEventDialog('300ms', '100ms', false, dialogEventData);
     },
   };
   
@@ -213,15 +225,31 @@ export class AssignmentComponent implements AfterViewInit {
   
   
   createEventData(isNew: boolean, event?: any): any {
-    return event ? {
+    if (!event) {
+      return {};
+    }
+
+    // Ensure start/end are JS Date objects if present
+    const startRaw = event.start;
+    const endRaw = event.end;
+    const startDate = startRaw instanceof Date ? startRaw : (startRaw ? new Date(startRaw) : null);
+    const endDate = endRaw instanceof Date ? endRaw : (endRaw ? new Date(endRaw) : null);
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    const selectedDate = event.selectedDate || (startDate ? this.formatDate(startDate.toISOString()) : '');
+    const selectedTime = event.selectedTime || (startDate ? `${pad(startDate.getHours())}:${pad(startDate.getMinutes())}` : '');
+    const duration = (typeof event.duration === 'number' && !isNaN(event.duration)) ? event.duration : (startDate && endDate ? (endDate.getTime() - startDate.getTime()) / (60 * 1000) : 60);
+
+    return {
       accountId: event.accountId,
       scheduleMainId: event.scheduleMainId,
       scheduleLocationId: event.scheduleLocationId,
       eventName: event.text || '',
       day: event.day,
-      selectedDate: event.start.toString('yyyy-MM-dd') || '',
-      selectedTime: event.start.toString('HH:mm') || '',
-      duration: (event.end.getTime() - event.start.getTime()) / (60 * 1000) || 60,
+      selectedDate,
+      selectedTime,
+      duration,
       existingEventId: event.existingEventId || 'blank?',
       existingEventName: event.existingEventName || '',
       existingEventValue: event.existingEventValue,
@@ -237,7 +265,7 @@ export class AssignmentComponent implements AfterViewInit {
       primaryProfile: event.profileId,
       alternateProfile: event.altProfileId,
       isNew
-    } : {};
+    };
   }
 
   

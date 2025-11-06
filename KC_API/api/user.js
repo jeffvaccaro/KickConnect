@@ -15,7 +15,22 @@ const RoleEnum = require('./enum/roleEnum.js');
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
+/**
+ * @swagger
+ * /user/get-all-users:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Gets all users
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of users
+ */
+/* #swagger.tags = ['User'] */
 router.get('/get-all-users', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['User'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
@@ -44,7 +59,33 @@ router.get('/get-all-users', authenticateToken, async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /user/get-users-by-account-code:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Get users for a specific account code (excludes roleId 1)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: accountcode
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Account code to filter users by
+ *     responses:
+ *       200:
+ *         description: List of users for the account
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.get('/get-users-by-account-code', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['User'] */
     const accountCode = req.query.accountcode;
     let connection;
     try {
@@ -74,7 +115,33 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
     }
 });
 
+/**
+ * @swagger
+ * /user/get-users:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Get users by accountCode (returns [] when none)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: accountCode
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Account code to lookup
+ *     responses:
+ *       200:
+ *         description: List of users (may be empty)
+ *       404:
+ *         description: Account not found
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.get('/get-users', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['User'] */
     let connection;
     try {
         let { accountCode } = req.query;
@@ -115,8 +182,32 @@ router.get('/get-users', authenticateToken, async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /user/get-user-by-id:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Get detailed user info by userId
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the user to retrieve
+ *     responses:
+ *       200:
+ *         description: User object
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.get('/get-user-by-id', authenticateToken, async (req, res) => {
-  let connection;
+    /* #swagger.tags = ['User'] */
+    let connection;
   try {
       const { userId } = req.query;
 
@@ -159,8 +250,42 @@ router.get('/get-user-by-id', authenticateToken, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /user/send-user-reset-link:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Send password reset link to a user
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the user
+ *       - in: query
+ *         name: accountCode
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Account code for the user
+ *     responses:
+ *       200:
+ *         description: Reset link sent
+ *       400:
+ *         description: Missing parameters
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.get('/send-user-reset-link', authenticateToken, async (req, res) => {
-  let connection;
+    /* #swagger.tags = ['User'] */
+    let connection;
   try {
       console.log('express method called');
       const { userId, accountCode } = req.query;
@@ -208,9 +333,40 @@ router.get('/send-user-reset-link', authenticateToken, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /user/get-filtered-users:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Get users filtered by accountId and status
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: accountId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Account ID to filter
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [Active, InActive]
+ *         required: true
+ *         description: Filter by Active/InActive
+ *     responses:
+ *       200:
+ *         description: Filtered user list
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.get('/get-filtered-users', authenticateToken, async (req, res) => {
-  let { accountId, status } = req.query;
-  let isActive;
+    /* #swagger.tags = ['User'] */
+    let { accountId, status } = req.query;
+    let isActive;
   if (status === 'InActive') {
       isActive = 0;
   } else if (status === 'Active') {
@@ -249,7 +405,31 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /user/get-users-by-role/{roleId}:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Get users by role ID
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: roleId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Role ID to filter users by
+ *     responses:
+ *       200:
+ *         description: List of users for the role
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.get('/get-users-by-role/:roleId', authenticateToken, async (req, res) => {
+     /* #swagger.tags = ['User'] */   
     let connection;
     try {
         const { roleId } = req.params;
@@ -287,8 +467,35 @@ router.get('/get-users-by-role/:roleId', authenticateToken, async (req, res) => 
     }
 });
 
+/**
+ * @swagger
+ * /user/get-users-by-location-role/{roleId}/{locationId}:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Get users by role and location
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: roleId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *       - in: path
+ *         name: locationId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: List of users matching role and location
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.get('/get-users-by-location-role/:roleId/:locationId', authenticateToken, async (req, res) => {
-    // console.log('user.js','get-users-by-location-role');
+    /* #swagger.tags = ['User'] */
     let connection;
     try {
         const { locationId, roleId } = req.params;
@@ -331,9 +538,46 @@ router.get('/get-users-by-location-role/:roleId/:locationId', authenticateToken,
     }
 });
 
-// PUT Route
+/**
+ * @swagger
+ * /user/update-user/{userId}:
+ *   put:
+ *     tags:
+ *       - User
+ *     summary: Update a user and their roles (multipart/form-data)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the user to update
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               photo:
+ *                 type: string
+ *                 format: binary
+ *               userData:
+ *                 type: string
+ *                 description: JSON string containing user fields and roleId array
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *       400:
+ *         description: Validation error
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.put('/update-user/:userId', authenticateToken, upload.single('photo'), async (req, res) => {
-  const { userId } = req.params;
+    /* #swagger.tags = ['User'] */  
+    const { userId } = req.params;
 
   const userData = JSON.parse(req.body.userData);
   const { name, email, phone, phone2, address, city, state, zip, isActive, resetPassword } = userData;
@@ -397,122 +641,224 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
   }
 });
 
+/**
+ * @swagger
+ * /user/deactivate-user:
+ *   put:
+ *     tags:
+ *       - User
+ *     summary: Deactivate (soft-delete) a user by userId query param
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the user to deactivate
+ *     responses:
+ *       200:
+ *         description: User deactivated
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.put('/deactivate-user', authenticateToken, async (req, res) => {
-  const { userId } = req.query;
-  let connection;
-  try {
-      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
-      connection = await Promise.race([connectToDatabase(), timeout]);
-
-      const userQuery = `UPDATE admin.user 
-          SET isActive = -1, updatedBy = "API User Delete"
-          WHERE userId = ?;`;
-
-      const [userResult] = await connection.query(userQuery, [userId]);
-      res.json({ message: 'User deactivated' });
-  } catch (error) {
-      res.status(500).json({ error: 'Error deactivating user' });
-  } finally {
-      if (connection) {
-          connection.release();
-      } else {
-          console.warn('deactivate-user: Connection not established.');
-      }
-  }
-});
-
-router.put('/update-profile/:userId', authenticateToken, upload.none(), async (req, res) => {
-  const { userId } = req.params;
-  let connection;
-  try {
-        const profileData = JSON.parse(req.body.profileData);
-        //console.log("METHOD CALLED", profileData);
-        console.log("profileData", profileData);
-
+    /* #swagger.tags = ['User'] */  
+    const { userId } = req.query;
+    let connection;
+    try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
         connection = await Promise.race([connectToDatabase(), timeout]);
 
-        // Filter for new skills 
-        const newSkillsToAdd = profileData.profileSkills.filter(skill => 
-            typeof skill.skillId === 'string' && skill.skillId.startsWith('new-')
-        );
-      
-        //console.log('newSkillsToAdd:', newSkillsToAdd);
+        const userQuery = `UPDATE admin.user 
+            SET isActive = -1, updatedBy = "API User Delete"
+            WHERE userId = ?;`;
 
-        if (newSkillsToAdd.length > 0) {
-            const newSkillInsertQuery = `
-                INSERT INTO admin.skill(skillName,skillDescription) 
-                VALUES (?,'')`;
-            newSkillsToAdd.forEach(async (skill) => {
-            try {
-                const skillInsertQuery = connection.format(newSkillInsertQuery, [skill.skillName]);
-                const [skillInsertResult] = await connection.query(skillInsertQuery);
-                console.log(`Successfully added new skill: ${skill.skillName}`);
-            } catch (error) {
-                console.error('Error inserting new skill:', error);
-            }
-            });
-        }      
-
-        const profileQuery = `
-            UPDATE admin.profile 
-            SET description = ?, 
-                skills = ?, 
-                URL = ?
-            WHERE userId = ?`;
-
-        const skillsString = profileData.profileSkills.map(skill => skill.skillName).join(', ');
-        //console.log('skillString:', skillsString);
-
-        const profileUpdateQuery = connection.format(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
-        const [profileResult] = await connection.query(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
-
-        if (profileData.primaryStudio !== null) {
-        // Fetch profileId
-        const getProfileId = `SELECT p.profileId FROM admin.user u 
-                            INNER JOIN admin.profile p 
-                            ON u.userId = p.userId 
-                            WHERE u.userId = ?`;
-        const [rows] = await connection.query(getProfileId, [userId]);
-
-        // Ensure profileId is correctly extracted from the result
-        const profileId = rows[0]?.profileId;
-
-        if (!profileId) {
-        throw new Error('Profile ID not found for the provided user ID');
-        }
-
-        // Clear existing profile locations
-        const profileLocationClear = `DELETE FROM admin.profilelocation 
-                                    WHERE profileId = ?`;
-
-        await connection.query(profileLocationClear, [profileId]);
-
-        // Insert new profile locations
-        const profileLocationQuery = `INSERT INTO admin.profilelocation (profileId, locationId, isHome) VALUES (?, ?, 1)`;
-        await connection.query(profileLocationQuery, [profileId, profileData.primaryStudio]);
-
-        const altLocationQuery = `INSERT INTO admin.profilelocation (profileId, locationId, isHome) VALUES (?, ?, 0)`;
-        const altLocPromises = profileData.altStudio.map((locationId) => {
-            return connection.query(altLocationQuery, [profileId, locationId]);
-        });
-        //console.log('Profile created for Instructor user:', userId);
-    }        
-        res.json({ message: 'Profile updated successfully' });
+        const [userResult] = await connection.query(userQuery, [userId]);
+        res.json({ message: 'User deactivated' });
     } catch (error) {
-        console.error('Error updating profile:', error);
-        res.status(500).json({ error: 'Error updating profile' });
+        res.status(500).json({ error: 'Error deactivating user' });
     } finally {
         if (connection) {
             connection.release();
         } else {
-            console.warn('update-profile: Connection not established.');
+            console.warn('deactivate-user: Connection not established.');
         }
     }
 });
 
+/**
+ * @swagger
+ * /user/update-profile/{userId}:
+ *   put:
+ *     tags:
+ *       - User
+ *     summary: Update a user's profile (skills, description, locations)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     requestBody:
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profileData:
+ *                 type: string
+ *                 description: JSON string with profile data
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
+router.put('/update-profile/:userId', authenticateToken, upload.none(), async (req, res) => {
+    /* #swagger.tags = ['User'] */    
+    const { userId } = req.params;
+    let connection;
+    try {
+            const profileData = JSON.parse(req.body.profileData);
+            //console.log("METHOD CALLED", profileData);
+            console.log("profileData", profileData);
+
+            const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+            connection = await Promise.race([connectToDatabase(), timeout]);
+
+            // Filter for new skills 
+            const newSkillsToAdd = profileData.profileSkills.filter(skill => 
+                typeof skill.skillId === 'string' && skill.skillId.startsWith('new-')
+            );
+        
+            //console.log('newSkillsToAdd:', newSkillsToAdd);
+
+            if (newSkillsToAdd.length > 0) {
+                const newSkillInsertQuery = `
+                    INSERT INTO admin.skill(skillName,skillDescription) 
+                    VALUES (?,'')`;
+                newSkillsToAdd.forEach(async (skill) => {
+                try {
+                    const skillInsertQuery = connection.format(newSkillInsertQuery, [skill.skillName]);
+                    const [skillInsertResult] = await connection.query(skillInsertQuery);
+                    console.log(`Successfully added new skill: ${skill.skillName}`);
+                } catch (error) {
+                    console.error('Error inserting new skill:', error);
+                }
+                });
+            }      
+
+            const profileQuery = `
+                UPDATE admin.profile 
+                SET description = ?, 
+                    skills = ?, 
+                    URL = ?
+                WHERE userId = ?`;
+
+            const skillsString = profileData.profileSkills.map(skill => skill.skillName).join(', ');
+            //console.log('skillString:', skillsString);
+
+            const profileUpdateQuery = connection.format(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
+            const [profileResult] = await connection.query(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
+
+            if (profileData.primaryStudio !== null) {
+            // Fetch profileId
+            const getProfileId = `SELECT p.profileId FROM admin.user u 
+                                INNER JOIN admin.profile p 
+                                ON u.userId = p.userId 
+                                WHERE u.userId = ?`;
+            const [rows] = await connection.query(getProfileId, [userId]);
+
+            // Ensure profileId is correctly extracted from the result
+            const profileId = rows[0]?.profileId;
+
+            if (!profileId) {
+            throw new Error('Profile ID not found for the provided user ID');
+            }
+
+            // Clear existing profile locations
+            const profileLocationClear = `DELETE FROM admin.profilelocation 
+                                        WHERE profileId = ?`;
+
+            await connection.query(profileLocationClear, [profileId]);
+
+            // Insert new profile locations
+            const profileLocationQuery = `INSERT INTO admin.profilelocation (profileId, locationId, isHome) VALUES (?, ?, 1)`;
+            await connection.query(profileLocationQuery, [profileId, profileData.primaryStudio]);
+
+            const altLocationQuery = `INSERT INTO admin.profilelocation (profileId, locationId, isHome) VALUES (?, ?, 0)`;
+            const altLocPromises = profileData.altStudio.map((locationId) => {
+                return connection.query(altLocationQuery, [profileId, locationId]);
+            });
+            //console.log('Profile created for Instructor user:', userId);
+        }        
+            res.json({ message: 'Profile updated successfully' });
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            res.status(500).json({ error: 'Error updating profile' });
+        } finally {
+            if (connection) {
+                connection.release();
+            } else {
+                console.warn('update-profile: Connection not established.');
+            }
+        }
+});
+
+/**
+ * @swagger
+ * /user/update-user-password/{accountCode}/{userId}/{accountId}:
+ *   put:
+ *     tags:
+ *       - User
+ *     summary: Update a user's password (no auth expected)
+ *     parameters:
+ *       - in: path
+ *         name: accountCode
+ *         schema:
+ *           type: string
+ *         required: true
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *       - in: path
+ *         name: accountId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userData:
+ *                 type: object
+ *                 properties:
+ *                   password:
+ *                     type: string
+ *     responses:
+ *       200:
+ *         description: Password updated
+ *       400:
+ *         description: Invalid request
+ *       404:
+ *         description: User not found or credentials invalid
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.put('/update-user-password/:accountCode/:userId/:accountId', async (req, res) => {
-  const { userId, accountCode, accountId } = req.params;
+    /* #swagger.tags = ['User'] */     
+    const { userId, accountCode, accountId } = req.params;
   const { userData } = req.body;
 
   if (!userData || !userData.password) {
@@ -557,9 +903,40 @@ router.put('/update-user-password/:accountCode/:userId/:accountId', async (req, 
   }
 });
 
-// POST Route
+
+/**
+ * @swagger
+ * /user/add-user:
+ *   post:
+ *     tags:
+ *       - User
+ *     summary: Add a new user (creates profile for instructors)
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               photo:
+ *                 type: string
+ *                 format: binary
+ *               userData:
+ *                 type: string
+ *                 description: JSON string with user fields
+ *     responses:
+ *       200:
+ *         description: User registered
+ *       409:
+ *         description: Duplicate user
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.post('/add-user', authenticateToken, upload.single('photo'), async (req, res) => {
-  let { accountcode, name, email, phone, phone2, address, city, state, zip, password: originalPassword, roleId } = JSON.parse(req.body.userData);
+    /* #swagger.tags = ['User'] */   
+    let { accountcode, name, email, phone, phone2, address, city, state, zip, password: originalPassword, roleId } = JSON.parse(req.body.userData);
 
   console.log('Parsed userData:', { accountcode, name, email, phone, phone2, address, city, state, zip, originalPassword, roleId });
   console.log('RoleEnum:', RoleEnum);
@@ -639,7 +1016,41 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
   }
 });
 
+/**
+ * @swagger
+ * /user/upsert-profile-assignment/{scheduleLocationId}/{primaryProfileId}/{altProfileId}:
+ *   post:
+ *     tags:
+ *       - User
+ *     summary: Insert or update profile assignment for a schedule location
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: scheduleLocationId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *       - in: path
+ *         name: primaryProfileId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *       - in: path
+ *         name: altProfileId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Pass 'null' to indicate no alt profile
+ *     responses:
+ *       200:
+ *         description: Profile assignment inserted or updated
+ *       500:
+ *         description: Server error
+ */
+/* #swagger.tags = ['User'] */
 router.post('/upsert-profile-assignment/:scheduleLocationId/:primaryProfileId/:altProfileId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['User'] */   
     const { scheduleLocationId, primaryProfileId, altProfileId } = req.params;
     console.log('scheduleLocationId', scheduleLocationId);
     
