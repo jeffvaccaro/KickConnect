@@ -1,15 +1,10 @@
-<div class="breadcrumb-card mb-25 d-md-flex align-items-center justify-content-space-between">
-    <h5 class="mb-0">Edit User</h5>
-    <ol class="breadcrumb mb-0 ps-0">
-      <li class="breadcrumb-item">
-        <a routerLink="/">
-          <i class="ri-home-8-line"></i>
-          Dashboard
-        </a>
-      </li>
-      <li class="breadcrumb-item fw-semibold">Edit User</li>
-    </ol>
-  </div>
+ <app-breadcrumb 
+  pageTitle="Edit Staff" 
+  [breadcrumbItems]="[
+    { label: 'Staff', link: '/app-staff-list' }
+  ]"
+></app-breadcrumb>   
+
   <mat-card class="mb-25 kickConnect-card">
     <mat-card-content>
       <form [formGroup]="form" (ngSubmit)="onSubmit($event)">
@@ -143,7 +138,7 @@
         <div class="row">
             <div class="col-lg-4 col-md-4 col-sm-4">
                 <button mat-flat-button type="submit" [disabled]="form.invalid" class="kickConnect fw-semibold">Update User</button> &nbsp;
-                <button mat-flat-button (click)="cancel($event)" class="kickConnect fw-semibold" color="warn">Cancel</button>
+                <button mat-flat-button (click)="cancel($event)" class="kickConnect fw-semibold gray"><i class="ri-close-fill"></i>Cancel</button>
             </div>
         </div>
       </form>

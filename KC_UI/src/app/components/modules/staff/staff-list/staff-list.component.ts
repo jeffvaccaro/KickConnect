@@ -11,11 +11,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserService } from '../../../../services/user.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
-
+import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
 @Component({
     selector: 'app-staff-list',
     standalone: true,
-    imports: [MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule, NgIf],
+    imports: [MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule, NgIf,
+        BreadcrumbComponent
+    ],
     templateUrl: './staff-list.component.html',
     styleUrl: './staff-list.component.scss'
 })

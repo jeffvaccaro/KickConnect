@@ -8,11 +8,13 @@
     import { MatCheckboxModule } from '@angular/material/checkbox';
     import { UserService } from '../../../../services/user.service';
     import { IProfile } from '../../../../interfaces/profile';
+    import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
     
     @Component({
     selector: 'app-profile-list',
     standalone: true,
-    imports: [MatCardModule, MatButtonModule, MatMenuModule, MatTableModule, MatCheckboxModule, MatPaginatorModule],
+    imports: [MatCardModule, MatButtonModule, MatMenuModule, MatTableModule, MatCheckboxModule,
+         MatPaginatorModule, BreadcrumbComponent],
     templateUrl: 'profile-list.component.html',
     styleUrls: ['./profile-list.component.scss']
 })

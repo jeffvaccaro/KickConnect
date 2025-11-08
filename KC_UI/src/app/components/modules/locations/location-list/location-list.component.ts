@@ -7,13 +7,14 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { LocationService } from '../../../../services/location.service';
-
+import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
 @Component({
     selector: 'app-location-list',
     standalone: true,
-    imports: [MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule],
+    imports: [MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule
+        , BreadcrumbComponent
+    ],
     templateUrl: './location-list.component.html',
     styleUrl: './location-list.component.scss'
 })

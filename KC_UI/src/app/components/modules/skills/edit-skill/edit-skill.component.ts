@@ -12,15 +12,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-
+import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
 @Component({
     selector: 'app-edit-skill',
     imports: [
         CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
+        BreadcrumbComponent
     ],
     templateUrl: './edit-skill.component.html',
-    styleUrl: './edit-skill.component.scss'
+    styleUrls: []
 })
 export class EditSkillComponent implements OnInit {
   form: FormGroup;

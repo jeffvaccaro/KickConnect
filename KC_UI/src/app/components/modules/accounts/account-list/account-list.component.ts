@@ -10,10 +10,10 @@ import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../../../services/user.service';
-
+import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
 @Component({
     selector: 'app-account-list',
-    imports: [MatButtonModule, MatCardModule, MatMenuModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule, MatTooltipModule],
+    imports: [MatButtonModule, MatCardModule, MatMenuModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule, MatTooltipModule, BreadcrumbComponent],
     templateUrl: './account-list.component.html',
     styleUrl: './account-list.component.scss'
 })

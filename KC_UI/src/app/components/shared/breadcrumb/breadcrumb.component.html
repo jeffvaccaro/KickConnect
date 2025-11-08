@@ -1,0 +1,24 @@
+<div class="breadcrumb-card mb-25 d-md-flex align-items-center justify-content-space-between">
+  <h5 class="mb-0">{{ pageTitle }}</h5> 
+  
+  <ol class="breadcrumb mb-0 ps-0" *ngIf="(breadcrumbItems?.length ?? 0) > 0">
+    
+    <li 
+      *ngFor="let item of breadcrumbItems" 
+      class="breadcrumb-item"
+    >
+      <a *ngIf="item.link" [routerLink]="item.link">
+        <i *ngIf="item.link === '/'" class="ri-home-8-line"></i>
+        {{ item.label }}
+      </a>
+      
+      <ng-container *ngIf="!item.link">
+        {{ item.label }}
+      </ng-container>
+    </li>
+
+    <li class="breadcrumb-item fw-semibold">
+      {{ pageTitle }}
+    </li>
+  </ol>
+</div>

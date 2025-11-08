@@ -15,10 +15,11 @@ import { RoleService } from '../../../../services/role.service';
 import { Role } from '../../../../interfaces/role';
 import { AccountService } from '../../../../services/account.service';
 import { Router } from '@angular/router';
+import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.component';
 
 @Component({
     selector: 'app-add-new-account',
-    imports: [ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, CommonModule],
+    imports: [ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, CommonModule, BreadcrumbComponent],
     templateUrl: './add-new-account.component.html',
     styleUrl: './add-new-account.component.scss'
 })

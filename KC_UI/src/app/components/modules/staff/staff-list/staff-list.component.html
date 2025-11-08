@@ -1,5 +1,9 @@
+<app-breadcrumb 
+  pageTitle="Staff" 
+  [breadcrumbItems]="[]"
+></app-breadcrumb>
+
 <mat-card class="mb-25 kickConnect-card">
-    <h5 class="mb-0">Staff</h5><br/>
     <mat-card-header>
         <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" animationDuration="0ms"  (selectedTabChange)="onTabChange($event)">
             <mat-tab label="Active" id="activeUsers"></mat-tab>
@@ -74,31 +78,3 @@
         </div>
     </mat-card-content>
 </mat-card>
-
-
-                <!-- <ng-container matColumnDef="accountCity">
-                    <th mat-header-cell *matHeaderCellDef>City</th>
-                    <td mat-cell *matCellDef="let element" id="accountCity">{{element.accountCity}}</td>
-                </ng-container>                
-                <ng-container matColumnDef="accountState">
-                    <th mat-header-cell *matHeaderCellDef>State</th>
-                    <td mat-cell *matCellDef="let element" id="accountState">{{element.accountState}}</td>
-                </ng-container>                
-                <ng-container matColumnDef="accountZip">
-                    <th mat-header-cell *matHeaderCellDef>Zip</th>
-                    <td mat-cell *matCellDef="let element" id="accountZip">{{element.accountZip}}</td>
-                </ng-container>                                 -->
-
-                <!-- <ng-container matColumnDef="Action">
-                    <th mat-header-cell *matHeaderCellDef>Action</th>
-                    <td mat-cell *matCellDef="let element">
-                        <button type="button" mat-button class="position-relative dot-btn p-0 bg-transparent border-none ri-more-fill" [matMenuTriggerFor]="actionMenu">
-                            <i class="{{element.action}}"></i>
-                        </button>
-                        <mat-menu #actionMenu="matMenu" class="dotMenu two monthMenu" xPosition="before"  id=resetPWD>
-                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="resetPassword(element.userId, element.accountCode)">
-                                <i class="ri-edit-line"></i> Reset Password
-                            </button>
-                        </mat-menu>
-                    </td>
-                </ng-container> -->

@@ -15,11 +15,13 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../../services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Role } from '../../../../interfaces/role';
+import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.component';
 @Component({
     selector: 'app-add-new-staff',
     imports: [
         CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
+        BreadcrumbComponent
     ],
     templateUrl: './add-new-staff.component.html',
     styleUrl: './add-new-staff.component.scss'
@@ -124,7 +126,7 @@ export class AddNewStaffComponent {
   
 
   cancel(event: Event): void {
-    this.router.navigate(['/']); // Navigate to location-list 
+    this.router.navigate(['/app-staff-list']);
   }
 
   trackByRoleId(index: number, role: Role): number {

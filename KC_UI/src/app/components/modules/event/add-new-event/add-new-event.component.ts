@@ -18,13 +18,14 @@ import { EventService } from '../../../../services/event.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 import { IReservationCount } from '../../../../interfaces/reservation-count';
 import { SchedulerService } from '../../../../services/scheduler.service';
+import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.component';
 
 @Component({
     selector: 'app-add-new-event',
     imports: [
         CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
         MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
-        MatSlideToggleModule
+        MatSlideToggleModule, BreadcrumbComponent
     ],
     templateUrl: './add-new-event.component.html',
     styleUrl: './add-new-event.component.scss'

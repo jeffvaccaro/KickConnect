@@ -15,12 +15,13 @@ import { Router } from '@angular/router';
 import { LocationService } from '../../../../services/location.service';
 import { LocationListComponent } from '../location-list/location-list.component';
 import { SnackbarService } from '../../../../services/snackbar.service';
-
+import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.component';
 @Component({
     selector: 'app-add-new-location',
     imports: [
         CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
+        BreadcrumbComponent
     ],
     templateUrl: './add-new-location.component.html',
     styleUrls: ['./add-new-location.component.scss']

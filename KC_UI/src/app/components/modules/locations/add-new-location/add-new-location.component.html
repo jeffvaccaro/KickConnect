@@ -1,15 +1,9 @@
-<div class="breadcrumb-card mb-25 d-md-flex align-items-center justify-content-space-between">
-    <h5 class="mb-0">Add New Location</h5>
-    <ol class="breadcrumb mb-0 ps-0">
-      <li class="breadcrumb-item">
-        <a routerLink="/">
-          <i class="ri-home-8-line"></i>
-          Dashboard
-        </a>
-      </li>
-      <li class="breadcrumb-item fw-semibold">Add New Location</li>
-    </ol>
-  </div>
+ <app-breadcrumb 
+  pageTitle="Add New Location" 
+  [breadcrumbItems]="[
+    { label: 'Locations', link: '/app-location-list' }
+  ]"
+></app-breadcrumb>   
   
   <mat-card class="mb-25 kickConnect-card">
     <mat-card-content>
@@ -88,7 +82,7 @@
           </div>
         </div>
         <button mat-flat-button type="submit" [disabled]="form.invalid" class="kickConnect fw-semibold">Add Location</button> &nbsp;
-        <button mat-flat-button (click)="cancel($event)" class="kickConnect fw-semibold" color="warn">Cancel</button>
+        <button mat-flat-button (click)="cancel($event)" class="kickConnect fw-semibold gray"><i class="ri-close-fill"></i>Cancel</button>
       </form>
     </mat-card-content>
   </mat-card>

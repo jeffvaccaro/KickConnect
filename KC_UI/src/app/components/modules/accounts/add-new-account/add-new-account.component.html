@@ -1,15 +1,9 @@
-<div class="breadcrumb-card mb-25 d-md-flex align-items-center justify-content-space-between">
-    <h5 class="mb-0">Add New Account</h5>
-    <ol class="breadcrumb mb-0 ps-0">
-        <li class="breadcrumb-item">
-        <a routerLink="/">
-            <i class="ri-home-8-line"></i>
-            Dashboard
-        </a>
-        </li>
-        <li class="breadcrumb-item fw-semibold">Add New Account</li>
-    </ol>
-</div>
+ <app-breadcrumb 
+  pageTitle="Add New Account" 
+  [breadcrumbItems]="[
+    { label: 'Accounts', link: '/app-account-list' }
+  ]"
+></app-breadcrumb> 
   
 <mat-card class="mb-25 kickConnect-card">
     <mat-card-content>

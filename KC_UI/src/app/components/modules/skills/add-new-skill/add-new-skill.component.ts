@@ -13,12 +13,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-
+import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
 @Component({
     selector: 'app-add-new-skill',
     imports: [
         CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
+        BreadcrumbComponent
     ],
     templateUrl: './add-new-skill.component.html',
     styleUrl: './add-new-skill.component.scss'
@@ -68,6 +69,6 @@ export class AddNewSkillComponent implements OnInit {
   
 
   cancel(event: Event): void {
-    this.router.navigate(['/app-skill-list']); // Navigate to location-list 
+    this.router.navigate(['/app-skill-list']); 
   }
 }

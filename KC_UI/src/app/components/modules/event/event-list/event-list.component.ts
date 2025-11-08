@@ -11,11 +11,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../../services/user.service';
 import { EventService } from '../../../../services/event.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
+import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
 
 @Component({
     selector: 'app-event-list',
     standalone: true,
-    imports: [MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule],
+    imports: [MatCardModule, MatMenuModule, MatButtonModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule, BreadcrumbComponent],
     templateUrl: './event-list.component.html',
     styleUrl: './event-list.component.scss'
 })

@@ -18,13 +18,13 @@ import { EventService } from '../../../../services/event.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 import { SchedulerService } from '../../../../services/scheduler.service';
 import { IReservationCount } from '../../../../interfaces/reservation-count';
-
+import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.component';
 @Component({
     selector: 'app-edit-event',
     imports: [
         CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
         MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
-        MatSlideToggleModule
+        MatSlideToggleModule, BreadcrumbComponent
     ],
     templateUrl: './edit-event.component.html',
     styleUrls: ['./edit-event.component.scss']

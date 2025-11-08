@@ -18,6 +18,7 @@ import { catchError, of, tap } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProfileModalComponent } from '../profile-modal/profile-modal.component';
 import { RolesEnum } from '../../../../enums/roles';
+import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.component';
 
 interface Role {
   roleId: number;
@@ -30,7 +31,8 @@ interface Role {
     selector: 'app-edit-staff',
     imports: [
         CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatDialogModule
+        MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule, MatDialogModule,
+        BreadcrumbComponent
     ],
     templateUrl: './edit-staff.component.html',
     styleUrls: ['./edit-staff.component.scss']
@@ -172,9 +174,6 @@ export class EditStaffComponent implements OnInit {
     ).subscribe();
   }
   
-  
-  
-
   getCityStateInfo(event: Event): void {
     const input = (event.target as HTMLInputElement).value;
     const zipCodePattern = /^\d{5}$/;
