@@ -40,6 +40,15 @@ export class SchedulerComponent implements AfterViewInit {
       const updatedEvent = args.e.data;
       console.log('args', args.e.data);
       const eventIndex = this.customDPEvents.findIndex(event => event.id === updatedEvent.id);
+
+      const startDate = this.parseToDate(args.e.data.start);
+      const endDate = this.parseToDate(args.e.data.end);
+
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const selectedDate = startDate ? this.formatDate(startDate.toISOString()) : (args.e.data.selectedDate || '');
+      const selectedTime = startDate ? `${pad(startDate.getHours())}:${pad(startDate.getMinutes())}` : (args.e.data.selectedTime || '');
+      const duration = (typeof args.e.data.duration === 'number' && !isNaN(args.e.data.duration)) ? args.e.data.duration : (startDate && endDate ? (endDate.getTime() - startDate.getTime()) / (60 * 1000) : (args.e.data.duration || 60));
+
       const eventData = {
         ...args.e.data,
         accountId: args.e.data.accountId,
@@ -49,10 +58,10 @@ export class SchedulerComponent implements AfterViewInit {
         existingEventName: args.e.data.existingEventName || 'defaultName',
         eventDescription: args.e.data.eventDescription || '',
         eventName: args.e.data.text || '',
-        selectedDate: args.e.data.start.toString('yyyy-MM-dd'),
-        day: new Date(args.e.data.start).getDay(), // Use getDay to get the day of the week (0-6)
-        selectedTime: args.e.data.start.toString('HH:mm'),
-        duration: (args.e.data.end.getTime() - args.e.data.start.getTime()) / (60 * 1000),
+        selectedDate,
+        day: startDate ? startDate.getDay() : (args.e.data.day ?? 0),
+        selectedTime,
+        duration,
         locationValues: args.e.data.locationValues !== undefined ? args.e.data.locationValues : -99,
         reservationCount: args.e.data.reservationCount,
         costToAttend: args.e.data.costToAttend,
@@ -61,10 +70,9 @@ export class SchedulerComponent implements AfterViewInit {
         isReservation: args.e.data.isReservation,
         isCostToAttend: args.e.data.isCostToAttend,
       };
-      // console.log('eventData onClick:', eventData);
-    
+
       this.openAddEventDialog('300ms', '100ms', false, eventData);
-    },    
+    },
     onEventMoved: (args) => {
       const updatedEvent = {
         ...args.e.data,
@@ -182,6 +190,26 @@ export class SchedulerComponent implements AfterViewInit {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`; // Correct time format
   }
 
+  // Utility to coerce DayPilot/ISO/string/number values into JS Date or null
+  private parseToDate(val: any): Date | null {
+    if (!val && val !== 0) return null;
+    try {
+      if (val instanceof Date) return val;
+      if (typeof val === 'object' && typeof (val as any).toString === 'function') {
+        const s = (val as any).toString();
+        const d = new Date(s);
+        if (!isNaN(d.getTime())) return d;
+      }
+      if (typeof val === 'string' || typeof val === 'number') {
+        const d = new Date(val);
+        if (!isNaN(d.getTime())) return d;
+      }
+    } catch (e) {
+      // ignore
+    }
+    return null;
+  }
+
   openAddEventDialog(enterAnimationDuration: string, exitAnimationDuration: string, isNew: boolean, event?: any): void {
     const eventDataManager = createEventDataManager();
     const dialogRef = this.dialog.open(AddEditDialogComponent, {
@@ -202,13 +230,23 @@ export class SchedulerComponent implements AfterViewInit {
   }
   
   createEventData(isNew: boolean, event?: any): any {
-    return event ? {
+    if (!event) return {};
+
+    const startDate = this.parseToDate(event.start);
+    const endDate = this.parseToDate(event.end);
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    const selectedDate = event.selectedDate || (startDate ? this.formatDate(startDate.toISOString()) : '');
+    const selectedTime = event.selectedTime || (startDate ? `${pad(startDate.getHours())}:${pad(startDate.getMinutes())}` : '');
+    const duration = (typeof event.duration === 'number' && !isNaN(event.duration)) ? event.duration : (startDate && endDate ? (endDate.getTime() - startDate.getTime()) / (60 * 1000) : 60);
+
+    return {
       accountId: event.accountId,
       scheduleMainId: event.scheduleMainId,
       eventName: event.text || '',
-      selectedDate: event.start.toString('yyyy-MM-dd') || '',
-      selectedTime: event.start.toString('HH:mm') || '',
-      duration: (event.end.getTime() - event.start.getTime()) / (60 * 1000) || 60,
+      selectedDate,
+      selectedTime,
+      duration,
       existingEventId: event.existingEventId || 'blank?',
       existingEventName: event.existingEventName || '',
       existingEventValue: event.existingEventValue,
@@ -221,7 +259,7 @@ export class SchedulerComponent implements AfterViewInit {
       isCostToAttend: event.isCostToAttend,
       costToAttend: event.costToAttend,
       isNew
-    } : {};
+    };
   }
 
   handleEventDialogClose(event: any, result: any, eventDataManager: any): void {

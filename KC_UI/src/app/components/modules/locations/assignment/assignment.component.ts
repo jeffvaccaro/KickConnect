@@ -40,16 +40,35 @@ export class AssignmentComponent implements AfterViewInit {
     onTimeRangeSelected: args => {},
     onEventClick: args => {
       const eventData = args.e.data as any;
-      // Normalize start and end to JavaScript Date objects (DayPilot may provide strings)
-      const startRaw = eventData.start;
-      const endRaw = eventData.end;
-      const startDate = startRaw instanceof Date ? startRaw : new Date(startRaw);
-      const endDate = endRaw instanceof Date ? endRaw : new Date(endRaw);
+
+      // Helper to coerce multiple possible shapes into a JS Date or null
+      const parseToDate = (val: any): Date | null => {
+        if (!val && val !== 0) return null;
+        try {
+          if (val instanceof Date) return val;
+          // DayPilot.Date may be an object with a toString() that returns an ISO-like string
+          if (typeof val === 'object' && typeof (val as any).toString === 'function') {
+            const s = (val as any).toString();
+            const d = new Date(s);
+            if (!isNaN(d.getTime())) return d;
+          }
+          if (typeof val === 'string' || typeof val === 'number') {
+            const d = new Date(val);
+            if (!isNaN(d.getTime())) return d;
+          }
+        } catch (e) {
+          // fallthrough to null
+        }
+        return null;
+      };
+
+      const startDate = parseToDate(eventData.start);
+      const endDate = parseToDate(eventData.end);
 
       const pad = (n: number) => String(n).padStart(2, '0');
-      const selectedDate = this.formatDate(startDate.toISOString());
-      const selectedTime = `${pad(startDate.getHours())}:${pad(startDate.getMinutes())}`;
-      const duration = (endDate.getTime() - startDate.getTime()) / (60 * 1000);
+      const selectedDate = startDate ? this.formatDate(startDate.toISOString()) : (eventData.selectedDate || '');
+      const selectedTime = startDate ? `${pad(startDate.getHours())}:${pad(startDate.getMinutes())}` : (eventData.selectedTime || '');
+      const duration = (typeof eventData.duration === 'number' && !isNaN(eventData.duration)) ? eventData.duration : (startDate && endDate ? (endDate.getTime() - startDate.getTime()) / (60 * 1000) : (eventData.duration || 60));
 
       const updatedEvent = eventData;
       const eventIndex = this.customDPEvents.findIndex(event => event.id === updatedEvent.id);
@@ -64,7 +83,7 @@ export class AssignmentComponent implements AfterViewInit {
         eventDescription: eventData.eventDescription || '',
         eventName: eventData.text || '',
         selectedDate,
-        day: startDate.getDay(),
+        day: startDate ? startDate.getDay() : (eventData.day ?? 0),
         selectedTime,
         duration,
         locationValues: eventData.locationValues !== undefined ? eventData.locationValues : -99,
