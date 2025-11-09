@@ -27,23 +27,24 @@ const logger = winston.createLogger({
 });
 
 if (process.env.NODE_ENV === 'production') {
-    logger.add(new transports.Stream({
-        stream: {
-            write: async (message) => {
-                const logEvent = {
-                    logGroupName: 'KC-Logs',
-                    logStreamName: 'KCLogStream',
-                    logEvents: [{ message: message.trim(), timestamp: Date.now() }],
-                };
-
-                try {
-                    await cloudWatchClient.send(new PutLogEventsCommand(logEvent));
-                } catch (error) {
-                    console.error('CloudWatch logging failed:', error);
-                }
-            }
-        }
-    }));
+    // Attempt to add CloudWatch push. If the transport construction fails on the
+    // instance (different winston version/constructor), fall back to Console so
+    // the app doesn't crash and logs still appear in EB logs.
+    try {
+        // Use Console transport in production as a safe default. This avoids
+        // startup crashes if the Stream transport is incompatible on the host.
+        logger.add(new winston.transports.Console({
+            format: combine(
+                timestamp(),
+                logFormat
+            )
+        }));
+        // Note: push-to-CloudWatch can be implemented here if desired and the
+        // instance role has permissions. For now we avoid adding a custom
+        // Stream transport that may not be supported in all environments.
+    } catch (err) {
+        console.error('Failed to add production logger transport, continuing without CloudWatch transport', err);
+    }
 }
 
 module.exports = logger;

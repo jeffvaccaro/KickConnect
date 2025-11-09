@@ -31,8 +31,9 @@ const port = process.env.PORT || 3000;
 const isLocal = env === 'development';
 
 const allowedOrigins = [
-  'http://localhost:4200', // Local Angular frontend
-  'https://www.kickconnect.net'
+  'http://localhost:4200',
+  'https://www.kickconnect.net',
+  'https://d1tt1lxr6c8xl3.cloudfront.net'
 ];
 
 const corsOptions = {
@@ -106,12 +107,21 @@ if (!isLocal) {
     next();
   });
 }
-// Determine the path based on the environment
-const distPath = isLocal
-  ? path.join(__dirname, 'dist', 'kickConnect', 'browser') // Local path
-  : path.join(__dirname, 'browser'); // Production path
 
-app.use(express.static(distPath)); // Serve static files
+// Serve static UI only when explicitly enabled.
+// The API-only Elastic Beanstalk environment should NOT set SERVE_UI,
+// so no static UI files will be served from EB when frontend is hosted on S3.
+if (isLocal || process.env.SERVE_UI === 'true') {
+  const distPath = isLocal
+    ? path.join(__dirname, 'dist', 'kickConnect', 'browser') // Local path
+    : path.join(__dirname, 'browser'); // Production path
+
+  app.use(express.static(distPath)); // Serve static files
+  // serve index for SPA routes
+  app.get('/*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
 
 // app.get('/*', (req, res) => {
 //   res.sendFile(path.join(distPath, 'index.html'));
