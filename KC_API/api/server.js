@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 const swaggerSetup = require('./swagger.cjs');
-const logger = require('./logger');
+//const logger = require('./logger');
 
 const authRouter = require('./account.js');
 const userRouter = require('./user.js');
@@ -27,26 +27,36 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const env = process.env.NODE_ENV || 'development';
-const port = process.env.PORT || 3000;
+// Elastic Beanstalk typically provides PORT (often 8080). Use 8080 as the
+// safe default for production instances while keeping development-friendly
+// behavior when NODE_ENV=development.
+const port = process.env.PORT || 8080;
 const isLocal = env === 'development';
 
 const allowedOrigins = [
   'http://localhost:4200',
   'https://www.kickconnect.net',
+  'https://kickconnect.net',
   'https://d1tt1lxr6c8xl3.cloudfront.net'
 ];
 
 const corsOptions = {
   origin: (origin, callback) => {
-      if (allowedOrigins.includes(origin) || !origin) {
-          callback(null, true);
-      } else {
-          callback(new Error('Not allowed by CORS'));
-      }
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
   },
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  credentials: true,
+  optionsSuccessStatus: 204,
 };
 
+// Enable CORS for all routes and explicitly handle preflight OPTIONS requests.
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(bodyParser.json());
 
@@ -58,8 +68,8 @@ if (typeof swaggerSetup === 'function') {
 
 // Centralized error handling
 app.use((err, req, res, next) => {
-  logger.error(`Error occurred: ${err.message}`);
-  console.error(`Error occurred: ${err.message}`);
+  // logger.error(`Error occurred: ${err.message}`);
+  // console.error(`Error occurred: ${err.message}`);
   res.status(500).json({ error: 'An error occurred, please try again later.' });
 });
 
@@ -131,15 +141,29 @@ app.get('/current-datetime', (req, res) => {
   res.send(`Current Date and Time: ${new Date()}`);
 });
 
-app.post('/api/logger', (req, res) => {
-  const { message, level, error } = req.body;
-  if (!['info', 'warn', 'error', 'debug'].includes(level)) {
-    return res.status(400).json({ error: 'Invalid log level' });
-  }
-  logger[level](`${message}: ${JSON.stringify(error)}`);
-  res.status(200).json({ message: 'Log received' });
-});
+// app.post('/api/logger', (req, res) => {
+//   const { message, level, error } = req.body;
+//   if (!['info', 'warn', 'error', 'debug'].includes(level)) {
+//     return res.status(400).json({ error: 'Invalid log level' });
+//   }
+//   logger[level](`${message}: ${JSON.stringify(error)}`);
+//   res.status(200).json({ message: 'Log received' });
+// });
 
 app.listen(port, () => {
-  console.log(`Server running at ${isLocal ? 'http://localhost' : 'https://your-api-domain'}:${port} in ${env} mode`);
+  // Log a concise, environment-accurate startup message. EB sets PORT (typically 8080)
+  const hostInfo = process.env.HOSTNAME ? `${process.env.HOSTNAME}` : '0.0.0.0';
+  console.log(`Server listening on ${hostInfo}:${port} (env=${env})`);
+});
+
+// Global error handlers so startup/runtime crashes are clearly visible in EB logs.
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION - application will exit:', err && err.stack ? err.stack : err);
+  // Give logs a moment to flush then exit with a non-zero code so EB/PM detects failure.
+  setTimeout(() => process.exit(1), 100);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('UNHANDLED REJECTION at:', promise, 'reason:', reason && reason.stack ? reason.stack : reason);
+  setTimeout(() => process.exit(1), 100);
 });

@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "start-pm2": "pm2 start server.js",
+  "package:eb": "powershell -ExecutionPolicy Bypass -File ..\\..\\scripts\\package-api.ps1 -SourceFolder KC_API/api -OutFolder Deploy",
+    "package:eb:minimal": "powershell -ExecutionPolicy Bypass -File ..\\..\\scripts\\package-api-whitelist.ps1 -SourceFolder KC_API/api -OutFolder Deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

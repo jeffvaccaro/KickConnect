@@ -21,6 +21,35 @@ Technologies used:
  - Angular
  - NodeJS/Express 
 
+## Deploy (quick)
+
+A short, co-located summary for local deploys and packaging. For full details see `DEPLOY.md` in the repo root.
+
+- Preview what would run (always run this first):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./scripts/deploy-all.ps1" -DryRun
+```
+
+- Run the full local flow (UI upload + CloudFront invalidation, then create API bundle):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "./scripts/deploy-all.ps1"
+```
+
+- Only create the API EB package (no UI upload):
+
+```powershell
+cd KC_API\api
+npm ci
+npm run package:eb
+```
+
+Notes:
+- `deploy-all.ps1` will not call `eb deploy`; it leaves the EB zip in `Deploy/` for manual upload.
+- If `pwsh` (PowerShell Core) isn't available, run via `powershell.exe` as shown above.
+
+
 ToDo:
  - ~~API Documentation (SWAGGER)~~
  - ~~Authentication w/JWT~~

@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { normalizedApiBase } from './api-base';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrl = `${environment.apiUrl}/login/user-login`;
+  private apiUrl = `${normalizedApiBase(environment.apiUrl)}/login/user-login`;
 
   constructor(private http: HttpClient) {}
 
@@ -24,7 +25,7 @@ export class LoginService {
 
   refreshToken(): Observable<string> {
     const refreshToken = localStorage.getItem('refreshToken');
-    return this.http.post<{ token: string }>(`${environment.apiUrl}/login/refresh-token`, { refreshToken })
+    return this.http.post<{ token: string }>(`${normalizedApiBase(environment.apiUrl)}/login/refresh-token`, { refreshToken })
       .pipe(
         map(response => response.token),
         tap(newToken => {
