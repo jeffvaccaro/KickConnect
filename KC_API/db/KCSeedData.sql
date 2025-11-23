@@ -14,7 +14,7 @@ BEGIN
 	TRUNCATE TABLE `schedulelocation`;
 	TRUNCATE TABLE `schedulemain`;
 	TRUNCATE TABLE `user`;
-	TRUNCATE TABLE `userroles`;
+	TRUNCATE TABLE `staffroles`;
 
 	SET FOREIGN_KEY_CHECKS = 1;
 END //
@@ -47,7 +47,7 @@ INSERT INTO admin.role VALUES
             (4,'Local Admin','Admin of Account for 1 locations',4),
             (5,'Instructor','Instructor of classses',5),
             (6,'Staff','Staff user',6);
-INSERT INTO admin.user VALUES (
+INSERT INTO admin.staff VALUES (
 			1,
             1,
             'SuperUserAccount',
@@ -66,7 +66,7 @@ INSERT INTO admin.user VALUES (
             'DB SEED',
             '2024-10-30 04:17:15',
             NULL);
-INSERT INTO admin.userroles VALUES (1,1);
+INSERT INTO admin.staffroles VALUES (1,1);
 
 
 select * from admin.account;
@@ -76,5 +76,5 @@ select * from admin.profile;
 select * from admin.role;
 select * from admin.schedulelocation;
 select * from admin.schedulemain;
-select * from admin.user;
-select * from admin.userroles;
+select * from admin.staff;
+select * from admin.staffroles;

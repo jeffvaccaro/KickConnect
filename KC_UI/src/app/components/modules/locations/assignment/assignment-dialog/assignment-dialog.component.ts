@@ -7,7 +7,7 @@ import { EventService } from '../../../../../services/event.service';
 import { LocationService } from '../../../../../services/location.service';
 import { SchedulerService } from '../../../../../services/scheduler.service';
 import { SnackbarService } from '../../../../../services/snackbar.service';
-import { UserService } from '../../../../../services/user.service';
+import { StaffService } from '../../../../../services/staff.service';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -56,7 +56,7 @@ export class AssignmentDialogComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService,
+    private userService: StaffService,
     private eventService: EventService,
     private locationService: LocationService,
     private schedulerService: SchedulerService,
@@ -117,7 +117,7 @@ export class AssignmentDialogComponent implements OnInit {
   }
 
   loadUserProfiles() {
-    this.userService.getUsersByLocationAndRole(RolesEnum.Instructor, this.data.locationValues).subscribe({
+    this.userService.getStaffsByLocationAndRole(RolesEnum.Instructor, this.data.locationValues).subscribe({
       next: response => {
         this.userProfileArr = response;
         // Manually trigger change detection to update the view
@@ -132,8 +132,8 @@ export class AssignmentDialogComponent implements OnInit {
     });
   }
 
-  trackByUserId(index: number, userProfileObject: UserProfileObject): number {
-    return userProfileObject.userId;
+  trackBystaffId(index: number, userProfileObject: UserProfileObject): number {
+    return userProfileObject.staffId;
   }
 
   save() {

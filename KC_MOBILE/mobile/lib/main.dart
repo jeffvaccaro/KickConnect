@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter App',
+      title: 'kickConnect',
       theme: ThemeData(primarySwatch: Colors.blue),
       initialRoute: '/',
       routes: {

@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const { sendEmail } = require('./middleware/emailService.js');
-const { connectToDatabase } = require('./db');
+const { connectToDatabase } = require('./db.js');
 const authenticateToken = require('./middleware/authenticateToken.cjs');
 const RoleEnum = require('./enum/roleEnum.js');
 
@@ -17,20 +17,20 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 /**
  * @swagger
- * /user/get-all-users:
+ * /staff/get-all-staff:
  *   get:
  *     tags:
- *       - User
- *     summary: Gets all users
+ *       - Staff
+ *     summary: Gets all staffs
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: A list of users
+ *         description: A list of staffs
  */
-/* #swagger.tags = ['User'] */
-router.get('/get-all-users', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['User'] */
+/* #swagger.tags = ['Staff'] */
+router.get('/get-all-staff', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Staff'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
@@ -39,11 +39,11 @@ router.get('/get-all-users', authenticateToken, async (req, res) => {
         const query = `
             SELECT a.accountName, a.accountCode, u.*, GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, p.description, p.skills, p.url
             FROM admin.account a
-            INNER JOIN admin.user u ON a.accountId = u.accountId
-            INNER JOIN admin.userroles ur ON u.userId = ur.userId
+            INNER JOIN admin.staff u ON a.accountId = u.accountId
+            INNER JOIN admin.staffroles ur ON u.staffId = ur.staffId
             INNER JOIN admin.role r ON ur.roleId = r.roleId
-            LEFT JOIN admin.profile p ON u.userId = p.userId
-            GROUP BY a.accountName, a.accountCode, u.userId, p.description, p.skills, p.url`;
+            LEFT JOIN admin.profile p ON u.staffId = p.staffId
+            GROUP BY a.accountName, a.accountCode, u.staffId, p.description, p.skills, p.url`;
         
         const [results] = await connection.query(query);
         res.json(results);
@@ -54,18 +54,18 @@ router.get('/get-all-users', authenticateToken, async (req, res) => {
         if (connection) {
             connection.release();
         } else {
-            console.warn('get-all-users: Connection not established.');
+            console.warn('get-all-staff: Connection not established.');
         }
     }
 });
 
 /**
  * @swagger
- * /user/get-users-by-account-code:
+ * /staff/get-staff-by-account-staff:
  *   get:
  *     tags:
- *       - User
- *     summary: Get users for a specific account code (excludes roleId 1)
+ *       - Staff
+ *     summary: Get staffs for a specific account code (excludes roleId 1)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -74,18 +74,18 @@ router.get('/get-all-users', authenticateToken, async (req, res) => {
  *         schema:
  *           type: string
  *         required: true
- *         description: Account code to filter users by
+ *         description: Account code to filter staff by
  *     responses:
  *       200:
- *         description: List of users for the account
+ *         description: List of staffs for the account
  *       400:
  *         description: Bad request
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.get('/get-users-by-account-code', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['User'] */
+
+router.get('/get-staff-by-account-staff', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Staff'] */
     const accountCode = req.query.accountcode;
     let connection;
     try {
@@ -95,8 +95,8 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
         const query = `
             SELECT a.accountName, u.*, r.roleName AS roleNames
             FROM admin.account a
-            INNER JOIN admin.user u ON a.accountId = u.accountId
-            INNER JOIN admin.userroles ur ON u.userId = ur.userId
+            INNER JOIN admin.staff u ON a.accountId = u.accountId
+            INNER JOIN admin.staffroles ur ON u.staffId = ur.staffId
             INNER JOIN admin.role r ON ur.roleId = r.roleId
             WHERE a.accountcode = ?
             AND ur.roleId != 1
@@ -110,18 +110,18 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
         if (connection) {
             connection.release();
         } else {
-            console.warn('get-users-by-account-code: Connection not established.');
+            console.warn('get-staff-by-account-staff: Connection not established.');
         }
     }
 });
 
 /**
  * @swagger
- * /user/get-users:
+ * /staff/get-staff:
  *   get:
  *     tags:
- *       - User
- *     summary: Get users by accountCode (returns [] when none)
+ *       - Staff
+ *     summary: Get staffs by accountCode (returns [] when none)
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -133,15 +133,15 @@ router.get('/get-users-by-account-code', authenticateToken, async (req, res) => 
  *         description: Account code to lookup
  *     responses:
  *       200:
- *         description: List of users (may be empty)
+ *         description: List of staffs (may be empty)
  *       404:
  *         description: Account not found
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.get('/get-users', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['User'] */
+
+router.get('/get-staff', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Staff'] */
     let connection;
     try {
         let { accountCode } = req.query;
@@ -158,18 +158,18 @@ router.get('/get-users', authenticateToken, async (req, res) => {
         const query = `
             SELECT a.accountName, a.accountCode, u.*, GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, p.description, p.skills, p.url
             FROM admin.account a
-            INNER JOIN admin.user u ON a.accountId = u.accountId
-            INNER JOIN admin.userroles ur ON u.userId = ur.userId
+            INNER JOIN admin.staff u ON a.accountId = u.accountId
+            INNER JOIN admin.staffroles ur ON u.staffId = ur.staffId
             INNER JOIN admin.role r ON ur.roleId = r.roleId
-            LEFT JOIN admin.profile p ON u.userId = p.userId
+            LEFT JOIN admin.profile p ON u.staffId = p.staffId
             WHERE u.accountId = ?
             AND ur.roleId != 1
-            GROUP BY a.accountName, a.accountCode, u.userId, p.description, p.skills, p.url
+            GROUP BY a.accountName, a.accountCode, u.staffId, p.description, p.skills, p.url
         `;
 
-        const [userResults] = await connection.query(query, [accountId]);
+        const [staffResults] = await connection.query(query, [accountId]);
 
-        res.json(userResults.length ? userResults : []);
+        res.json(staffResults.length ? staffResults : []);
     } catch (err) {
         console.error('Error executing query:', err);
         res.status(500).json({ error: 'Error executing query' });
@@ -177,39 +177,39 @@ router.get('/get-users', authenticateToken, async (req, res) => {
         if (connection) {
             connection.release();
         } else {
-            console.warn('get-users: Connection not established.');
+            console.warn('get-staff: Connection not established.');
         }
     }
 });
 
 /**
  * @swagger
- * /user/get-user-by-id:
+ * /staff/get-staff-by-id:
  *   get:
  *     tags:
- *       - User
- *     summary: Get detailed user info by userId
+ *       - Staff
+ *     summary: Get detailed staff info by staffId
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: userId
+ *         name: staffId
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID of the user to retrieve
+ *         description: ID of the staff to retrieve
  *     responses:
  *       200:
- *         description: User object
+ *         description: staff object
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.get('/get-user-by-id', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['User'] */
+
+router.get('/get-staff-by-id', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Staff'] */
     let connection;
   try {
-      const { userId } = req.query;
+      const { staffId } = req.query;
 
       const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
       connection = await Promise.race([connectToDatabase(), timeout]);
@@ -225,19 +225,19 @@ router.get('/get-user-by-id', authenticateToken, async (req, res) => {
               MAX(p.url) as profileURL,
               MAX(primaryLoc.locationId) as primaryLocation,
               GROUP_CONCAT(DISTINCT altLoc.locationId SEPARATOR ',') as altLocations
-          FROM admin.user u
-          JOIN admin.userroles ur ON u.userId = ur.userId
+          FROM admin.staff u
+          JOIN admin.staffroles ur ON u.staffId = ur.staffId
           JOIN admin.role r ON ur.roleId = r.roleId
-          LEFT JOIN admin.profile p on u.userId = p.userId
+          LEFT JOIN admin.profile p on u.staffId = p.staffId
           LEFT JOIN admin.profilelocation primaryLoc ON p.profileId = primaryLoc.profileId AND primaryLoc.isHome = 1
           LEFT JOIN admin.profilelocation altLoc ON p.profileId = altLoc.profileId AND altLoc.isHome = 0
-          WHERE u.userId = ?
+          WHERE u.staffId = ?
           AND ur.roleId != 1 
-          GROUP BY u.userId
+          GROUP BY u.staffId
       `;    
-      const [userResults] = await connection.query(query, [userId]);
+      const [staffResults] = await connection.query(query, [staffId]);
 
-      res.json(userResults[0] || {});
+      res.json(staffResults[0] || {});
   } catch (err) {
       console.error('Error executing query:', err);
       res.status(500).json({ error: 'Error executing query' });
@@ -245,52 +245,52 @@ router.get('/get-user-by-id', authenticateToken, async (req, res) => {
       if (connection) {
           connection.release();
       } else {
-          console.warn('get-user-by-id: Connection not established.');
+          console.warn('get-staff-by-id: Connection not established.');
       }
   }
 });
 
 /**
  * @swagger
- * /user/send-user-reset-link:
+ * /staff/send-staff-reset-link:
  *   get:
  *     tags:
- *       - User
- *     summary: Send password reset link to a user
+ *       - Staff
+ *     summary: Send password reset link to a staff
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: userId
+ *         name: staffId
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID of the user
+ *         description: ID of the staff
  *       - in: query
  *         name: accountCode
  *         schema:
  *           type: string
  *         required: true
- *         description: Account code for the user
+ *         description: Account code for the staff
  *     responses:
  *       200:
  *         description: Reset link sent
  *       400:
  *         description: Missing parameters
  *       404:
- *         description: User not found
+ *         description: staff not found
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.get('/send-user-reset-link', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['User'] */
+
+router.get('/send-staff-reset-link', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Staff'] */
     let connection;
   try {
       console.log('express method called');
-      const { userId, accountCode } = req.query;
+      const { staffId, accountCode } = req.query;
 
-      if (!userId || !accountCode) {
+      if (!staffId || !accountCode) {
           return res.status(400).json({ error: 'Missing required parameters' });
       }
 
@@ -305,20 +305,20 @@ router.get('/send-user-reset-link', authenticateToken, async (req, res) => {
       }
 
       const query = `
-          SELECT u.email, u.name, u.userId, u.accountId
-          FROM admin.user u
-          WHERE u.userId = ?
+          SELECT u.email, u.name, u.staffId, u.accountId
+          FROM admin.staff u
+          WHERE u.staffId = ?
       `;
       
-      console.log('Executing query:', query, 'with parameters:', [userId]);
+      console.log('Executing query:', query, 'with parameters:', [staffId]);
 
-      const [userResults] = await connection.query(query, [userId]);
+      const [staffResults] = await connection.query(query, [staffId]);
 
-      if (userResults.length === 0) {
-          return res.status(404).json({ error: 'User not found' });
+      if (staffResults.length === 0) {
+          return res.status(404).json({ error: 'staff not found' });
       }
 
-      await sendEmail(userResults[0].email, userResults[0].name, userResults[0].userId, userResults[0].accountId, accountCode);
+      await sendEmail(staffResults[0].email, staffResults[0].name, staffResults[0].staffId, staffResults[0].accountId, accountCode);
       res.status(200).json({ message: 'Reset link sent successfully' });
 
   } catch (err) {
@@ -328,18 +328,18 @@ router.get('/send-user-reset-link', authenticateToken, async (req, res) => {
       if (connection) {
           connection.release();
       } else {
-          console.warn('send-user-reset-link: Connection not established.');
+          console.warn('send-staff-reset-link: Connection not established.');
       }
   }
 });
 
 /**
  * @swagger
- * /user/get-filtered-users:
+ * /staff/get-filtered-staff:
  *   get:
  *     tags:
- *       - User
- *     summary: Get users filtered by accountId and status
+ *       - Staff
+ *     summary: Get staffs filtered by accountId and status
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -358,13 +358,13 @@ router.get('/send-user-reset-link', authenticateToken, async (req, res) => {
  *         description: Filter by Active/InActive
  *     responses:
  *       200:
- *         description: Filtered user list
+ *         description: Filtered staff list
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.get('/get-filtered-users', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['User'] */
+
+router.get('/get-filtered-staff', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Staff'] */
     let { accountId, status } = req.query;
     let isActive;
   if (status === 'InActive') {
@@ -382,12 +382,12 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
               u.*, 
               GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, 
               GROUP_CONCAT(r.roleId SEPARATOR ',') as roleId
-          FROM admin.user u
-          JOIN admin.userroles ur ON u.userId = ur.userId
+          FROM admin.staff u
+          JOIN admin.staffroles ur ON u.staffId = ur.staffId
           JOIN admin.role r ON ur.roleId = r.roleId
           WHERE u.accountId = ? AND u.isActive = ?
           AND ur.roleId != -1
-          GROUP BY u.userId
+          GROUP BY u.staffId
       `;  
 
       const formattedQuery = mysql.format(query, [accountId, isActive]);
@@ -400,18 +400,18 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
       if (connection) {
           connection.release();
       } else {
-          console.warn('get-filtered-users: Connection not established.');
+          console.warn('get-filtered-staff: Connection not established.');
       }
   }
 });
 
 /**
  * @swagger
- * /user/get-users-by-role/{roleId}:
+ * /staff/get-staff-by-role/{roleId}:
  *   get:
  *     tags:
- *       - User
- *     summary: Get users by role ID
+ *       - Staff
+ *     summary: Get staffs by role ID
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -420,16 +420,16 @@ router.get('/get-filtered-users', authenticateToken, async (req, res) => {
  *         schema:
  *           type: integer
  *         required: true
- *         description: Role ID to filter users by
+ *         description: Role ID to filter staffs by
  *     responses:
  *       200:
- *         description: List of users for the role
+ *         description: List of staffs for the role
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.get('/get-users-by-role/:roleId', authenticateToken, async (req, res) => {
-     /* #swagger.tags = ['User'] */   
+
+router.get('/get-staff-by-role/:roleId', authenticateToken, async (req, res) => {
+     /* #swagger.tags = ['Staff'] */   
     let connection;
     try {
         const { roleId } = req.params;
@@ -438,23 +438,23 @@ router.get('/get-users-by-role/:roleId', authenticateToken, async (req, res) => 
         connection = await Promise.race([connectToDatabase(), timeout]);
 
         const query = `
-            SELECT 	u.userId, u.name, u.email, u.phone, u.photoURL, u.isActive, 
+            SELECT 	u.staffId, u.name, u.email, u.phone, u.photoURL, u.isActive, 
                     p.skills, p.description, p.url
-            FROM 	admin.user u 
+            FROM 	admin.staff u 
             INNER JOIN 
-                    admin.userroles ur 
-                ON 	u.userid = ur.userid 
+                    admin.staffroles ur 
+                ON 	u.staffId = ur.staffId 
             LEFT JOIN 
                     admin.profile p
-                ON	p.userid = u.userid
+                ON	p.staffId = u.staffId
             LEFT JOIN
                     admin.profilelocations pl
                 ON	p.profileId = pl.profileId
             WHERE 	ur.roleId = ?
         `;
 
-        const [userResults] = await connection.query(query, [roleId]);
-        res.json(userResults.length ? userResults : []);
+        const [staffResults] = await connection.query(query, [roleId]);
+        res.json(staffResults.length ? staffResults : []);
     } catch (err) {
         console.error('Error executing query:', err);
         res.status(500).json({ error: 'Error executing query' });
@@ -462,18 +462,18 @@ router.get('/get-users-by-role/:roleId', authenticateToken, async (req, res) => 
         if (connection) {
             connection.release();
         } else {
-            console.warn('get-users-by-role: Connection not established.');
+            console.warn('get-staff-by-role: Connection not established.');
         }
     }
 });
 
 /**
  * @swagger
- * /user/get-users-by-location-role/{roleId}/{locationId}:
+ * /staff/get-staff-by-location-role/{roleId}/{locationId}:
  *   get:
  *     tags:
- *       - User
- *     summary: Get users by role and location
+ *       - Staff
+ *     summary: Get staffs by role and location
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -489,13 +489,13 @@ router.get('/get-users-by-role/:roleId', authenticateToken, async (req, res) => 
  *         required: true
  *     responses:
  *       200:
- *         description: List of users matching role and location
+ *         description: List of staffs matching role and location
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.get('/get-users-by-location-role/:roleId/:locationId', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['User'] */
+
+router.get('/get-staff-by-location-role/:roleId/:locationId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Staff'] */
     let connection;
     try {
         const { locationId, roleId } = req.params;
@@ -504,15 +504,15 @@ router.get('/get-users-by-location-role/:roleId/:locationId', authenticateToken,
         connection = await Promise.race([connectToDatabase(), timeout]);
 
         const query = `
-            SELECT 	u.userId, u.name, u.email, u.phone, u.photoURL, u.isActive, 
+            SELECT 	u.staffId, u.name, u.email, u.phone, u.photoURL, u.isActive, 
                     p.skills, p.description, p.url
-            FROM 	admin.user u 
+            FROM 	admin.staff u 
             INNER JOIN 
-                    admin.userroles ur 
-                ON 	u.userid = ur.userid 
+                    admin.staffroles ur 
+                ON 	u.staffId = ur.staffId 
             LEFT JOIN 
                     admin.profile p
-                ON	p.userid = u.userid
+                ON	p.staffId = u.staffId
             LEFT JOIN
                     admin.profilelocation pl
                 ON	p.profileId = pl.profileId
@@ -523,9 +523,9 @@ router.get('/get-users-by-location-role/:roleId/:locationId', authenticateToken,
         const formattedQuery = mysql.format(query,[roleId, locationId]);
         //console.log(formattedQuery);
 
-        const [userResults] = await connection.query(query, [roleId, locationId]);
+        const [staffResults] = await connection.query(query, [roleId, locationId]);
         
-        res.json(userResults.length ? userResults : []);
+        res.json(staffResults.length ? staffResults : []);
     } catch (err) {
         console.error('Error executing query:', err);
         res.status(500).json({ error: 'Error executing query' });
@@ -533,27 +533,27 @@ router.get('/get-users-by-location-role/:roleId/:locationId', authenticateToken,
         if (connection) {
             connection.release();
         } else {
-            console.warn('get-users-by-location-role: Connection not established.');
+            console.warn('get-staff-by-location-role: Connection not established.');
         }
     }
 });
 
 /**
  * @swagger
- * /user/update-user/{userId}:
+ * /staff/update-staff/{staffId}:
  *   put:
  *     tags:
- *       - User
- *     summary: Update a user and their roles (multipart/form-data)
+ *       - Staff
+ *     summary: Update a staff and their roles (multipart/form-data)
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: staffId
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID of the user to update
+ *         description: ID of the staff to update
  *     requestBody:
  *       content:
  *         multipart/form-data:
@@ -563,25 +563,25 @@ router.get('/get-users-by-location-role/:roleId/:locationId', authenticateToken,
  *               photo:
  *                 type: string
  *                 format: binary
- *               userData:
+ *               staffData:
  *                 type: string
- *                 description: JSON string containing user fields and roleId array
+ *                 description: JSON string containing staff fields and roleId array
  *     responses:
  *       200:
- *         description: User updated successfully
+ *         description: staff updated successfully
  *       400:
  *         description: Validation error
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.put('/update-user/:userId', authenticateToken, upload.single('photo'), async (req, res) => {
-    /* #swagger.tags = ['User'] */  
-    const { userId } = req.params;
 
-  const userData = JSON.parse(req.body.userData);
-  const { name, email, phone, phone2, address, city, state, zip, isActive, resetPassword } = userData;
-  let { roleId } = userData;
+router.put('/update-staff/:staffId', authenticateToken, upload.single('photo'), async (req, res) => {
+    /* #swagger.tags = ['Staff'] */  
+    const { staffId } = req.params;
+
+  const staffData = JSON.parse(req.body.staffData);
+  const { name, email, phone, phone2, address, city, state, zip, isActive, resetPassword } = staffData;
+  let { roleId } = staffData;
 
   if (typeof roleId === 'string') {
       roleId = roleId.split(',').map(Number);
@@ -601,106 +601,106 @@ router.put('/update-user/:userId', authenticateToken, upload.single('photo'), as
       connection = await Promise.race([connectToDatabase(), timeout]);
       console.log('Database connection established');
 
-      const userQuery = `
-          UPDATE admin.user
-          SET name = ?, email = ?, phone = ?, phone2 = ?, address = ?, city = ?, state = ?, zip = ?, isActive = ?, resetPassword = ?, photoURL = ?, updatedBy = "API User Update"
-          WHERE userId = ?;
+      const staffQuery = `
+          UPDATE admin.staff
+          SET name = ?, email = ?, phone = ?, phone2 = ?, address = ?, city = ?, state = ?, zip = ?, isActive = ?, resetPassword = ?, photoURL = ?, updatedBy = "API staff Update"
+          WHERE staffId = ?;
       `;
-      await connection.query(userQuery, [name, email, phone, phone2, address, city, state, zip, isActive, resetPassword, photoURL, userId]);
-      console.log('User updated:', { userId, name, email, phone, phone2, address, city, state, zip, isActive, resetPassword, photoURL });
+      await connection.query(staffQuery, [name, email, phone, phone2, address, city, state, zip, isActive, resetPassword, photoURL, staffId]);
+      console.log('staff updated:', { staffId, name, email, phone, phone2, address, city, state, zip, isActive, resetPassword, photoURL });
 
-      const deleteUserRoleQuery = `DELETE FROM admin.userroles WHERE userId = ?;`;
-      await connection.query(deleteUserRoleQuery, [userId]);
-      console.log('Existing user roles deleted for userId:', userId);
+      const deletestaffRoleQuery = `DELETE FROM admin.staffroles WHERE staffId = ?;`;
+      await connection.query(deletestaffRoleQuery, [staffId]);
+      console.log('Existing staff roles deleted for staffId:', staffId);
 
-      const insertUserRoleQuery = `INSERT INTO admin.userroles (userId, roleId) VALUES (?, ?);`;
-      const userRolePromises = roleId.map((role) => {
+      const insertstaffRoleQuery = `INSERT INTO admin.staffroles (staffId, roleId) VALUES (?, ?);`;
+      const staffRolePromises = roleId.map((role) => {
           console.log('Inserting role:', role);
-          return connection.query(insertUserRoleQuery, [userId, role]);
+          return connection.query(insertstaffRoleQuery, [staffId, role]);
       });
-      await Promise.all(userRolePromises);
-      console.log('New user roles inserted:', { userId, roleId });
+      await Promise.all(staffRolePromises);
+      console.log('New staff roles inserted:', { staffId, roleId });
 
       if (roleId.includes(5)) {
-          const profileQuery = `INSERT INTO admin.profile (userId, description, skills, URL) VALUES (?, ?, ?, ?);`;
-          await connection.query(profileQuery, [userId, '', '', '']);
-          console.log('Profile created for Instructor user:', userId);
+          const profileQuery = `INSERT INTO admin.profile (staffId, description, skills, URL) VALUES (?, ?, ?, ?);`;
+          await connection.query(profileQuery, [staffId, '', '', '']);
+          console.log('Profile created for Instructor staff:', staffId);
       }
 
-      res.json({ message: 'User updated successfully' });
+      res.json({ message: 'staff updated successfully' });
   } catch (error) {
-      console.error('Error updating user:', error);
-      res.status(500).json({ error: 'Error updating user: ' + error.message });
+      console.error('Error updating staff:', error);
+      res.status(500).json({ error: 'Error updating staff: ' + error.message });
   } finally {
       if (connection) {
           connection.release();
           console.log('Database connection released');
       } else {
-          console.warn('update-user/:userId: Connection not established.');
+          console.warn('update-staff/:staffId: Connection not established.');
       }
   }
 });
 
 /**
  * @swagger
- * /user/deactivate-user:
+ * /staff/deactivate-staff:
  *   put:
  *     tags:
- *       - User
- *     summary: Deactivate (soft-delete) a user by userId query param
+ *       - Staff
+ *     summary: Deactivate (soft-delete) a staff by staffId query param
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: userId
+ *         name: staffId
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID of the user to deactivate
+ *         description: ID of the staff to deactivate
  *     responses:
  *       200:
- *         description: User deactivated
+ *         description: staff deactivated
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.put('/deactivate-user', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['User'] */  
-    const { userId } = req.query;
+
+router.put('/deactivate-staff', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Staff'] */  
+    const { staffId } = req.query;
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
         connection = await Promise.race([connectToDatabase(), timeout]);
 
-        const userQuery = `UPDATE admin.user 
-            SET isActive = -1, updatedBy = "API User Delete"
-            WHERE userId = ?;`;
+        const staffQuery = `UPDATE admin.staff 
+            SET isActive = -1, updatedBy = "API staff Delete"
+            WHERE staffId = ?;`;
 
-        const [userResult] = await connection.query(userQuery, [userId]);
-        res.json({ message: 'User deactivated' });
+        const [staffResult] = await connection.query(staffQuery, [staffId]);
+        res.json({ message: 'staff deactivated' });
     } catch (error) {
-        res.status(500).json({ error: 'Error deactivating user' });
+        res.status(500).json({ error: 'Error deactivating staff' });
     } finally {
         if (connection) {
             connection.release();
         } else {
-            console.warn('deactivate-user: Connection not established.');
+            console.warn('deactivate-staff: Connection not established.');
         }
     }
 });
 
 /**
  * @swagger
- * /user/update-profile/{userId}:
+ * /staff/update-profile/{staffId}:
  *   put:
  *     tags:
- *       - User
- *     summary: Update a user's profile (skills, description, locations)
+ *       - Staff
+ *     summary: Update a staff's profile (skills, description, locations)
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: staffId
  *         schema:
  *           type: integer
  *         required: true
@@ -719,10 +719,10 @@ router.put('/deactivate-user', authenticateToken, async (req, res) => {
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.put('/update-profile/:userId', authenticateToken, upload.none(), async (req, res) => {
-    /* #swagger.tags = ['User'] */    
-    const { userId } = req.params;
+
+router.put('/update-profile/:staffId', authenticateToken, upload.none(), async (req, res) => {
+    /* #swagger.tags = ['Staff'] */    
+    const { staffId } = req.params;
     let connection;
     try {
             const profileData = JSON.parse(req.body.profileData);
@@ -759,27 +759,27 @@ router.put('/update-profile/:userId', authenticateToken, upload.none(), async (r
                 SET description = ?, 
                     skills = ?, 
                     URL = ?
-                WHERE userId = ?`;
+                WHERE staffId = ?`;
 
             const skillsString = profileData.profileSkills.map(skill => skill.skillName).join(', ');
             //console.log('skillString:', skillsString);
 
-            const profileUpdateQuery = connection.format(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
-            const [profileResult] = await connection.query(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, userId]);
+            const profileUpdateQuery = connection.format(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, staffId]);
+            const [profileResult] = await connection.query(profileQuery, [profileData.profileDescription, skillsString, profileData.profileURL, staffId]);
 
             if (profileData.primaryStudio !== null) {
             // Fetch profileId
-            const getProfileId = `SELECT p.profileId FROM admin.user u 
+            const getProfileId = `SELECT p.profileId FROM admin.staff u 
                                 INNER JOIN admin.profile p 
-                                ON u.userId = p.userId 
-                                WHERE u.userId = ?`;
-            const [rows] = await connection.query(getProfileId, [userId]);
+                                ON u.staffId = p.staffId 
+                                WHERE u.staffId = ?`;
+            const [rows] = await connection.query(getProfileId, [staffId]);
 
             // Ensure profileId is correctly extracted from the result
             const profileId = rows[0]?.profileId;
 
             if (!profileId) {
-            throw new Error('Profile ID not found for the provided user ID');
+            throw new Error('Profile ID not found for the provided staff ID');
             }
 
             // Clear existing profile locations
@@ -796,7 +796,7 @@ router.put('/update-profile/:userId', authenticateToken, upload.none(), async (r
             const altLocPromises = profileData.altStudio.map((locationId) => {
                 return connection.query(altLocationQuery, [profileId, locationId]);
             });
-            //console.log('Profile created for Instructor user:', userId);
+            //console.log('Profile created for Instructor staff:', staffId);
         }        
             res.json({ message: 'Profile updated successfully' });
         } catch (error) {
@@ -813,11 +813,11 @@ router.put('/update-profile/:userId', authenticateToken, upload.none(), async (r
 
 /**
  * @swagger
- * /user/update-user-password/{accountCode}/{userId}/{accountId}:
+ * /staff/update-staff-password/{accountCode}/{staffId}/{accountId}:
  *   put:
  *     tags:
- *       - User
- *     summary: Update a user's password (no auth expected)
+ *       - Staff
+ *     summary: Update a staff's password (no auth expected)
  *     parameters:
  *       - in: path
  *         name: accountCode
@@ -825,7 +825,7 @@ router.put('/update-profile/:userId', authenticateToken, upload.none(), async (r
  *           type: string
  *         required: true
  *       - in: path
- *         name: userId
+ *         name: staffId
  *         schema:
  *           type: integer
  *         required: true
@@ -840,7 +840,7 @@ router.put('/update-profile/:userId', authenticateToken, upload.none(), async (r
  *           schema:
  *             type: object
  *             properties:
- *               userData:
+ *               staffData:
  *                 type: object
  *                 properties:
  *                   password:
@@ -851,21 +851,21 @@ router.put('/update-profile/:userId', authenticateToken, upload.none(), async (r
  *       400:
  *         description: Invalid request
  *       404:
- *         description: User not found or credentials invalid
+ *         description: staff not found or credentials invalid
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.put('/update-user-password/:accountCode/:userId/:accountId', async (req, res) => {
-    /* #swagger.tags = ['User'] */     
-    const { userId, accountCode, accountId } = req.params;
-  const { userData } = req.body;
 
-  if (!userData || !userData.password) {
-      return res.status(400).json({ error: 'Invalid JSON in userData' });
+router.put('/update-staff-password/:accountCode/:staffId/:accountId', async (req, res) => {
+    /* #swagger.tags = ['Staff'] */     
+    const { staffId, accountCode, accountId } = req.params;
+  const { staffData } = req.body;
+
+  if (!staffData || !staffData.password) {
+      return res.status(400).json({ error: 'Invalid JSON in staffData' });
   }
 
-  const password = userData.password;
+  const password = staffData.password;
 
   let connection;
   try {
@@ -873,32 +873,32 @@ router.put('/update-user-password/:accountCode/:userId/:accountId', async (req, 
       connection = await Promise.race([connectToDatabase(), timeout]);
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const [userValidation] = await connection.query(
-          `SELECT * FROM admin.user WHERE userId = ? AND accountId = ? AND accountId = (SELECT accountId FROM admin.account WHERE accountCode = ?)`,
-          [userId, accountId, accountCode]
+      const [staffValidation] = await connection.query(
+          `SELECT * FROM admin.staff WHERE staffId = ? AND accountId = ? AND accountId = (SELECT accountId FROM admin.account WHERE accountCode = ?)`,
+          [staffId, accountId, accountCode]
       );
 
-      if (!userValidation.length) {
-          return res.status(404).json({ message: 'User not found or credentials invalid' });
+      if (!staffValidation.length) {
+          return res.status(404).json({ message: 'staff not found or credentials invalid' });
       }
 
-      const userQuery = `
-          UPDATE admin.user 
+      const staffQuery = `
+          UPDATE admin.staff 
           SET password = ?, updatedBy = "API Password Update" 
-          WHERE userId = ? AND accountId = ? AND accountId = (SELECT accountId FROM admin.account WHERE accountCode = ?);
+          WHERE staffId = ? AND accountId = ? AND accountId = (SELECT accountId FROM admin.account WHERE accountCode = ?);
       `;
 
-      const [userResult] = await connection.query(userQuery, [hashedPassword, userId, accountId, accountCode]);
-      res.json({ message: 'User password updated' });
+      const [staffResult] = await connection.query(staffQuery, [hashedPassword, staffId, accountId, accountCode]);
+      res.json({ message: 'staff password updated' });
 
   } catch (error) {
-      console.error('Error resetting user password:', error);
-      res.status(500).json({ error: 'Error resetting user password' });
+      console.error('Error resetting staff password:', error);
+      res.status(500).json({ error: 'Error resetting staff password' });
   } finally {
       if (connection) {
           connection.release();
       } else {
-          console.warn('update-user-password: Connection not established.');
+          console.warn('update-staff-password: Connection not established.');
       }
   }
 });
@@ -906,11 +906,11 @@ router.put('/update-user-password/:accountCode/:userId/:accountId', async (req, 
 
 /**
  * @swagger
- * /user/add-user:
+ * /staff/add-staff:
  *   post:
  *     tags:
- *       - User
- *     summary: Add a new user (creates profile for instructors)
+ *       - Staff
+ *     summary: Add a new staff (creates profile for instructors)
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -922,23 +922,23 @@ router.put('/update-user-password/:accountCode/:userId/:accountId', async (req, 
  *               photo:
  *                 type: string
  *                 format: binary
- *               userData:
+ *               staffData:
  *                 type: string
- *                 description: JSON string with user fields
+ *                 description: JSON string with staff fields
  *     responses:
  *       200:
- *         description: User registered
+ *         description: staff registered
  *       409:
- *         description: Duplicate user
+ *         description: Duplicate staff
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
-router.post('/add-user', authenticateToken, upload.single('photo'), async (req, res) => {
-    /* #swagger.tags = ['User'] */   
-    let { accountcode, name, email, phone, phone2, address, city, state, zip, password: originalPassword, roleId } = JSON.parse(req.body.userData);
 
-  console.log('Parsed userData:', { accountcode, name, email, phone, phone2, address, city, state, zip, originalPassword, roleId });
+router.post('/add-staff', authenticateToken, upload.single('photo'), async (req, res) => {
+    /* #swagger.tags = ['Staff'] */   
+    let { accountcode, name, email, phone, phone2, address, city, state, zip, password: originalPassword, roleId } = JSON.parse(req.body.staffData);
+
+  console.log('Parsed staffData:', { accountcode, name, email, phone, phone2, address, city, state, zip, originalPassword, roleId });
   console.log('RoleEnum:', RoleEnum);
   console.log('RoleEnum.Instructor:', RoleEnum.Instructor);
 
@@ -961,23 +961,23 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
       const accountId = accountResults[0].accountId;
       const photoURL = req.file ? `/uploads/${req.file.filename}` : null;
 
-      const duplicateQuery = `SELECT * FROM admin.user WHERE name = ? AND email = ? AND phone = ? AND address = ? AND city = ? AND state = ? AND zip = ?`;
+      const duplicateQuery = `SELECT * FROM admin.staff WHERE name = ? AND email = ? AND phone = ? AND address = ? AND city = ? AND state = ? AND zip = ?`;
       const [duplicateResults] = await connection.query(duplicateQuery, [name, email, phone, address, city, state, zip]);
       if (duplicateResults.length > 0) {
           if (connection) {
               connection.release();
           } else {
-              console.warn('add-user: Connection not established.');
+              console.warn('add-staff: Connection not established.');
           }
-          console.warn('Duplicate user found:', duplicateResults);
-          return res.status(409).json({ error: 'Duplicate user found' });
+          console.warn('Duplicate staff found:', duplicateResults);
+          return res.status(409).json({ error: 'Duplicate staff found' });
       }
 
-      const userQuery = `INSERT INTO admin.user (accountId, name, email, phone, phone2, address, city, state, zip, password, photoURL, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "API User Insert")`;
-      await connection.query(userQuery, [accountId, name, email, phone, phone2, address, city, state, zip, hashedPassword, photoURL]);
+      const staffQuery = `INSERT INTO admin.staff (accountId, name, email, phone, phone2, address, city, state, zip, password, photoURL, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "API staff Insert")`;
+      await connection.query(staffQuery, [accountId, name, email, phone, phone2, address, city, state, zip, hashedPassword, photoURL]);
 
-      const [result] = await connection.query('SELECT LAST_INSERT_ID() AS userId');
-      const userId = result[0].userId;
+      const [result] = await connection.query('SELECT LAST_INSERT_ID() AS staffId');
+      const staffId = result[0].staffId;
 
       if (!Array.isArray(roleId)) {
           console.error('roleId is not an array:', roleId);
@@ -986,42 +986,42 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
 
       // console.log('roleId includes:', roleId.includes(RoleEnum.Instructor));
 
-      const userRoleQuery = `INSERT INTO admin.userroles (userId, roleId) VALUES (?, ?)`;
-      const userRolePromises = roleId.map((role) => {
+      const staffRoleQuery = `INSERT INTO admin.staffroles (staffId, roleId) VALUES (?, ?)`;
+      const staffRolePromises = roleId.map((role) => {
           console.log('Inserting role:', role);
-          return connection.query(userRoleQuery, [userId, role]);
+          return connection.query(staffRoleQuery, [staffId, role]);
       });
 
-      await Promise.all(userRolePromises);
+      await Promise.all(staffRolePromises);
       
-      await sendEmail(email, name, userId, accountId, accountcode);
+      await sendEmail(email, name, staffId, accountId, accountcode);
 
       if (roleId.includes(RoleEnum.Instructor)) {
-          const profileQuery = `INSERT INTO admin.profile (userId, description, skills, URL) VALUES (?, ?, ?, ?)`;
-          await connection.query(profileQuery, [userId, '', '', '']);
-          console.log('Profile created for Instructor user:', userId);
+          const profileQuery = `INSERT INTO admin.profile (staffId, description, skills, URL) VALUES (?, ?, ?, ?)`;
+          await connection.query(profileQuery, [staffId, '', '', '']);
+          console.log('Profile created for Instructor staff:', staffId);
       }
 
-      res.json({ message: 'User registered' });
+      res.json({ message: 'staff registered' });
   } catch (error) {
-      console.error('Error during user registration:', error);
-      res.status(500).json({ error: 'Error during user registration: ' + error.message });
+      console.error('Error during staff registration:', error);
+      res.status(500).json({ error: 'Error during staff registration: ' + error.message });
   } finally {
       if (connection) {
           connection.release();
           console.log('Database connection released');
       } else {
-          console.warn('add-user: Connection not established.');
+          console.warn('add-staff: Connection not established.');
       }
   }
 });
 
 /**
  * @swagger
- * /user/upsert-profile-assignment/{scheduleLocationId}/{primaryProfileId}/{altProfileId}:
+ * /staff/upsert-profile-assignment/{scheduleLocationId}/{primaryProfileId}/{altProfileId}:
  *   post:
  *     tags:
- *       - User
+ *       - Staff
  *     summary: Insert or update profile assignment for a schedule location
  *     security:
  *       - bearerAuth: []
@@ -1048,9 +1048,9 @@ router.post('/add-user', authenticateToken, upload.single('photo'), async (req, 
  *       500:
  *         description: Server error
  */
-/* #swagger.tags = ['User'] */
+
 router.post('/upsert-profile-assignment/:scheduleLocationId/:primaryProfileId/:altProfileId', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['User'] */   
+    /* #swagger.tags = ['Staff'] */   
     const { scheduleLocationId, primaryProfileId, altProfileId } = req.params;
     console.log('scheduleLocationId', scheduleLocationId);
     

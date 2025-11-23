@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { SkillsAutocompleteComponent } from '../skills-autocomplete/skills-autocomplete.component';
-import { UserService } from '../../../../services/user.service';
+import { StaffService } from '../../../../services/staff.service';
 import { MatOption } from '@angular/material/core';
 import { LocationService } from '../../../../services/location.service';
 import { ILocations } from '../../../../interfaces/locations';
@@ -39,7 +39,7 @@ export class ProfileModalComponent {
     public dialogRef: MatDialogRef<ProfileModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
-    private userService: UserService,
+    private userService: StaffService,
     private locationService: LocationService,
     private cdr: ChangeDetectorRef
   ) {
@@ -121,7 +121,7 @@ export class ProfileModalComponent {
       const formData: FormData = new FormData();
       formData.append('profileData', JSON.stringify(this.profileForm.value));
 
-      this.userService.updateProfile(this.data.userId, formData).subscribe({
+      this.userService.updateProfile(this.data.staffId, formData).subscribe({
         next: response => {
           console.log('Response from server:', response);
         },

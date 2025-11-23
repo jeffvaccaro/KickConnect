@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { UserService } from '../../../../services/user.service';
+import { StaffService } from '../../../../services/staff.service';
 import { RoleService } from '../../../../services/role.service';
 import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../../services/common.service';
@@ -29,9 +29,9 @@ import { BreadcrumbComponent } from '../../../shared/breadcrumb/breadcrumb.compo
 export class AddNewStaffComponent {
 
   form: FormGroup;
-  userId: number;
+  staffId: number;
   roleArr: Role[] = [];
-  constructor(private fb: FormBuilder, private userService: UserService, private roleService: RoleService, 
+  constructor(private fb: FormBuilder, private userService: StaffService, private roleService: RoleService, 
     private commonService: CommonService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar) {}
 
     ngOnInit(): void {
@@ -89,7 +89,7 @@ export class AddNewStaffComponent {
       formData.append('photo', this.selectedFile, this.selectedFile.name); // Add photo file if available
     }
   
-    this.userService.addUser(formData).subscribe(
+    this.userService.addStaff(formData).subscribe(
       (response: any) => {
         console.log('User Added successfully:', response?.message);
         this.router.navigate(['/']); // Navigate to location-list

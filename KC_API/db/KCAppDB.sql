@@ -2,13 +2,13 @@
 -- cd  c:\Program Files\MySQL\MySQL Server 8.0\bin
 -- mysqldump -u root -p --databases admin common > c:\\KCAppDB.sql
 --
---  UPDATED ON 04/04/2025
+--  UPDATED ON 11/23/2025
 --
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: localhost    Database: admin
 -- ------------------------------------------------------
--- Server version	8.0.39
+-- Server version	8.0.40
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -53,7 +53,7 @@ CREATE TABLE `account` (
   `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP,
   `updatedBy` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`accountId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -62,7 +62,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES (1,'22a5670c-96a8-11ef-b3f5-c87f545b41fc','SuperUserAccount','7208191204','jeff.vaccaro+superuser@gmail.com','2352 S. Winona Ct','Denver','CO','80219',1,1,'2024-10-30 04:17:15','API Account Register','2024-10-30 04:17:15',NULL),(2,'97a3c53a-a293-11ef-a72e-c87f545b41fc','Owner Account','7205551212','jeff.vaccaro+owner@gmail.com','Owner Address','New York','NY','10001',0,1,'2024-11-14 07:20:25','API Account Register','2024-11-14 07:20:25',NULL),(3,'b78fca70-b980-11ef-82eb-c035326305e8','OwnerAccount','9995551212','ownerTest@ownertest.com','OwnerTestAddressInfo','New York','NY','10001',0,1,'2024-12-13 11:33:15','API Account Register','2024-12-13 11:33:15',NULL);
+INSERT INTO `account` VALUES (1,'22a5670c-96a8-11ef-b3f5-c87f545b41fc','SuperUserAccount','9995551212','superuser@superuser.com','SUPER USER ADDRESS INFO','Denver','CO','80219',1,1,'2024-10-30 04:17:15','DB SEED','2024-10-30 04:17:15',NULL),(2,'88234023-1d5b-11f0-9fcf-c035326305e8','Owner','7208191204','jeff.vaccaro+owner@gmail.com','2352 South Winona Court','Denver','CO','80219',0,1,'2025-04-19 14:19:01','API Account Register','2025-04-19 14:19:01',NULL);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -99,7 +99,7 @@ CREATE TABLE `event` (
 
 LOCK TABLES `event` WRITE;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
-INSERT INTO `event` VALUES (1,2,'Daily Event Short','30 mins - M-F',0,0,0,0,1,'2024-11-14 07:24:19','API event Insert','2024-11-14 07:31:25','API Location Update'),(2,2,'Weekend Event #1','60 mins - Sat',0,0,0,0,1,'2024-11-14 07:24:45','API event Insert','2024-11-14 07:25:25','API Location Update'),(3,2,'Weekend Event #2','60 mins - Sat',0,0,0,0,1,'2024-11-14 07:25:42','API event Insert','2024-11-14 07:25:42',NULL),(4,2,'Daily Event #1','60 mins - M-F',0,0,0,0,1,'2024-11-14 07:26:29','API event Insert','2024-11-14 07:31:36','API Location Update'),(5,2,'Beg/Adv Event #2','60 mins - Beg/Adv',0,0,0,0,1,'2024-11-14 07:32:32','API event Insert','2024-11-14 07:36:02','API Location Update'),(6,2,'Event Expert','60 min - Expert Event',0,0,0,0,1,'2024-11-14 07:34:37','API event Insert','2024-11-14 07:35:08','API Location Update'),(7,2,'Event Basic ','60 min - Event Basic',0,0,0,0,1,'2024-11-14 07:36:32','API event Insert','2024-11-14 07:37:57','API Location Update'),(8,2,'Event Advanced','60 min - Event Advanced',0,0,0,0,1,'2024-11-14 07:38:32','API event Insert','2024-11-14 07:38:32',NULL),(9,2,'Event Beg/Adv with Grappling','90 min - Event w/Grappling',0,0,0,0,1,'2024-11-14 07:39:55','API event Insert','2024-11-14 07:39:55',NULL),(10,3,'Test Event-EDIT','Test Event Description',0,0,0,0,0,'2024-12-13 11:33:38','API event Insert','2024-12-13 11:33:44','API Event Update'),(11,3,'Fitness','Get your sweat on!',0,0,0,0,1,'2024-12-13 11:33:54','API event Insert','2024-12-13 11:33:54',NULL);
+INSERT INTO `event` VALUES (1,2,'30 min Aerobics','30 mins - M-F',0,0,0,0,1,'2024-11-14 07:24:19','API event Insert','2025-11-08 16:02:51','API Event Update'),(2,2,'Weekend Aerobics','60 mins - Sat',0,0,0,0,1,'2024-11-14 07:24:45','API event Insert','2025-11-08 16:03:34','API Event Update'),(3,2,'Weekend Striking','60 mins - Sat',0,0,0,0,1,'2024-11-14 07:25:42','API event Insert','2025-11-08 16:03:53','API Event Update'),(4,2,'Kids Class','60 mins - M-F',0,0,0,0,1,'2024-11-14 07:26:29','API event Insert','2025-11-08 16:03:14','API Event Update'),(5,2,'Beg/Adv Event #2','60 mins - Beg/Adv',0,0,0,0,1,'2024-11-14 07:32:32','API event Insert','2024-11-14 07:36:02','API Location Update'),(6,2,'Event Expert','60 min - Expert Event',0,0,0,0,1,'2024-11-14 07:34:37','API event Insert','2024-11-14 07:35:08','API Location Update'),(7,2,'Event Basic ','60 min - Event Basic',0,0,0,0,1,'2024-11-14 07:36:32','API event Insert','2024-11-14 07:37:57','API Location Update'),(8,2,'Event Advanced','60 min - Event Advanced',0,0,0,0,1,'2024-11-14 07:38:32','API event Insert','2024-11-14 07:38:32',NULL),(9,2,'Event Beg/Adv with Grappling','90 min - Event w/Grappling',0,0,0,0,1,'2024-11-14 07:39:55','API event Insert','2024-11-14 07:39:55',NULL),(10,3,'Test Event-EDIT','Test Event Description',0,0,0,0,0,'2024-12-13 11:33:38','API event Insert','2024-12-13 11:33:44','API Event Update'),(11,3,'Fitness','Get your sweat on!',0,0,0,0,1,'2024-12-13 11:33:54','API event Insert','2024-12-13 11:33:54',NULL);
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +129,7 @@ CREATE TABLE `location` (
   KEY `accountFK_idx` (`accountId`),
   KEY `locationAcctFK_idx` (`accountId`),
   CONSTRAINT `locationAcctFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,7 @@ CREATE TABLE `location` (
 
 LOCK TABLES `location` WRITE;
 /*!40000 ALTER TABLE `location` DISABLE KEYS */;
-INSERT INTO `location` VALUES (1,2,'Location #1','Location#1 Address','New York','NY','10001','7205551212','jeff.vaccaro+location1@gmail.com',1,'2024-11-14 07:22:48','API Location Insert','2024-11-14 07:22:48',NULL),(2,2,'Location #2','Location2 Address','New York','NY','10001','7205551212','jeff.vaccaro+location2@gmail.com',1,'2024-11-14 07:23:14','API Location Insert','2024-11-14 07:23:14','API Location Update'),(3,2,'Location #3','Location #3 Address','New York','NY','10001','7205551212','jeff.vaccaro+location3@gmail.com',1,'2024-11-14 07:23:48','API Location Insert','2024-11-14 07:23:48',NULL),(4,3,'LocationTest','LocationTestAddress','New York','NY','10001','9995551212','LocationTest@LocationTest.com',1,'2024-12-13 11:33:31','API Location Insert','2024-12-13 11:33:31',NULL);
+INSERT INTO `location` VALUES (1,2,'Denver Studio','2352 South Winona Court','Denver','CO','80219','7208191204','jeff.vaccaro+denverstudio@gmail.com',1,'2025-04-19 14:27:00','API Location Insert','2025-04-19 14:27:00',NULL);
 /*!40000 ALTER TABLE `location` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -296,14 +296,14 @@ DROP TABLE IF EXISTS `profile`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `profile` (
   `profileId` int NOT NULL AUTO_INCREMENT,
-  `userId` int NOT NULL,
+  `staffId` int NOT NULL,
   `description` varchar(500) DEFAULT NULL,
   `skills` varchar(250) DEFAULT NULL,
   `url` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`profileId`),
-  KEY `userFK_idx` (`userId`),
-  CONSTRAINT `userFK` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `userFK_idx` (`staffId`),
+  CONSTRAINT `userFK` FOREIGN KEY (`staffId`) REFERENCES `staff` (`staffId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -312,7 +312,7 @@ CREATE TABLE `profile` (
 
 LOCK TABLES `profile` WRITE;
 /*!40000 ALTER TABLE `profile` DISABLE KEYS */;
-INSERT INTO `profile` VALUES (1,4,'test profile desc','bjj, Ju-Jit-Su Master','www.coach1.com'),(4,5,'test desc','AKMF Instructor Certification, IKMF, KMIC Certification, bjj, KMW Instructor Certification, UFAF Krav Maga Instructor Certification, Ju-Jit-Su Master','coach2.com'),(5,8,'','',''),(6,5,'','','');
+INSERT INTO `profile` VALUES (1,3,'','','');
 /*!40000 ALTER TABLE `profile` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -385,7 +385,7 @@ CREATE TABLE `schedulelocation` (
   KEY `FK_LocationId_idx` (`locationid`),
   CONSTRAINT `FK_LocationId` FOREIGN KEY (`locationid`) REFERENCES `location` (`locationId`),
   CONSTRAINT `FK_ScheduleMainId` FOREIGN KEY (`scheduleMainId`) REFERENCES `schedulemain` (`scheduleMainId`)
-) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -394,7 +394,7 @@ CREATE TABLE `schedulelocation` (
 
 LOCK TABLES `schedulelocation` WRITE;
 /*!40000 ALTER TABLE `schedulelocation` DISABLE KEYS */;
-INSERT INTO `schedulelocation` VALUES (22,6,1,1),(23,6,2,1),(24,6,3,1),(25,7,1,1),(26,7,2,1),(27,7,3,1),(43,1,1,1),(44,1,2,1),(45,1,3,1),(46,2,1,1),(47,2,2,1),(48,2,3,1),(49,3,1,1),(50,3,2,1),(51,3,3,1),(52,4,1,1),(53,4,2,1),(54,4,3,1),(55,5,1,1),(56,5,2,1),(57,5,3,1),(58,8,1,1),(59,8,2,1),(60,8,3,1),(61,9,1,1),(62,9,2,1),(63,9,3,1),(64,10,1,1),(65,10,2,1),(66,10,3,1),(67,11,1,1),(68,11,2,1),(69,11,3,1),(70,12,1,1),(71,12,2,1),(72,12,3,1),(76,13,1,1),(77,13,2,1),(78,13,3,1),(82,14,1,1),(83,14,2,1),(84,14,3,1),(85,15,1,1),(86,15,2,1),(87,15,3,1),(88,16,1,1),(89,16,2,1),(90,16,3,1),(94,17,1,1),(95,17,2,1),(96,17,3,1),(97,18,1,1),(98,18,2,1),(99,18,3,1),(100,19,1,1),(101,19,2,1),(102,19,3,1),(103,20,1,1),(104,20,2,1),(105,20,3,1),(106,21,1,1),(107,21,2,1),(108,21,3,1),(109,22,4,1);
+INSERT INTO `schedulelocation` VALUES (2,2,1,1),(3,3,1,1),(4,4,1,1),(5,5,1,1),(6,6,1,1),(7,7,1,1),(8,8,1,1),(9,9,1,1),(11,10,1,1),(13,11,1,1),(15,12,1,1),(16,13,1,1),(17,14,1,1),(18,15,1,1),(19,16,1,1),(20,17,1,1),(21,18,1,1);
 /*!40000 ALTER TABLE `schedulelocation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -424,7 +424,7 @@ CREATE TABLE `schedulemain` (
   KEY `eventFK_idx` (`eventId`),
   CONSTRAINT `eventFK` FOREIGN KEY (`eventId`) REFERENCES `event` (`eventId`),
   CONSTRAINT `scheduleAcctFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -433,7 +433,7 @@ CREATE TABLE `schedulemain` (
 
 LOCK TABLES `schedulemain` WRITE;
 /*!40000 ALTER TABLE `schedulemain` DISABLE KEYS */;
-INSERT INTO `schedulemain` VALUES (1,2,1,1,'17:30:00','18:00:00','2024-11-11 00:00:00',1,1,'API add-schedule','2024-11-14 07:26:58','API Update-Schedule',NULL),(2,2,1,2,'17:30:00','18:00:00','2024-11-12 00:00:00',1,1,'API add-schedule','2024-11-14 07:27:26','API Update-Schedule',NULL),(3,2,1,3,'17:30:00','18:00:00','2024-11-13 00:00:00',1,1,'API add-schedule','2024-11-14 07:27:40','API Update-Schedule',NULL),(4,2,1,4,'17:30:00','18:00:00','2024-11-14 00:00:00',1,1,'API add-schedule','2024-11-14 07:27:54','API Update-Schedule',NULL),(5,2,1,5,'17:30:00','18:00:00','2024-11-15 00:00:00',1,1,'API add-schedule','2024-11-14 07:28:06','API Update-Schedule',NULL),(6,2,2,6,'09:00:00','10:00:00','2024-11-16 00:00:00',1,1,'API add-schedule','2024-11-14 07:28:49',NULL,NULL),(7,2,3,6,'10:00:00','11:00:00','2024-11-16 00:00:00',1,1,'API add-schedule','2024-11-14 07:29:02',NULL,NULL),(8,2,4,1,'16:30:00','17:30:00','2024-11-11 00:00:00',1,1,'API add-schedule','2024-11-14 07:29:23','API Update-Schedule',NULL),(9,2,4,2,'16:30:00','17:30:00','2024-11-12 00:00:00',1,1,'API add-schedule','2024-11-14 07:29:40','API Update-Schedule',NULL),(10,2,4,3,'16:30:00','17:30:00','2024-11-13 00:00:00',1,1,'API add-schedule','2024-11-14 07:29:51','API Update-Schedule',NULL),(11,2,4,4,'16:30:00','17:30:00','2024-11-14 00:00:00',1,1,'API add-schedule','2024-11-14 07:30:03','API Update-Schedule',NULL),(12,2,4,5,'16:30:00','17:30:00','2024-11-15 00:00:00',1,1,'API add-schedule','2024-11-14 07:30:16','API Update-Schedule',NULL),(13,2,5,1,'18:00:00','19:00:00','2024-11-11 00:00:00',1,1,'API add-schedule','2024-11-14 07:32:32','API Update-Schedule',NULL),(14,2,5,4,'18:00:00','19:00:00','2024-11-14 00:00:00',1,1,'API add-schedule','2024-11-14 07:33:39','API Update-Schedule',NULL),(15,2,6,1,'19:00:00','20:00:00','2024-11-11 00:00:00',1,1,'API add-schedule','2024-11-14 07:34:37',NULL,NULL),(16,2,6,2,'19:00:00','20:00:00','2024-11-12 00:00:00',1,1,'API add-schedule','2024-11-14 07:35:29',NULL,NULL),(17,2,7,2,'18:00:00','19:00:00','2024-11-12 00:00:00',1,1,'API add-schedule','2024-11-14 07:36:32','API Update-Schedule',NULL),(18,2,7,3,'19:00:00','20:00:00','2024-11-13 00:00:00',1,1,'API add-schedule','2024-11-14 07:36:59',NULL,NULL),(19,2,6,4,'19:00:00','20:00:00','2024-11-14 00:00:00',1,1,'API add-schedule','2024-11-14 07:37:29',NULL,NULL),(20,2,8,3,'18:00:00','19:00:00','2024-11-13 00:00:00',1,1,'API add-schedule','2024-11-14 07:38:32',NULL,NULL),(21,2,9,5,'18:00:00','19:30:00','2024-11-15 00:00:00',1,1,'API add-schedule','2024-11-14 07:39:55',NULL,NULL),(22,3,11,1,'17:00:00','17:30:00','2024-12-09 00:00:00',1,1,'API add-schedule','2024-12-13 11:34:06',NULL,NULL);
+INSERT INTO `schedulemain` VALUES (2,2,4,1,'16:00:00','17:00:00','2025-08-04 00:00:00',1,1,'API add-schedule','2025-08-02 15:33:56',NULL,NULL),(3,2,4,2,'16:00:00','17:00:00','2025-08-05 00:00:00',1,1,'API add-schedule','2025-08-02 15:34:15',NULL,NULL),(4,2,4,3,'16:00:00','17:00:00','2025-08-06 00:00:00',1,1,'API add-schedule','2025-08-02 15:34:29',NULL,NULL),(5,2,4,4,'16:00:00','17:00:00','2025-08-14 00:00:00',1,1,'API add-schedule','2025-08-02 15:34:39',NULL,NULL),(6,2,4,5,'16:00:00','17:00:00','2025-08-08 00:00:00',1,1,'API add-schedule','2025-08-02 15:34:56',NULL,NULL),(7,2,2,6,'09:00:00','10:00:00','2025-08-02 00:00:00',1,1,'API add-schedule','2025-08-02 17:26:41',NULL,NULL),(8,2,3,6,'10:00:00','11:00:00','2025-08-02 00:00:00',1,1,'API add-schedule','2025-08-02 17:27:36',NULL,NULL),(9,2,1,1,'17:00:00','17:30:00','2025-08-04 00:00:00',1,1,'API add-schedule','2025-08-02 17:28:30',NULL,NULL),(10,2,1,2,'17:00:00','17:30:00','2025-08-05 00:00:00',1,1,'API add-schedule','2025-08-02 17:29:01','API Update-Schedule',NULL),(11,2,1,3,'17:00:00','17:30:00','2025-08-15 00:00:00',1,1,'API add-schedule','2025-08-15 19:48:04','API Update-Schedule',NULL),(12,2,1,4,'17:00:00','17:30:00','2025-11-08 00:00:00',1,1,'API add-schedule','2025-11-08 16:00:52','API Update-Schedule',NULL),(13,2,1,5,'17:00:00','17:30:00','2025-11-07 00:00:00',1,1,'API add-schedule','2025-11-08 16:01:46',NULL,NULL),(14,2,5,1,'17:30:00','18:30:00','2025-11-03 00:00:00',1,1,'API add-schedule','2025-11-08 16:04:39',NULL,NULL),(15,2,5,2,'17:30:00','18:30:00','2025-11-04 00:00:00',1,1,'API add-schedule','2025-11-08 16:05:00',NULL,NULL),(16,2,8,3,'17:30:00','18:30:00','2025-11-05 00:00:00',1,1,'API add-schedule','2025-11-08 16:05:34',NULL,NULL),(17,2,9,5,'17:30:00','18:30:00','2025-11-07 00:00:00',1,1,'API add-schedule','2025-11-08 16:05:54',NULL,NULL),(18,2,7,4,'17:30:00','18:30:00','2025-11-06 00:00:00',1,1,'API add-schedule','2025-11-08 16:06:11',NULL,NULL);
 /*!40000 ALTER TABLE `schedulemain` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -495,14 +495,14 @@ INSERT INTO `skill` VALUES (1,'KMW Instructor Certification','Krav Maga Worldwid
 UNLOCK TABLES;
 
 --
--- Table structure for table `user`
+-- Table structure for table `staff`
 --
-
 DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `staff`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user` (
-  `userId` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `staff` (
+  `staffId` int NOT NULL AUTO_INCREMENT,
   `accountId` int NOT NULL,
   `name` varchar(45) NOT NULL,
   `email` varchar(250) NOT NULL,
@@ -520,47 +520,46 @@ CREATE TABLE `user` (
   `createdBy` varchar(250) NOT NULL,
   `updatedOn` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updatedBy` varchar(250) DEFAULT NULL,
-  PRIMARY KEY (`userId`),
+  PRIMARY KEY (`staffId`),
   KEY `accountFK_idx` (`accountId`),
   CONSTRAINT `accountFK` FOREIGN KEY (`accountId`) REFERENCES `account` (`accountId`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user`
+-- Dumping data for table `staff`
 --
 
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'SuperUserAccount','jeff.vaccaro+superuser@gmail.com','7208191204','','2352 S. Winona Ct','Denver','CO',80219,'$2a$10$D7Ft.ZAJRvZbM6m1ZIw4HOX7hQF9qQhwPaaBp1q.KtDpYo2/KJEdO',NULL,1,1,'2024-10-30 04:17:15','API Register Insert of OWNER','2024-10-30 04:17:15',NULL),(2,2,'Owner Account','jeff.vaccaro+owner@gmail.com','7205551212','','Owner Address','New York','NY',10001,'$2a$10$33Xt0DIlOew6juXclzYcSuuMjMcvGgSHquyvWYPrR3CqYVGZjje6O',NULL,1,1,'2024-11-14 07:20:25','API Register Insert of OWNER','2024-11-17 12:43:46','API Password Update'),(3,2,'Admin User','jeff.vaccaro+admin@gmail.com','7205551212',NULL,'Admin User Address','New York','NY',10001,'$2a$10$sNg3PaC.dOsl0xDx6YWDU.w4dwMM3Z8xBSeko/FNG6Ak4IYaAp5R2',NULL,1,1,'2024-11-14 07:21:33','API User Insert','2024-11-14 07:21:33',NULL),(4,2,'Coach #1','jeff.vaccaro+instructor@gmail.com','7205551212',NULL,'Instructor Address','New York','NY',10001,'$2a$10$zYRg5cnqpumtF83VeQox.O.XW7eLkGhoj9QRQDnk4wg2Cu9BQkkCy','/uploads/1732496508852-champ_barks.jpg',1,0,'2024-11-17 13:14:32','API User Insert','2024-11-24 18:01:48','API User Update'),(5,2,'Coach #2','coach2@coach2.com','7205551212',NULL,'coach2 address','New York','NY',10001,'$2a$10$5RNYN9xABy5ms0G0igqrdO26ktS1ckB1iP/EfFNcaHjBlGmAup1qG','/uploads/1735261270080-GitHub_Contributions_10062024.png',1,0,'2024-12-01 10:59:04','API User Insert','2024-12-26 18:01:10','API User Update'),(6,2,'Coach #3','Coach3@coach3.com','7205551212',NULL,'Coach3 Address','New York','NY',10001,'$2a$10$vD2PVdiElcm.X19EoQamB.3zow9Ub52wcPwQTQDUo5bfoH5NryGr2',NULL,1,1,'2024-12-01 11:07:04','API User Insert','2024-12-01 11:07:04',NULL),(7,2,'Coach #4','jeff.vaccaro+coach4@gmail.com','7205551212',NULL,'Coach #4 Address','New York','NY',10001,'$2a$10$315/3EIdB7f/8zC2xFXd0.BSc.f4k/F8/sxdLgTDIphnCco5MhRfq',NULL,1,1,'2024-12-01 11:16:46','API User Insert','2024-12-01 11:16:46',NULL),(8,2,'Coach #5','jeff.vaccaro+coach5@gmail.com','7205551212',NULL,'Coach #5 Address','New York','NY',10001,'$2a$10$9eV.vOtY8QkB3NFb05gSl./Z6eQ8ynSuhYZNGEY.sWwDeQxPsdaT.',NULL,1,1,'2024-12-01 11:26:23','API User Insert','2024-12-01 11:26:23',NULL),(9,3,'OwnerAccount','ownerTest@ownertest.com','9995551212','','OwnerTestAddressInfo','New York','NY',10001,'$2a$10$n1cc870cWsHxEpRUqaI5u.bFVrlfnh6CI868vBcRZu.8kaeIbBf/2',NULL,1,1,'2024-12-13 11:33:15','API Register Insert of OWNER','2024-12-13 11:33:15',NULL),(10,3,'AdminTestUser-EDIT','admintest@admintest.com','9995551212',NULL,'adminTestUserAddress','New York','NY',10001,'$2a$10$7aLW2PXeKBHeaUiqBY3eI.7ai.PDq0DfJSn/Zzf.5phUIhtHOlcuK',NULL,0,0,'2024-12-13 11:33:21','API User Insert','2024-12-13 11:33:27','API User Update');
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+LOCK TABLES `staff` WRITE;
+/*!40000 ALTER TABLE `staff` DISABLE KEYS */;
+INSERT INTO `staff` VALUES (1,1,'SuperUserAccount','superuser@superuser.com','9995551212','','SUPER USER ADDRESS INFO','DENVER','CO',80219,'$2a$10$D7Ft.ZAJRvZbM6m1ZIw4HOX7hQF9qQhwPaaBp1q.KtDpYo2/KJEdO',NULL,1,0,'2024-10-30 04:17:15','DB SEED','2024-10-30 04:17:15',NULL),(2,2,'Owner','jeff.vaccaro+owner@gmail.com','7208191204','','2352 South Winona Court','Denver','CO',80219,'$2a$10$7Ll7cH1K20RiVavdxmW.PeWZL.bsWv0uMbQhw13S/MXJJh58eLRYe',NULL,1,1,'2025-04-19 14:19:01','API Register Insert of OWNER','2025-04-19 14:19:01',NULL),(3,2,'webdad3','jeff.vaccaro+admin@gmail.com','7208191204',NULL,'2352 South Winona Court','Denver','CO',80219,'$2a$10$315mJtyFOY7B1n5PacGTj.bODTtoS3QqXYgTaWaeaeR/igDFKejwy','/uploads/1762643283533-HS-1.png',1,1,'2025-11-08 16:08:03','API User Insert','2025-11-08 16:08:03',NULL);
+/*!40000 ALTER TABLE `staff` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `userroles`
+-- Table structure for table `staffroles`
 --
 
-DROP TABLE IF EXISTS `userroles`;
+DROP TABLE IF EXISTS `staffroles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `userroles` (
-  `userId` int NOT NULL,
+CREATE TABLE `staffroles` (
+  `staffId` int NOT NULL,
   `roleId` int NOT NULL,
-  PRIMARY KEY (`userId`,`roleId`),
+  PRIMARY KEY (`staffId`,`roleId`),
   KEY `roleId` (`roleId`),
-  CONSTRAINT `userroles_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`),
-  CONSTRAINT `userroles_ibfk_2` FOREIGN KEY (`roleId`) REFERENCES `role` (`roleId`)
+  CONSTRAINT `staffroles_ibfk_2` FOREIGN KEY (`roleId`) REFERENCES `role` (`roleId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `userroles`
+-- Dumping data for table `staffroles`
 --
 
-LOCK TABLES `userroles` WRITE;
-/*!40000 ALTER TABLE `userroles` DISABLE KEYS */;
-INSERT INTO `userroles` VALUES (1,1),(2,2),(9,2),(3,3),(10,3),(4,4),(4,5),(5,5),(6,5),(7,5),(8,5),(5,6);
-/*!40000 ALTER TABLE `userroles` ENABLE KEYS */;
+LOCK TABLES `staffroles` WRITE;
+/*!40000 ALTER TABLE `staffroles` DISABLE KEYS */;
+INSERT INTO `staffroles` VALUES (1,1),(2,2),(3,3),(3,5);
+/*!40000 ALTER TABLE `staffroles` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -706,4 +705,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-04 21:05:41
+-- Dump completed on 2025-11-23 16:12:56

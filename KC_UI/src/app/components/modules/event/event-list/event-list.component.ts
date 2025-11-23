@@ -8,7 +8,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { UserService } from '../../../../services/user.service';
+import { StaffService } from '../../../../services/staff.service';
 import { EventService } from '../../../../services/event.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
@@ -29,7 +29,7 @@ export class EventListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private eventService: EventService, private userService: UserService, private router: Router,
+  constructor(private eventService: EventService, private userService: StaffService, private router: Router,
               private route: ActivatedRoute, private cdr: ChangeDetectorRef, 
               private snackbarService: SnackbarService) {}
 

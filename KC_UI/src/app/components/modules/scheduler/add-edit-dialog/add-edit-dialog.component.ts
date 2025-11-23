@@ -14,7 +14,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import { UserService } from '../../../../services/user.service';
+import { StaffService } from '../../../../services/staff.service';
 import { EventService } from '../../../../services/event.service';
 import { LocationService } from '../../../../services/location.service';
 import { SchedulerService } from '../../../../services/scheduler.service';
@@ -67,7 +67,7 @@ export class AddEditDialogComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService,
+    private userService: StaffService,
     private eventService: EventService,
     private locationService: LocationService,
     private schedulerService: SchedulerService,

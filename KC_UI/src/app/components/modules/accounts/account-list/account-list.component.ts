@@ -9,7 +9,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../../services/user.service';
+import { StaffService } from '../../../../services/staff.service';
 import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
 @Component({
     selector: 'app-account-list',
@@ -24,7 +24,7 @@ export class AccountListComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource(this.accountArr);
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
-  constructor(private accountService: AccountService, private userService: UserService, private router: Router, private route: ActivatedRoute){
+  constructor(private accountService: AccountService, private userService: StaffService, private router: Router, private route: ActivatedRoute){
 
   }
   ngOnInit(): void {
@@ -85,9 +85,9 @@ export class AccountListComponent implements OnInit, AfterViewInit {
     this.dataSource.data = this.accountArr;
   }
 
-  resetPassword(userId: number, accountCode: string){
-    console.log(userId, accountCode);
-    //this.userService.sendUserResetLink(userId.ToString(), accountCode);
+  resetPassword(staffId: number, accountCode: string){
+    console.log(staffId, accountCode);
+    //this.userService.sendStaffResetLink(staffId.ToString(), accountCode);
   }
   
 }

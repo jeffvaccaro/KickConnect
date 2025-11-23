@@ -13,7 +13,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../../services/common.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../../services/user.service';
+import { StaffService } from '../../../../services/staff.service';
 import { EventService } from '../../../../services/event.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 import { IReservationCount } from '../../../../interfaces/reservation-count';
@@ -40,7 +40,7 @@ export class AddNewEventComponent implements OnInit {
   reservationCounts: IReservationCount[] = [];
 
   constructor(private fb: FormBuilder, private eventService: EventService, private snackBarService: SnackbarService, 
-              private userService: UserService, private commonService: CommonService, private route: ActivatedRoute, 
+              private userService: StaffService, private commonService: CommonService, private route: ActivatedRoute, 
               private router: Router, private schedulerService: SchedulerService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {

@@ -9,7 +9,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { UserService } from '../../../../services/user.service';
+import { StaffService } from '../../../../services/staff.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
 import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
 @Component({
@@ -31,7 +31,7 @@ export class StaffListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private userService: UserService, private snackBarService: SnackbarService, private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
+  constructor(private userService: StaffService, private snackBarService: SnackbarService, private router: Router, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     let status: string = '';
@@ -56,9 +56,9 @@ export class StaffListComponent implements OnInit, AfterViewInit {
 
     if(this.hasRoles(['Super Admin'])){
       this.displayedColumns.splice(1, 0, 'accountName'); // Add 'accountName' after 'name'
-      this.getSuperUserAllUsers();
+      this.getSuperUserAllStaff();
     }else{
-      this.getUsers(this.accountCode);
+      this.getStaffs(this.accountCode);
     }
     
   }
@@ -70,8 +70,8 @@ export class StaffListComponent implements OnInit, AfterViewInit {
   active = true;
   inactive = true;
 
-  getSuperUserAllUsers(): void {
-    this.userService.getSuperUserAllUsers().subscribe({
+  getSuperUserAllStaff(): void {
+    this.userService.getSuperUserAllStaff().subscribe({
       next: response => {
         this.userArr = response;
         this.dataSource.data = this.userArr; // Update the dataSource here
@@ -84,9 +84,9 @@ export class StaffListComponent implements OnInit, AfterViewInit {
     });    
   }
 
-  getUsers(accountCode: string): void {
+  getStaffs(accountCode: string): void {
     //console.log('AccountCode:',accountCode);
-    this.userService.getAllUsers(accountCode).subscribe({
+    this.userService.getAllStaff(accountCode).subscribe({
       next: response => {
         this.userArr = response;
         this.dataSource.data = this.userArr; // Update the dataSource here
@@ -99,10 +99,10 @@ export class StaffListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getUsersByStatus(accountId: number, status: string): void {
+  getStaffsByStatus(accountId: number, status: string): void {
     console.log('accountId:',accountId);
     console.log('status:',status);
-    this.userService.getUsersByStatus(accountId, status).subscribe({
+    this.userService.getStaffsByStatus(accountId, status).subscribe({
       next: response => {
         this.userArr = response;
         this.dataSource.data = this.userArr;
@@ -126,15 +126,15 @@ export class StaffListComponent implements OnInit, AfterViewInit {
       default:
         status = 'Active';
     }
-    this.getUsersByStatus(this.accountId,status);
+    this.getStaffsByStatus(this.accountId,status);
   }
 
   btnAddNewClick() {
     this.router.navigate(['/app-add-new-user']);
   }
 
-  editUser(userId: number){
-    this.router.navigate(['/app-edit-staff', userId]);
+  editUser(staffId: number){
+    this.router.navigate(['/app-edit-staff', staffId]);
   }
   filterLocations(){
     this.router.navigate(['/app-staff-list'], { queryParams: { status: 'InActive' } });
@@ -144,19 +144,19 @@ export class StaffListComponent implements OnInit, AfterViewInit {
     return roles.some(role => this.roleName.includes(role));
   }
 
-  viewProfile(userId: number){
-    this.router.navigate(['/app-edit-profile',userId]);
+  viewProfile(staffId: number){
+    this.router.navigate(['/app-edit-profile',staffId]);
   }
 
-  resetPassword(userId: number, accountCode: string) {
-    if (!userId || !accountCode) {
-      console.error('Invalid parameters:', { userId, accountCode });
+  resetPassword(staffId: number, accountCode: string) {
+    if (!staffId || !accountCode) {
+      console.error('Invalid parameters:', { staffId, accountCode });
       return;
     }
   
-    //console.log('Sending reset link for user:', userId, 'with account code:', accountCode);
+    //console.log('Sending reset link for user:', staffId, 'with account code:', accountCode);
   
-    this.userService.sendUserResetLink(userId.toString(), accountCode).subscribe({
+    this.userService.sendStaffResetLink(staffId.toString(), accountCode).subscribe({
       next: (response) => {
         // console.log('Reset link sent successfully:', response);
       },

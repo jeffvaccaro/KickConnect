@@ -6,7 +6,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { UserService } from '../../../services/user.service';
+import { StaffService } from '../../../services/staff.service';
 import { RoleService } from '../../../services/role.service';
 
 @Component({
@@ -29,7 +29,7 @@ export class SidebarComponent implements OnInit {
 
     constructor(
         private toggleService: ToggleService,
-        public themeService: UiThemeSettingsService, private userService: UserService, private cdr: ChangeDetectorRef
+        public themeService: UiThemeSettingsService, private userService: StaffService, private cdr: ChangeDetectorRef
     ) {
         this.toggleService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
@@ -47,7 +47,7 @@ export class SidebarComponent implements OnInit {
           this.cdr.detectChanges();
         });
     
-        this.userService.getUserName().subscribe(userName => {
+        this.userService.getStaffName().subscribe(userName => {
           this.userName = userName;
           this.userInitial = userName.charAt(0);
           this.cdr.detectChanges();

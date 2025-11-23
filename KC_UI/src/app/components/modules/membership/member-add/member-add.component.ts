@@ -14,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { CommonService } from '@app/services/common.service';
 import { RoleService } from '@app/services/role.service';
-import { UserService } from '@app/services/user.service';
+import { StaffService } from '@app/services/staff.service';
 
 import { Router } from '@angular/router';
 @Component({
@@ -26,9 +26,9 @@ import { Router } from '@angular/router';
 })
 export class MemberAddComponent {
   form: FormGroup;
-  userId: number;
+  staffId: number;
   
-  constructor(private fb: FormBuilder, private userService: UserService, private roleService: RoleService, 
+  constructor(private fb: FormBuilder, private userService: StaffService, private roleService: RoleService, 
     private commonService: CommonService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar) {}
 
     ngOnInit(): void {
@@ -77,7 +77,7 @@ export class MemberAddComponent {
       formData.append('photo', this.selectedFile, this.selectedFile.name); // Add photo file if available
     }
   
-    this.userService.addUser(formData).subscribe(
+    this.userService.addStaff(formData).subscribe(
       (response: any) => {
         console.log('User Added successfully:', response?.message);
         this.router.navigate(['/']); // Navigate to location-list

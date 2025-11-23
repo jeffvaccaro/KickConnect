@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { UserService } from '../../../services/user.service';
+import { StaffService } from '../../../services/staff.service';
 import { catchError, of, tap } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UiThemeSettingsService } from '../../ui-theme-settings/ui-theme-settings.service';
@@ -22,16 +22,16 @@ export class ResetPasswordComponent implements OnInit {
 
     hide = true;
     form: FormGroup;
-    userId: string;
+    staffId: string;
     accountId: string;
     accountCode: string;
 
-    constructor(public themeService: UiThemeSettingsService, private fb: FormBuilder, private route: ActivatedRoute, private userService: UserService, private router: Router) {}
+    constructor(public themeService: UiThemeSettingsService, private fb: FormBuilder, private route: ActivatedRoute, private userService: StaffService, private router: Router) {}
 
     ngOnInit() {
         this.route.queryParams.subscribe(params => {
             console.log('Query params in component:', params);
-            this.userId = params['userId'];
+            this.staffId = params['staffId'];
             this.accountId = params['accountId'];
             this.accountCode = params['accountCode'];
         });
@@ -48,7 +48,7 @@ export class ResetPasswordComponent implements OnInit {
             console.log('Form is valid:', this.form.value);
             const userData = { password: this.form.get('newPassword')!.value as string };
 
-            this.userService.updateUserPassword(this.accountCode, parseInt(this.userId), parseInt(this.accountId), userData).pipe(
+            this.userService.updateStaffPassword(this.accountCode, parseInt(this.staffId), parseInt(this.accountId), userData).pipe(
                 tap((response: any) => {
                     console.log('User updated password successfully:', response?.message);
                 }),

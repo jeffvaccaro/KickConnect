@@ -30,7 +30,7 @@ const connectToDatabase = async () => {
     if (!connection) {
       throw new Error('Connection failed.');
     }
-    console.log('Database connection established.');
+    //console.log('Database connection established.');
     return connection;
   } catch (error) {
     console.error('Database connection error:', error);

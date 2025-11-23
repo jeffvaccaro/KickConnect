@@ -12,7 +12,7 @@ class LoginService {
     String email,
     String password,
   ) async {
-    final url = '$baseUrl/login/user-login';
+    final url = '$baseUrl/login/staff-login';
     final body = jsonEncode({'email': email, 'password': password});
     final headers = {'Content-Type': 'application/json'};
 

@@ -31,7 +31,7 @@ export class UserComponent implements OnInit {
       this.cdr.detectChanges();
     });
 
-    this.userService.getUserName().subscribe(userName => {
+    this.userService.getStaffName().subscribe(userName => {
       this.userName = userName;
       this.userInitial = userName.charAt(0);
       this.cdr.detectChanges();

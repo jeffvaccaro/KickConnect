@@ -15,6 +15,6 @@ export interface IUser {
     roleId: string[],
     roleNames: string,
     state: string,
-    userId: number,
+    staffId: number,
     zip: number
 }

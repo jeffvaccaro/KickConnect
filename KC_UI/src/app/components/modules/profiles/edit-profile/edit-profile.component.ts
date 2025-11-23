@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
-import { UserService } from '../../../../services/user.service';
+import { StaffService } from '../../../../services/staff.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IUser } from '../../../../interfaces/user';
 import { CommonModule } from '@angular/common';
@@ -15,22 +15,22 @@ import { CommonModule } from '@angular/common';
 })
 export class EditProfileComponent implements OnInit 
 {
-  userId: number;
+  staffId: number;
   private userArr: IUser[] = [];
   public user: IUser;
   
-  constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, private cdr: ChangeDetectorRef) { }
+  constructor(private userService: StaffService, private route: ActivatedRoute, private router: Router, private cdr: ChangeDetectorRef) { }
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.userId = +params['userId'];
-      // console.log(this.userId);
+      this.staffId = +params['staffId'];
+      // console.log(this.staffId);
     });
     
     //console.log('AccountCode:',accountCode);
-    this.userService.getUser(this.userId).subscribe({
+    this.userService.getStaff(this.staffId).subscribe({
       next: response => {
         this.user = response;
-        console.log('from userService',this.user);
+        console.log('FROM staffService',this.user);
       },
       error: error => {
         console.error('Error fetching users:', error);

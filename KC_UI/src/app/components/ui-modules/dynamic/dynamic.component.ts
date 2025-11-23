@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from '../../../services/user.service';
+import { StaffService } from '../../../services/staff.service';
 
 @Component({
     selector: 'app-dynamic',
@@ -10,7 +10,7 @@ import { UserService } from '../../../services/user.service';
 export class DynamicComponent implements OnInit {
   role: string;
 
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(private userService: StaffService, private router: Router) {}
 
   ngOnInit(): void {
     console.log('DynamicComponent initialized.');

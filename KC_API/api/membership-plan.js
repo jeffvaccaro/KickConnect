@@ -12,7 +12,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // GET Routes
 router.get('/get-all-plans', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['Membership'] */
+    /* #swagger.tags = ['Membership Plan'] */
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
@@ -31,7 +31,7 @@ router.get('/get-all-plans', authenticateToken, async (req, res) => {
 });
 
 router.get('/get-plan-by-id', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['Membership'] */
+    /* #swagger.tags = ['Membership Plan'] */
     let connection;
     try {
         const { planId } = req.query;
@@ -52,7 +52,7 @@ router.get('/get-plan-by-id', authenticateToken, async (req, res) => {
 
 // PUT Route
 router.put('/update-plan', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['Membership'] */
+    /* #swagger.tags = ['Membership Plan'] */
     const { planId } = req.query;
     const { planDescription, planCost } = req.body;
     let connection;
@@ -79,7 +79,7 @@ router.put('/update-plan', authenticateToken, async (req, res) => {
 
 // POST Route
 router.post('/add-plan', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['Membership'] */
+    /* #swagger.tags = ['Membership Plan'] */
     const { planDescription, planCost } = req.body;
     let connection;
     try {
@@ -104,7 +104,7 @@ router.post('/add-plan', authenticateToken, async (req, res) => {
 
 // DELETE Route
 router.delete('/delete-plan/:planId', authenticateToken, async (req, res) => {
-    /* #swagger.tags = ['Membership'] */
+    /* #swagger.tags = ['Membership Plan'] */
     const { planId } = req.params;
     let connection;
     try {

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:mobile/config.dart';
-import 'attendance-screen.dart'; // Import the AttendanceScreen
+import 'attendance-screen.dart'; 
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
   @override
@@ -128,13 +128,42 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     print('Debug: Building MainScreen');
-    return Scaffold(
-      appBar: AppBar(title: Text('Main Screen')),
+      return Scaffold(
+        appBar: AppBar(title: const Text('KickConnect')),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+              // Branding header
+              Center(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 100,
+                      child: Image.asset(
+                        'assets/images/kickconnect_logo2_black_50.png',
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) => const Icon(
+                          Icons.apps,
+                          size: 64,
+                          color: Colors.blueGrey,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'KickConnect',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
             Text(
               'Name: $name',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

@@ -15,7 +15,7 @@
               <i><mat-icon>people</mat-icon></i>
               <mat-label>Primary:</mat-label>
               <mat-select formControlName="primaryProfile">
-                <mat-option *ngFor="let user of userProfileArr; trackBy: trackByUserId" [value]="user.userId" [id]="'primaryOption -' + user.userId">
+                <mat-option *ngFor="let user of userProfileArr; trackBy: trackBystaffId" [value]="user.staffId" [id]="'primaryOption -' + user.staffId">
                   {{ user.name }}
                 </mat-option>
               </mat-select>
@@ -30,7 +30,7 @@
               <i><mat-icon>people</mat-icon></i>
               <mat-label>Alternate:</mat-label>
               <mat-select formControlName="alternateProfile">
-                <mat-option *ngFor="let user of userProfileArr; trackBy: trackByUserId" [value]="user.userId" [id]="'alternateOption -' + user.userId">
+                <mat-option *ngFor="let user of userProfileArr; trackBy: trackBystaffId" [value]="user.staffId" [id]="'alternateOption -' + user.staffId">
                   {{ user.name }}
                 </mat-option>
               </mat-select>

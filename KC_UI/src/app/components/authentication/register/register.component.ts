@@ -7,7 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { Role } from '../../../interfaces/role';
-import { UserService } from '../../../services/user.service';
+import { StaffService } from '../../../services/staff.service';
 import { RoleService } from '../../../services/role.service';
 import { CommonService } from '../../../services/common.service';
 import { CommonModule } from '@angular/common';
@@ -26,7 +26,7 @@ export class RegisterComponent {
     hide = true;
 
     constructor(
-        public themeService: UiThemeSettingsService, private fb: FormBuilder, private userService: UserService, private roleService: RoleService, 
+        public themeService: UiThemeSettingsService, private fb: FormBuilder, private userService: StaffService, private roleService: RoleService, 
         private commonService: CommonService
     ) {}
 

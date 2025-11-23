@@ -8,7 +8,7 @@ const swaggerSetup = require('./swagger.cjs');
 //const logger = require('./logger');
 
 const authRouter = require('./account.js');
-const userRouter = require('./user.js');
+const staffRouter = require('./staff.js');
 const loginRouter = require('./login.js');
 const locationRouter = require('./location.js');
 const roleRouter = require('./role.cjs');
@@ -35,16 +35,22 @@ const isLocal = env === 'development';
 
 const allowedOrigins = [
   'http://localhost:4200',
+  'http://localhost:3000', // local API + Swagger origin
   'https://www.kickconnect.net',
   'https://kickconnect.net',
-  'https://d1tt1lxr6c8xl3.cloudfront.net'
+  'https://d1tt1lxr6c8xl3.cloudfront.net',
+  // API hostnames (same-origin Swagger/UI calls and direct testing)
+  'https://api.kickconnect.net',
+  'https://kickconnect-api.us-west-2.elasticbeanstalk.com'
 ];
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin) || !origin) {
+    // Allow requests with no origin (like curl or Postman) and known frontend domains
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.warn(`Blocked by CORS: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -54,11 +60,10 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
-// Enable CORS for all routes and explicitly handle preflight OPTIONS requests.
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
-
 app.use(bodyParser.json());
+
 
 if (typeof swaggerSetup === 'function') {
   swaggerSetup(app);
@@ -68,15 +73,13 @@ if (typeof swaggerSetup === 'function') {
 
 // Centralized error handling
 app.use((err, req, res, next) => {
-  // logger.error(`Error occurred: ${err.message}`);
-  // console.error(`Error occurred: ${err.message}`);
   res.status(500).json({ error: 'An error occurred, please try again later.' });
 });
 
 // API routes
 const routers = [
   { path: '/auth', router: authRouter },
-  { path: '/user', router: userRouter },
+  { path: '/staff', router: staffRouter },
   { path: '/membership', router: membRouter },
   { path: '/membershipAttendance', router: memAttRouter },
   { path: '/membershipPlan', router: memPlanRouter },
@@ -152,7 +155,7 @@ app.get('/current-datetime', (req, res) => {
 
 app.listen(port, () => {
   // Log a concise, environment-accurate startup message. EB sets PORT (typically 8080)
-  const hostInfo = process.env.HOSTNAME ? `${process.env.HOSTNAME}` : '0.0.0.0';
+  const hostInfo = process.env.DB_HOST ? `${process.env.DB_HOST}` : '0.0.0.0';
   console.log(`Server listening on ${hostInfo}:${port} (env=${env})`);
 });
 

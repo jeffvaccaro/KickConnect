@@ -48,17 +48,17 @@
                             <i class="{{element.action}}"></i>
                         </button>
                         <mat-menu #actionMenu="matMenu" class="dotMenu two monthMenu" xPosition="before">
-                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="editUser(element.userId)">
+                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="editUser(element.staffId)">
                                 <i class="ri-edit-line"></i> Edit
                             </button>
                             
                             <button mat-menu-item type="button" class="bg-transparent border-none position-relative" 
-                            (click)="viewProfile(element.userId)" *ngIf="element.roleNames.includes('Instructor')">
+                            (click)="viewProfile(element.staffId)" *ngIf="element.roleNames.includes('Instructor')">
                             <i class="ri-profile-fill"></i> View Profile
                             </button>
 
                             <button mat-menu-item type="button" class="bg-transparent border-none position-relative" 
-                            (click)="resetPassword(element.userId, element.accountCode)"  *ngIf="hasRoles(['Super Admin','Owner','Admin'])">
+                            (click)="resetPassword(element.staffId, element.accountCode)"  *ngIf="hasRoles(['Super Admin','Owner','Admin'])">
                                 <i class="ri-mail-send-fill"></i> Reset Password
                             </button>
 

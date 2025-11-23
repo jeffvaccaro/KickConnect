@@ -6,7 +6,7 @@
     import { MatButtonModule } from '@angular/material/button';
     import { MatMenuModule } from '@angular/material/menu';
     import { MatCheckboxModule } from '@angular/material/checkbox';
-    import { UserService } from '../../../../services/user.service';
+    import { StaffService } from '../../../../services/staff.service';
     import { IProfile } from '../../../../interfaces/profile';
     import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
     
@@ -27,7 +27,7 @@
 
         @ViewChild(MatPaginator) paginator: MatPaginator;
 
-        constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, private cdr: ChangeDetectorRef) { 
+        constructor(private userService: StaffService, private route: ActivatedRoute, private router: Router, private cdr: ChangeDetectorRef) { 
             //public dialog: MatDialog
         }
         
@@ -38,12 +38,12 @@
             this.userService.getAccountCode().subscribe(accountCode => {
                 this.accountCode = accountCode;
                 this.cdr.detectChanges();
-                this. getAllUsers();
+                this. getAllStaff();
             });
         }
         
-        getAllUsers(){
-            this.userService.getAllUsers(this.accountCode).subscribe({
+        getAllStaff(){
+            this.userService.getAllStaff(this.accountCode).subscribe({
                 next: response => {
                     this.userArr = response;
                     console.log(this.userArr,'unfiltered');
@@ -60,12 +60,12 @@
               });
         }
 
-        editUser(userId: number){
-            this.router.navigate(['/app-edit-staff', userId]);
+        editUser(staffId: number){
+            this.router.navigate(['/app-edit-staff', staffId]);
         }
 
-        viewProfile(userId: number){
-            this.router.navigate(['/app-edit-profile', userId]);
+        viewProfile(staffId: number){
+            this.router.navigate(['/app-edit-profile', staffId]);
         }
         active = true;
         inactive = true;

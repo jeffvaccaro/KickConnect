@@ -59,40 +59,40 @@ router.post('/add-account', authenticateToken, async (req, res) => {
             const accountCode = account[0].accountCode;
 
             await connection.query(
-                'INSERT INTO admin.user (accountId, name, email, phone, phone2, address, city, state, zip, password, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "API Register Insert of OWNER")',
+                'INSERT INTO admin.staff (accountId, name, email, phone, phone2, address, city, state, zip, password, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "API Register Insert of OWNER")',
                 [accountId, accountName, accountEmail, accountPhone, phone2, accountAddress, accountCity, accountState, accountZip, hashedPassword]
             );
 
-            const [result] = await connection.query('SELECT LAST_INSERT_ID() AS userId');
-            const userId = result[0].userId;
+            const [result] = await connection.query('SELECT LAST_INSERT_ID() AS staffId');
+            const staffId = result[0].staffId;
 
             if (!Array.isArray(role)) {
                 console.error('role is not an array:', role);
                 return res.status(400).json({ error: 'role must be an array' });
             }
 
-            const userRoleQuery = 'INSERT INTO userroles (userId, roleId) VALUES (?, ?);';
-            const userRolePromises = role.map((roleId) => {
-                return connection.query(userRoleQuery, [userId, roleId])
+            const staffRoleQuery = 'INSERT INTO staffroles (staffId, roleId) VALUES (?, ?);';
+            const staffRolePromises = role.map((roleId) => {
+                return connection.query(staffRoleQuery, [staffId, roleId])
                     .then(result => {
-                        console.log(`Role ${roleId} inserted successfully for user ${userId}:`, result);
+                        console.log(`Role ${roleId} inserted successfully for staff ${staffId}:`, result);
                         return result;
                     })
                     .catch(error => {
-                        console.error(`Error inserting role ${roleId} for user ${userId}:`, error);
+                        console.error(`Error inserting role ${roleId} for staff ${staffId}:`, error);
                         throw error;
                     });
             });
 
-            await Promise.all(userRolePromises);
+            await Promise.all(staffRolePromises);
             console.log('All roles inserted successfully.');
 
             console.log('Preparing to send email...');
-            await sendEmail(accountEmail, accountName, userId, accountId, accountCode);
+            await sendEmail(accountEmail, accountName, staffId, accountId, accountCode);
             console.log('Email sent successfully.');
 
             await connection.commit();
-            res.status(201).json({ message: 'Account and user created successfully' });
+            res.status(201).json({ message: 'Account and staff created successfully' });
         } catch (err) {
             await connection.rollback();
             console.error('Transaction error:', err);

@@ -50,10 +50,10 @@
                             <i class="ri-more-2-fill"></i>
                         </button>
                         <mat-menu #actionMenu="matMenu" class="dotMenu two monthMenu" xPosition="before">
-                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="editUser(element.userId)">
+                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="editUser(element.staffId)">
                                 <i class="ri-edit-line"></i>Edit User
                             </button>
-                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="viewProfile(element.userId)">
+                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="viewProfile(element.staffId)">
                                 <i class="ri-profile-fill"></i> View Profile
                             </button>
                         </mat-menu>

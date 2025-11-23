@@ -9,16 +9,22 @@
   "basePath": "/",
   "tags": [
     {
-      "name": "User"
-    },
-    {
       "name": "Login"
     },
     {
       "name": "Location"
     },
     {
+      "name": "Staff"
+    },
+    {
       "name": "Membership"
+    },
+    {
+      "name": "Membership Attendance"
+    },
+    {
+      "name": "Membership Plan"
     },
     {
       "name": "Schedule"
@@ -49,6 +55,13 @@
     "/*": {
       "get": {
         "description": "",
+        "parameters": [
+          {
+            "name": "x-forwarded-proto",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -73,48 +86,10 @@
         }
       }
     },
-    "/api/logger": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "x-forwarded-proto",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "example": "any"
-                },
-                "level": {
-                  "example": "any"
-                },
-                "error": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/get-all-users": {
+    "/get-all-staff": {
       "get": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
@@ -140,10 +115,10 @@
         }
       }
     },
-    "/get-users-by-account-code": {
+    "/get-staff-by-account-staff": {
       "get": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
@@ -174,10 +149,10 @@
         }
       }
     },
-    "/get-users": {
+    "/get-staff": {
       "get": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
@@ -211,15 +186,15 @@
         }
       }
     },
-    "/get-user-by-id": {
+    "/get-staff-by-id": {
       "get": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
           {
-            "name": "userId",
+            "name": "staffId",
             "in": "query",
             "type": "string"
           },
@@ -245,15 +220,15 @@
         }
       }
     },
-    "/send-user-reset-link": {
+    "/send-staff-reset-link": {
       "get": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
           {
-            "name": "userId",
+            "name": "staffId",
             "in": "query",
             "type": "string"
           },
@@ -290,10 +265,10 @@
         }
       }
     },
-    "/get-filtered-users": {
+    "/get-filtered-staff": {
       "get": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
@@ -329,10 +304,10 @@
         }
       }
     },
-    "/get-users-by-role/{roleId}": {
+    "/get-staff-by-role/{roleId}": {
       "get": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
@@ -364,10 +339,10 @@
         }
       }
     },
-    "/get-users-by-location-role/{roleId}/{locationId}": {
+    "/get-staff-by-location-role/{roleId}/{locationId}": {
       "get": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
@@ -405,15 +380,15 @@
         }
       }
     },
-    "/update-user/{userId}": {
+    "/update-staff/{staffId}": {
       "put": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
           {
-            "name": "userId",
+            "name": "staffId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -429,7 +404,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "userData": {
+                "staffData": {
                   "example": "any"
                 },
                 "photoURL": {
@@ -458,15 +433,15 @@
         }
       }
     },
-    "/deactivate-user": {
+    "/deactivate-staff": {
       "put": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
           {
-            "name": "userId",
+            "name": "staffId",
             "in": "query",
             "type": "string"
           },
@@ -492,15 +467,15 @@
         }
       }
     },
-    "/update-profile/{userId}": {
+    "/update-profile/{staffId}": {
       "put": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
           {
-            "name": "userId",
+            "name": "staffId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -539,10 +514,10 @@
         }
       }
     },
-    "/update-user-password/{accountCode}/{userId}/{accountId}": {
+    "/update-staff-password/{accountCode}/{staffId}/{accountId}": {
       "put": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
@@ -553,7 +528,7 @@
             "type": "string"
           },
           {
-            "name": "userId",
+            "name": "staffId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -570,7 +545,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "userData": {
+                "staffData": {
                   "example": "any"
                 }
               }
@@ -593,10 +568,10 @@
         }
       }
     },
-    "/add-user": {
+    "/add-staff": {
       "post": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
@@ -611,7 +586,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "userData": {
+                "staffData": {
                   "example": "any"
                 }
               }
@@ -646,7 +621,7 @@
     "/upsert-profile-assignment/{scheduleLocationId}/{primaryProfileId}/{altProfileId}": {
       "post": {
         "tags": [
-          "User"
+          "Staff"
         ],
         "description": "",
         "parameters": [
@@ -703,7 +678,7 @@
         }
       }
     },
-    "/user-login": {
+    "/login/staff-login": {
       "post": {
         "tags": [
           "Login"
@@ -772,7 +747,7 @@
         }
       }
     },
-    "/get-token": {
+    "/login/get-token": {
       "post": {
         "tags": [
           "Login"
@@ -1272,6 +1247,310 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/get-all-attendance": {
+      "get": {
+        "tags": [
+          "Membership Attendance"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/get-attendance-by-id": {
+      "get": {
+        "tags": [
+          "Membership Attendance"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "memberId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/add-attendance": {
+      "post": {
+        "tags": [
+          "Membership Attendance"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "memberId": {
+                  "example": "any"
+                },
+                "locationId": {
+                  "example": "any"
+                },
+                "eventId": {
+                  "example": "any"
+                },
+                "attendanceDate": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/get-all-plans": {
+      "get": {
+        "tags": [
+          "Membership Plan"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/get-plan-by-id": {
+      "get": {
+        "tags": [
+          "Membership Plan"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/update-plan": {
+      "put": {
+        "tags": [
+          "Membership Plan"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "planDescription": {
+                  "example": "any"
+                },
+                "planCost": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/add-plan": {
+      "post": {
+        "tags": [
+          "Membership Plan"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "planDescription": {
+                  "example": "any"
+                },
+                "planCost": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/delete-plan/{planId}": {
+      "delete": {
+        "tags": [
+          "Membership Plan"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "500": {
             "description": "Internal Server Error"

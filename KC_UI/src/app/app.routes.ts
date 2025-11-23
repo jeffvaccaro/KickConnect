@@ -100,12 +100,12 @@ const mainRoutes: Routes = [
   { path: 'app-assignments/:locationId', component: AssignmentComponent, canActivate: [AuthGuard]},
   
   { path: 'app-staff-list', component: StaffListComponent, canActivate: [AuthGuard] },
-  { path: 'app-edit-staff/:userId', component: EditStaffComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-staff/:staffId', component: EditStaffComponent, canActivate: [AuthGuard] },
 
   { path: 'app-add-new-account', component: AddNewAccountComponent, canActivate: [AuthGuard] },
   { path: 'app-account-list', component: AccountListComponent, canActivate: [AuthGuard] },
 
-  { path: 'app-add-new-user', component: AddNewStaffComponent, canActivate: [AuthGuard] },
+  { path: 'app-add-new-staff', component: AddNewStaffComponent, canActivate: [AuthGuard] },
   
   { path: 'app-role-list', component: RoleListComponent, canActivate: [AuthGuard] },
   { path: 'app-add-new-role', component: AddNewRoleComponent, canActivate: [AuthGuard] },
@@ -120,7 +120,7 @@ const mainRoutes: Routes = [
   
   { path: 'app-profile-list', component: ProfileListComponent, canActivate: [AuthGuard] },
   { path: 'app-add-new-profile', component: AddNewProfileComponent, canActivate: [AuthGuard] },
-  { path: 'app-edit-profile/:userId', component: EditProfileComponent, canActivate: [AuthGuard] },
+  { path: 'app-edit-profile/:staffId', component: EditProfileComponent, canActivate: [AuthGuard] },
   
   { path: 'app-add-new-skill', component: AddNewSkillComponent, canActivate: [AuthGuard]},
   { path: 'app-edit-skill/:skillId', component: EditSkillComponent, canActivate: [AuthGuard]},

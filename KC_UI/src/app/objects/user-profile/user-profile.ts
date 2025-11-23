@@ -1,6 +1,6 @@
 export class UserProfileObject {    
     constructor(    
-        public userId: number,
+        public staffId: number,
         public accountId: number,
         public profileId: number,
         public name: string,

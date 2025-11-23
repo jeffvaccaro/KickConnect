@@ -9,7 +9,7 @@ import { normalizedApiBase } from './api-base';
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrl = `${normalizedApiBase(environment.apiUrl)}/login/user-login`;
+  private apiUrl = `${normalizedApiBase(environment.apiUrl)}/login/staff-login`;
 
   constructor(private http: HttpClient) {}
 

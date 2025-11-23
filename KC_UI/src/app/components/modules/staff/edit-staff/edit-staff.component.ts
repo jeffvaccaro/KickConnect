@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { UserService } from '../../../../services/user.service';
+import { StaffService } from '../../../../services/staff.service';
 import { RoleService } from '../../../../services/role.service';
 import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../../services/common.service';
@@ -39,23 +39,23 @@ interface Role {
 })
 export class EditStaffComponent implements OnInit {
   form: FormGroup;
-  userId: number;
-  userRolesArr: any[] = [];
+  staffId: number;
+  staffrolesArr: any[] = [];
   roleArr: Role[] = []; 
   skillsArr: any[] = []; 
   skillsControl: FormControl;
   
   isInstructorRoleSelected: boolean = true;
 
-  constructor(private fb: FormBuilder, private userService: UserService, private roleService: RoleService, 
+  constructor(private fb: FormBuilder, private userService: StaffService, private roleService: RoleService, 
               private commonService: CommonService, private route: ActivatedRoute, private router: Router,
               private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    // Get the userId from the route parameters
+    // Get the staffId from the route parameters
     this.route.params.subscribe(params => {
-      this.userId = +params['userId']; // Assuming 'id' is the route parameter name
-      this.loadUserData(this.userId);
+      this.staffId = +params['staffId']; // Assuming 'id' is the route parameter name
+      this.loadUserData(this.staffId);
       
     });
 
@@ -81,8 +81,8 @@ export class EditStaffComponent implements OnInit {
     
   }
 
-  loadUserData(userId: number): void {
-    this.userService.getUser(userId).subscribe({
+  loadUserData(staffId: number): void {
+    this.userService.getStaff(staffId).subscribe({
       next: userResponse => {
         //console.log('user', userResponse);
         this.form.patchValue({
@@ -103,17 +103,17 @@ export class EditStaffComponent implements OnInit {
   
         // Set the imageSrc to the photoURL
         this.imageSrc = userResponse.photoURL;
-        this.userRolesArr = userResponse.roleId.split(',').map(Number);
+        this.staffrolesArr = userResponse.roleId.split(',').map(Number);
   
         // Patch the roleControl with the user's roles
-        this.form.get('roleControl')!.setValue(this.userRolesArr);
+        this.form.get('roleControl')!.setValue(this.staffrolesArr);
   
         // Load roles after user data is patched
         this.roleService.getRoles().subscribe({
           next: roleResponse => {
             this.roleArr = roleResponse;
             // Ensure the roleControl value is still correct after loading roles
-            this.form.get('roleControl')!.setValue(this.userRolesArr);
+            this.form.get('roleControl')!.setValue(this.staffrolesArr);
           },
           error: error => {
             console.error('Error fetching role data:', error);
@@ -162,7 +162,7 @@ export class EditStaffComponent implements OnInit {
   
     //console.log('formData:', formData); // Log the form data being sent to the server
     // Call the updateLocation method and pass the form data
-    this.userService.updateUser(this.userId, formData).pipe(
+    this.userService.updateStaff(this.staffId, formData).pipe(
       tap((response: any) => {
         //console.log('User updated successfully:', response?.message);
         this.router.navigate(['/']); // Navigate to location-list
@@ -221,8 +221,8 @@ export class EditStaffComponent implements OnInit {
   }
 
   isInstructorCheck(){
-  // console.log(this.userRolesArr.includes(RolesEnum.Instructor));
-   return this.userRolesArr.includes(RolesEnum.Instructor);
+  // console.log(this.staffrolesArr.includes(RolesEnum.Instructor));
+   return this.staffrolesArr.includes(RolesEnum.Instructor);
   }
 
   onRoleChange(event: any): void {
@@ -262,7 +262,7 @@ export class EditStaffComponent implements OnInit {
     const dialogRef = this.dialog.open(ProfileModalComponent, {
       width: '85%',
       data: {
-        userId: this.userId, 
+        staffId: this.staffId, 
         profileDescription: this.form.value.profileDescriptionControl, 
         profileURL: this.form.value.profileURLControl, 
         profileSkills: this.form.value.profileSkillsControl,
@@ -278,7 +278,7 @@ export class EditStaffComponent implements OnInit {
           skillsControl: result.skills
         });
         console.log('after close', this.form);
-        this.loadUserData(this.userId);
+        this.loadUserData(this.staffId);
       }
     });
   }

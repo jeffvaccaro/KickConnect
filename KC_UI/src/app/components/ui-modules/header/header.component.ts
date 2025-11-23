@@ -6,7 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { UserService } from '../../../services/user.service';
+import { StaffService } from '../../../services/staff.service';
 
 @Component({
     selector: 'app-header',
@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit {
     isToggled = false;
       accountCode: string;
       accountId: string;
-      userId: string;
+      staffId: string;
       userName: string;
       userInitial: string;
       roleName: string;
@@ -27,7 +27,7 @@ export class HeaderComponent implements OnInit {
     constructor(
         private toggleService: ToggleService,
         public themeService: UiThemeSettingsService,
-        private userService: UserService, private cdr: ChangeDetectorRef, private router: Router
+        private userService: StaffService, private cdr: ChangeDetectorRef, private router: Router
     ) {
         this.toggleService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
@@ -46,12 +46,12 @@ export class HeaderComponent implements OnInit {
           this.cdr.detectChanges();
         });
 
-        this.userService.getUserId().subscribe(userId => {
-            this.userId = userId;
+        this.userService.getStaffId().subscribe(staffId => {
+            this.staffId = staffId;
             this.cdr.detectChanges();
         })
     
-        this.userService.getUserName().subscribe(userName => {
+        this.userService.getStaffName().subscribe(userName => {
           this.userName = userName;
           this.userInitial = userName.charAt(0);
           this.cdr.detectChanges();

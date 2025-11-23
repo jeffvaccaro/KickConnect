@@ -15,7 +15,7 @@ if (isProduction) {
     }
   });
 
-  sendEmail = async (accountEmail, accountName, userId, accountId, accountCode) => {
+  sendEmail = async (accountEmail, accountName, staffId, accountId, accountCode) => {
     const emailParams = {
       Source: 'admin@kickConnect.com',
       Destination: {
@@ -27,7 +27,7 @@ if (isProduction) {
         },
         Body: {
           Text: {
-            Data: `Hello ${accountName},\n\nWelcome to KickConnect!  Your account has been created. Please reset your password using the following link: http://${process.env.DOMAIN}/reset-password?accountId=${accountId}&userId=${userId}&accountCode=${accountCode}\n\nBest regards,\nkickConnect`
+            Data: `Hello ${accountName},\n\nWelcome to KickConnect!  Your account has been created. Please reset your password using the following link: http://${process.env.DOMAIN}/reset-password?accountId=${accountId}&staffId=${staffId}&accountCode=${accountCode}\n\nBest regards,\nkickConnect`
           }
         }
       }
@@ -50,12 +50,12 @@ if (isProduction) {
     }
   });
 
-  sendEmail = async (accountEmail, accountName, userId, accountId, accountCode) => {
+  sendEmail = async (accountEmail, accountName, staffId, accountId, accountCode) => {
     const mailOptions = {
       from: process.env.SMTP_EMAIL,
       to: accountEmail,
       subject: 'Welcome to KickConnect!',
-      text: `Hello ${accountName},\n\nWelcome to KickConnect!  Your account has been created. Please reset your password using the following link: http://${process.env.DOMAIN}/reset-password?accountId=${accountId}&userId=${userId}&accountCode=${accountCode}\n\nBest regards,\nkickConnect`
+      text: `Hello ${accountName},\n\nWelcome to KickConnect!  Your account has been created. Please reset your password using the following link: http://${process.env.DOMAIN}/reset-password?accountId=${accountId}&staffId=${staffId}&accountCode=${accountCode}\n\nBest regards,\nkickConnect`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {

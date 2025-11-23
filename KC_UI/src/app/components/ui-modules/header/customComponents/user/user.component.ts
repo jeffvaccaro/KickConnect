@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
-import { UserService } from '../../../../../services/user.service';
+import { StaffService } from '../../../../../services/staff.service';
 
 @Component({
   selector: 'custom-user',
@@ -16,7 +16,7 @@ export class UserComponent implements OnInit {
   userName: string;
   userInitial: string;
   roleName: string;
-  constructor(private userService: UserService, private cdr: ChangeDetectorRef){
+  constructor(private userService: StaffService, private cdr: ChangeDetectorRef){
 
   }
 
@@ -31,7 +31,7 @@ export class UserComponent implements OnInit {
       this.cdr.detectChanges();
     });
 
-    this.userService.getUserName().subscribe(userName => {
+    this.userService.getStaffName().subscribe(userName => {
       this.userName = userName;
       this.userInitial = userName.charAt(0);
       this.cdr.detectChanges();

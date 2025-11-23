@@ -9,7 +9,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { LoginService } from '../../../services/loginService';
 import { AuthService } from '../../../services/authService';
-import { UserService } from '../../../services/user.service';
+import { StaffService } from '../../../services/staff.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -40,7 +40,7 @@ export class LoginComponent {
         private fb: FormBuilder, 
         private loginService: LoginService, 
         private authService: AuthService,  
-        private userService: UserService,
+        private userService: StaffService,
         private router: Router) {
           this.loginForm = this.fb.group({
             // email: ['admin@admin.com', [Validators.required, Validators.email]],
@@ -77,7 +77,7 @@ export class LoginComponent {
             this.authService.setToken(token, new Date(expiration).toISOString());
             this.userService.setAccountCode(response.accountCode);
             this.userService.setAccountId(response.accountId);
-            this.userService.setUserName(response.name);
+            this.userService.setStaffName(response.name);
             this.userService.setRoleName(response.role);
     
             // Log before navigation
