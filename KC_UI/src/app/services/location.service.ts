@@ -34,6 +34,17 @@ export class LocationService {
     );
   }
 
+  // Active locations for a specific account
+  getActiveLocationsByAccountId(accountId: number): Observable<any> {
+    const url = `${this.apiUrl}/get-locations-by-acct-id/${accountId}`;
+    return this.http.get<any>(url).pipe(
+      catchError(error => {
+        this.logger.logError('Error fetching active locations by account', error);
+        throw error;
+      })
+    );
+  }
+
 
   getLocationsById(locationId: number): Observable<any> {
     const url = `${this.apiUrl}/get-locations-by-id/${locationId}`;

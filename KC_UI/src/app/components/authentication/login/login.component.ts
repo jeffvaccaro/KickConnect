@@ -40,7 +40,7 @@ export class LoginComponent {
         private fb: FormBuilder, 
         private loginService: LoginService, 
         private authService: AuthService,  
-        private userService: StaffService,
+        private staffService: StaffService,
         private router: Router) {
           this.loginForm = this.fb.group({
             // email: ['admin@admin.com', [Validators.required, Validators.email]],
@@ -75,10 +75,10 @@ export class LoginComponent {
             const decodedToken: any = this.decodeToken(token);
             const expiration = decodedToken.exp * 1000; // Convert to milliseconds
             this.authService.setToken(token, new Date(expiration).toISOString());
-            this.userService.setAccountCode(response.accountCode);
-            this.userService.setAccountId(response.accountId);
-            this.userService.setStaffName(response.name);
-            this.userService.setRoleName(response.role);
+            this.staffService.setAccountCode(response.accountCode);
+            this.staffService.setAccountId(response.accountId);
+            this.staffService.setStaffName(response.name);
+            this.staffService.setRoleName(response.role);
     
             // Log before navigation
             console.log('Login successful, navigating to root path');

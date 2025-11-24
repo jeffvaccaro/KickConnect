@@ -1,4 +1,110 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+<app-breadcrumb 
+  pageTitle="Owners Dashboard" 
+  [breadcrumbItems]="[]"
+></app-breadcrumb>
+
 <div class="row">
+    <div class="col-md-6 col-lg-4 col-xxl-2/5">
+        <a routerLink="/app-location-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <mat-card class="single-stats-box tagus-card mb-25">
+            <div class="d-flex align-items-center">
+                
+                <div class="icon bg1">
+                    <span class="material-symbols-outlined">pin_drop</span>
+                </div>
+                
+                <div class="title">
+                    <h3>
+                        <ng-container *ngIf="!loadingActiveLocations; else loading">
+                            {{ activeLocationsError ? '-' : activeLocationsCount }}
+                        </ng-container>
+                        <ng-template #loading>...</ng-template>
+                    </h3>
+                    <span class="gray-color d-block">
+                        Locations
+                    </span>
+                </div>
+            </div>
+        </mat-card>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xxl-2/5">
+        <a routerLink="/app-staff-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <mat-card class="single-stats-box tagus-card mb-25">
+            <div class="d-flex align-items-center">
+                <div class="icon bg2">
+                    <span class="material-symbols-outlined">id_card</span>
+                </div>
+                <div class="title">
+                    <h3>
+                      <ng-container *ngIf="!loadingActiveStaff; else loadingStaff">{{ activeStaffCount ?? '-' }}</ng-container>
+                      <ng-template #loadingStaff>...</ng-template>
+                    </h3>
+                    <span class="gray-color d-block">Staff</span>
+                </div>
+            </div>
+        </mat-card>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xxl-2/5">
+        <a routerLink="/app-profile-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <mat-card class="single-stats-box tagus-card mb-25">
+            <div class="d-flex align-items-center">
+                <div class="icon bg1">
+                    <span class="material-symbols-outlined">group</span>
+                </div>
+                <div class="title">
+                    <h3>
+                      <ng-container *ngIf="!loadingActiveInstructors; else loadingInstructors">{{ activeInstructorCount ?? '-' }}</ng-container>
+                      <ng-template #loadingInstructors>...</ng-template>
+                    </h3>
+                    <span class="gray-color d-block">Instructors</span>
+                </div>
+            </div>
+        </mat-card>
+        </a>    
+    </div>
+    <div class="col-md-6 col-lg-4 col-xxl-2/5">
+        <a routerLink="/app-scheduler" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <mat-card class="single-stats-box tagus-card mb-25">
+            <div class="d-flex align-items-center">
+                <div class="icon bg2">
+                    <span class="material-symbols-outlined">fitness_center</span>
+                </div>
+                <div class="title">
+                    <h3>
+                      <ng-container *ngIf="!loadingScheduledClasses; else loadingClasses">{{ scheduledClassesCount ?? '-' }}</ng-container>
+                      <ng-template #loadingClasses>...</ng-template>
+                    </h3>
+                    <span class="gray-color d-block">Classes Scheduled</span>
+                </div>
+            </div>
+        </mat-card>
+        </a>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xxl-2/5">
+        <a routerLink="/app-event-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <mat-card class="single-stats-box tagus-card mb-25">
+            <div class="d-flex align-items-center">
+                <div class="icon bg1">
+                    <span class="material-symbols-outlined">event_upcoming</span>
+                </div>
+                <div class="title">
+                    <h3>
+                      <ng-container *ngIf="!loadingActiveEvents; else loadingEvents">{{ activeEventCount ?? '-' }}</ng-container>
+                      <ng-template #loadingEvents>...</ng-template>
+                    </h3>
+                    <span class="gray-color d-block">Events</span>
+                </div>
+            </div>
+        </mat-card>
+        </a>
+    </div>
+</div>
+
+
+<!-- <div class="row">
     <div class="col-xxl-8">
         <app-location-list />
         <div class="row">
@@ -14,4 +120,4 @@
 <div class="row">
     <div class="col-xxl-8"> </div>
     <div class="col-xxl-4"> </div>
-</div>
+</div> -->
