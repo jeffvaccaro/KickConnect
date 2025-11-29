@@ -15,12 +15,14 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '@app/services/common.service';
 import { RoleService } from '@app/services/role.service';
 import { StaffService } from '@app/services/staff.service';
+import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
 
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-member-add',
   imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule,
-            MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule],
+            MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSelectModule,
+          BreadcrumbComponent],
   templateUrl: './member-add.component.html',
   styleUrl: './member-add.component.scss'
 })

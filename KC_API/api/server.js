@@ -136,22 +136,9 @@ if (isLocal || process.env.SERVE_UI === 'true') {
   });
 }
 
-// app.get('/*', (req, res) => {
-//   res.sendFile(path.join(distPath, 'index.html'));
-// });
-
 app.get('/current-datetime', (req, res) => {
   res.send(`Current Date and Time: ${new Date()}`);
 });
-
-// app.post('/api/logger', (req, res) => {
-//   const { message, level, error } = req.body;
-//   if (!['info', 'warn', 'error', 'debug'].includes(level)) {
-//     return res.status(400).json({ error: 'Invalid log level' });
-//   }
-//   logger[level](`${message}: ${JSON.stringify(error)}`);
-//   res.status(200).json({ message: 'Log received' });
-// });
 
 app.listen(port, () => {
   // Log a concise, environment-accurate startup message. EB sets PORT (typically 8080)

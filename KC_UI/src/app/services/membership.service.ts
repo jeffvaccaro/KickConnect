@@ -15,7 +15,8 @@ export class MembershipService {
     constructor(private http: HttpClient, private logger: LoggerService) {}
 
     getMembers(): Observable<any> {
-    const url = `${this.apiUrl}/get-members`;
+    const url = `${this.apiUrl}/get-all-members`;
+
     return this.http.get<any>(url).pipe(
       catchError(error => {
         this.logger.logError('Error fetching members', error);
@@ -34,4 +35,5 @@ export class MembershipService {
       })
     );
   }
+
 }

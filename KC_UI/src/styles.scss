@@ -132,17 +132,19 @@ button {
     font-size: 13.5px;
     border-radius: 5px;
     color: var(--whiteColor);
-    padding: 11px 31px 11px 15px;
+    padding: 11px 20px; /* uniform horizontal padding */
     transition: var(--transition);
     background-color: var(--mainColor);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* space between icon and label */
 
     i {
-        transform: translateY(-50%);
-        position: absolute;
-        margin-top: 2px;
+        position: static; /* inline instead of absolutely positioned */
+        margin: 0;
         line-height: 1;
-        right: 15px;
-        top: 50%;
+        font-size: 16px;
+        transform: none;
     }
     &:hover {
         //background-color: var(--secondaryColor);
@@ -550,30 +552,28 @@ button {
                 color: var(--paragraphColor);
             }
             .default-btn {
-                padding: 14px 25px 14px 46px !important;
+                padding: 14px 24px !important;
                 font: {
                     weight: 600 !important;
                     size: 14px !important;
                 };
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
                 .mdc-button__label {
-                    display: block;
+                    display: inline; /* inline with icon */
                     position: unset;
                 }
                 i {
-                    top: 50%;
-                    left: 22px;
-                    right: auto;
-                    margin-top: 0;
-                    line-height: 1;
+                    position: static;
                     font-size: 18px;
-                    position: absolute;
-                    transform: translateY(-50%);
+                    line-height: 1;
+                    transform: none;
+                    margin: 0;
                 }
                 &.small {
-                    padding: 11px 20px 11px 39px !important;
-
+                    padding: 11px 18px !important;
                     i {
-                        left: 18px;
                         font-size: 16px;
                     }
                 }

@@ -13,6 +13,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 // GET Routes
 router.get('/get-all-plans', authenticateToken, async (req, res) => {
     /* #swagger.tags = ['Membership Plan'] */
+    console.log('get-all-plans endpoint hit');
     let connection;
     try {
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
