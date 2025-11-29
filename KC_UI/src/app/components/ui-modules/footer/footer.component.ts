@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import pkg from '../../../../../package.json';
 import { UiThemeSettingsService } from '../../ui-theme-settings/ui-theme-settings.service';
 
 @Component({
@@ -9,6 +10,7 @@ import { UiThemeSettingsService } from '../../ui-theme-settings/ui-theme-setting
     styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent {
+    appVersion = pkg.version || '0.0.0';
 
     constructor(
         public themeService: UiThemeSettingsService

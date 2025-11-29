@@ -8,6 +8,7 @@ import { HeaderComponent } from './components/ui-modules/header/header.component
 import { FooterComponent } from './components/ui-modules/footer/footer.component';
 import { UiThemeSettingsComponent } from './components/ui-theme-settings/ui-theme-settings.component';
 import { AuthService } from './services/authService';
+import pkg from '../../package.json';
 
 @Component({
     selector: 'app-root',
@@ -39,7 +40,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log('AppComponent initialized.');
+    const version = pkg.version || '0.0.0';
+    document.title = `kickConnect v${version} (alpha)`;
   }
   
   isBlankPage(): boolean {
