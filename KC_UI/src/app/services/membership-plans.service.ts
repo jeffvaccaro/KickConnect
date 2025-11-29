@@ -12,7 +12,7 @@ export class MembershipPlansService {
   constructor(private http: HttpClient, private logger: LoggerService) {}
   
     getMembershipPlans(): Observable<any> {
-      console.log('Fetching membership plans from API');
+    console.log('Fetching membership plans from API');
     const url = `${this.apiUrl}/get-all-plans`;
 
     return this.http.get<any>(url).pipe(
@@ -23,4 +23,14 @@ export class MembershipPlansService {
     );
   }
 
+  addMembershipPlan(planData: any): Observable<any> {
+    console.log('Adding a new membership plan to API');
+    const url = `${this.apiUrl}/add-plan`;  
+    return this.http.post<any>(url, planData).pipe(
+      catchError(error => {
+        this.logger.logError('Error adding membership plan', error);
+        throw error;
+      })
+    );
+  }
 }

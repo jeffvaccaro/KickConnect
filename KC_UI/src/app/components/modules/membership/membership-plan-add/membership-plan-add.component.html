@@ -1,1 +1,51 @@
-<p>plan-add works!</p>
+ <app-breadcrumb 
+  pageTitle="Add New Membership Plan" 
+  [breadcrumbItems]="[
+    { label: 'Membership Plans', link: '/app-membership-plan-list' }
+  ]"
+></app-breadcrumb>    
+  
+  <mat-card class="mb-25 kickConnect-card">
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit($event)">
+        <div class="row">
+          <div class="col-lg-8 col-md-8 col-sm-8">
+            <div class="kickConnect-form-group">
+              <label class="d-block mb-8 fw-semibold gray-color">Membership Plan Name <span>*</span></label>
+              <mat-form-field appearance="fill">
+                <i class="ri-user-3-line"></i>
+                <mat-label>Membership Plan Name</mat-label>
+                <input matInput [formControl]="nameControl">
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="kickConnect-form-group">
+              <label class="d-block mb-12 fw-semibold gray-color">Membership Plan Description <span>*</span></label>
+              <mat-form-field appearance="fill">
+                <i class="ri-mail-line"></i>
+                <mat-label>Membership Plan Description</mat-label>
+                <textarea matInput [formControl]="descriptionControl" rows="4"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-4">
+            <div class="kickConnect-form-group">
+              <label class="d-block mb-12 fw-semibold gray-color">Membership Plan Price <span>*</span></label>
+              <mat-form-field appearance="fill">
+                <i><mat-icon> attach_money</mat-icon></i>
+                
+                <input matInput placeholder="Price" [formControl]="priceControl" type="number" min="0" step="0.01">
+              </mat-form-field>
+              <div *ngIf="form.get('price')?.touched && form.get('price')?.invalid" class="error-message">
+                Must be greater than $0
+              </div>
+            </div>
+          </div>          
+        </div>
+        <button mat-flat-button type="submit" [disabled]="form.invalid" class="kickConnect fw-semibold">Add Membership Plan</button> &nbsp; <button mat-flat-button (click)="cancel($event)" class="kickConnect fw-semibold gray"><i class="ri-close-fill"></i>Cancel</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  

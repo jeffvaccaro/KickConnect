@@ -147,8 +147,8 @@ const mainRoutes: Routes = [
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full' // Ensure redirection only happens for the exact empty path
+    redirectTo: 'login',
+    pathMatch: 'full'
   },
   {
     path: '',

@@ -11,7 +11,8 @@ export class AuthGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const isAuthenticated = this.authService.isAuthenticated();
     const currentPath = route.routeConfig?.path || '';
-    const publicRoutes = ['register', 'reset-password'];
+    // Public (unguarded) routes: add error pages so server errors don't force logout/login cycle
+    const publicRoutes = ['register', 'reset-password', 'error', 'error-500'];
   
     if (publicRoutes.includes(currentPath)) {
       console.log('Allowed public route:', currentPath);
@@ -22,7 +23,8 @@ export class AuthGuard implements CanActivate {
       console.log('AuthGuard - isAuthenticated:', isAuthenticated);
       return true;
     } else {
-      console.log('AuthGuard: Redirecting to authentication');
+      // Unauthenticated access to a protected route: send to logout (session end / timeout UX)
+      console.log('AuthGuard: Unauthenticated – redirecting to logout');
       this.router.navigate(['logout']);
       return false;
     }
