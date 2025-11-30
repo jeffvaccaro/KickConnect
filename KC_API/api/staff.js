@@ -156,19 +156,19 @@ router.get('/get-staff', authenticateToken, async (req, res) => {
         const accountId = accountResults[0].accountId;
 
         const query = `
-            SELECT a.accountName, a.accountCode, u.*, GROUP_CONCAT(DISTINCT r.roleName SEPARATOR ', ') AS roleNames, p.description, p.skills, p.url
+            SELECT a.accountName, a.accountCode, s.*, GROUP_CONCAT(DISTINCT r.roleName SEPARATOR ', ') AS roleNames, p.description, p.skills, p.url
             FROM admin.account a
-            INNER JOIN admin.staff u ON a.accountId = u.accountId
-            INNER JOIN admin.staffroles ur ON u.staffId = ur.staffId
-            INNER JOIN admin.role r ON ur.roleId = r.roleId
-            LEFT JOIN admin.profile p ON u.staffId = p.staffId
-            WHERE u.accountId = ?
-            AND ur.roleId != 1
-            GROUP BY a.accountName, a.accountCode, u.staffId, p.description, p.skills, p.url
+            INNER JOIN admin.staff s ON a.accountId = s.accountId
+            INNER JOIN admin.staffroles sr ON s.staffId = sr.staffId
+            INNER JOIN admin.role r ON sr.roleId = r.roleId
+            LEFT JOIN admin.profile p ON s.staffId = p.staffId
+            WHERE s.accountId = ?
+            AND sr.roleId != 1
+            GROUP BY a.accountName, a.accountCode, s.staffId, p.description, p.skills, p.url
         `;
 
         const [staffResults] = await connection.query(query, [accountId]);
-
+        console.log('staffResults', staffResults);
         res.json(staffResults.length ? staffResults : []);
     } catch (err) {
         console.error('Error executing query:', err);
@@ -379,19 +379,20 @@ router.get('/get-filtered-staff', authenticateToken, async (req, res) => {
 
       const query = `
           SELECT 
-              u.*, 
+              s.*, 
               GROUP_CONCAT(DISTINCT r.roleName SEPARATOR ', ') AS roleNames, 
               GROUP_CONCAT(DISTINCT r.roleId SEPARATOR ',') as roleId
-          FROM admin.staff u
-          JOIN admin.staffroles ur ON u.staffId = ur.staffId
-          JOIN admin.role r ON ur.roleId = r.roleId
-          WHERE u.accountId = ? AND u.isActive = ?
-          AND ur.roleId != -1
-          GROUP BY u.staffId
+          FROM admin.staff s
+          JOIN admin.staffroles sr ON s.staffId = sr.staffId
+          JOIN admin.role r ON sr.roleId = r.roleId
+          WHERE s.accountId = ? AND s.isActive = ?
+          AND sr.roleId != -1
+          GROUP BY s.staffId
       `;  
 
       const formattedQuery = mysql.format(query, [accountId, isActive]);
       const [results] = await connection.query(formattedQuery);
+      console.log('Filtered staff results:', results);
       res.json(results);
   } catch (err) {
       console.error('Error executing query:', err);
@@ -438,22 +439,23 @@ router.get('/get-staff-by-role/:roleId', authenticateToken, async (req, res) => 
         connection = await Promise.race([connectToDatabase(), timeout]);
 
         const query = `
-            SELECT 	u.staffId, u.name, u.email, u.phone, u.photoURL, u.isActive, 
+            SELECT 	s.staffId, s.name, s.email, s.phone, s.photoURL, s.isActive, 
                     p.skills, p.description, p.url
-            FROM 	admin.staff u 
+            FROM 	admin.staff s 
             INNER JOIN 
-                    admin.staffroles ur 
-                ON 	u.staffId = ur.staffId 
+                    admin.staffroles sr 
+                ON 	s.staffId = sr.staffId 
             LEFT JOIN 
                     admin.profile p
-                ON	p.staffId = u.staffId
+                ON	p.staffId = s.staffId
             LEFT JOIN
-                    admin.profilelocations pl
+                    admin.profilelocation pl
                 ON	p.profileId = pl.profileId
             WHERE 	ur.roleId = ?
         `;
 
         const [staffResults] = await connection.query(query, [roleId]);
+        console.log('staffResults', staffResults);
         res.json(staffResults.length ? staffResults : []);
     } catch (err) {
         console.error('Error executing query:', err);
