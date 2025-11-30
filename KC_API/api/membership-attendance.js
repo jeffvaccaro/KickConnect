@@ -50,6 +50,27 @@ router.get('/get-attendance-by-id', authenticateToken, async (req, res) => {
     }
 });
 
+// Path-param alias for get-attendance-by-id
+router.get('/get-attendance-by-id/:memberId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Membership Attendance'] */
+    let connection;
+    try {
+        const { memberId } = req.params;
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
+        const [attendanceResults] = await connection.query('SELECT * FROM membershipattendance WHERE memberId = ?', [memberId]);
+        res.json(attendanceResults[0] || {});
+    } catch (err) {
+        res.status(500).json({ error: 'Error executing query' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('get-attendance-by-id (path): Connection not established.');
+        }
+    }
+});
+
 
 // POST Route
 router.post('/add-attendance', authenticateToken, async (req, res) => {

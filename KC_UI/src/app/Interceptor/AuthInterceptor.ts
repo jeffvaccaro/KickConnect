@@ -49,6 +49,9 @@ export class AuthInterceptor implements HttpInterceptor {
               })
             );
           }
+        } else if (error.status === 403) {
+          // Forbidden: keep user session, show message, do not open login modal
+          this.snackBar.open('You do not have permission to perform this action.', 'OK', { duration: 3000 });
         } else if (error.status >= 500) {
           this.snackBar.open('Server error. Redirecting...', 'OK', { duration: 3000 });
           setTimeout(() => {
@@ -60,7 +63,8 @@ export class AuthInterceptor implements HttpInterceptor {
             this.router.navigate(['/error']);
           }, 3000); // Delay navigation to allow snackBar display
         } else if (error.status >= 400 && error.status < 500) {
-          this.modalService.openModal(); // Use modal service only for client errors
+          // Client error: show message, do not trigger login modal
+          this.snackBar.open('Request error. Please check input and try again.', 'OK', { duration: 3000 });
         } else {
           this.snackBar.open('An unexpected error occurred. Please try again.', 'OK', { duration: 3000 });
           setTimeout(() => {

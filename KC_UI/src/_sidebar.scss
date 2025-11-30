@@ -810,6 +810,17 @@
     .ng-scroll-viewport > .ng-scroll-content, .ng-scrollbar-external-viewport .ng-scroll-viewport>.ng-scroll-content {
         padding-right: 0 !important;
     }
+    .sidebar-version {
+        position: absolute;
+        bottom: 10px;
+        left: 15px;
+        right: 15px;
+        font-size: 12px;
+        opacity: 0.8;
+        color: var(--blackColor);
+        display: flex;
+        justify-content: space-between;
+    }
 }
 
 // Dark Mode

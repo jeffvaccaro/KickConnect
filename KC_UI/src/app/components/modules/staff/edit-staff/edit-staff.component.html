@@ -43,9 +43,9 @@
                         <mat-label>Role</mat-label>
                         <mat-select formControlName="roleControl" multiple (selectionChange)="onRoleChange($event)">
                             <mat-option *ngFor="let role of roleArr; trackBy: trackByRoleId" [value]="role.roleId">
-                              {{ role.roleName }}
+                                {{ role.roleName }}
                             </mat-option>
-                          </mat-select>
+                        </mat-select>
                     </mat-form-field>
                 </div>
             </div>

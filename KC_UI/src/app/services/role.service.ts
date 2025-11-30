@@ -22,15 +22,12 @@ export class RoleService {
   }
 
   getRolesById(roleId: number): Observable<any> {
-    // console.log('roleId param?', roleId);
-    let url = `${this.apiUrl}/get-role-by-id`;
-    
-    const params = new HttpParams().set('roleId', roleId.toString());
-    return this.http.get<any>(url, { params });
+    const url = `${this.apiUrl}/get-role-by-id/${roleId}`;
+    return this.http.get<any>(url);
   }
 
   updateRole(roleId: number, roleData: any){
-    return this.http.put(`${this.apiUrl}/update-role?roleId=${roleId}`, roleData);
+    return this.http.put(`${this.apiUrl}/update-role/${roleId}`, roleData);
   }
 
   addRole(roleData: any){

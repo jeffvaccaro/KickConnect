@@ -43,7 +43,10 @@
                         </button>
                         <mat-menu #actionMenu="matMenu" class="dotMenu two monthMenu" xPosition="before">
                             <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="editMembershipPlan(element.planId)">
-                                <i class="ri-edit-line"></i> Edit
+                                <i class="ri-edit-line"></i> Edit 
+                            </button>
+                            <button mat-menu-item type="button" class="bg-transparent border-none position-relative" (click)="deleteMembershipPlan(element.planId)">
+                                <i class="ri-delete-bin-line"></i> Delete
                             </button>
                         </mat-menu>
                     </td>

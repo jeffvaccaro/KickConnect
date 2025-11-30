@@ -17,17 +17,15 @@ export class SkillService {
   }
   
   getSkillsById(skillId: number): Observable<any> {
-    let url = `${this.apiUrl}/get-skill-by-id`;
-    
-    const params = new HttpParams().set('skillId', skillId.toString());
-    return this.http.get<any>(url, { params });
+    const url = `${this.apiUrl}/get-skill-by-id/${skillId}`;
+    return this.http.get<any>(url);
   }
 
   updateSkill(skillId: number, skillData: any){
-    return this.http.put(`${this.apiUrl}/update-skill?skillId=${skillId}`, skillData);
+    return this.http.put(`${this.apiUrl}/update-skill/${skillId}`, skillData);
   }
 
   addSkill(skillData: any){
-    return this.http.post(`${this.apiUrl}/add-Skill`, skillData);
+    return this.http.post(`${this.apiUrl}/add-skill`, skillData);
   }  
 }

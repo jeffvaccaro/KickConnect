@@ -8,6 +8,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { StaffService } from '../../../services/staff.service';
 import { RoleService } from '../../../services/role.service';
+import pkg from '../../../../../package.json';
 
 @Component({
     selector: 'app-sidebar',
@@ -26,6 +27,7 @@ export class SidebarComponent implements OnInit {
     userInitial: string;
     roleName: string[] = [];
     availableOptions: number = 0;
+    appVersion: string = pkg.version || '0.0.0';
 
     constructor(
         private toggleService: ToggleService,

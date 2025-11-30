@@ -23,12 +23,45 @@ export class MembershipPlansService {
     );
   }
 
+  getMembershipPlansById(planId: number): Observable<any> {
+    console.log(`Fetching membership plan with ID ${planId} from API`);
+    const url = `${this.apiUrl}/get-plan-by-id/${planId}`;
+    return this.http.get<any>(url).pipe(
+      catchError(error => {
+        this.logger.logError('Error fetching membership plan by ID', error);
+        throw error;
+      })
+    );
+  }
+
   addMembershipPlan(planData: any): Observable<any> {
     console.log('Adding a new membership plan to API');
     const url = `${this.apiUrl}/add-plan`;  
     return this.http.post<any>(url, planData).pipe(
       catchError(error => {
         this.logger.logError('Error adding membership plan', error);
+        throw error;
+      })
+    );
+  }
+
+  updateMembershipPlan(planId: number, planData: any): Observable<any> {
+    console.log(`Updating membership plan with ID ${planId} in API`);
+    const url = `${this.apiUrl}/update-plan/${planId}`;
+    return this.http.put<any>(url, planData).pipe(
+      catchError(error => {
+        this.logger.logError('Error updating membership plan', error);
+        throw error;
+      })
+    );
+  }
+
+  deleteMembershipPlan(planId: number): Observable<any> {
+    console.log(`Deleting membership plan with ID ${planId} from API`);
+    const url = `${this.apiUrl}/delete-plan/${planId}`;
+    return this.http.delete<any>(url).pipe(
+      catchError(error => {
+        this.logger.logError('Error deleting membership plan', error);
         throw error;
       })
     );

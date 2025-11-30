@@ -116,8 +116,9 @@ export class StaffService {
     return this.http.get<any>(`${this.apiUrl}/get-staff-by-location-role/${roleId}/${locationId}`);
   }
   
-  updateStaff(staffId: number, formData: FormData) {
-    return this.http.put(`${this.apiUrl}/update-staff/${staffId}`, formData);
+  updateStaff(staffId: number, body: FormData | any) {
+    const url = `${this.apiUrl}/update-staff/${staffId}`;
+    return this.http.put(url, body);
   }
 
   updateProfile(staffId: number, profileData: any) {

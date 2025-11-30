@@ -3,6 +3,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const fs = require('fs');
 
 const swaggerSetup = require('./swagger.cjs');
 //const logger = require('./logger');
@@ -27,11 +28,10 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const env = process.env.NODE_ENV || 'development';
-// Elastic Beanstalk typically provides PORT (often 8080). Use 8080 as the
-// safe default for production instances while keeping development-friendly
-// behavior when NODE_ENV=development.
-const port = process.env.PORT || 8080;
 const isLocal = env === 'development';
+// Port selection: use 3000 for local dev (matching Angular env.apiUrl),
+// fall back to 8080 for production unless PORT explicitly provided.
+const port = isLocal ? (process.env.PORT || 3000) : (process.env.PORT || 8080);
 
 const allowedOrigins = [
   'http://localhost:4200',
@@ -103,12 +103,17 @@ routers.forEach(({ path, router }) => {
 });
 
 // Serve Angular files in local development only
+// Serve Angular build only if it exists locally (prevents ENOENT when not built)
 if (isLocal) {
-  const distPath = path.join(__dirname, 'dist', 'kickConnect', 'browser'); // Local Angular build path
-  app.use(express.static(distPath));
-  app.get('/*', (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
-  });
+  const distPath = path.join(__dirname, 'dist', 'kickConnect', 'browser');
+  if (fs.existsSync(path.join(distPath, 'index.html'))) {
+    app.use(express.static(distPath));
+    app.get(['/', '/index.html'], (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
+  } else {
+    console.warn(`Angular build not found at ${distPath}. Skipping static UI serve.`);
+  }
 }
 
 // Redirect HTTP to HTTPS (Production Only)
@@ -121,19 +126,17 @@ if (!isLocal) {
   });
 }
 
-// Serve static UI only when explicitly enabled.
-// The API-only Elastic Beanstalk environment should NOT set SERVE_UI,
-// so no static UI files will be served from EB when frontend is hosted on S3.
-if (isLocal || process.env.SERVE_UI === 'true') {
-  const distPath = isLocal
-    ? path.join(__dirname, 'dist', 'kickConnect', 'browser') // Local path
-    : path.join(__dirname, 'browser'); // Production path
-
-  app.use(express.static(distPath)); // Serve static files
-  // serve index for SPA routes
-  app.get('/*', (req, res) => {
-    res.sendFile(path.join(distPath, 'index.html'));
-  });
+// Optional production static UI serving (only if SERVE_UI=true and build exists)
+if (!isLocal && process.env.SERVE_UI === 'true') {
+  const distPath = path.join(__dirname, 'browser');
+  if (fs.existsSync(path.join(distPath, 'index.html'))) {
+    app.use(express.static(distPath));
+    app.get('/*', (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
+  } else {
+    console.warn(`Production UI build not found at ${distPath}. Set SERVE_UI=false or deploy build.`);
+  }
 }
 
 app.get('/current-datetime', (req, res) => {

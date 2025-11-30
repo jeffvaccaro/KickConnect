@@ -50,6 +50,27 @@ router.get('/get-member-by-id', authenticateToken, async (req, res) => {
     }
 });
 
+// Path-param alias for get-member-by-id
+router.get('/get-member-by-id/:memberId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Membership'] */
+    let connection;
+    try {
+        const { memberId } = req.params;
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
+        const [memberResults] = await connection.query('SELECT * FROM member WHERE memberId = ?', [memberId]);
+        res.json(memberResults[0] || {});
+    } catch (err) {
+        res.status(500).json({ error: 'Error executing query' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('get-member-by-id (path): Connection not established.');
+        }
+    }
+});
+
 // PUT Route
 router.put('/update-member', authenticateToken, async (req, res) => {
     /* #swagger.tags = ['Membership'] */
@@ -75,7 +96,7 @@ router.put('/update-member', authenticateToken, async (req, res) => {
                 isActive = ?
             WHERE memberId = ?;
         `;
-        await connection.query(planUpdateQuery, [memberPlanId, homeLocationId, firstName, lastName, phone, email, birthday, contactName, contactPhone, signupDate, renewalDate, isActive, memberId]);
+        await connection.query(memberUpdateQuery, [memberPlanId, homeLocationId, firstName, lastName, phone, email, birthday, contactName, contactPhone, signupDate, renewalDate, isActive, memberId]);
         res.status(200).json({ message: 'Member updated successfully' });
     } catch (err) {
         res.status(500).json({ error: 'Error executing query' });
@@ -88,8 +109,46 @@ router.put('/update-member', authenticateToken, async (req, res) => {
     }
 });
 
+// Path-param alias for update-member
+router.put('/update-member/:memberId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Membership'] */
+    const { memberId } = req.params;
+    const { memberPlanId, homeLocationId, firstName, lastName, phone, email, birthday, contactName, contactPhone, signupDate, renewalDate, isActive } = req.body;
+    let connection;
+    try {
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
+        const memberUpdateQuery = `
+            UPDATE member
+            SET memberPlanId = ?,
+                homeLocationId = ?,
+                firstName = ?,
+                lastName = ?,
+                phone = ?,
+                email = ?,
+                birthday = ?,
+                contactName = ?,
+                contactPhone = ?,
+                signupDate = ?,
+                renewalDate = ?,
+                isActive = ?
+            WHERE memberId = ?;
+        `;
+        await connection.query(memberUpdateQuery, [memberPlanId, homeLocationId, firstName, lastName, phone, email, birthday, contactName, contactPhone, signupDate, renewalDate, isActive, memberId]);
+        res.status(200).json({ message: 'Member updated successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Error executing query' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('update-member (path): Connection not established.');
+        }
+    }
+});
+
 // POST Route
-router.post('/add-member', async (req, res) => {
+router.post('/add-member', authenticateToken, async (req, res) => {
     /* #swagger.tags = ['Membership'] */
     const { accountId, memberPlanId, homeLocationId, firstName, lastName, phone, email, birthday, contactName, contactPhone, signupDate, renewalDate, isActive } = req.body;
     let connection;

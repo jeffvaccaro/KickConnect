@@ -69,6 +69,27 @@ router.get('/get-role-by-id', authenticateToken, async (req, res) => {
     }
 });
 
+// Path-param alias for get-role-by-id
+router.get('/get-role-by-id/:roleId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Role'] */
+    let connection;
+    try {
+        const { roleId } = req.params;
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
+        const [roleResults] = await connection.query('SELECT * FROM role WHERE roleId = ?', [roleId]);
+        res.json(roleResults[0] || {});
+    } catch (err) {
+        res.status(500).json({ error: 'Error executing query' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('get-role-by-id (path): Connection not established.');
+        }
+    }
+});
+
 // PUT Routes
 router.put('/update-role', authenticateToken, async (req, res) => {
     /* #swagger.tags = ['Role'] */
@@ -92,6 +113,33 @@ router.put('/update-role', authenticateToken, async (req, res) => {
             connection.release();
         } else {
             console.warn('update-role: Connection not established.');
+        }
+    }
+});
+
+// Path-param alias for update-role
+router.put('/update-role/:roleId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Role'] */
+    const { roleId } = req.params;
+    const { roleName, roleDescription } = req.body;
+    let connection;
+    try {
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
+        const roleUpdateQuery = `
+            UPDATE role
+            SET roleName = ?, roleDescription = ?
+            WHERE roleId = ?;
+        `;
+        await connection.query(roleUpdateQuery, [roleName, roleDescription, roleId]);
+        res.status(200).json({ message: 'Role updated successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Error executing role query' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('update-role (path): Connection not established.');
         }
     }
 });
@@ -126,6 +174,41 @@ router.put('/update-role-order', authenticateToken, async (req, res) => {
             connection.release();
         } else {
             console.warn('update-role-order: Connection not established.');
+        }
+    }
+});
+
+// Path-param alias for update-role-order
+router.put('/update-role-order/:roleId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Role'] */
+    const { roleId } = req.params;
+    const { roleOrderId } = req.body;
+    let connection;
+    try {
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
+        await connection.query('SET SQL_SAFE_UPDATES = 0;');
+        await connection.beginTransaction();
+        const [currentRole] = await connection.query('SELECT roleOrderId FROM role WHERE roleId = ?', [roleId]);
+        const currentRoleOrderId = currentRole[0].roleOrderId;
+        if (currentRoleOrderId < roleOrderId) {
+            await connection.query('UPDATE role SET roleOrderId = roleOrderId - 1 WHERE roleOrderId > ? AND roleOrderId <= ?', [currentRoleOrderId, roleOrderId]);
+        } else if (currentRoleOrderId > roleOrderId) {
+            await connection.query('UPDATE role SET roleOrderId = roleOrderId + 1 WHERE roleOrderId >= ? AND roleOrderId < ?', [roleOrderId, currentRoleOrderId]);
+        }
+        await connection.query('UPDATE role SET roleOrderId = ? WHERE roleId = ?', [roleOrderId, roleId]);
+        await connection.commit();
+        res.status(200).json({ message: 'Role order updated successfully' });
+    } catch (error) {
+        if (connection) {
+            await connection.rollback();
+        }
+        res.status(500).json({ error: 'Error updating role order' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('update-role-order (path): Connection not established.');
         }
     }
 });

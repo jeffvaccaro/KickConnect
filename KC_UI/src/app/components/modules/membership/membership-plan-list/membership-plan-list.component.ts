@@ -47,7 +47,7 @@ export class MembershipPlanListComponent implements AfterViewInit {
         } else {
           this.membershipPlanArr = [];
         }
-        console.log('Membership Plans loaded:', this.membershipPlanArr);
+        // console.log('Membership Plans loaded:', this.membershipPlanArr);
           this.dataSource = new MatTableDataSource(this.membershipPlanArr);
           this.dataSource.paginator = this.paginator;
       },
@@ -66,6 +66,19 @@ export class MembershipPlanListComponent implements AfterViewInit {
 
   editMembershipPlan(planId: number) {
     this.router.navigate(['/app-membership-plan-edit', planId]);
+  }
+  deleteMembershipPlan(planId: number) {
+    // Implement delete functionality here
+    console.log('Delete membership plan with ID:', planId);
+    this.membershipPlanService.deleteMembershipPlan(planId).subscribe({
+      next: () => {
+        console.log('Membership plan deleted successfully');
+        this.loadMembershipPlans(); // Refresh the list after deletion
+      },
+      error: (error) => {
+        console.error('Error deleting membership plan:', error);
+      }
+    });
   }
 
     onTabChange(event: MatTabChangeEvent): void {

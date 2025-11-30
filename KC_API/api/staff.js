@@ -37,7 +37,7 @@ router.get('/get-all-staff', authenticateToken, async (req, res) => {
         connection = await Promise.race([connectToDatabase(), timeout]);
 
         const query = `
-            SELECT a.accountName, a.accountCode, u.*, GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, p.description, p.skills, p.url
+            SELECT a.accountName, a.accountCode, u.*, GROUP_CONCAT(DISTINCT r.roleName SEPARATOR ', ') AS roleNames, p.description, p.skills, p.url
             FROM admin.account a
             INNER JOIN admin.staff u ON a.accountId = u.accountId
             INNER JOIN admin.staffroles ur ON u.staffId = ur.staffId
@@ -156,7 +156,7 @@ router.get('/get-staff', authenticateToken, async (req, res) => {
         const accountId = accountResults[0].accountId;
 
         const query = `
-            SELECT a.accountName, a.accountCode, u.*, GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, p.description, p.skills, p.url
+            SELECT a.accountName, a.accountCode, u.*, GROUP_CONCAT(DISTINCT r.roleName SEPARATOR ', ') AS roleNames, p.description, p.skills, p.url
             FROM admin.account a
             INNER JOIN admin.staff u ON a.accountId = u.accountId
             INNER JOIN admin.staffroles ur ON u.staffId = ur.staffId
@@ -380,8 +380,8 @@ router.get('/get-filtered-staff', authenticateToken, async (req, res) => {
       const query = `
           SELECT 
               u.*, 
-              GROUP_CONCAT(r.roleName SEPARATOR ', ') AS roleNames, 
-              GROUP_CONCAT(r.roleId SEPARATOR ',') as roleId
+              GROUP_CONCAT(DISTINCT r.roleName SEPARATOR ', ') AS roleNames, 
+              GROUP_CONCAT(DISTINCT r.roleId SEPARATOR ',') as roleId
           FROM admin.staff u
           JOIN admin.staffroles ur ON u.staffId = ur.staffId
           JOIN admin.role r ON ur.roleId = r.roleId
@@ -576,24 +576,45 @@ router.get('/get-staff-by-location-role/:roleId/:locationId', authenticateToken,
  */
 
 router.put('/update-staff/:staffId', authenticateToken, upload.single('photo'), async (req, res) => {
-    /* #swagger.tags = ['Staff'] */  
+    /* #swagger.tags = ['Staff'] */
     const { staffId } = req.params;
 
-  const staffData = JSON.parse(req.body.staffData);
-  const { name, email, phone, phone2, address, city, state, zip, isActive, resetPassword } = staffData;
-  let { roleId } = staffData;
+    // Accept either application/json body (no file) or multipart with 'staffData' field
+    let staffData;
+    if (req.is('application/json')) {
+        staffData = req.body;
+    } else {
+        const rawStaffData = req.body.staffData;
+        if (rawStaffData === undefined) {
+            return res.status(400).json({ error: 'Missing staffData field in form data' });
+        }
+        try {
+            staffData = typeof rawStaffData === 'string' ? JSON.parse(rawStaffData) : rawStaffData;
+        } catch (e) {
+            console.error('Invalid JSON in staffData:', rawStaffData, e.message);
+            return res.status(400).json({ error: 'Invalid JSON in staffData', details: e.message });
+        }
+    }
 
-  if (typeof roleId === 'string') {
-      roleId = roleId.split(',').map(Number);
-  }
+    const { name, email, phone, phone2, address, city, state, zip, isActive, resetPassword, roleId: incomingRoleId } = staffData;
+    let roleId = incomingRoleId;
 
-  const photoURL = req.file ? `/uploads/${req.file.filename}` : req.body.photoURL;
-  console.log('Photo URL:', photoURL);
+    if (typeof roleId === 'string') {
+        roleId = roleId.split(',').map(Number);
+    }
 
-  if (!Array.isArray(roleId)) {
-      console.error('roleId is not an array:', roleId);
-      return res.status(400).json({ error: 'roleId must be an array' });
-  }
+    const photoURL = req.file ? `/uploads/${req.file.filename}` : (req.body.photoURL || staffData.photoURL || null);
+    console.log('Photo URL:', photoURL);
+
+    if (!Array.isArray(roleId)) {
+        console.error('roleId is not an array:', roleId);
+        return res.status(400).json({ error: 'roleId must be an array' });
+    }
+
+    // Basic required field validation
+    if (!name || !email) {
+        return res.status(400).json({ error: 'Missing required fields: name and/or email' });
+    }
 
   let connection;
   try {

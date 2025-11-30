@@ -154,15 +154,15 @@ export class EditStaffComponent implements OnInit {
       altLocations: this.form.value.alternateLocationControl
     };
   
-    const formData: FormData = new FormData();
-    formData.append('userData', JSON.stringify(userData)); // Add Staff data
-    if (this.selectedFile) {
-      formData.append('photo', this.selectedFile, this.selectedFile.name); // Add photo file if available
-    }
-  
-    //console.log('formData:', formData); // Log the form data being sent to the server
-    // Call the updateLocation method and pass the form data
-    this.userService.updateStaff(this.staffId, formData).pipe(
+    // Decide payload type: JSON when no file, FormData when file selected
+    const payload = this.selectedFile ? (() => {
+      const fd = new FormData();
+      fd.append('photo', this.selectedFile!, this.selectedFile!.name);
+      fd.append('staffData', JSON.stringify(userData));
+      return fd;
+    })() : userData;
+
+    this.userService.updateStaff(this.staffId, payload as any).pipe(
       tap((response: any) => {
         //console.log('User updated successfully:', response?.message);
         this.router.navigate(['/']); // Navigate to location-list
@@ -250,7 +250,7 @@ export class EditStaffComponent implements OnInit {
 
     if (isInstructor) {
         //console.log('Passed: Opening Instructor Modal');
-        this.openInstructorModal();
+        //this.openInstructorModal();
     } else {
         console.log('No Instructor role found');
     }

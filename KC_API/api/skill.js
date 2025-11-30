@@ -50,6 +50,27 @@ router.get('/get-skill-by-id', authenticateToken, async (req, res) => {
     }
 });
 
+// Path-param alias for get-skill-by-id
+router.get('/get-skill-by-id/:skillId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Skill'] */
+    let connection;
+    try {
+        const { skillId } = req.params;
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
+        const [roleResults] = await connection.query('SELECT * FROM skill WHERE skillId = ?', [skillId]);
+        res.json(roleResults[0] || {});
+    } catch (err) {
+        res.status(500).json({ error: 'Error executing query' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('get-skill-by-id (path): Connection not established.');
+        }
+    }
+});
+
 // PUT Route
 router.put('/update-skill', authenticateToken, async (req, res) => {
     /* #swagger.tags = ['Skill'] */
@@ -73,6 +94,33 @@ router.put('/update-skill', authenticateToken, async (req, res) => {
             connection.release();
         } else {
             console.warn('update-skill: Connection not established.');
+        }
+    }
+});
+
+// Path-param alias for update-skill
+router.put('/update-skill/:skillId', authenticateToken, async (req, res) => {
+    /* #swagger.tags = ['Skill'] */
+    const { skillId } = req.params;
+    const { skillName, skillDescription } = req.body;
+    let connection;
+    try {
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Connection timed out')), 10000));
+        connection = await Promise.race([connectToDatabase(), timeout]);
+        const skillUpdateQuery = `
+            UPDATE skill
+            SET skillName = ?, skillDescription = ?
+            WHERE skillId = ?;
+        `;
+        await connection.query(skillUpdateQuery, [skillName, skillDescription, skillId]);
+        res.status(200).json({ message: 'Skill updated successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Error executing skill query' });
+    } finally {
+        if (connection) {
+            connection.release();
+        } else {
+            console.warn('update-skill (path): Connection not established.');
         }
     }
 });
