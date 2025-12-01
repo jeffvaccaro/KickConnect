@@ -17,8 +17,13 @@ export class LoginService {
     return this.http.post(`${this.apiUrl}`, { email, password })
       .pipe(
         tap((response: any) => {
-          localStorage.setItem('token', response.token);
+          // Align with AuthInterceptor/AuthService expectations
+          localStorage.setItem('authToken', response.token);
           localStorage.setItem('refreshToken', response.refreshToken);
+          // Optional: store token expiration if provided by API
+          if (response.tokenExpiration) {
+            localStorage.setItem('tokenExpiration', response.tokenExpiration);
+          }
         })
       );
   }
@@ -29,7 +34,8 @@ export class LoginService {
       .pipe(
         map(response => response.token),
         tap(newToken => {
-          localStorage.setItem('token', newToken);
+          // Keep keys consistent for interceptor
+          localStorage.setItem('authToken', newToken);
         })
       );
   }

@@ -40,8 +40,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const version = pkg.version || '0.0.0';
-    document.title = `kickConnect v${version} (alpha)`;
+    document.title = 'kickConnect';
   }
   
   isBlankPage(): boolean {

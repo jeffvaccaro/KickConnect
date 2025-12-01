@@ -147,7 +147,7 @@ const mainRoutes: Routes = [
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'dashboard',
     pathMatch: 'full'
   },
   {

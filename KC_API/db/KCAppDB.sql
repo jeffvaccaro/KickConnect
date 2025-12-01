@@ -1,8 +1,12 @@
+DROP DATABASE IF EXISTS admin;
+DROP DATABASE IF EXISTS common;
+
+
 -- EXAMPLE 
 -- cd  c:\Program Files\MySQL\MySQL Server 8.0\bin
 -- mysqldump -u root -p --databases admin common > c:\\KCAppDB.sql
 --
---  UPDATED ON 11/23/2025
+--  UPDATED ON 11/30/2025
 --
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
@@ -138,7 +142,7 @@ CREATE TABLE `location` (
 
 LOCK TABLES `location` WRITE;
 /*!40000 ALTER TABLE `location` DISABLE KEYS */;
-INSERT INTO `location` VALUES (1,2,'Denver Studio','2352 South Winona Court','Denver','CO','80219','7208191204','jeff.vaccaro+denverstudio@gmail.com',1,'2025-04-19 14:27:00','API Location Insert','2025-04-19 14:27:00',NULL);
+INSERT INTO `location` VALUES (1,2,'Denver Studio','1001 S. Studio 1','Denver','CO','80219','7208191204','jeff.vaccaro+denverstudio@gmail.com',1,'2025-04-19 14:27:00','API Location Insert','2025-04-19 14:27:00','API Location Update');
 /*!40000 ALTER TABLE `location` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -272,10 +276,12 @@ DROP TABLE IF EXISTS `membershipplan`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `membershipplan` (
   `planId` int NOT NULL AUTO_INCREMENT,
+  `planName` varchar(250) NOT NULL,
   `planDescription` varchar(500) NOT NULL,
   `planCost` double NOT NULL,
+  `isActive` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`planId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -284,6 +290,7 @@ CREATE TABLE `membershipplan` (
 
 LOCK TABLES `membershipplan` WRITE;
 /*!40000 ALTER TABLE `membershipplan` DISABLE KEYS */;
+INSERT INTO `membershipplan` VALUES (1,'Basic Membership','Basic subscription plan - members are allowed to attend all regularly scheduled classes (per belt requirement)- special events are NOT included in the price.',200,1),(2,'Yearly Membership','Pay a discounted monthly payment but have to sign up for 12 months',185,1);
 /*!40000 ALTER TABLE `membershipplan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,7 +310,7 @@ CREATE TABLE `profile` (
   PRIMARY KEY (`profileId`),
   KEY `userFK_idx` (`staffId`),
   CONSTRAINT `userFK` FOREIGN KEY (`staffId`) REFERENCES `staff` (`staffId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -312,7 +319,7 @@ CREATE TABLE `profile` (
 
 LOCK TABLES `profile` WRITE;
 /*!40000 ALTER TABLE `profile` DISABLE KEYS */;
-INSERT INTO `profile` VALUES (1,3,'','','');
+INSERT INTO `profile` VALUES (1,3,'','',''),(2,3,'','','');
 /*!40000 ALTER TABLE `profile` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -490,14 +497,14 @@ CREATE TABLE `skill` (
 
 LOCK TABLES `skill` WRITE;
 /*!40000 ALTER TABLE `skill` DISABLE KEYS */;
-INSERT INTO `skill` VALUES (1,'KMW Instructor Certification','Krav Maga Worldwide (KMW) Instructor Certification'),(2,'AKMF Instructor Certification','American Krav Maga Federation (AKMF) Instructor Certification'),(3,'KMIC Certification','Tactica Krav Maga Institute (KMIC) Certification'),(4,'UFAF Krav Maga Instructor Certification','United Fighting Arts Federation (UFAF) Krav Maga Instructor Certification'),(5,'IKMF','International Krav Maga Federation (IKMF) Instructor Certification'),(36,'bjj',''),(37,'Ju-Jit-Su Master','');
+INSERT INTO `skill` VALUES (1,'KMW Instructor Certification','Krav Maga Worldwide (KMW) Instructor Certification'),(2,'AKMF Instructor Certification','American Krav Maga Federation (AKMF) Instructor Certification'),(3,'KMIC Certification','Tactica Krav Maga Institute (KMIC) Certification'),(4,'UFAF Krav Maga Instructor Certification','United Fighting Arts Federation (UFAF) Krav Maga Instructor Certification'),(5,'IKMF','International Krav Maga Federation (IKMF) Instructor Certification'),(36,'bjj','Brazilian Jiu JitSu'),(37,'Ju-Jit-Su Master','');
 /*!40000 ALTER TABLE `skill` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
 -- Table structure for table `staff`
 --
-DROP TABLE IF EXISTS `user`;
+
 DROP TABLE IF EXISTS `staff`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -532,7 +539,7 @@ CREATE TABLE `staff` (
 
 LOCK TABLES `staff` WRITE;
 /*!40000 ALTER TABLE `staff` DISABLE KEYS */;
-INSERT INTO `staff` VALUES (1,1,'SuperUserAccount','superuser@superuser.com','9995551212','','SUPER USER ADDRESS INFO','DENVER','CO',80219,'$2a$10$D7Ft.ZAJRvZbM6m1ZIw4HOX7hQF9qQhwPaaBp1q.KtDpYo2/KJEdO',NULL,1,0,'2024-10-30 04:17:15','DB SEED','2024-10-30 04:17:15',NULL),(2,2,'Owner','jeff.vaccaro+owner@gmail.com','7208191204','','2352 South Winona Court','Denver','CO',80219,'$2a$10$7Ll7cH1K20RiVavdxmW.PeWZL.bsWv0uMbQhw13S/MXJJh58eLRYe',NULL,1,1,'2025-04-19 14:19:01','API Register Insert of OWNER','2025-04-19 14:19:01',NULL),(3,2,'webdad3','jeff.vaccaro+admin@gmail.com','7208191204',NULL,'2352 South Winona Court','Denver','CO',80219,'$2a$10$315mJtyFOY7B1n5PacGTj.bODTtoS3QqXYgTaWaeaeR/igDFKejwy','/uploads/1762643283533-HS-1.png',1,1,'2025-11-08 16:08:03','API User Insert','2025-11-08 16:08:03',NULL);
+INSERT INTO `staff` VALUES (1,1,'SuperUserAccount','superuser@superuser.com','9995551212','','SUPER USER ADDRESS INFO','DENVER','CO',80219,'$2a$10$D7Ft.ZAJRvZbM6m1ZIw4HOX7hQF9qQhwPaaBp1q.KtDpYo2/KJEdO',NULL,1,0,'2024-10-30 04:17:15','DB SEED','2024-10-30 04:17:15',NULL),(2,2,'Owner','jeff.vaccaro+owner@gmail.com','7208191204','','2352 South Winona Court','Denver','CO',80219,'$2a$10$7Ll7cH1K20RiVavdxmW.PeWZL.bsWv0uMbQhw13S/MXJJh58eLRYe',NULL,1,1,'2025-04-19 14:19:01','API Register Insert of OWNER','2025-04-19 14:19:01',NULL),(3,2,'adminUser1','jeff.vaccaro+admin@gmail.com','7208191204',NULL,'AdminUser1 Address','Denver','CO',80219,'$2a$10$315mJtyFOY7B1n5PacGTj.bODTtoS3QqXYgTaWaeaeR/igDFKejwy',NULL,1,0,'2025-11-08 16:08:03','API User Insert','2025-11-29 21:46:38','API staff Update');
 /*!40000 ALTER TABLE `staff` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -705,4 +712,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-23 16:12:56
+-- Dump completed on 2025-11-30 12:40:15

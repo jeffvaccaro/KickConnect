@@ -1,67 +1,108 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "API Start",
-      "type": "shell",
-      "command": "cd C:\\Users\\Jeff\\source\\KickConnect; cd kc_api\\api; node server",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "new"
-      },
-      "problemMatcher": [],
-      "group": "build"
-    },
-    {
-      "label": "UI START",
-      "type": "shell",
-      "command": "cd C:\\Users\\Jeff\\source\\KickConnect; cd kc_ui; ng serve",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "new"
-      },
-      "problemMatcher": [],
-      "group": "build"
-    },
-    {
-      "label": "PlayWright CODEGEN",
-      "type": "shell",
-      "command": "npx playwright codegen",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "new"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "PlayWright TEST w/Log",
-      "type": "shell",
-      "command": "set PWDEBUG=1; npx playwright test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "new"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "BLOG Start",
-      "type": "shell",
-      "command": "bundle exec jekyll serve",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "new"
-      },
-      "problemMatcher": []
-    }
-  ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "API Start",
+			"type": "shell",
+			"command": "cd C:\\Users\\Jeff\\source\\KickConnect; cd kc_api\\api; node server",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "UI START",
+			"type": "shell",
+			"command": "cd C:\\Users\\Jeff\\source\\KickConnect; cd kc_ui; ng serve",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "PlayWright CODEGEN",
+			"type": "shell",
+			"command": "npx playwright codegen",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "PlayWright TEST w/Log",
+			"type": "shell",
+			"command": "set PWDEBUG=1; npx playwright test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "BLOG Start",
+			"type": "shell",
+			"command": "bundle exec jekyll serve",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Deploy UI to S3",
+			"type": "shell",
+			"command": "npm run deploy",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "EB Package API",
+			"type": "shell",
+			"command": "cd C:\\Repos\\KickConnect\\KC_API\\api; npm run package:eb",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Deploy UI to S3",
+			"type": "shell",
+			"command": "cd C:\\Repos\\KickConnect\\KC_UI; npm run deploy",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "UI Build+Deploy",
+			"type": "shell",
+			"command": "cd C:\\Repos\\KickConnect\\KC_UI; npm run build:prod; npm run deploy",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "EB Deploy Latest Zip",
+			"type": "shell",
+			"command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$AppName='KickConnect-API'; $EnvName='KickConnect-API-Prod'; $S3Bucket='your-eb-app-versions-bucket'; $S3Prefix='kc-api'; $LatestZip=(Get-ChildItem -Path 'C:\\Repos\\KickConnect\\Deploy' -Filter 'kc-api-*.zip' | Sort-Object LastWriteTime -Descending | Select-Object -First 1); if(-not $LatestZip){ Write-Error 'No kc-api-*.zip found in Deploy'; exit 1 }; $VersionLabel=$LatestZip.BaseName; $S3Key=\\\"$S3Prefix/$($LatestZip.Name)\\\"; Write-Host \\\"Deploying version: $VersionLabel\\\"; aws s3 cp \\\"$($LatestZip.FullName)\\\" s3://$S3Bucket/$S3Key --profile kickconnect-deployer --region us-west-2; aws elasticbeanstalk create-application-version --application-name $AppName --version-label $VersionLabel --source-bundle S3Bucket=$S3Bucket,S3Key=$S3Key --profile kickconnect-deployer --region us-west-2; aws elasticbeanstalk update-environment --environment-name $EnvName --version-label $VersionLabel --profile kickconnect-deployer --region us-west-2\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
 }

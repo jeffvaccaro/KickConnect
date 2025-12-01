@@ -23,9 +23,9 @@ export class AuthGuard implements CanActivate {
       console.log('AuthGuard - isAuthenticated:', isAuthenticated);
       return true;
     } else {
-      // Unauthenticated access to a protected route: send to logout (session end / timeout UX)
-      console.log('AuthGuard: Unauthenticated – redirecting to logout');
-      this.router.navigate(['logout']);
+      // Unauthenticated access to a protected route: redirect to login
+      console.log('AuthGuard: Unauthenticated – redirecting to login');
+      this.router.navigate(['login']);
       return false;
     }
   }
