@@ -20,7 +20,22 @@
                         <input type="file" class="input-control" (change)="onFileSelected($event)">
                     </div>
                 </div>  
-            </div>      
+            </div>     
+            
+            <div class="col-lg-6 col-md-6">
+                <div class="kickConnect-form-group" style="margin-top: 25px;">
+                    <label class="d-block mb-12 fw-semibold gray-color">Membership Plans</label>
+                    <mat-form-field appearance="fill">
+                        <i class="ri-list-check"></i>
+                        <mat-label *ngIf="!form.get('planControl')?.value">Select a membership plan</mat-label>
+                        <mat-select formControlName="planControl">
+                            <mat-option *ngFor="let plan of planArr; trackBy: trackByPlanId" [value]="plan.planId" [disabled]="plan.isActive === 0">
+                              {{ plan.planName }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6">
@@ -35,18 +50,7 @@
             </div>
 
             <div class="col-lg-4 col-md-4 col-sm-4">
-                <div class="kickConnect-form-group">
-                    <label class="d-block mb-12 fw-semibold gray-color">Role</label>
-                    <!-- <mat-form-field appearance="fill">
-                        <i class="ri-list-check"></i>
-                        <mat-label>Role</mat-label> -->
-                        <!-- <mat-select formControlName="roleControl" multiple>
-                            <mat-option *ngFor="let role of roleArr; trackBy: trackByRoleId" [value]="role.roleId" [disabled]="role.disabled">
-                              {{ role.roleName }}
-                            </mat-option>
-                        </mat-select> -->
-                    <!-- </mat-form-field> -->
-                </div>
+                <!--EMPTY FOR NOW -->
             </div>
         </div>
         <div class="row">
@@ -111,13 +115,13 @@
             </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-4">
-            <div class="kickConnect-form-group without-icon">
-                <label class="d-block mb-12 fw-semibold gray-color">Zip Code</label>
-                <!-- <mat-form-field appearance="fill">
-                <mat-label>Enter zip code</mat-label> -->
-                <!-- <input matInput (change)="getCityStateInfo($event)" formControlName="zipControl"> -->
-                <!-- </mat-form-field> -->
-            </div>
+                <div class="kickConnect-form-group without-icon">
+                    <label class="d-block mb-12 fw-semibold gray-color">Zip Code</label>
+                    <mat-form-field appearance="fill">
+                    <mat-label>enter zip code</mat-label>
+                    <input matInput (change)="getCityStateInfo($event)" formControlName="zipControl">
+                    </mat-form-field>
+                </div>
             </div>
         </div>
         <div class="row">
