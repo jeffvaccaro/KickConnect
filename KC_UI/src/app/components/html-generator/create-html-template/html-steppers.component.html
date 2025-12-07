@@ -16,8 +16,17 @@
     <mat-step>
     <ng-template matStepLabel>{{SectionHeader}}: Background Image</ng-template>
     <ng-template matStepContent>
-        <p>Add Background Image?</p>
-        <input type="file" (change)="onImageUpload($event,1,'background')"><br/><br/>
+        <p>Background</p>
+        <div class="upload-btn">
+          <label for="bgUpload">
+            <button mat-raised-button type="button" class="centered-btn">
+              <mat-icon>image</mat-icon>
+              Add Image
+            </button>
+          </label>
+          <input id="bgUpload" type="file" (change)="onImageUpload($event,1,'background')" style="display:none">
+        </div>
+        <br/>
         <p><button mat-flat-button color="primary" matStepperNext>Next</button></p>
     </ng-template>
     </mat-step>
@@ -26,13 +35,27 @@
     <ng-template matStepLabel>{{SectionHeader}}: Text</ng-template>
     <ng-template matStepContent>
         <div class="form-group">
-          <mat-slide-toggle id="isTextLightOrDark" (change)="switchTextColor($event)">Light/Dark Text</mat-slide-toggle>
       
           <div *ngFor="let column of columns; let i = index">
             <mat-card-content class="full-width">
                 <mat-tab-group (selectedIndexChange)="onColTabChanged($event)">
                   <mat-tab label="Text">
                     <br>
+                    <!-- Compact formatting toolbar -->
+                    <div class="format-toolbar">
+                      <button mat-icon-button aria-label="Bold" (click)="applyFormat(i, 'bold')" title="Bold">
+                        <mat-icon>format_bold</mat-icon>
+                      </button>
+                      <button mat-icon-button aria-label="Italic" (click)="applyFormat(i, 'italic')" title="Italic">
+                        <mat-icon>format_italic</mat-icon>
+                      </button>
+                      <button mat-icon-button aria-label="Bullet List" (click)="applyFormat(i, 'bullet')" title="Bullet List">
+                        <mat-icon>format_list_bulleted</mat-icon>
+                      </button>
+                      <button mat-icon-button (click)="insertDefaultForm(i)" title="Insert Form" aria-label="Insert Form">
+                        <mat-icon>assignment</mat-icon>
+                      </button>
+                    </div>
                     <!-- Ensure the textbox is above the textarea -->
                     <mat-form-field appearance="fill" class="full-width">
                       <mat-label>Column {{ i + 1 }}: Header Text</mat-label>
@@ -41,7 +64,7 @@
               
                     <mat-form-field appearance="fill" class="full-width">
                       <mat-label>Column {{ i + 1 }}: Text</mat-label>
-                      <textarea matInput rows="5" [(ngModel)]="columns[i].textBlock" (ngModelChange)="updateColBlockHTML()"></textarea>
+                      <textarea matInput rows="6" [(ngModel)]="columns[i].textBlock" (ngModelChange)="updateColBlockHTML()"></textarea>
                     </mat-form-field>
                   </mat-tab>
               
@@ -54,6 +77,48 @@
               
                   <mat-tab label="Video">
                     <br> Video
+                  </mat-tab>
+                  <mat-tab label="Form">
+                    <br>
+                    <div class="form-config">
+                      <h4>Dropdown Options</h4>
+                      <div class="config-row">
+                        <label>Program Options</label>
+                        <div class="chips">
+                          <span class="chip" *ngFor="let opt of programOptions; let pi = index">
+                            {{opt}}
+                            <button mat-icon-button (click)="removeProgramOption(pi)" title="Remove"><mat-icon>close</mat-icon></button>
+                          </span>
+                        </div>
+                        <div class="adder">
+                          <input matInput placeholder="Add program" [(ngModel)]="newProgramOption" (keyup.enter)="addProgramOption()" />
+                          <button mat-stroked-button (click)="addProgramOption()">Add</button>
+                        </div>
+                      </div>
+                      <div class="config-row">
+                        <label>Location Options</label>
+                        <div class="chips">
+                          <span class="chip" *ngFor="let opt of locationOptions; let li = index">
+                            {{opt}}
+                            <button mat-icon-button (click)="removeLocationOption(li)" title="Remove"><mat-icon>close</mat-icon></button>
+                          </span>
+                        </div>
+                        <div class="adder">
+                          <input matInput placeholder="Add location" [(ngModel)]="newLocationOption" (keyup.enter)="addLocationOption()" />
+                          <button mat-stroked-button (click)="addLocationOption()">Add</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button mat-raised-button (click)="insertDefaultForm(i)" class="centered-btn">
+                        <mat-icon>assignment</mat-icon>
+                        Insert Form
+                      </button>
+                      <button mat-raised-button color="warn" class="ms-10 centered-btn" (click)="clearColumn(i)">
+                        <mat-icon>assignment</mat-icon>
+                        Remove Form
+                      </button>
+                    </div>
                   </mat-tab>
                 </mat-tab-group>
               </mat-card-content>

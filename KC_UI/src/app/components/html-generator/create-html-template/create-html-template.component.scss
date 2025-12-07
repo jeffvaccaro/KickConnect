@@ -1,5 +1,160 @@
+/* Match Theme controls to Text segmented style */
+.theme-controls .mat-button-toggle-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #f8fafc;
+  padding: 6px;
+}
+.theme-controls .mat-button-toggle-group .mat-button-toggle { 
+  flex: 0 0 auto; 
+  padding: 0 10px; 
+  white-space: nowrap; 
+}
+.theme-controls .mat-button-toggle-group .mat-button-toggle:first-child .mat-button-toggle-button { border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+.theme-controls .mat-button-toggle-group .mat-button-toggle:last-child .mat-button-toggle-button { border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+.theme-controls .mat-button-toggle-checked .mat-button-toggle-button { background: #e6ebff; }
+
+/* Theme color indicator block */
+.theme-indicator {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* Text color indicator block */
+.text-indicator {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
 .full-width {
   width: 100%;
+}
+.controls-bar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.spacer { flex: 1 1 auto; }
+
+.control-group { display: flex; flex-direction: column; gap: 6px; }
+.control-label { font-size: 12px; color: #6b7280; }
+/* Compact styling for text color toggle group */
+.text-controls .mat-button-toggle-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.text-controls .mat-button-toggle-group .mat-button-toggle {
+  flex: 0 0 auto;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+/* Modern segmented-control look */
+.text-controls .mat-button-toggle-group {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #f8fafc;
+  padding: 6px;
+}
+.text-controls .mat-button-toggle-group .mat-button-toggle:first-child .mat-button-toggle-button {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.text-controls .mat-button-toggle-group .mat-button-toggle:last-child .mat-button-toggle-button {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+.text-controls .mat-button-toggle-checked .mat-button-toggle-button {
+  background: #e6ebff;
+}
+.upload-group { display:inline-flex; align-items:center; gap:8px; }
+.file-name { font-size:12px; color:#6b7280; }
+
+.background-group { grid-column: 1 / -1; }
+
+/* Make text color controls span full width for more space */
+/* Keep text controls on the same row as theme */
+
+.editor-group { grid-column: 1 / -1; margin-top: 12px; }
+.editor-group mat-stepper { overflow: visible; }
+.editor-group .mat-form-field { margin-top: 12px; }
+/* Ensure Angular Material stepper content doesn't overlap the form-field label */
+:host ::ng-deep .mat-horizontal-content-container { padding-top: 16px !important; }
+:host ::ng-deep .mat-step-content { padding-top: 12px !important; }
+/* Add a bit more space under the step label */
+:host ::ng-deep .mat-horizontal-stepper-header { margin-bottom: 8px; }
+.full-width { width: 100%; }
+/* Reverted: per-page controls removed */
+
+.preview-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-top: 8px;
+}
+.preview-header {
+  font-weight: 600;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+.preview-frame {
+  width: 100%;
+  min-height: 360px;
+  height: 45vh;
+  border: none;
+}
+
+.preview-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.code-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-top: 16px;
+}
+.section-heading { font-weight: 600; color: #374151; margin: 12px 0 6px; }
+.code-header {
+  font-weight: 600;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+.code-block {
+  max-height: 420px;
+  overflow: auto;
+  margin: 0;
+  padding: 12px;
+  background: #0f1115;
+  color: #e5e7eb;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
 }
 
 .button-group {

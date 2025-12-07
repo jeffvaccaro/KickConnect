@@ -52,7 +52,7 @@ export async function updateHeaderText(
 
     if (event.value == 1) {
       colBlockHTML = `
-      <div class="bgrid feature" style="width:85%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+      <div class="bgrid feature" style="width:85%; margin:0 auto; min-height:60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
         ${generateContentForColumn('text', columns[0].headerText, columns[0].textBlock, '', columnColor)}
       </div>`;
       col1 = true;

@@ -64,6 +64,9 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(bodyParser.json());
 
+// Serve uploaded assets (backgrounds, images)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 if (typeof swaggerSetup === 'function') {
   swaggerSetup(app);

@@ -1,6 +1,6 @@
 {
   "name": "kickConnect",
-  "version": "0.7.1130205.1",
+  "version": "0.8.12062025.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
