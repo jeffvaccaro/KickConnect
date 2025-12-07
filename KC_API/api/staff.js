@@ -392,7 +392,7 @@ router.get('/get-filtered-staff', authenticateToken, async (req, res) => {
 
       const formattedQuery = mysql.format(query, [accountId, isActive]);
       const [results] = await connection.query(formattedQuery);
-      console.log('Filtered staff results:', results);
+      //console.log('Filtered staff results:', results);
       res.json(results);
   } catch (err) {
       console.error('Error executing query:', err);
