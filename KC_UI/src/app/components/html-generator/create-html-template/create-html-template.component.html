@@ -119,6 +119,11 @@
             <mat-icon>restore</mat-icon>
             Load Project
           </button>
+          <button mat-stroked-button color="accent" (click)="zipInput.click()" style="margin-left: 8px;">
+            <mat-icon>upload</mat-icon>
+            Import Zip
+          </button>
+          <input #zipInput type="file" accept="application/zip" (change)="onZipSelected($event)" hidden/>
         </div>
       </mat-expansion-panel>
     </mat-accordion>

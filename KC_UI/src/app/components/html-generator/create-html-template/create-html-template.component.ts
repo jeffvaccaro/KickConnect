@@ -18,6 +18,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import localforage from 'localforage';
@@ -38,6 +39,7 @@ import localforage from 'localforage';
     FormsModule,
     MatSlideToggleModule,
     MatTabsModule,
+    MatSnackBarModule,
     HtmlStepperComponent,
     HttpClientModule // Include HttpClientModule
 ],
@@ -68,7 +70,7 @@ export class CreateHtmlTemplateComponent implements OnInit {
   private updateTimer: any;
   private lastAssetMap: Map<string, string> = new Map<string, string>();
 
-  constructor(private sanitizer: DomSanitizer, private htmlGeneratorService: HtmlGeneratorService) {}
+  constructor(private sanitizer: DomSanitizer, private htmlGeneratorService: HtmlGeneratorService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void { 
     this.loadImages().then(() => {
@@ -343,7 +345,10 @@ export class CreateHtmlTemplateComponent implements OnInit {
   loadProject(): void {
     localforage.getItem<any>('kc_project')
       .then(data => {
-        if (!data) return;
+        if (!data) {
+          this.snackBar.open('No project found', 'Dismiss', { duration: 3000 });
+          return;
+        }
         // Restore core settings
         this.theme = data.theme ?? this.theme;
         this.textColorMode = data.textColorMode ?? this.textColorMode;
@@ -377,6 +382,103 @@ export class CreateHtmlTemplateComponent implements OnInit {
         this.scheduleUpdate();
       })
       .catch(err => console.error('Load failed:', err));
+  }
+
+  async onZipSelected(event: Event): Promise<void> {
+    try {
+      const input = event.target as HTMLInputElement;
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      await this.importZip(file);
+      this.snackBar.open('Project imported from Zip', 'Dismiss', { duration: 3000 });
+    } catch (e) {
+      console.error('Zip import failed:', e);
+      this.snackBar.open('Import failed', 'Dismiss', { duration: 4000 });
+    } finally {
+      (event.target as HTMLInputElement).value = '';
+    }
+  }
+
+  private async importZip(file: File): Promise<void> {
+    const arrayBuf = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(arrayBuf);
+
+    const manifestFile = zip.file('project/project.json');
+    if (!manifestFile) throw new Error('Manifest not found in zip (project/project.json)');
+
+    const manifestStr = await manifestFile.async('string');
+    const data = JSON.parse(manifestStr);
+
+    // Build asset map: filename -> blob object URL
+    const assetUrlMap = new Map<string, string>();
+    const assetFolder = Object.keys(zip.files).filter(p => p.startsWith('assets/images/'));
+    for (const p of assetFolder) {
+      const f = zip.file(p);
+      if (!f) continue;
+      const blob = await f.async('blob');
+      const url = URL.createObjectURL(blob);
+      const fileName = p.replace('assets/images/', '');
+      assetUrlMap.set(fileName, url);
+    }
+
+    // Restore core settings
+    this.theme = data.theme ?? this.theme;
+    this.textColorMode = data.textColorMode ?? this.textColorMode;
+
+    // Restore sections
+    if (data.homeSection) {
+      const hs = data.homeSection;
+      this.homeSection = {
+        sectionHeader: hs.sectionHeader ?? 'Home',
+        sectionName: hs.sectionName ?? 'home',
+        menuTitle: hs.menuTitle ?? 'Home',
+        columnsCount: hs.columnsCount ?? 1,
+        bgImgURL: this.replaceRelativeAssetInString(hs.bgImgURL ?? '', assetUrlMap)
+      };
+    }
+
+    if (Array.isArray(data.sections)) {
+      this.sections = data.sections.map((s: any) => ({
+        sectionHeader: s.sectionHeader ?? s.menuTitle ?? 'Section',
+        sectionName: s.sectionName ?? 'section',
+        menuTitle: s.menuTitle ?? 'Section',
+        columnsCount: (s.columnsCount ?? 1) as 1|2|3,
+        bgImgURL: this.replaceRelativeAssetInString(s.bgImgURL ?? '', assetUrlMap)
+      }));
+    }
+
+    // Restore content and rewrite asset references to blob URLs
+    if (data.sectionHtmls && typeof data.sectionHtmls === 'object') {
+      const rewritten: { [key: string]: string } = {};
+      for (const key of Object.keys(data.sectionHtmls)) {
+        const html = data.sectionHtmls[key] ?? '';
+        rewritten[key] = this.replaceRelativeAssets(html, assetUrlMap);
+      }
+      this.sectionHtmls = rewritten;
+    }
+
+    this.scheduleUpdate();
+  }
+
+  private replaceRelativeAssetInString(s: string, map: Map<string, string>): string {
+    if (!s) return s;
+    const m = s.match(/assets\/images\/(.+)$/i);
+    if (m && m[1] && map.has(m[1])) {
+      return s.replace(/assets\/images\/(.+)$/i, map.get(m[1])!);
+    }
+    return s;
+  }
+
+  private replaceRelativeAssets(html: string, map: Map<string, string>): string {
+    let out = html;
+    for (const [fileName, url] of map.entries()) {
+      const rel = `assets/images/${this.escapeRegExp(fileName)}`;
+      const cssPattern = new RegExp(`url\\((?:'|\")?${rel}(?:'|\")?\\)`, 'g');
+      const srcPattern = new RegExp(`src\\s*=\\s*\"${rel}\"`, 'g');
+      out = out.replace(cssPattern, `url('${url}')`);
+      out = out.replace(srcPattern, `src="${url}"`);
+    }
+    return out;
   }
 
   private buildProjectManifest(): any {
