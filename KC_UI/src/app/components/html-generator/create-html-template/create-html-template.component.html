@@ -107,6 +107,18 @@
             <mat-icon>download</mat-icon>
             Download HTML
           </button>
+          <button mat-flat-button color="accent" [disabled]="!generatedHtml" (click)="downloadZip()" style="margin-left: 8px;">
+            <mat-icon>archive</mat-icon>
+            Export Zip
+          </button>
+          <button mat-stroked-button color="primary" (click)="saveProject()" style="margin-left: 8px;">
+            <mat-icon>save</mat-icon>
+            Save Project
+          </button>
+          <button mat-stroked-button color="primary" (click)="loadProject()" style="margin-left: 8px;">
+            <mat-icon>restore</mat-icon>
+            Load Project
+          </button>
         </div>
       </mat-expansion-panel>
     </mat-accordion>

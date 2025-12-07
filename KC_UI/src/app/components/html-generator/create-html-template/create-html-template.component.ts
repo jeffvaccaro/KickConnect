@@ -18,6 +18,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import localforage from 'localforage';
 
 @Component({
     selector: 'app-create-html-template',
@@ -63,6 +66,7 @@ export class CreateHtmlTemplateComponent implements OnInit {
   bgImgURL: string = '';
   bgFileName: string = '';
   private updateTimer: any;
+  private lastAssetMap: Map<string, string> = new Map<string, string>();
 
   constructor(private sanitizer: DomSanitizer, private htmlGeneratorService: HtmlGeneratorService) {}
 
@@ -273,5 +277,191 @@ export class CreateHtmlTemplateComponent implements OnInit {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  async downloadZip(): Promise<void> {
+    try {
+      const zip = new JSZip();
+      const assetsFolder = zip.folder('assets/images');
+      const manifestFolder = zip.folder('project');
+
+      const assetUrls = this.extractAssetUrls(this.generatedHtml);
+
+      // Build map original URL -> packaged relative path
+      const assetMap = new Map<string, string>();
+      const filenameCounts = new Map<string, number>();
+
+      for (const url of assetUrls) {
+        try {
+          const fileName = this.deriveFilename(url, filenameCounts);
+          const relPath = `assets/images/${fileName}`;
+          assetMap.set(url, relPath);
+        } catch (e) {
+          console.warn('Skipping asset filename derivation:', url, e);
+        }
+      }
+
+      // Fetch assets and add to zip
+      for (const [originalUrl, relPath] of assetMap.entries()) {
+        try {
+          const resp = await fetch(originalUrl);
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const blob = await resp.blob();
+          const arrayBuf = await blob.arrayBuffer();
+          const relName = relPath.replace('assets/images/', '');
+          assetsFolder?.file(relName, arrayBuf);
+        } catch (e) {
+          console.warn('Failed to fetch asset; leaving original URL in HTML:', originalUrl, e);
+          // Remove from map so we don't rewrite this reference
+          assetMap.delete(originalUrl);
+        }
+      }
+
+      // Rewrite HTML using successful asset map
+      const rewrittenHtml = this.rewriteHtmlWithAssetMap(this.generatedHtml, assetMap);
+      zip.file('index.html', rewrittenHtml);
+
+      // Add manifest
+      const manifest = this.buildProjectManifest();
+      manifestFolder?.file('project.json', JSON.stringify(manifest, null, 2));
+
+      const content = await zip.generateAsync({ type: 'blob' });
+      saveAs(content, 'kickConnect-template.zip');
+      this.lastAssetMap = assetMap;
+    } catch (err) {
+      console.error('Zip generation failed:', err);
+    }
+  }
+
+  saveProject(): void {
+    const manifest = this.buildProjectManifest();
+    localforage.setItem('kc_project', manifest)
+      .then(() => console.log('Project saved'))
+      .catch(err => console.error('Save failed:', err));
+  }
+
+  loadProject(): void {
+    localforage.getItem<any>('kc_project')
+      .then(data => {
+        if (!data) return;
+        // Restore core settings
+        this.theme = data.theme ?? this.theme;
+        this.textColorMode = data.textColorMode ?? this.textColorMode;
+
+        // Restore sections
+        if (data.homeSection) {
+          this.homeSection = {
+            sectionHeader: data.homeSection.sectionHeader ?? 'Home',
+            sectionName: data.homeSection.sectionName ?? 'home',
+            menuTitle: data.homeSection.menuTitle ?? 'Home',
+            columnsCount: data.homeSection.columnsCount ?? 1,
+            bgImgURL: data.homeSection.bgImgURL ?? ''
+          };
+        }
+
+        if (Array.isArray(data.sections)) {
+          this.sections = data.sections.map((s: any) => ({
+            sectionHeader: s.sectionHeader ?? s.menuTitle ?? 'Section',
+            sectionName: s.sectionName ?? 'section',
+            menuTitle: s.menuTitle ?? 'Section',
+            columnsCount: (s.columnsCount ?? 1) as 1|2|3,
+            bgImgURL: s.bgImgURL ?? ''
+          }));
+        }
+
+        // Restore content
+        if (data.sectionHtmls && typeof data.sectionHtmls === 'object') {
+          this.sectionHtmls = data.sectionHtmls;
+        }
+
+        this.scheduleUpdate();
+      })
+      .catch(err => console.error('Load failed:', err));
+  }
+
+  private buildProjectManifest(): any {
+    return {
+      theme: this.theme,
+      textColorMode: this.textColorMode,
+      homeSection: this.homeSection,
+      sections: this.sections,
+      sectionHtmls: this.sectionHtmls,
+      generatedAt: new Date().toISOString()
+    };
+  }
+
+  private extractAssetUrls(html: string): string[] {
+    const urls = new Set<string>();
+    // Match CSS url('...') or url("...") or url(...)
+    const cssUrlRegex = /url\((?:'|")?(.*?)(?:'|")?\)/gi;
+    // Match <img src="..."> and other src attributes
+    const srcAttrRegex = /src\s*=\s*"(.*?)"/gi;
+
+    let m: RegExpExecArray | null;
+    while ((m = cssUrlRegex.exec(html)) !== null) {
+      const u = m[1];
+      if (u && this.isExternalAsset(u)) urls.add(u);
+    }
+    while ((m = srcAttrRegex.exec(html)) !== null) {
+      const u = m[1];
+      if (u && this.isExternalAsset(u)) urls.add(u);
+    }
+    return Array.from(urls);
+  }
+
+  private isExternalAsset(u: string): boolean {
+    // Exclude data URIs
+    if (u.startsWith('data:')) return false;
+    // Simple http/https or environment-hosted paths
+    return /^https?:\/\//i.test(u) || u.startsWith(environment.apiUrl);
+  }
+
+  private deriveFilename(u: string, counts: Map<string, number>): string {
+    try {
+      const urlObj = new URL(u, window.location.origin);
+      let name = urlObj.pathname.split('/').pop() || 'asset';
+      // If name has querystring-like parts, strip
+      name = name.split('?')[0];
+      const base = name;
+      if (!counts.has(base)) {
+        counts.set(base, 1);
+        return base;
+      }
+      const n = counts.get(base)!;
+      counts.set(base, n + 1);
+      const extIdx = base.lastIndexOf('.');
+      if (extIdx > 0) {
+        const stem = base.substring(0, extIdx);
+        const ext = base.substring(extIdx);
+        return `${stem}-${n}${ext}`;
+      }
+      return `${base}-${n}`;
+    } catch {
+      // Fallback
+      const base = u.split('/').pop() || 'asset';
+      if (!counts.has(base)) {
+        counts.set(base, 1);
+        return base;
+      }
+      const n = counts.get(base)!;
+      counts.set(base, n + 1);
+      return `${base}-${n}`;
+    }
+  }
+
+  private rewriteHtmlWithAssetMap(html: string, map: Map<string, string>): string {
+    let out = html;
+    for (const [orig, rel] of map.entries()) {
+      // Replace in both CSS url(...) and src="..."
+      const cssPattern = new RegExp(`url\\((?:'|\")?${this.escapeRegExp(orig)}(?:'|\")?\\)`, 'g');
+      const srcPattern = new RegExp(`src\\s*=\\s*\"${this.escapeRegExp(orig)}\"`, 'g');
+      out = out.replace(cssPattern, `url('${rel}')`);
+      out = out.replace(srcPattern, `src="${rel}"`);
+    }
+    return out;
+  }
+
+  private escapeRegExp(s: string): string {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 }
