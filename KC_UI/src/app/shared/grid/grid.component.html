@@ -1,0 +1,61 @@
+<div class="grid-mat-card grid-has-chooser" #gridCard>
+  <div class="grid-table-wrapper">
+    <div class="grid-table" cdkDropList (cdkDropListDropped)="onDrop($event)">
+      <div class="grid-header-row" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onDrop($event)" [class.filter-open]="isAnyFilterOpen()">
+        <ng-container *ngFor="let col of visibleColumns; let i = index">
+          <div class="grid-header-cell"
+               [class.drag-over]="dragOverIndex === i"
+               cdkDrag
+               (cdkDragStarted)="onDragStarted(i)"
+               (cdkDragEnded)="onDragEnded()"
+               (cdkDragEntered)="onDragEntered(i)"
+               (cdkDragExited)="onDragExited()">
+            <span class="drag-handle" cdkDragHandle title="Drag to reorder" style="cursor: grab; margin-right: 6px; color: #bbb; font-size: 1.1em;">&#9776;</span>
+            <span class="header-label" (click)="onSort(col)" [class.sortable]="col.sortable" (dblclick)="startEditHeader(i)">
+              <ng-container *ngIf="editingHeaderIndex !== i">{{ col.customHeader || col.header }}</ng-container>
+              <ng-container *ngIf="editingHeaderIndex === i">
+                <input id="header-edit-input-{{i}}" type="text" [(ngModel)]="headerEditValue" (blur)="saveEditHeader(i)" (keydown.enter)="saveEditHeader(i)" (keydown.escape)="cancelEditHeader()" style="width: 90%; font-size: 1em; padding: 2px 4px; border-radius: 4px; border: 1px solid #1976d2;" />
+              </ng-container>
+            </span>
+            <button class="header-edit-btn" *ngIf="editingHeaderIndex !== i" (click)="startEditHeader(i)" title="Rename column" style="background:none; border:none; cursor:pointer; margin-left:4px; color:#1976d2;">
+              <i class="ri-pencil-line"></i>
+            </button>
+            <button class="col-toggle" (click)="toggleColumn(col, $event)" title="Show/Hide Column">
+              <i class="ri-eye-line" *ngIf="col.visible"></i>
+              <i class="ri-eye-off-line" *ngIf="!col.visible"></i>
+            </button>
+            <button *ngIf="col.filterable" class="filter-toggle" (click)="toggleFilterBox(col, $event)" title="Show/Hide Filter">
+              <i class="ri-search-line"></i>
+              <i class="ri-arrow-down-s-line" [class.open]="filterBoxOpen[col.field]"></i>
+            </button>
+            <div class="filter-dropdown absolute-filter" *ngIf="col.filterable && filterBoxOpen[col.field]">
+              <input class="header-filter" [(ngModel)]="filters[col.field]" (ngModelChange)="onFilter(col, $event)" placeholder="Filter..." />
+            </div>
+          </div>
+        </ng-container>
+        <div class="grid-header-cell chooser-header-cell chooser-align" style="pointer-events:auto;">
+          <button class="column-chooser-btn" #chooserBtn (click)="toggleColumnChooser($event)" title="Show/Hide Columns" aria-haspopup="true" [attr.aria-expanded]="columnChooserOpen">
+            <i class="ri-settings-3-line"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Data rows -->
+      <div *ngFor="let row of filteredData; let rowIdx = index" class="grid-data-row" [class.alt-row]="rowIdx % 2 === 1">
+        <ng-container *ngFor="let col of visibleColumns; let i = index">
+          <div class="grid-cell" [class.drag-over]="dragOverIndex === i">{{ row[col.field] }}</div>
+        </ng-container>
+        <div class="grid-cell chooser-placeholder chooser-align"></div>
+      </div>
+    </div>
+    <!-- Only one chooser button/dropdown rendered above in header cell -->
+  </div>
+<ng-container *ngIf="columnChooserOpen">
+  <div class="column-chooser-dropdown anchored overlay fixed-overlay" [ngStyle]="dropdownPosition" (click)="$event.stopPropagation()" role="menu" aria-label="Show or hide columns">
+    <div class="column-chooser-title"><i class="ri-eye-line"></i> Show/Hide Columns</div>
+    <div *ngFor="let col of columns" class="column-chooser-item">
+      <input type="checkbox" [checked]="col.visible" (change)="setColumnVisibility(col, getCheckboxChecked($event))" id="col-{{col.field}}" />
+      <label [for]="'col-' + col.field">{{ col.header }}</label>
+    </div>
+  </div>
+</ng-container>
+</div>

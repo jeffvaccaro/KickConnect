@@ -11,17 +11,25 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StaffService } from '../../../../services/staff.service';
 import { BreadcrumbComponent } from '@app/components/shared/breadcrumb/breadcrumb.component';
+import { GridColumn, GridComponent } from '@app/shared/grid/grid.component';
 @Component({
     selector: 'app-account-list',
-    imports: [MatButtonModule, MatCardModule, MatMenuModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule, MatTooltipModule, BreadcrumbComponent],
+    imports: [MatButtonModule, MatCardModule, MatMenuModule, MatPaginatorModule, MatTableModule, MatCheckboxModule, MatTabsModule, MatTooltipModule, BreadcrumbComponent, GridComponent],
     templateUrl: './account-list.component.html',
     styleUrl: './account-list.component.scss'
 })
 export class AccountListComponent implements OnInit, AfterViewInit {
-  private accountArr: any[] = [];
-  //displayedColumns: string[] = ['accountName', 'accountPhone', 'accountEmail', 'accountAddress', 'accountCity', 'accountState', 'accountZip'];
+  public accountArr: any[] = [];
   displayedColumns: string[] = ['accountName', 'accountPhone', 'accountEmail', 'accountAddress'];
   dataSource = new MatTableDataSource(this.accountArr);
+  
+  columns: GridColumn[] = [
+  { field: 'accountName', header: 'Name', sortable: true, filterable: true, visible: true },
+  { field: 'accountPhone', header: 'Phone', sortable: true, filterable: true, visible: true },
+  { field: 'accountEmail', header: 'Email', sortable: true, filterable: true, visible: true },
+  { field: 'accountAddress', header: 'Address', sortable: true, filterable: true, visible: true }
+  ];
+  
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
   constructor(private accountService: AccountService, private userService: StaffService, private router: Router, private route: ActivatedRoute){
@@ -33,6 +41,8 @@ export class AccountListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
   }
+
+
 
   getAccounts(status: string = ''): void {
     this.accountService.getAccounts().subscribe({
